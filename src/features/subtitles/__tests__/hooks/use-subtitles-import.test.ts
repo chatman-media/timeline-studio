@@ -6,16 +6,16 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useSubtitlesImport } from "../../hooks/use-subtitles-import"
 
-// Mock subtitle commands
+// Mock core subtitle service
 const mockReadSubtitleFile = vi.fn()
 const mockShowOpenDialog = vi.fn()
 
-vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
+vi.mock("@timeline-studio/core/services/subtitles", () => ({
   readSubtitleFile: (...args: any[]) => mockReadSubtitleFile(...args),
 }))
 
 // Mock core container
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -31,7 +31,7 @@ vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   }),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

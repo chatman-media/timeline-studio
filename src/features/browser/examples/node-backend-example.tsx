@@ -6,7 +6,7 @@
  */
 
 import { useState } from "react"
-import type { ScannedMediaFile } from "@/core/ports/media.port"
+import type { ScannedMediaFile } from "@timeline-studio/core/ports/media.port"
 import { useNodeBackend } from "../hooks/use-node-backend"
 
 export function NodeBackendExample() {

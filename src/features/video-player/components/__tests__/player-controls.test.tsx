@@ -3,7 +3,7 @@
  */
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { type MediaFile, MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { TimelineProjectProvider, TimelineProvider } from "@/features/timeline/providers/timeline-providers"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
@@ -148,7 +148,7 @@ vi.mock("lucide-react", async (importOriginal) => {
 })
 
 // Мокаем компоненты UI
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, variant, size, className, ...props }: any) => (
     <button
       onClick={onClick}
@@ -163,7 +163,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, max, step, className, disabled }: any) => (
     <input
       type="range"
@@ -311,7 +311,7 @@ const createMockPlayerContext = (overrides = {}) => ({
 })
 
 // Мокаем хуки
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@/features/timeline/providers/player-provider", () => ({
   usePlayer: vi.fn(() => createMockPlayerContext()),
 }))
 
@@ -350,7 +350,7 @@ vi.mock("@/features/video-player/hooks/use-debounced-seek", () => ({
 }))
 
 // Мокаем video-editing-orchestrator
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: () => ({
     getActors: () => ({
       timeline: {

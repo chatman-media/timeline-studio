@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
+import { PersonDatabaseService } from "@timeline-studio/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
 

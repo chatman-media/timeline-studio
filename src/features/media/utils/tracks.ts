@@ -1,4 +1,4 @@
-import type { MediaFile, MediaTrack } from "@/domains/media-management"
+import type { MediaFile, MediaTrack } from "@timeline-studio/core/types"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"

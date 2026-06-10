@@ -3,10 +3,10 @@
  */
 
 import { Redo, Undo } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 
 interface UndoRedoButtonsProps {
   variant?: "default" | "outline" | "ghost" | "secondary"

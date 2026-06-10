@@ -8,7 +8,7 @@ import type { VideoFilter } from "@/features/filters/types/filters"
 import { useFiltersAdapter } from "../../adapters/use-filters-adapter"
 
 // Mock dependencies
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),

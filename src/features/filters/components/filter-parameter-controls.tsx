@@ -8,8 +8,8 @@ import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import type { VideoFilter } from "../types/filters"
 
 interface FilterParameterControlsProps {

@@ -1,4 +1,4 @@
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
 import { AiChat } from "@/features/ai-chat"
 import { Browser } from "@/features/browser/components"
 import { PANEL_GROUP_IDS } from "@/features/media-studio/config/panel-ids"

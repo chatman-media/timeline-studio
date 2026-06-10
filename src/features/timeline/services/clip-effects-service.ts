@@ -3,7 +3,7 @@
  * Сервис для применения эффектов к клипам Timeline
  */
 
-import type { AppliedEffect, BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { generateId } from "@/lib/utils"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "../types"

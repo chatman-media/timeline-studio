@@ -9,7 +9,7 @@ import { TimelineProviders } from "@/test/test-utils"
 
 import { ScriptView } from "../script-view"
 
-vi.mock("@/components/ui/resizable", () => {
+vi.mock("@timeline-studio/ui/components/resizable", () => {
   const React = require("react")
   return {
     ResizablePanelGroup: ({ children, ...props }: any) =>

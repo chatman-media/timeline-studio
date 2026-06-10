@@ -27,27 +27,22 @@ vi.mock("@/lib/tauri-logger", () => ({
   })),
 }))
 
-// Мокаем @/domains/video-editing для useResources
-vi.mock("@/domains/video-editing", async () => {
-  const actual = await vi.importActual("@/domains/video-editing")
-  return {
-    ...actual,
-    useResources: () => ({
-      effects: [],
-      filters: [],
-      transitions: [],
-      subtitles: [],
-      styleTemplates: [],
-      addEffect: mockAddEffect,
-      addFilter: mockAddFilter,
-      addTransition: mockAddTransition,
-      addSubtitle: mockAddSubtitle,
-      addStyleTemplate: mockAddStyleTemplate,
-    }),
-  }
-})
+vi.mock("@/features/timeline/providers/resources-provider", () => ({
+  useResources: () => ({
+    effects: [],
+    filters: [],
+    transitions: [],
+    subtitles: [],
+    styleTemplates: [],
+    addEffect: mockAddEffect,
+    addFilter: mockAddFilter,
+    addTransition: mockAddTransition,
+    addSubtitle: mockAddSubtitle,
+    addStyleTemplate: mockAddStyleTemplate,
+  }),
+}))
 
-vi.mock("@/domains/project-management/services/app-directories-service", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   appDirectoriesService: {
     createAppDirectories: vi.fn().mockResolvedValue(undefined),
     getMediaSubdirectory: vi.fn((subdir: string) => `/app/media/${subdir}`),

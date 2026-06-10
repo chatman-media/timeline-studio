@@ -4,8 +4,8 @@
 import { invoke } from "@tauri-apps/api/core"
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { vi } from "vitest"
-import { RenderJob } from "@/domains/video-editing/types/video-compiler"
-import { RenderJobsDropdown, RenderStatus } from "@/features/video-compiler"
+import { RenderJobsDropdown } from "@/features/video-compiler"
+import { type RenderJob, RenderStatus } from "@/features/video-compiler/types/render"
 import { setTranslations } from "@/test/mocks/libraries/i18n"
 
 // Mock the Tauri API

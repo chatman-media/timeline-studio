@@ -1,4 +1,4 @@
-export type { ProjectSettings } from "@/domains/shared/types/project"
+export type { ProjectSettings } from "@timeline-studio/core/types/project"
 export type {
   ProjectPlaceholders,
   ProjectStructure,

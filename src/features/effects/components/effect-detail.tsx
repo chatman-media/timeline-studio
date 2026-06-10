@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { useModals } from "@timeline-studio/core/hooks"
 import type { BaseEffect } from "@/features/effects/types"
 
 interface EffectDetailProps {

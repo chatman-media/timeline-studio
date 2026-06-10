@@ -1,8 +1,8 @@
 /**
  * Playback Time Sync Hook
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core playback sync hook.
  */
 
-export type { PlaybackTimeSyncOptions } from "@/domains/video-editing/hooks"
-export { usePlaybackTimeSync } from "@/domains/video-editing/hooks"
+export type { PlaybackTimeSyncOptions } from "@timeline-studio/core/hooks/use-playback-time-sync"
+export { usePlaybackTimeSync } from "@timeline-studio/core/hooks/use-playback-time-sync"

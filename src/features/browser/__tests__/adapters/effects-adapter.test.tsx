@@ -8,7 +8,7 @@ import type { BaseEffect } from "@/features/effects/types"
 import { useEffectsAdapter } from "../../adapters/use-effects-adapter"
 
 // Mock dependencies
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),

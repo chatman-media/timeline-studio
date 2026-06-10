@@ -73,7 +73,7 @@ Run these before enabling the service in a real chat:
 
 ```bash
 # 1. Local command smoke, no Telegram token or network required.
-bun run src/cli/index.ts bot-worker \
+bun run apps/cli/src/index.ts bot-worker \
   --update-file docs/08_tasks/planned/fixtures/telegram-help-update.json \
   --pretty
 
@@ -84,7 +84,7 @@ bun run smoke:ai-review:rust
 set -a
 . /etc/timeline-studio/bot-worker.env
 set +a
-bun run src/cli/index.ts bot-worker --poll-once --pretty
+bun run apps/cli/src/index.ts bot-worker --poll-once --pretty
 ```
 
 Expected smoke results:
@@ -141,13 +141,13 @@ Run cleanup in dry-run mode first. The command reads the same runtime path env v
 set -a
 . /etc/timeline-studio/bot-worker.env
 set +a
-bun run src/cli/index.ts bot-cleanup --pretty
+bun run apps/cli/src/index.ts bot-cleanup --pretty
 ```
 
 After reviewing the dry-run output, run destructive cleanup explicitly:
 
 ```bash
-bun run src/cli/index.ts bot-cleanup --delete --pretty
+bun run apps/cli/src/index.ts bot-cleanup --delete --pretty
 sudo systemctl enable --now timeline-bot-cleanup.timer
 ```
 

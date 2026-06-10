@@ -32,7 +32,7 @@ vi.mock("../../hooks/use-project-settings", () => ({
   })),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useModals: vi.fn(() => ({
     activeModal: "project-settings",
     modalData: null,
@@ -512,7 +512,7 @@ describe("ProjectSettingsModal", () => {
   describe("Кнопки действий", () => {
     it("должен закрывать модальное окно при нажатии Отмена", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal data-oid="k6xn67_" />)
+      render(<ProjectSettingsModal onClose={mockCloseModal} data-oid="k6xn67_" />)
 
       const cancelButton = screen.getByText("dialogs.projectSettings.cancel")
       await user.click(cancelButton)
@@ -523,7 +523,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен сохранять настройки и закрывать модальное окно при нажатии Сохранить", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal data-oid="17ah9_1" />)
+      render(<ProjectSettingsModal onClose={mockCloseModal} data-oid="17ah9_1" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
       await user.click(saveButton)
@@ -607,7 +607,7 @@ describe("ProjectSettingsModal", () => {
 
     it("должен применять таймаут при сохранении", async () => {
       const user = userEvent.setup()
-      render(<ProjectSettingsModal data-oid="d4jizg5" />)
+      render(<ProjectSettingsModal onClose={mockCloseModal} data-oid="d4jizg5" />)
 
       const saveButton = screen.getByText("dialogs.projectSettings.save")
 
@@ -797,7 +797,7 @@ describe("ProjectSettingsModal", () => {
       mockUpdateSettings.mockClear()
       mockCloseModal.mockClear()
 
-      render(<ProjectSettingsModal data-oid="xhg0m-g" />)
+      render(<ProjectSettingsModal onClose={mockCloseModal} data-oid="xhg0m-g" />)
 
       // 1. Изменяем ширину (при locked aspect ratio высота автоматически пересчитается)
       const widthInput = screen.getByDisplayValue("1920")

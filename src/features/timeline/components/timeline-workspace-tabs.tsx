@@ -1,7 +1,7 @@
 import { BarChart3, Clapperboard, Layers, Sliders } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 export type WorkspaceView = "timeline" | "audio-mixer" | "analysis" | "script"

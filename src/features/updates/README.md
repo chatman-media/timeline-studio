@@ -10,7 +10,7 @@ The Updates module provides comprehensive application update management for Time
 
 - ✅ **Components**: 4 components for update UI (manager, notification, settings, status)
 - ✅ **Hooks**: 1 hook for update management
-- ✅ **Services**: XState machine and update service with Tauri integration
+- ✅ **Services**: Core update machine/port with Tauri and mock adapters
 - ✅ **Tests**: Component and service tests available
 
 ## Structure
@@ -24,9 +24,8 @@ updates/
 │   └── update-status-indicator.tsx # Visual status indicator
 ├── hooks/                          # React hooks
 │   └── use-update-manager.ts       # Main update hook
-├── services/                       # Update logic
-│   ├── update-machine.ts           # XState machine
-│   └── update-service.ts           # Tauri updater integration
+├── services/                       # Compatibility facades
+│   └── update-service.ts           # Core update service facade
 └── __tests__/                      # Test files
 ```
 
@@ -103,7 +102,7 @@ function App() {
 
 ## Integration
 
-- **Depends on**: `@tauri-apps/api` (Tauri updater system)
+- **Depends on**: `@/core` update port and machine factory
 - **Used by**: `@/features/app-settings`, Main application UI
 - **Backend Command**: `download_and_install_update` (Tauri command)
 
@@ -112,9 +111,6 @@ function App() {
 ```bash
 # Run update component tests
 bun run test src/features/updates/components
-
-# Test update state machine
-bun run test src/features/updates/services/update-machine.test.ts
 
 # Run all updates tests
 bun run test src/features/updates

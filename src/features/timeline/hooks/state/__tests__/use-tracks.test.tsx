@@ -5,7 +5,7 @@
 
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { Timeline, Track } from "@/domains/video-editing/types"
+import type { Timeline, Track } from "@timeline-studio/domains/video-editing/types"
 import { TimelineProviders } from "@/test/test-utils"
 import { useTracks } from "../use-tracks"
 

@@ -1,5 +1,5 @@
-import { MediaType } from "@/domains/media-management"
-import type { MediaFile, TimelineClip, Track, TrackType } from "@/domains/video-editing/types"
+import { MediaType } from "@timeline-studio/domains/media-management"
+import type { MediaFile, TimelineClip, Track, TrackType } from "@timeline-studio/domains/video-editing/types"
 
 // Test data creation utilities
 

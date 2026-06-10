@@ -12,7 +12,7 @@ import { mockUIComponents, resetSelectStates } from "./test-utils/mocks"
 mockUIComponents()
 
 // Mock Slider component to avoid ResizeObserver issues
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, className }: any) => (
     <input
       type="range"

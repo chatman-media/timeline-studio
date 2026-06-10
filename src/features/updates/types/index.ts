@@ -1,7 +1,7 @@
 /**
  * Updates types
  *
- * Re-export from canonical source in system-integration domain
+ * Re-export from canonical source in core.
  */
 
 export type {
@@ -15,4 +15,4 @@ export type {
   UpdateProgress,
   UpdateProgressWithPercentage,
   UpdateStatus,
-} from "@/domains/system-integration/types/updates"
+} from "@timeline-studio/core/types/updates"

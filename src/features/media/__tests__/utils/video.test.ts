@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import type { FfprobeStream, MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
+import type { FfprobeStream, MediaFile } from "@timeline-studio/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 
 import {
   calculateAdaptiveWidth,

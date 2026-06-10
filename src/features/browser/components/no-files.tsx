@@ -9,10 +9,10 @@ import { FileText, Filter, FolderOpen, Music, Palette, Sparkles, Upload, Video }
 import type React from "react"
 import { useEffect, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { appDirectoriesService } from "@/domains/project-management/services/app-directories-service"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent } from "@timeline-studio/ui/components/card"
+import { appDirectoriesService } from "@timeline-studio/core/services/app-directories-service"
 import { replaceHomeWithTilde } from "@/lib/path-utils"
 import { createLogger } from "@/lib/tauri-logger"
 

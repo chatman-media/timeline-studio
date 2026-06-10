@@ -10,8 +10,9 @@
 
 import type { ReactNode } from "react"
 
-// Re-export types from domain for backward compatibility
-export type { ModalData, ModalType } from "@/domains/system-integration"
+// Re-export types for backward compatibility.
+export type { ModalData, ModalType } from "@timeline-studio/core/types/modals"
+export { useModals, useModals as useModal } from "@timeline-studio/core/hooks"
 
 /**
  * Пропсы для провайдера модальных окон
@@ -39,4 +40,3 @@ export function ModalProvider({ children }: ModalProviderProps) {
  * Этот хук оставлен только для обратной совместимости.
  * Все новые компоненты должны использовать useModals() из feature-facing compatibility layer.
  */
-export { useModals, useModals as useModal } from "@/domains/system-integration"

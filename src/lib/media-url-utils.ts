@@ -5,8 +5,8 @@
  * ✅ ОБНОВЛЕНО: Использует IPlatformService через container (FEOD архитектура)
  */
 
-import { getPlatform as getPlatformService } from "@/core/container"
-import type { MediaFile } from "@/domains/media-management"
+import { getPlatform as getPlatformService } from "@timeline-studio/core/container"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { createLogger } from "./tauri-logger"
 import { isTauriEnvironment } from "./tauri-utils"
 

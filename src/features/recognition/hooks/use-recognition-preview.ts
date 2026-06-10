@@ -1,12 +1,7 @@
 import { useCallback, useState } from "react"
 
-import {
-  clearRecognitionResults as clearRecognitionResultsCommand,
-  getPreviewDataWithRecognition,
-  processVideoRecognition as processVideoRecognitionCommand,
-} from "@/domains/ai-services/tauri/recognition-commands"
-import type { RecognitionResults } from "@/domains/media-management"
-import { useMediaPreview } from "@/domains/media-management"
+import { getAI, getMedia } from "@timeline-studio/core/container"
+import type { RecognitionResults } from "@timeline-studio/core/types/media-preview"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { YoloDetection, YoloVideoData } from "../types/yolo"
@@ -65,7 +60,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const { getPreviewData } = useMediaPreview()
+  const getPreviewData = useCallback(async (fileId: string) => getMedia().getPreviewData(fileId), [])
 
   /**
    * Запустить распознавание видео с кэшированием результатов
@@ -89,7 +84,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
           // Конвертируем RecognitionResults в YoloVideoData формат
           const yoloData = convertRecognitionResultsToYoloData(
             fileId,
-            cachedData.file_path,
+            cachedData.file_path ?? videoPath,
             cachedData.recognition_results,
           )
           options.onRecognitionComplete?.(fileId, yoloData)
@@ -98,7 +93,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
 
         // Запускаем распознавание
         logInfo("[useRecognitionPreview] Запуск нового распознавания", { fileId, modelPath, targetClasses })
-        const result = (await processVideoRecognitionCommand(videoPath, modelPath, targetClasses)) as YoloVideoData
+        const result = (await getAI().processVideoRecognition(videoPath, modelPath, targetClasses)) as YoloVideoData
 
         logInfo("[useRecognitionPreview] Распознавание завершено успешно", { fileId })
         options.onRecognitionComplete?.(fileId, result)
@@ -130,7 +125,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
         if (previewData?.recognition_results) {
           const yoloData = convertRecognitionResultsToYoloData(
             fileId,
-            previewData.file_path,
+            previewData.file_path ?? fileId,
             previewData.recognition_results,
           )
 
@@ -160,7 +155,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
   const getPreviewWithRecognition = useCallback(
     async (fileId: string): Promise<string | null> => {
       try {
-        const data = await getPreviewDataWithRecognition(fileId)
+        const data = await getAI().getPreviewDataWithRecognition(fileId)
 
         return data?.preview_with_boxes || null
       } catch (err) {
@@ -232,7 +227,7 @@ export function useRecognitionPreview(options: UseRecognitionPreviewOptions = {}
   const clearRecognitionResults = useCallback(
     async (fileId: string): Promise<boolean> => {
       try {
-        await clearRecognitionResultsCommand(fileId)
+        await getAI().clearRecognitionResults(fileId)
         return true
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : "Failed to clear recognition results"

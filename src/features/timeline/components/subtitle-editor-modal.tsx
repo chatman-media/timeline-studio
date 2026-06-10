@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import type { SubtitleClip } from "@/features/subtitles/types"
 

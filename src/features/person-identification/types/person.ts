@@ -1,7 +1,7 @@
 /**
  * Person Identification types
  *
- * Re-export from canonical source in ai-services domain
+ * Re-export from canonical source in core/types
  */
 
 export type {
@@ -28,4 +28,4 @@ export type {
   Point2D,
   Timecode,
   TimeRange,
-} from "@/domains/ai-services/types/person-identification"
+} from "@timeline-studio/core/types/person-identification"

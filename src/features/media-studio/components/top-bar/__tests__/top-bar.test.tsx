@@ -29,6 +29,7 @@ const mockCreateNewProject = vi.hoisted(() => vi.fn().mockResolvedValue(undefine
 const mockSetProjectDirty = vi.hoisted(() => vi.fn())
 const mockCreateTimelineProject = vi.hoisted(() => vi.fn().mockResolvedValue(undefined))
 const mockClearBrowserState = vi.hoisted(() => vi.fn())
+const mockShowSuccess = vi.hoisted(() => vi.fn())
 
 // Mutable reference for currentProject to allow changing in tests
 const mockCurrentProjectRef = vi.hoisted(() => ({
@@ -57,28 +58,34 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/domains/system-integration", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/system-integration")>()
-  return {
-    ...actual,
-    useModals: () => ({
-      activeModal: "none",
-      modalData: null,
-      isModalOpen: false,
-      openModal: mockOpenModal,
-      closeModal: vi.fn(),
-      submitModal: vi.fn(),
-      openCameraCapture: vi.fn(),
-      openVoiceRecording: vi.fn(),
-      openExport: vi.fn(),
-      openProjectSettings: vi.fn(),
-      openUserSettings: vi.fn(),
-      openKeyboardShortcuts: vi.fn(),
-      openColorGrading: vi.fn(),
-      openEffectDetail: vi.fn(),
-    }),
-  }
-})
+vi.mock("@timeline-studio/core/hooks", () => ({
+  useModals: () => ({
+    activeModal: "none",
+    modalData: null,
+    isModalOpen: false,
+    openModal: mockOpenModal,
+    closeModal: vi.fn(),
+    submitModal: vi.fn(),
+    openCameraCapture: vi.fn(),
+    openVoiceRecording: vi.fn(),
+    openExport: vi.fn(),
+    openProjectSettings: vi.fn(),
+    openUserSettings: vi.fn(),
+    openKeyboardShortcuts: vi.fn(),
+    openColorGrading: vi.fn(),
+    openEffectDetail: vi.fn(),
+  }),
+  useNotifications: () => ({
+    showSuccess: mockShowSuccess,
+  }),
+  useCurrentProject: () => ({
+    currentProject: mockCurrentProjectRef.value,
+    openProject: mockOpenProject,
+    saveProject: mockSaveProject,
+    setProjectDirty: mockSetProjectDirty,
+    createNewProject: mockCreateNewProject,
+  }),
+}))
 
 vi.mock("@/features/user-settings", () => ({
   useUserSettings: () => ({
@@ -91,27 +98,13 @@ vi.mock("@/features/user-settings", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
-  return {
-    ...actual,
-    useCurrentProject: () => ({
-      currentProject: mockCurrentProjectRef.value,
-      openProject: mockOpenProject,
-      saveProject: mockSaveProject,
-      setProjectDirty: mockSetProjectDirty,
-      createNewProject: mockCreateNewProject,
-    }),
-  }
-})
-
 vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   useTimeline: () => ({
     createProject: mockCreateTimelineProject,
   }),
 }))
 
-vi.mock("@/domains/browser", async (importOriginal) => {
+vi.mock("@timeline-studio/domains/browser", async (importOriginal) => {
   const actual = (await importOriginal()) as Record<string, unknown>
   return {
     ...actual,
@@ -159,7 +152,7 @@ vi.mock("@/features/export", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/popover", () => ({
+vi.mock("@timeline-studio/ui/components/popover", () => ({
   Popover: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="popover" data-oid="zsfszu7">
       {children}

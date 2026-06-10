@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { UserPreset } from "@/domains/video-editing/services/effects/user-presets-service"
+import type { UserPreset } from "@timeline-studio/core/types"
 import {
   deleteUserPreset,
   getAllUserPresets,
@@ -11,7 +11,7 @@ import {
   loadUserPreset,
   saveUserPreset,
   updateUserPreset,
-} from "@/domains/video-editing/services/effects/user-presets-service"
+} from "@timeline-studio/core/services/user-presets"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("useUserPresets")

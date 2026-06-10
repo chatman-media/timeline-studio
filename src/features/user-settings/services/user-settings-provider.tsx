@@ -1,10 +1,7 @@
-// Используем типы и машину из домена
-
 import { createContext, useCallback, useEffect, useMemo, useState } from "react"
-import { type BrowserTab } from "@/domains/browser"
-import type { UserSettingsContextType } from "@/domains/project-management/machines/user-settings-machine"
-import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
-import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
+import { getUserSettingsService } from "@timeline-studio/core/services"
+import type { BrowserTab } from "@timeline-studio/core/types"
+import type { LayoutMode, UserSettingsContextType } from "@timeline-studio/core/types/user-settings"
 
 export type UserSettingsThemeMode = "light" | "dark" | "system"
 
@@ -135,181 +132,181 @@ export function UserSettingsProvider({
   children: React.ReactNode
   initialSettings?: Partial<UserSettingsContextType>
 }) {
-  // Получаем оркестратор домена и подписываемся на настройки
-  const [orchestrator] = useState(() => getProjectManagementOrchestrator())
-  const [settings, setSettings] = useState(() => orchestrator.getUserSettings())
+  const [settingsService] = useState(() => getUserSettingsService())
+  const [settings, setSettings] = useState(() => settingsService.getUserSettings())
 
   // Применяем начальные настройки при монтировании, если переданы
   useEffect(() => {
     if (initialSettings) {
-      orchestrator.updateUserSettings(initialSettings)
+      settingsService.updateUserSettings(initialSettings)
     }
-  }, [orchestrator, initialSettings])
+  }, [settingsService, initialSettings])
 
   useEffect(() => {
-    const sub = orchestrator.subscribeToUserSettings((s) => setSettings(s))
+    const sub = settingsService.subscribeToUserSettings((s) => setSettings(s))
     return () => sub.unsubscribe()
-  }, [orchestrator])
+  }, [settingsService])
 
   // Мемоизированные методы изменения настроек
   const handleTabChange = useCallback(
     (value: string) => {
       if (["media", "music", "transitions", "effects", "filters", "templates"].includes(value)) {
-        orchestrator.updateUserSettings({ activeTab: value as BrowserTab })
+        settingsService.updateUserSettings({ activeTab: value as BrowserTab })
       }
     },
-    [orchestrator],
+    [settingsService],
   )
 
   const handleLayoutChange = useCallback(
-    (value: LayoutMode) => orchestrator.updateUserSettings({ layoutMode: value }),
-    [orchestrator],
+    (value: LayoutMode) => settingsService.updateUserSettings({ layoutMode: value }),
+    [settingsService],
   )
 
   const handlePlayerScreenshotsPathChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ playerScreenshotsPath: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ playerScreenshotsPath: value }),
+    [settingsService],
   )
 
   const handleScreenshotsPathChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ screenshotsPath: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ screenshotsPath: value }),
+    [settingsService],
   )
 
   const handleAiApiKeyChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ openAiApiKey: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ openAiApiKey: value }),
+    [settingsService],
   )
 
   const handleClaudeApiKeyChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ claudeApiKey: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ claudeApiKey: value }),
+    [settingsService],
   )
 
   const handlePlayerVolumeChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ playerVolume: value }),
-    [orchestrator],
+    (value: number) => settingsService.updateUserSettings({ playerVolume: value }),
+    [settingsService],
   )
 
   const toggleBrowserVisibility = useCallback(
     () =>
-      orchestrator.updateUserSettings({
+      settingsService.updateUserSettings({
         isBrowserVisible: !settings.isBrowserVisible,
       }),
-    [orchestrator, settings.isBrowserVisible],
+    [settingsService, settings.isBrowserVisible],
   )
 
   const toggleTimelineVisibility = useCallback(
     () =>
-      orchestrator.updateUserSettings({
+      settingsService.updateUserSettings({
         isTimelineVisible: !settings.isTimelineVisible,
       }),
-    [orchestrator, settings.isTimelineVisible],
+    [settingsService, settings.isTimelineVisible],
   )
 
   const toggleOptionsVisibility = useCallback(
     () =>
-      orchestrator.updateUserSettings({
+      settingsService.updateUserSettings({
         isOptionsVisible: !settings.isOptionsVisible,
       }),
-    [orchestrator, settings.isOptionsVisible],
+    [settingsService, settings.isOptionsVisible],
   )
 
   // GPU и производительность
   const handleGpuAccelerationChange = useCallback(
-    (value: boolean) => orchestrator.updateUserSettings({ gpuAccelerationEnabled: value }),
-    [orchestrator],
+    (value: boolean) => settingsService.updateUserSettings({ gpuAccelerationEnabled: value }),
+    [settingsService],
   )
 
   const handlePreferredGpuEncoderChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ preferredGpuEncoder: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ preferredGpuEncoder: value }),
+    [settingsService],
   )
 
   const handleMaxConcurrentJobsChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ maxConcurrentJobs: value }),
-    [orchestrator],
+    (value: number) => settingsService.updateUserSettings({ maxConcurrentJobs: value }),
+    [settingsService],
   )
 
   const handleRenderQualityChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ renderQuality: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ renderQuality: value }),
+    [settingsService],
   )
 
   const handleBackgroundRenderingChange = useCallback(
-    (value: boolean) => orchestrator.updateUserSettings({ backgroundRenderingEnabled: value }),
-    [orchestrator],
+    (value: boolean) => settingsService.updateUserSettings({ backgroundRenderingEnabled: value }),
+    [settingsService],
   )
 
   const handleRenderDelayChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ renderDelay: value }),
-    [orchestrator],
+    (value: number) => settingsService.updateUserSettings({ renderDelay: value }),
+    [settingsService],
   )
 
   // Прокси
   const handleProxyEnabledChange = useCallback(
-    (value: boolean) => orchestrator.updateUserSettings({ proxyEnabled: value }),
-    [orchestrator],
+    (value: boolean) => settingsService.updateUserSettings({ proxyEnabled: value }),
+    [settingsService],
   )
 
   const handleProxyTypeChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ proxyType: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ proxyType: value }),
+    [settingsService],
   )
 
   const handleProxyHostChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ proxyHost: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ proxyHost: value }),
+    [settingsService],
   )
 
   const handleProxyPortChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ proxyPort: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ proxyPort: value }),
+    [settingsService],
   )
 
   const handleProxyUsernameChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ proxyUsername: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ proxyUsername: value }),
+    [settingsService],
   )
 
   const handleProxyPasswordChange = useCallback(
-    (value: string) => orchestrator.updateUserSettings({ proxyPassword: value }),
-    [orchestrator],
+    (value: string) => settingsService.updateUserSettings({ proxyPassword: value }),
+    [settingsService],
   )
 
   // Автосохранение
   const handleAutoSaveEnabledChange = useCallback(
-    (value: boolean) => orchestrator.updateUserSettings({ autoSaveEnabled: value }),
-    [orchestrator],
+    (value: boolean) => settingsService.updateUserSettings({ autoSaveEnabled: value }),
+    [settingsService],
   )
 
   const handleAutoSaveIntervalChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ autoSaveInterval: value }),
-    [orchestrator],
+    (value: number) => settingsService.updateUserSettings({ autoSaveInterval: value }),
+    [settingsService],
   )
 
   // Оптимизация Timeline
   const handleTimelineVirtualizationEnabledChange = useCallback(
-    (value: boolean) => orchestrator.updateUserSettings({ timelineVirtualizationEnabled: value }),
-    [orchestrator],
+    (value: boolean) => settingsService.updateUserSettings({ timelineVirtualizationEnabled: value }),
+    [settingsService],
   )
 
   const handleTimelineVirtualizationOverscanChange = useCallback(
     (value: number) =>
-      orchestrator.updateUserSettings({
+      settingsService.updateUserSettings({
         timelineVirtualizationOverscan: value,
       }),
-    [orchestrator],
+    [settingsService],
   )
 
   const handleTimelineClipDetailsThresholdChange = useCallback(
-    (value: number) => orchestrator.updateUserSettings({ timelineClipDetailsThreshold: value }),
-    [orchestrator],
+    (value: number) => settingsService.updateUserSettings({ timelineClipDetailsThreshold: value }),
+    [settingsService],
   )
 
   const updateSettings = useCallback(
-    (updates: Record<string, unknown>) => orchestrator.updateUserSettings(updates as Partial<UserSettingsContextType>),
-    [orchestrator],
+    (updates: Record<string, unknown>) =>
+      settingsService.updateUserSettings(updates as Partial<UserSettingsContextType>),
+    [settingsService],
   )
 
   // Мемоизированное значение контекста

@@ -4,11 +4,11 @@
 
 import { Eye, Gauge, Monitor, Settings, Zap } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
 
 import type { GPUTier, PreviewQuality } from "../types"
 

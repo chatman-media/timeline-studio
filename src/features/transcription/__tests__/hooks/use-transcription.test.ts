@@ -3,6 +3,8 @@
  */
 import { renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { container, resetContainer } from "@timeline-studio/core/container"
+import type { ITranscriptionService } from "@timeline-studio/core/ports"
 import { useTranscription, useWhisperModels } from "../../hooks/use-transcription"
 import { createMockModels, createMockTranscriptionOptions, createMockTranscriptionResult } from "../test-utils"
 
@@ -14,19 +16,18 @@ const mockDownloadModel = vi.fn()
 const mockGetSupportedLanguages = vi.fn()
 const mockRecommendModel = vi.fn()
 
-// Mock TranscriptionService
-vi.mock("@/domains/ai-services/services/transcription-service", () => ({
-  TranscriptionService: {
-    getInstance: vi.fn(() => ({
-      transcribeMedia: mockTranscribeMedia,
-      generateSubtitles: mockGenerateSubtitles,
-      getAvailableModels: mockGetAvailableModels,
-      downloadModel: mockDownloadModel,
-      getSupportedLanguages: mockGetSupportedLanguages,
-      recommendModel: mockRecommendModel,
-    })),
-  },
-}))
+function registerMockTranscriptionService() {
+  const service: ITranscriptionService = {
+    transcribeMedia: mockTranscribeMedia,
+    recognizeSpeech: vi.fn(),
+    generateSubtitles: mockGenerateSubtitles,
+    getAvailableModels: mockGetAvailableModels,
+    downloadModel: mockDownloadModel,
+    getSupportedLanguages: mockGetSupportedLanguages,
+    recommendModel: mockRecommendModel,
+  }
+  container.registerTranscription(service)
+}
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -36,6 +37,8 @@ vi.mock("@/lib/tauri-logger", () => ({
 
 describe("useTranscription", () => {
   beforeEach(() => {
+    resetContainer()
+    registerMockTranscriptionService()
     vi.clearAllMocks()
     // Reset mock implementations
     mockTranscribeMedia.mockResolvedValue(createMockTranscriptionResult())

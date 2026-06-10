@@ -3,7 +3,7 @@ import { CopyPlus } from "lucide-react"
 import React, { useRef } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 /**

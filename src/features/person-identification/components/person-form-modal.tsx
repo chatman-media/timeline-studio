@@ -6,12 +6,12 @@
 import { Tag as TagIcon, Upload, User, X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useModals } from "@/domains/system-integration"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import type { PersonProfile } from "../types/person"
 

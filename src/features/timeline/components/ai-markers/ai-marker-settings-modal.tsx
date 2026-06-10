@@ -5,11 +5,11 @@
 
 import { useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 

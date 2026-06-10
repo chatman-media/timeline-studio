@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { useModals } from "@/features/modals/services"
 
 export function MidiConfigurationModal() {

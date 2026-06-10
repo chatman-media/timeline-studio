@@ -4,7 +4,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/domains/project-management/types"
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 
 import { useScenarioWizard } from "../../hooks/use-scenario-wizard"
 import type { Scenario } from "../../types/scenario"

@@ -2,7 +2,7 @@
  * Утилиты для преобразования типов медиафайлов
  */
 
-import { type MediaFile, MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types/media"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 /**

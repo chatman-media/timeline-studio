@@ -3,7 +3,7 @@
  * Вспомогательные функции для работы с эффектами (без backend вызовов)
  *
  * Примечание: Функции с backend вызовами (invoke) перенесены в
- * @/domains/video-editing/services/effects
+ * @timeline-studio/domains/video-editing/services/effects
  */
 
 import { createLogger } from "@/lib/tauri-logger"

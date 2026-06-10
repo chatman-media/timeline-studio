@@ -12,11 +12,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import type { SavedMediaFile } from "@/domains/media-management"
-import { promptUserToFindFile } from "@/domains/media-management/services/media-restoration-service"
+} from "@timeline-studio/ui/components/alert-dialog"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
+import type { SavedMediaFile } from "@timeline-studio/core/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 

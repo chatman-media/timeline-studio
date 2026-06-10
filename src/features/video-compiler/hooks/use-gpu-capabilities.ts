@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import {
-  CompilerSettings,
-  FfmpegCapabilities,
-  GpuCapabilities,
   GpuEncoder,
-  GpuInfo,
-  SystemInfo,
-} from "@/domains/video-editing"
-import { videoCompilerSystemService } from "@/domains/video-editing/services/video-compiler-system-service"
+  type CompilerSettings,
+  type FfmpegCapabilities,
+  type GpuCapabilities,
+  type GpuInfo,
+  type SystemInfo,
+} from "@timeline-studio/core/types/video-editing"
+import { videoCompilerSystemService } from "@timeline-studio/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseGpuCapabilities")

@@ -860,7 +860,7 @@ export function clearStateChangeHandlers() {
 }
 
 // Register mock backend with container
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 
 // Register the mock backend in the container so it's available to all components
 container.registerBackend(mockBackendSync as any)

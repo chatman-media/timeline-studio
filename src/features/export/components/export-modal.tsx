@@ -2,9 +2,8 @@ import { useCallback, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNotifications } from "@/core/hooks"
-import { useModals } from "@/domains/system-integration"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
@@ -19,12 +18,18 @@ import { SocialExportTab } from "./social-export-tab"
 
 const logger = createLogger({ module: "ExportModal" })
 
-export function ExportModal() {
+interface ExportModalProps {
+  onClose?: () => void | Promise<void>
+  "data-oid"?: string
+}
+
+const noop = () => {}
+
+export function ExportModal({ onClose = noop }: ExportModalProps) {
   const { t } = useTranslation()
   const { showError, showSuccess } = useNotifications()
   const { project } = useTimeline()
   const { startRender, isRendering, renderProgress, cancelRender } = useVideoCompiler()
-  const { closeModal } = useModals()
   const { uploadToSocialNetwork } = useSocialExport()
 
   const { getCurrentSettings, updateSettings, handleChooseFolder, getExportConfig } = useExportSettings()
@@ -98,6 +103,10 @@ export function ExportModal() {
     }
   }, [renderProgress, cancelRender])
 
+  const handleClose = useCallback(() => {
+    void onClose()
+  }, [onClose])
+
   const currentSettings = getCurrentSettings()
 
   return (
@@ -128,7 +137,7 @@ export function ExportModal() {
           onChooseFolder={handleChooseFolder}
           onExport={handleExport}
           onCancelExport={handleCancelRender}
-          onClose={() => closeModal()}
+          onClose={handleClose}
           isRendering={isRendering}
           renderProgress={renderProgress as any}
           hasProject={!!project}
@@ -142,7 +151,7 @@ export function ExportModal() {
           onSettingsChange={(updates) => setSocialSettings((prev) => ({ ...prev, ...updates }))}
           onExport={handleSocialExport}
           onCancelExport={handleCancelRender}
-          onClose={() => closeModal()}
+          onClose={handleClose}
           isRendering={isRendering}
           renderProgress={renderProgress as any}
           hasProject={!!project}
@@ -151,7 +160,7 @@ export function ExportModal() {
       </TabsContent>
 
       <TabsContent value="batch" data-oid="2oivd2g">
-        <BatchExportTab onClose={() => closeModal()} defaultSettings={currentSettings} data-oid="ipjbfkp" />
+        <BatchExportTab onClose={handleClose} defaultSettings={currentSettings} data-oid="ipjbfkp" />
       </TabsContent>
 
       <TabsContent value="sections" data-oid="prx:u08">
@@ -192,7 +201,7 @@ export function ExportModal() {
               }
 
               showSuccess(t("dialogs.export.sectionsExportSuccess"), "")
-              closeModal()
+              handleClose()
             } catch (error) {
               logger.error(`Section export failed: ${String(error)}`)
               showError(t("dialogs.export.errors.exportFailed"), "")

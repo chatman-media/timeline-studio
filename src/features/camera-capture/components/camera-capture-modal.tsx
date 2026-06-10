@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { useModals, useNotifications } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,
@@ -18,14 +18,20 @@ import { CameraPermissionRequest, CameraPreview, CameraSettings, RecordingContro
 
 const logger = createLogger({ module: "CameraCaptureModal" })
 
+interface CameraCaptureModalProps {
+  isOpen?: boolean
+  onClose?: () => void | Promise<void>
+  "data-oid"?: string
+}
+
+const noop = () => {}
+
 /**
  * Модальное окно для захвата видео с камеры
  */
-export function CameraCaptureModal() {
+export function CameraCaptureModal({ isOpen = true, onClose = noop }: CameraCaptureModalProps) {
   const { t } = useTranslation()
   const { showSuccess, showError } = useNotifications()
-
-  const { isModalOpen, closeModal } = useModals()
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -83,6 +89,10 @@ export function CameraCaptureModal() {
 
   const [isSaving, setIsSaving] = useState(false)
 
+  const handleClose = () => {
+    void onClose()
+  }
+
   // Обработка записанного видео
   const handleVideoRecorded = async (blob: Blob, fileName: string) => {
     setIsSaving(true)
@@ -120,33 +130,12 @@ export function CameraCaptureModal() {
       const localDataPath = await appLocalDataDir()
       const fullPath = await resolve(localDataPath, "recordings", tempFileName)
 
-      // Импортируем файл в медиабиблиотеку
-      // Так как useMediaImport работает с диалогом выбора файлов,
-      // нам нужно скопировать файл и обновить медиабиблиотеку напрямую
-      const { useMediaFiles } = await import("@/domains/project-management/hooks")
-
-      // Создаем медиафайл
-      const mediaFile = {
-        id: fullPath,
-        name: fileName,
-        path: fullPath,
-        isVideo: true,
-        isAudio: false,
-        isImage: false,
-        size: blob.size,
-        isLoadingMetadata: false,
-        probeData: {
-          streams: [],
-          format: {},
-        },
-      }
-
       showSuccess(t("dialogs.cameraCapture.recordingSuccess", "Запись успешно сохранена"), fileName)
 
       logger.info(`Запись сохранена: ${fullPath}`)
 
       // Закрываем модальное окно
-      closeModal()
+      handleClose()
     } catch (error) {
       logger.error("Ошибка при сохранении записи:", { error })
       showError(t("dialogs.cameraCapture.recordingError", "Ошибка при сохранении записи"), String(error))
@@ -198,7 +187,7 @@ export function CameraCaptureModal() {
 
   // Запрашиваем разрешения при открытии модального окна и останавливаем камеру при закрытии
   useEffect(() => {
-    if (isModalOpen) {
+    if (isOpen) {
       void requestPermissions()
     } else {
       logger.info("Закрытие модального окна - полная очистка ресурсов")
@@ -230,7 +219,7 @@ export function CameraCaptureModal() {
       setCaptureMode("camera") // Сбрасываем на камеру
       setErrorMessage("") // Очищаем ошибки
     }
-  }, [isModalOpen, requestPermissions, streamRef, isScreenSharing, stopScreenCapture, isRecording, stopRecording])
+  }, [isOpen, requestPermissions, streamRef, isScreenSharing, stopScreenCapture, isRecording, stopRecording])
 
   // Обработчик изменения устройства
   const handleDeviceChange = (deviceId: string) => {
@@ -316,7 +305,7 @@ export function CameraCaptureModal() {
             "Запись с камеры не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере.",
           )}
         </p>
-        <Button onClick={closeModal} variant="outline" data-oid="omdb6gg">
+        <Button onClick={handleClose} variant="outline" data-oid="omdb6gg">
           {t("common.close", "Закрыть")}
         </Button>
       </div>
@@ -485,7 +474,7 @@ export function CameraCaptureModal() {
       <div className="flex justify-end border-t border-[#333] p-4" data-oid="djc.320">
         <Button
           className="bg-[#0CC] px-6 font-medium text-black hover:bg-[#0AA]"
-          onClick={closeModal}
+          onClick={handleClose}
           data-oid="stf77oc"
         >
           {t("common.ok")}

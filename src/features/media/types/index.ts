@@ -1,13 +1,12 @@
 /**
  * Media Feature Types
  *
- * Domain-level types moved to @/domains/media-management
+ * Domain-level types moved to @timeline-studio/domains/media-management
  * This file re-exports them for backward compatibility and local UI types
  */
 
 // Re-export all domain types for convenience
 export type {
-  // Core media types
   AudioMetadata,
   BrowserVideoMetadata,
   FfprobeData,
@@ -18,7 +17,6 @@ export type {
   FileOperationsEvent,
   ImageMetadata,
   MediaAnalysisResult,
-  MediaFile,
   MediaFileOperation,
   MediaImportContext,
   MediaImportEvent,
@@ -29,18 +27,19 @@ export type {
   MediaPool,
   MediaPoolItem,
   MediaPreviewData,
-  MediaTrack,
   QualityMetrics,
-  SavedMediaFile,
-  SavedMusicFile,
   SceneDetectionResult,
   ThumbnailData,
   TimelineFrame,
-  TimeRange,
+  MediaFile,
+  MediaTrack,
+  MediaTimeRange as TimeRange,
+  SavedMediaFile,
+  SavedMusicFile,
   VideoSegment,
-} from "@/domains/media-management"
+} from "@timeline-studio/core/types"
 
-export { MediaType } from "@/domains/media-management"
+export { MediaType } from "@timeline-studio/core/types"
 
 // Local UI-specific types (not moved to domain)
 export type { Sector, Track } from "./types"

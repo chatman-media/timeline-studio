@@ -36,8 +36,12 @@ vi.mock("../services/frame-capture-service", () => ({
   FrameCaptureService: vi.fn(() => mockFrameCaptureService),
 }))
 
-vi.mock("../services/player-provider", () => ({
+vi.mock("@/features/timeline/providers/player-provider", () => ({
   usePlayer: () => mockPlayerContext,
+}))
+
+vi.mock("@timeline-studio/core/services/ai-director-service", () => ({
+  aiDirectorAnalyzeQuick: vi.fn(),
 }))
 
 describe("usePlayerAIAnalysis", () => {

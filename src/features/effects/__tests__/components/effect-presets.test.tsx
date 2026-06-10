@@ -35,7 +35,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Мокаем UI компоненты
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, variant, className, title, ...props }: any) => (
     <button onClick={onClick} data-variant={variant} className={className} title={title} {...props} data-oid="7wjopu7">
       {children}
@@ -43,7 +43,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   TooltipProvider: ({ children }: any) => (
     <div data-testid="tooltip-provider" data-oid="pt2366_">
       {children}

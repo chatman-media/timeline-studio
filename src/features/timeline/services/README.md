@@ -91,32 +91,6 @@ XState машина для управления UI состоянием Timeline
 - Анализ контента
 - Генерация предложений
 
-## Import/Export (`/import-export`)
-
-### Поддерживаемые форматы
-
-#### Импорт
-- **EDL** (Edit Decision List)
-- **AAF** (Advanced Authoring Format)
-- **FCP XML** (Final Cut Pro XML)
-
-#### Экспорт
-- **EDL**
-- **AAF**
-- **FCP XML**
-
-### Использование
-
-```typescript
-import { ImportExportManager } from './import-export'
-
-// Импорт
-const timeline = await ImportExportManager.import(file, 'fcpxml')
-
-// Экспорт
-const exported = await ImportExportManager.export(timeline, 'edl')
-```
-
 ## Утилитарные сервисы
 
 ### `resource-manager.ts`

@@ -3,7 +3,7 @@
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { GpuEncoder } from "@/domains/video-editing/types"
+import { GpuEncoder } from "@timeline-studio/core/types/video-editing"
 import {
   formatGpuMemory,
   formatGpuUtilization,
@@ -31,7 +31,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Мокаем useNotifications
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

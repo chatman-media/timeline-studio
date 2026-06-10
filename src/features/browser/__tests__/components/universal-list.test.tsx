@@ -14,7 +14,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/domains/browser", () => ({
+vi.mock("@/features/browser/services", () => ({
   useBrowserState: () => ({
     currentTabSettings: {
       search_query: "",

@@ -1,21 +1,33 @@
 /**
  * Типы для взаимодействия с Tauri командами voice recording
- * Re-exports from ai-services domain for backward compatibility
  */
 
-import type { AudioFormat as AudioFormatType } from "@/domains/ai-services/tauri/audio-commands"
+import { container } from "@timeline-studio/core/container"
+import type {
+  AudioFormat as AudioFormatType,
+  AudioFormatInfo,
+  SaveAudioParams,
+  SaveAudioResult,
+} from "@timeline-studio/core/ports"
 
-// Re-export types and functions from domain
+// Re-export types for backward compatibility.
 export type {
   AudioFormat,
   AudioFormatInfo,
   SaveAudioParams,
   SaveAudioResult,
-} from "@/domains/ai-services/tauri/audio-commands"
-export { getSupportedAudioFormats, saveVoiceRecording } from "@/domains/ai-services/tauri/audio-commands"
+} from "@timeline-studio/core/ports"
 
 // Local type alias for use in this file
 type AudioFormat = AudioFormatType
+
+export async function saveVoiceRecording(params: SaveAudioParams): Promise<SaveAudioResult> {
+  return container.getAI().saveVoiceRecording(params)
+}
+
+export async function getSupportedAudioFormats(): Promise<AudioFormatInfo[]> {
+  return container.getAI().getSupportedAudioFormats()
+}
 
 /**
  * Конвертировать Blob в Base64

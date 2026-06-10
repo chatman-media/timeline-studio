@@ -2,17 +2,18 @@
  * Media Feature Hooks
  *
  * UI-oriented hooks for media features.
- * Business logic hooks moved to @/domains/media-management
+ * Domain-backed media hooks are exposed through ./media-management.
  */
 
-// Re-export domain hooks for convenience
 export {
-  // Media processing and preview hooks
+  getMediaFiles,
+  getMediaMetadata,
+  selectAudioFile,
+  selectMediaDirectory,
   useAutoProxy,
   useCacheStatistics,
   useFileOperations,
   useFramePreview,
-  // Core domain hooks
   useMediaImport,
   useMediaManagement,
   useMediaMetadata,
@@ -21,6 +22,6 @@ export {
   useMediaRestoration,
   usePreviewPreloader,
   useSimpleMediaProcessor,
-} from "@/domains/media-management"
+} from "./media-management"
 // UI-only hooks (остаются в features)
 export * from "./use-file-selection"

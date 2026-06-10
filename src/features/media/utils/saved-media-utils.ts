@@ -1,6 +1,6 @@
-import { container } from "@/core"
-import type { FileStatus, MediaFile, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
-import { fileSystemService } from "@/domains/media-management/services/file-system-service"
+import { container } from "@timeline-studio/core"
+import { fileSystemService } from "@timeline-studio/core/services"
+import type { FileStatus, MediaFile, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("SavedMediaUtils")

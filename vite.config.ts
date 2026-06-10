@@ -31,11 +31,12 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@features": path.resolve(__dirname, "./src/features"),
-      "@timeline-studio/core": path.resolve(__dirname, "./src/core"),
-      "@timeline-studio/domains": path.resolve(__dirname, "./src/domains"),
-      "@timeline-studio/adapters": path.resolve(__dirname, "./src/adapters"),
-      "@timeline-studio/ui/features": path.resolve(__dirname, "./src/features"),
-      "@timeline-studio/ui/components": path.resolve(__dirname, "./src/components/ui"),
+      "@timeline-studio/core": path.resolve(__dirname, "./packages/core/src"),
+      "@timeline-studio/domains": path.resolve(__dirname, "./packages/domains/src"),
+      "@timeline-studio/adapters": path.resolve(__dirname, "./packages/adapters/src"),
+      "@timeline-studio/ui": path.resolve(__dirname, "./packages/ui/src"),
+      "@timeline-studio/ui/features": path.resolve(__dirname, "./packages/ui/src/features"),
+      "@timeline-studio/ui/components": path.resolve(__dirname, "./packages/ui/src/components"),
     },
   },
   build: {

@@ -4,7 +4,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { BrowserProvider } from "@/domains/browser"
+import { BrowserProvider } from "@/features/browser/services"
 import { Browser } from "../../components/browser"
 
 // Мокаем зависимости
@@ -39,7 +39,7 @@ vi.mock("../../components/browser-content", () => ({
   ),
 }))
 
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useAppSettings: () => ({
     getUserSettings: vi.fn(() => ({})),
     updateUserSettings: vi.fn(),
@@ -65,7 +65,7 @@ vi.mock("../../providers/browser-resources-provider", () => ({
 }))
 
 // Мокаем BackendSync для BrowserProvider
-vi.mock("@/domains/project-management/services/backend-sync", () => {
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => {
   let mockBrowserState = {
     active_tab: "media" as const,
     tab_settings: {

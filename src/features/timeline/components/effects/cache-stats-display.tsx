@@ -3,8 +3,8 @@
  */
 
 import { memo } from "react"
-import { Card } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { cn } from "@/lib/utils"
 
 interface CacheStatsDisplayProps {

@@ -18,8 +18,8 @@
 import { act, renderHook } from "@testing-library/react"
 import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/video-editing/types"
-import { MediaCodec, MediaType } from "@/domains/video-editing/types"
+import type { MediaFile } from "@timeline-studio/domains/video-editing/types"
+import { MediaCodec, MediaType } from "@timeline-studio/domains/video-editing/types"
 import { TimelineProviders } from "@/test/test-utils"
 
 // ============================================================================
@@ -34,7 +34,7 @@ const mockConnect = vi.fn()
 const mockDisconnect = vi.fn()
 const mockGetProjectState = vi.fn()
 
-vi.mock("@/domains/project-management/services/backend-sync", () => {
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => {
   const mockExecuteCommand = vi.fn().mockResolvedValue({ success: true, data: null, error: null })
   const mockOnStateChange = vi.fn().mockReturnValue(() => {})
   const mockOnEvent = vi.fn().mockReturnValue(() => {})
@@ -71,7 +71,7 @@ vi.mock("@/domains/project-management/services/backend-sync", () => {
 })
 
 // AppProvider mock
-vi.mock("@/domains/project-management/providers/app-provider", () => ({
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", () => ({
   AppProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   useApp: vi.fn(() => ({
     projectState: { project: null },
@@ -142,7 +142,7 @@ const mockOrchestrator = {
   executeCommand: mockExecuteCommand,
 }
 
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: vi.fn(() => mockOrchestrator),
 }))
 
@@ -175,14 +175,14 @@ const mockUndoRedoService = {
   getInstance: vi.fn(),
 }
 
-vi.mock("@/domains/video-editing/services/undo-redo-service", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/undo-redo-service", () => ({
   UndoRedoService: {
     getInstance: vi.fn(() => mockUndoRedoService),
   },
 }))
 
 // Player hook mock
-vi.mock("@/domains/video-editing/hooks/use-player", () => ({
+vi.mock("@timeline-studio/domains/video-editing/hooks/use-player", () => ({
   usePlayer: vi.fn(() => ({
     // Playback state
     isPlaying: false,
@@ -222,10 +222,10 @@ vi.mock("@/domains/video-editing/hooks/use-player", () => ({
   })),
 }))
 
-import { usePlayer } from "@/domains/video-editing/hooks/use-player"
+import { usePlayer } from "@timeline-studio/domains/video-editing/hooks/use-player"
 // Import hooks after mocks are set up
-import { useTimeline } from "@/domains/video-editing/hooks/use-timeline"
-import { useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
+import { useTimeline } from "@timeline-studio/domains/video-editing/hooks/use-timeline"
+import { useUndoRedo } from "@timeline-studio/domains/video-editing/hooks/use-undo-redo"
 
 // ============================================================================
 // TEST DATA

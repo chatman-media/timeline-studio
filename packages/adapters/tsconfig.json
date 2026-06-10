@@ -10,9 +10,7 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "../../src/adapters/**/*",
-    "../../src/core/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "dist",

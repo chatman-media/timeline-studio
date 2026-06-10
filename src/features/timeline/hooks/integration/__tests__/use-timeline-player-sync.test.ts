@@ -5,7 +5,7 @@ import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock dependencies - mocks MUST be before imports and can't reference variables
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   usePlayer: vi.fn(),
   // Include provider mocks needed by TimelineProviders
   PlayerProvider: ({ children }: { children: any }) => children,

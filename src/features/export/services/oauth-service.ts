@@ -1,12 +1,11 @@
 // OAuth service для авторизации в социальных сетях
 
-import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
+import { showSystemNotification } from "@timeline-studio/core/services/notifications"
 import { createLogger } from "@/lib/tauri-logger"
 import { OAuthToken } from "../types/export-types"
 import { SecureTokenStorage } from "./secure-token-storage"
 
 const logger = createLogger({ module: "OauthService" })
-const getOrchestrator = () => getSystemIntegrationOrchestrator()
 
 interface OAuthConfig {
   clientId: string
@@ -49,7 +48,7 @@ export async function loginToNetwork(network: string): Promise<OAuthToken | null
   }
 
   if (!config.clientId) {
-    getOrchestrator().showNotification({
+    showSystemNotification({
       type: "error",
       notification_type: "error",
       title: "OAuth Configuration Error",
@@ -214,7 +213,7 @@ async function refreshVimeoToken(refreshToken: string): Promise<OAuthToken> {
 export async function logout(network: string): Promise<void> {
   // Очищаем сохраненные токены через безопасное хранилище
   await SecureTokenStorage.removeToken(network)
-  getOrchestrator().showNotification({
+  showSystemNotification({
     type: "success",
     notification_type: "success",
     title: "Logged Out",

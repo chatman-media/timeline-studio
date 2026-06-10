@@ -8,7 +8,7 @@ import {
   selectAudioFile,
   selectMediaDirectory,
   selectMediaFile,
-} from "@/domains/media-management"
+} from "@timeline-studio/domains/media-management"
 
 // Mock media service
 const mockMediaService = vi.hoisted(() => ({
@@ -17,7 +17,7 @@ const mockMediaService = vi.hoisted(() => ({
 }))
 
 // Mock container
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getMedia: vi.fn(() => mockMediaService),
 }))
 
@@ -28,11 +28,16 @@ vi.mock("@tauri-apps/plugin-dialog", () => ({
 // Мокаем логгер
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({
-    errorSync: vi.fn(),
-    infoSync: vi.fn(),
-    debugSync: vi.fn(),
-    warnSync: vi.fn(),
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
     traceSync: vi.fn(),
+    debugSync: vi.fn(),
+    infoSync: vi.fn(),
+    warnSync: vi.fn(),
+    errorSync: vi.fn(),
   })),
 }))
 

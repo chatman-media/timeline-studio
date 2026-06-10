@@ -7,8 +7,8 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import { TimelineProviders } from "@/test/test-utils"
 
 import { useClips } from "../../clips/use-clips"

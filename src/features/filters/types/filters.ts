@@ -1,7 +1,7 @@
 /**
  * Filters Types
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from canonical source in core.
  */
 
 export type {
@@ -9,4 +9,4 @@ export type {
   FilterComplexity,
   FilterTag,
   VideoFilter,
-} from "@/domains/video-editing/types/filters"
+} from "@timeline-studio/core/types/filters"

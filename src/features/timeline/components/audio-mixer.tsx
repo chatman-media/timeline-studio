@@ -1,9 +1,9 @@
 import { AudioWaveform, Headphones, Mic, Music, Volume2, VolumeX, Wind } from "lucide-react"
 import { useMemo } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import type { TimelineTrack, TrackType } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

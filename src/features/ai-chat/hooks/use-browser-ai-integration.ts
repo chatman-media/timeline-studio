@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import type { BrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/types"
-import { setBrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/utils/helpers"
-import { useBrowserState } from "@/domains/browser"
-import type { MediaFile } from "@/domains/media-management"
-import { useApp } from "@/domains/project-management/providers"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
+import { setBrowserStateAccess, type BrowserStateAccess } from "@timeline-studio/core/services/browser-state-access"
+import type { BrowserTab, MediaFile } from "@timeline-studio/core/types"
+import { useBrowserState } from "@/features/browser/services"
 import { logInfo } from "@/lib/tauri-logger"
 
 /**

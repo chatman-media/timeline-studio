@@ -1,4 +1,4 @@
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/core/types"
 
 /**
  * Проверяет, содержит ли файл аудиопоток

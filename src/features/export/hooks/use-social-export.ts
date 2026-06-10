@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { container } from "@/core"
-import { useNotifications } from "@/core/hooks"
+import { container } from "@timeline-studio/core"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { SOCIAL_NETWORKS } from "../constants/export-constants"

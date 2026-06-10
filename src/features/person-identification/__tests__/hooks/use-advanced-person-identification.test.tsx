@@ -41,7 +41,7 @@ const mockTrackingService = {
   assignPersonToTrack: vi.fn(),
 }
 
-vi.mock("@/domains/ai-services/services/person-identification", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   PersonDatabaseService: {
     getInstance: () => mockPersonService,
   },

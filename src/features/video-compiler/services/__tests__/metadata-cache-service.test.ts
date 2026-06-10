@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaMetadata } from "@/domains/shared/types"
+import type { MediaMetadata } from "@timeline-studio/domains/shared/types"
 import type { CacheMemoryUsage } from "../../types/cache"
 
 // Mock logger
@@ -25,7 +25,7 @@ const mockGetCachedMetadata = vi.fn()
 const mockCacheMediaMetadata = vi.fn()
 const mockGetCacheMemoryUsage = vi.fn()
 
-vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+vi.mock("@timeline-studio/domains/video-editing/tauri/compiler-commands", () => ({
   getCachedMetadata: mockGetCachedMetadata,
   cacheMediaMetadata: mockCacheMediaMetadata,
   getCacheMemoryUsage: mockGetCacheMemoryUsage,
@@ -39,7 +39,7 @@ const {
   getCachedMetadata,
   getCacheMemoryUsage,
   invalidateFileCache,
-} = await import("@/domains/video-editing/services/compiler/metadata-cache-service")
+} = await import("@timeline-studio/domains/video-editing/services/compiler/metadata-cache-service")
 
 const mockMetadata: MediaMetadata = {
   file_path: "/path/to/test-video.mp4",

@@ -1,7 +1,7 @@
 /**
  * API Keys Hook
  *
- * Re-export from canonical source in project-management domain
+ * Feature-facing API keys hook routed through core.
  */
 
-export { useApiKeys } from "@/domains/project-management/hooks"
+export { useApiKeys } from "@timeline-studio/core/hooks/use-api-keys"

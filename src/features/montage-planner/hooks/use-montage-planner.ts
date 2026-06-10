@@ -5,8 +5,7 @@
 
 import { useCallback, useMemo } from "react"
 
-import type { MediaFile as AIMediaFile } from "@/domains/ai-services/types/montage-planner"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { formatTime } from "@/lib/date"
 import { useMontagePlanner as useMontagePlannerContext } from "../services/montage-planner-provider"
 import type { AnalysisOptions, ExportFormat, Fragment, PlanGenerationOptions } from "../types"
@@ -45,7 +44,7 @@ export function useMontagePlanner() {
   // Video management
   const addVideo = useCallback(
     (videoId: string, file: MediaFile) => {
-      send({ type: "ADD_VIDEO", videoId, file: convertToAIServicesMediaFile(file) })
+      send({ type: "ADD_VIDEO", videoId, file: convertToAIServicesMediaFile(file) as any })
     },
     [send],
   )
@@ -113,7 +112,7 @@ export function useMontagePlanner() {
   // Fragment editing
   const editFragment = useCallback(
     (fragmentId: string, updates: Partial<Fragment>) => {
-      send({ type: "EDIT_FRAGMENT", fragmentId, updates: convertFragmentForAIServices(updates) })
+      send({ type: "EDIT_FRAGMENT", fragmentId, updates: convertFragmentForAIServices(updates) as any })
     },
     [send],
   )
@@ -158,7 +157,7 @@ export function useMontagePlanner() {
   // Computed values
   const totalVideoDuration = useMemo(() => {
     if (!context.mediaFiles) return 0
-    const files = Array.from(context.mediaFiles.values()) as AIMediaFile[]
+    const files = Array.from(context.mediaFiles.values()) as MediaFile[]
     return files.reduce((total, file) => {
       return total + (file?.duration || 0)
     }, 0 as number)

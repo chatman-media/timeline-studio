@@ -1,6 +1,6 @@
 "use client"
 
-import { useAIDirectorEvents } from "@/domains/ai-director/hooks/use-ai-director-events"
+import { useAIDirectorEvents } from "@/features/ai-director"
 import { AnalysisProgressIndicator } from "@/features/ai-director/components/analysis-progress-indicator"
 import { useAutoLoadUserData } from "@/features/media-studio/hooks"
 import { ModalContainer } from "@/features/modals/components"

@@ -3,9 +3,9 @@
  */
 
 import { useCallback, useState } from "react"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
-import { getMediaMetadataService } from "@/domains/media-management/services/media-metadata-service"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { MediaType } from "@timeline-studio/core/types"
+import { getMediaMetadataService } from "@/features/media/hooks/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import type { Fragment, MontagePlan } from "../types"
 import { convertToAIServicesMediaFile } from "../utils/media-file-converter"
@@ -73,7 +73,7 @@ export function useIntegratedAnalysis(): UseIntegratedAnalysisReturn {
 
         // First add all media files to the montage planner
         for (const mediaFile of mediaFiles) {
-          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: convertToAIServicesMediaFile(mediaFile) })
+          send({ type: "ADD_VIDEO", videoId: mediaFile.id, file: convertToAIServicesMediaFile(mediaFile) as any })
         }
 
         // Start the analysis process

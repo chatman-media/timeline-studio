@@ -3,8 +3,8 @@
  * Скрипт для подсчета реального количества AI инструментов
  */
 
-import type { BaseAITool } from "../src/domains/ai-tools/base/base-ai-tool"
-import { AI_TOOLS_DOMAIN_STATS, allAITools } from "../src/domains/ai-tools/tools"
+import type { BaseAITool } from "@timeline-studio/domains/ai-tools/base/base-ai-tool"
+import { AI_TOOLS_DOMAIN_STATS, allAITools } from "@timeline-studio/domains/ai-tools/tools"
 
 const stats = AI_TOOLS_DOMAIN_STATS
 

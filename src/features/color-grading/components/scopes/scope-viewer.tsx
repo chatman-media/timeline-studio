@@ -1,7 +1,7 @@
 import { X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 
 import { HistogramScope } from "./histogram-scope"
 import { VectorscopeScope } from "./vectorscope-scope"

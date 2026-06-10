@@ -4,12 +4,18 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-// Мокаем invoke перед импортом
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+const mockSaveVoiceRecording = vi.fn()
+const mockGetSupportedAudioFormats = vi.fn()
+
+vi.mock("@timeline-studio/core/container", () => ({
+  container: {
+    getAI: () => ({
+      saveVoiceRecording: mockSaveVoiceRecording,
+      getSupportedAudioFormats: mockGetSupportedAudioFormats,
+    }),
+  },
 }))
 
-import { invoke } from "@tauri-apps/api/core"
 import {
   blobToBase64,
   formatFileName,
@@ -34,9 +40,8 @@ describe("Tauri Voice Recording Types", () => {
   })
 
   describe("saveVoiceRecording", () => {
-    it("должен вызывать invoke с правильными параметрами", async () => {
-      const mockedInvoke = vi.mocked(invoke)
-      mockedInvoke.mockResolvedValueOnce({
+    it("должен вызывать core AI service с правильными параметрами", async () => {
+      mockSaveVoiceRecording.mockResolvedValueOnce({
         filePath: "/path/to/file.webm",
         fileName: "voice_recording.webm",
         fileSize: 1024,
@@ -52,15 +57,14 @@ describe("Tauri Voice Recording Types", () => {
 
       const result = await saveVoiceRecording(params)
 
-      expect(mockedInvoke).toHaveBeenCalledWith("save_voice_recording", { params })
+      expect(mockSaveVoiceRecording).toHaveBeenCalledWith(params)
       expect(result.filePath).toBe("/path/to/file.webm")
       expect(result.fileName).toBe("voice_recording.webm")
       expect(result.fileSize).toBe(1024)
     })
 
-    it("должен пробрасывать ошибку от invoke", async () => {
-      const mockedInvoke = vi.mocked(invoke)
-      mockedInvoke.mockRejectedValueOnce(new Error("Tauri error"))
+    it("должен пробрасывать ошибку от core AI service", async () => {
+      mockSaveVoiceRecording.mockRejectedValueOnce(new Error("Tauri error"))
 
       const params = {
         audioData: "base64data",
@@ -73,17 +77,16 @@ describe("Tauri Voice Recording Types", () => {
   })
 
   describe("getSupportedAudioFormats", () => {
-    it("должен вызывать invoke и возвращать форматы", async () => {
-      const mockedInvoke = vi.mocked(invoke)
+    it("должен вызывать core AI service и возвращать форматы", async () => {
       const mockFormats = [
         { format: "webm", name: "WebM", description: "WebM format", supported: true },
         { format: "mp3", name: "MP3", description: "MP3 format", supported: true },
       ]
-      mockedInvoke.mockResolvedValueOnce(mockFormats)
+      mockGetSupportedAudioFormats.mockResolvedValueOnce(mockFormats)
 
       const result = await getSupportedAudioFormats()
 
-      expect(mockedInvoke).toHaveBeenCalledWith("get_supported_audio_formats")
+      expect(mockGetSupportedAudioFormats).toHaveBeenCalledWith()
       expect(result).toEqual(mockFormats)
     })
   })

@@ -4,13 +4,23 @@
  * Конвертирует MediaFile из features в формат для AI Services domain
  */
 
-import type { MediaFile as DomainMediaFile } from "@/domains/ai-services/types/interfaces"
-import type { MediaFile as FeatureMediaFile } from "@/domains/media-management"
+import type { MediaFile as FeatureMediaFile } from "@timeline-studio/core/types"
+import type { UnifiedFragment } from "@timeline-studio/core/types/unified-montage"
+
+type AIServicesMediaFile = Pick<FeatureMediaFile, "id" | "path" | "name" | "duration"> & {
+  size: number
+  type: "video" | "audio" | "image"
+  format?: string
+}
+
+type AIServicesFragment = Omit<UnifiedFragment, "sourceFile"> & {
+  sourceFile?: AIServicesMediaFile
+}
 
 /**
  * Конвертирует MediaFile из features в формат для AI Services
  */
-export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMediaFile & { format?: string } {
+export function convertToAIServicesMediaFile(file: FeatureMediaFile): AIServicesMediaFile {
   // Определяем тип на основе boolean флагов
   let type: "video" | "audio" | "image" = "video"
 
@@ -27,20 +37,19 @@ export function convertToAIServicesMediaFile(file: FeatureMediaFile): DomainMedi
     path: file.path,
     name: file.name,
     size: file.size || 0,
-    type: type as any, // DomainMediaFile uses different MediaType definition
+    type,
     duration: file.duration,
     format: file.probeData?.format?.format_name,
   }
 }
 
-import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
 // Типы для Fragment
 import type { Fragment as FeatureFragment } from "../types"
 
 /**
  * Конвертирует Fragment для использования в AI Services domain
  */
-export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>): Partial<UnifiedFragment> {
+export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>): Partial<AIServicesFragment> {
   // Конвертируем score в analysis если есть
   const analysis = fragment.score
     ? {
@@ -74,7 +83,7 @@ export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>)
         speechPresence: false,
       }
 
-  const converted: Partial<UnifiedFragment> = {
+  const converted: Partial<AIServicesFragment> = {
     id: fragment.id,
     videoId: fragment.videoId,
     startTime: fragment.startTime,
@@ -89,7 +98,7 @@ export function convertFragmentForAIServices(fragment: Partial<FeatureFragment>)
 
   // Конвертируем sourceFile если есть
   if (fragment.sourceFile) {
-    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile as FeatureMediaFile) as any
+    converted.sourceFile = convertToAIServicesMediaFile(fragment.sourceFile as FeatureMediaFile)
   }
 
   return converted

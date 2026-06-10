@@ -10,7 +10,7 @@
 
 - ✅ **Компоненты**: 4 компонента для UI обновлений (менеджер, уведомления, настройки, индикатор)
 - ✅ **Хуки**: 1 хук для управления обновлениями
-- ✅ **Сервисы**: XState машина и сервис обновлений с интеграцией Tauri
+- ✅ **Сервисы**: Core update machine/port с Tauri и mock адаптерами
 - ✅ **Тесты**: Доступны тесты компонентов и сервисов
 
 ## Структура
@@ -24,9 +24,8 @@ updates/
 │   └── update-status-indicator.tsx # Визуальный индикатор статуса
 ├── hooks/                          # React хуки
 │   └── use-update-manager.ts       # Основной хук обновлений
-├── services/                       # Логика обновлений
-│   ├── update-machine.ts           # XState машина
-│   └── update-service.ts           # Интеграция с Tauri updater
+├── services/                       # Фасады совместимости
+│   └── update-service.ts           # Фасад core update service
 └── __tests__/                      # Файлы тестов
 ```
 
@@ -103,7 +102,7 @@ function App() {
 
 ## Интеграция
 
-- **Зависит от**: `@tauri-apps/api` (система обновлений Tauri)
+- **Зависит от**: `@/core` update port и machine factory
 - **Используется в**: `@/features/app-settings`, Главный UI приложения
 - **Backend команда**: `download_and_install_update` (команда Tauri)
 
@@ -112,9 +111,6 @@ function App() {
 ```bash
 # Запустить тесты компонентов обновлений
 bun run test src/features/updates/components
-
-# Тест машины состояний обновлений
-bun run test src/features/updates/services/update-machine.test.ts
 
 # Запустить все тесты обновлений
 bun run test src/features/updates

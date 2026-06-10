@@ -5,13 +5,13 @@
 import { useCallback, useState } from "react"
 
 import {
-  analyzeAudioContent as analyzeAudioContentCommand,
-  analyzeFrameQuality as analyzeFrameQualityCommand,
+  analyzeAudioContentCommand,
+  analyzeFrameQualityCommand,
   analyzeVideoCompositionWithProcessor,
-  analyzeVideoQuality as analyzeVideoQualityCommand,
+  analyzeVideoQualityCommand,
   detectKeyMomentsFromDetections,
   generateMontagePlanFromMoments,
-} from "@/domains/ai-services/tauri/montage-planner-commands"
+} from "../services/domain-adapters"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {

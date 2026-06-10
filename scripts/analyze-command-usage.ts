@@ -179,8 +179,8 @@ function main() {
   console.log(`   Найдено: ${registeredCommands.size} команд\n`)
 
   // 2. Извлечь invoke вызовы
-  console.log('🔎 Поиск invoke вызовов в src/domains/...')
-  const domainsPath = join(process.cwd(), 'src/domains')
+  console.log('🔎 Поиск invoke вызовов в packages/domains/src/...')
+  const domainsPath = join(process.cwd(), 'packages/domains/src')
   const invokeCalls = extractInvokeCalls(domainsPath)
   console.log(`   Найдено: ${invokeCalls.size} уникальных команд в invoke вызовах\n`)
 

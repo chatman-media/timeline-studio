@@ -6,16 +6,15 @@
  * - Детальный прогресс по каждому файлу и анализатору
  * - Пакетный анализ нескольких файлов
  *
- * Uses domain services for invoke() calls. Events use container.getEvent()
+ * Uses core AI services for backend calls. Events use container.getEvent()
  * for platform-independent event handling.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { container } from "@/core"
-import type { UnlistenFn } from "@/core/ports"
-import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@/domains/ai-director"
-import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
-import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
+import { container } from "@timeline-studio/core"
+import type { UnlistenFn } from "@timeline-studio/core/ports"
+import { aiDirectorAnalyzeBatch, analysisStorageService } from "@timeline-studio/core/services"
+import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@timeline-studio/core/types/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {
@@ -650,7 +649,7 @@ export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
           vlm_num_frames: config.vlm_num_frames,
         })
 
-        // Call backend command (v2 with events) - using domain function
+        // Call backend command (v2 with events) through the AI port.
         // NOTE: Бэкенд анализирует файлы последовательно и отправляет real-time события
         const results = await aiDirectorAnalyzeBatch(filePaths, config as AIDirectorConfig)
 

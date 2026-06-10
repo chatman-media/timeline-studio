@@ -14,7 +14,7 @@ vi.mock("react-i18next", () => ({
   useTranslation: vi.fn(),
 }))
 
-vi.mock("@/core/services/language", () => ({
+vi.mock("@timeline-studio/core/services/language", () => ({
   getAppLanguage: vi.fn(),
   setAppLanguage: vi.fn(),
 }))
@@ -61,7 +61,7 @@ describe("useLanguage", () => {
 
   describe("initialization", () => {
     it("should initialize with loading state", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockImplementation(() => new Promise(() => {})) // Never resolves
 
       const { result } = renderHook(() => useLanguage())
@@ -71,7 +71,7 @@ describe("useLanguage", () => {
     })
 
     it("should fetch language from backend on mount", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -90,7 +90,7 @@ describe("useLanguage", () => {
     })
 
     it("should set system language from backend response", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "ru",
         system_language: "ru", // Use language code, not locale
@@ -104,7 +104,7 @@ describe("useLanguage", () => {
     })
 
     it("should change i18n language if different from backend", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "ru",
         system_language: "ru-RU",
@@ -120,7 +120,7 @@ describe("useLanguage", () => {
     })
 
     it("should not change i18n language if same as backend", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -138,7 +138,7 @@ describe("useLanguage", () => {
     })
 
     it("should save language to localStorage", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "ru",
         system_language: "ru-RU",
@@ -154,7 +154,7 @@ describe("useLanguage", () => {
 
   describe("supported language validation", () => {
     it("should use default language if backend returns unsupported language", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "unsupported",
         system_language: "en-US",
@@ -173,7 +173,7 @@ describe("useLanguage", () => {
     })
 
     it("should use default system language if backend returns unsupported system language", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "invalid-INVALID",
@@ -187,7 +187,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle all supported languages", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
 
       const languages = ["en", "ru", "es", "fr", "de", "pt", "zh", "ja", "ko", "tr", "it", "th", "hi", "ar", "fa"]
 
@@ -214,7 +214,7 @@ describe("useLanguage", () => {
 
   describe("error handling", () => {
     it("should handle backend error", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValue(new Error("Backend not available"))
 
       const { result } = renderHook(() => useLanguage())
@@ -227,7 +227,7 @@ describe("useLanguage", () => {
     })
 
     it("should fallback to localStorage on backend error", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValue(new Error("Backend error"))
 
       localStorage.setItem("app-language", "ru")
@@ -240,7 +240,7 @@ describe("useLanguage", () => {
     })
 
     it("should validate localStorage language before using", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValue(new Error("Backend error"))
 
       localStorage.setItem("app-language", "invalid")
@@ -256,7 +256,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle localStorage read error", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValue(new Error("Backend error"))
 
       // Mock localStorage.getItem to throw
@@ -278,7 +278,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle non-Error objects in catch blocks", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValue("String error")
 
       const { result } = renderHook(() => useLanguage())
@@ -293,7 +293,7 @@ describe("useLanguage", () => {
 
   describe("changeLanguage function", () => {
     it("should change language via i18n and backend", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -318,7 +318,7 @@ describe("useLanguage", () => {
     })
 
     it("should set loading state during language change", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -361,7 +361,7 @@ describe("useLanguage", () => {
     })
 
     it("should clear error state on successful language change", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockRejectedValueOnce(new Error("Initial error"))
       setAppLanguage.mockResolvedValue({
         language: "ru",
@@ -383,7 +383,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle error during language change", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -404,7 +404,7 @@ describe("useLanguage", () => {
     })
 
     it("should still save to localStorage even if backend fails", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -424,7 +424,7 @@ describe("useLanguage", () => {
     })
 
     it("should change i18n language even if backend fails", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -446,7 +446,7 @@ describe("useLanguage", () => {
 
   describe("refreshLanguage function", () => {
     it("should refetch language from backend", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValueOnce({
         language: "en",
         system_language: "en-US",
@@ -479,7 +479,7 @@ describe("useLanguage", () => {
     })
 
     it("should set loading state during refresh", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -523,7 +523,7 @@ describe("useLanguage", () => {
 
   describe("currentLanguage getter", () => {
     it("should return i18n language if available", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "ru",
         system_language: "ru-RU",
@@ -541,7 +541,7 @@ describe("useLanguage", () => {
     })
 
     it("should return default language if i18n not available", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -560,7 +560,7 @@ describe("useLanguage", () => {
     })
 
     it("should return default language if i18n.language is empty", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -578,7 +578,7 @@ describe("useLanguage", () => {
 
   describe("RTL languages", () => {
     it("should handle Arabic language (RTL)", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "ar",
         system_language: "ar", // Use language code, not locale
@@ -594,7 +594,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle Persian language (RTL)", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "fa",
         system_language: "fa", // Use language code, not locale
@@ -612,7 +612,7 @@ describe("useLanguage", () => {
 
   describe("memoization", () => {
     it("should memoize fetchLanguage callback", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -635,7 +635,7 @@ describe("useLanguage", () => {
     })
 
     it("should memoize changeLanguage callback", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -658,7 +658,7 @@ describe("useLanguage", () => {
     })
 
     it("should recreate callbacks when i18n changes", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -695,7 +695,7 @@ describe("useLanguage", () => {
 
   describe("concurrent operations", () => {
     it("should handle concurrent language changes", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -725,7 +725,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle concurrent refresh calls", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -753,7 +753,7 @@ describe("useLanguage", () => {
 
   describe("edge cases", () => {
     it("should handle missing i18n object", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -775,7 +775,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle empty string in backend response", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "",
         system_language: "",
@@ -795,7 +795,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle null values in backend response", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: null as any,
         system_language: null as any,
@@ -812,7 +812,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle changeLanguage with empty string", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
       getAppLanguage.mockResolvedValue({
         language: "en",
         system_language: "en-US",
@@ -836,7 +836,7 @@ describe("useLanguage", () => {
 
   describe("integration scenarios", () => {
     it("should handle language switching flow (en -> ru -> es)", async () => {
-      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage, setAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
 
       // Initial: English
       getAppLanguage.mockResolvedValue({
@@ -883,7 +883,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle app restart with saved language", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
 
       // Simulate app restart with saved language
       localStorage.setItem("app-language", "ru")
@@ -903,7 +903,7 @@ describe("useLanguage", () => {
     })
 
     it("should handle backend recovery after error", async () => {
-      const { getAppLanguage } = vi.mocked(await import("@/core/services/language"))
+      const { getAppLanguage } = vi.mocked(await import("@timeline-studio/core/services/language"))
 
       // Initial error
       getAppLanguage.mockRejectedValueOnce(new Error("Backend unavailable"))

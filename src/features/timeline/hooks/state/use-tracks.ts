@@ -4,7 +4,7 @@
 
 import { useMemo } from "react"
 
-import type { Track as DomainTrack, Timeline } from "@/domains/video-editing/types"
+import type { Timeline, Track as CoreTrack } from "@timeline-studio/core/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineTrack, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"
@@ -12,7 +12,7 @@ import { useTimeline } from "../state/use-timeline"
 const logger = createLogger("UseTracks")
 
 // Адаптер для преобразования domain трека в feature трек
-const adaptDomainTrackToFeatureTrack = (domainTrack: DomainTrack): TimelineTrack => {
+const adaptDomainTrackToFeatureTrack = (domainTrack: CoreTrack): TimelineTrack => {
   // Нормализуем тип трека из PascalCase (backend) в lowercase (frontend)
   const normalizedType =
     typeof domainTrack.type === "string" ? (domainTrack.type.toLowerCase() as TrackType) : domainTrack.type
@@ -47,7 +47,7 @@ const getTracksByType = (timeline: Timeline | null | undefined, trackType: Track
   return allTracks.filter((track) => track.type === trackType)
 }
 
-const sortTracksByOrder = (tracks: DomainTrack[]) => {
+const sortTracksByOrder = (tracks: CoreTrack[]) => {
   return [...tracks].sort((a, b) => (a.order || 0) - (b.order || 0))
 }
 

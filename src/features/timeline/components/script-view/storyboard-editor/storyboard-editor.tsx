@@ -5,8 +5,8 @@
 import { ArrowRight, Film, X } from "lucide-react"
 import { useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
 import type { ScriptFragment, ScriptPlan, ScriptScene } from "@/features/timeline/types/script"
 
 export interface StoryboardEditorProps {

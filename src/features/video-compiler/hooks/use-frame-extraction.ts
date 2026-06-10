@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
-import { useFramePreview } from "@/domains/media-management"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import type { CompilerSubtitle } from "@timeline-studio/core/types/video-editing"
+import { useFramePreview } from "@/features/media/hooks/media-management"
 import {
   type ExtractionPurpose,
   frameExtractionService,
   type RecognitionFrame,
   type SubtitleFrame,
   type TimelineFrame,
-} from "@/domains/video-editing/services/compiler"
-import type { Subtitle } from "@/domains/video-editing/types"
+} from "../services/frame-extraction-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")
@@ -44,7 +44,7 @@ export interface UseFrameExtractionResult {
   /** Извлечь кадры для распознавания */
   extractRecognitionFrames: (videoPath: string, purpose: ExtractionPurpose) => Promise<void>
   /** Извлечь кадры для субтитров */
-  extractSubtitleFrames: (videoPath: string, subtitles: Subtitle[]) => Promise<void>
+  extractSubtitleFrames: (videoPath: string, subtitles: CompilerSubtitle[]) => Promise<void>
   /** Очистить кэш */
   clearCache: () => Promise<void>
   /** Очистить состояние */
@@ -158,13 +158,13 @@ export function useFrameExtraction(options: UseFrameExtractionOptions = {}): Use
    * Извлечь кадры для субтитров
    */
   const extractSubtitleFrames = useCallback(
-    async (videoPath: string, subtitles: Subtitle[]) => {
+    async (videoPath: string, subtitles: CompilerSubtitle[]) => {
       try {
         setIsLoading(true)
         setError(null)
         setProgress(0)
 
-        const frames = await frameExtractionService.extractSubtitleFrames(videoPath, subtitles)
+        const frames = await frameExtractionService.extractSubtitleFrames(videoPath, subtitles as any)
 
         setSubtitleFrames(frames)
         setProgress(100)

@@ -1,4 +1,4 @@
-import type { FfprobeStream, MediaFile, TimeRange } from "@/domains/media-management"
+import type { FfprobeStream, MediaFile, MediaTimeRange } from "@timeline-studio/core/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 
@@ -26,7 +26,7 @@ const TIME_CONSTANTS = {
  * ];
  * const ranges = calculateTimeRanges(videos);
  */
-export const calculateTimeRanges = (videos: MediaFile[]): TimeRange[] => {
+export const calculateTimeRanges = (videos: MediaFile[]): MediaTimeRange[] => {
   // Отключаем логирование для уменьшения количества сообщений
   // logger.info(
   //   "calculateTimeRanges called with videos:",
@@ -47,7 +47,7 @@ export const calculateTimeRanges = (videos: MediaFile[]): TimeRange[] => {
   if (times.length === 0) return []
 
   const sortedTimes = times.sort((a: number, b: number) => a - b)
-  const ranges: TimeRange[] = []
+  const ranges: MediaTimeRange[] = []
   let currentRange = {
     start: Math.floor(sortedTimes[0] / TIME_CONSTANTS.MILLISECONDS_IN_SECOND),
     end: Math.floor(sortedTimes[0] / TIME_CONSTANTS.MILLISECONDS_IN_SECOND),

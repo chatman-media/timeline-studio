@@ -11,16 +11,17 @@
  * - Отмена задач анализа
  */
 
-import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
-import type { AnalysisWorkflow } from "@/domains/ai-services/services/unified-orchestrator"
-import { unifiedOrchestrator } from "@/domains/ai-services/services/unified-orchestrator"
-import type {
+import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
+import {
   AIDirectorAnalysisProgressEvent,
   AIDirectorStageCompletedEvent,
+  type AnalysisWorkflow,
   ContentAnalysisCompletedEvent,
   ContentAnalysisStartedEvent,
-} from "@/domains/shared/events"
-import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
+  DOMAIN_EVENTS,
+  eventBus,
+  unifiedOrchestrator,
+} from "./domain-adapters"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AnalysisTask, AnalysisTaskOptions, AnalysisTaskProgress } from "../types/analysis-task"
 import { AnalysisTaskStatus } from "../types/analysis-task"

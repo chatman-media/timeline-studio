@@ -3,25 +3,18 @@
  */
 
 import { useMemo } from "react"
-import type { MediaFile } from "@/domains/media-management"
-import type {
-  MediaFile as DomainMediaFile,
-  TimelineClip as DomainTimelineClip,
-  Timeline,
-} from "@/domains/video-editing/types"
+import type { MediaFile } from "@timeline-studio/core/types/media"
+import type { Timeline, TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"
 
 // Адаптер для преобразования domain MediaFile в feature MediaFile
-const adaptDomainMediaFileToFeatureMediaFile = (domainMediaFile: DomainMediaFile): MediaFile => {
+const adaptDomainMediaFileToFeatureMediaFile = (domainMediaFile: MediaFile): MediaFile => {
   return domainMediaFile as unknown as MediaFile
 }
 
 // Адаптер для преобразования domain клипа в feature клип
-const adaptDomainClipToFeatureClip = (
-  domainClip: DomainTimelineClip,
-  domainMediaFile?: DomainMediaFile,
-): TimelineClip => {
+const adaptDomainClipToFeatureClip = (domainClip: CoreTimelineClip, domainMediaFile?: MediaFile): TimelineClip => {
   const mediaFile = domainMediaFile ? adaptDomainMediaFileToFeatureMediaFile(domainMediaFile) : undefined
   return {
     ...domainClip,
@@ -451,8 +444,7 @@ export function useClips(): UseClipsReturn {
 
     // Действия с клипами
     addClip: async (trackId: string, mediaFile: MediaFile, startTime: number, _duration?: number) => {
-      const domainMediaFile = mediaFile as unknown as DomainMediaFile
-      await addClip(trackId, domainMediaFile, startTime)
+      await addClip(trackId, mediaFile, startTime)
     },
     removeClip,
     updateClip: async (clipId: string, updates: Partial<TimelineClip>) => {

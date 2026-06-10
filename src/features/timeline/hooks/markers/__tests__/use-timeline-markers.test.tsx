@@ -32,7 +32,7 @@ const mockRemoveMarker = vi.fn()
 const mockGoToMarker = vi.fn()
 
 // Мокируем domain provider
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   useTimelineMarkers: () => ({
     markers: mockMarkers,
     addMarker: mockAddMarker,

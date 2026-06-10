@@ -109,7 +109,18 @@ const mockDragState = vi.hoisted(() => ({
 }))
 
 // Mock все внешние зависимости
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/core/hooks/use-user-settings", () => ({
+  useUserSettings: () => ({
+    playerVolume: 50,
+    playerVideoSource: "browser",
+    timelineVirtualizationEnabled: false,
+    updatePlayerVolume: vi.fn(),
+    updatePlayerVideoSource: vi.fn(),
+    updateSettings: vi.fn(),
+  }),
+}))
+
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children, variant }: any) => (
     <span data-variant={variant} data-oid="rx5:arb">
       {children}
@@ -117,7 +128,7 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
     <button onClick={onClick} {...props} data-oid="n8pvdld">
       {children}
@@ -125,7 +136,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/card", () => ({
+vi.mock("@timeline-studio/ui/components/card", () => ({
   Card: ({ children, className }: any) => (
     <div className={className} data-oid="2s95f7e">
       {children}
@@ -137,7 +148,7 @@ vi.mock("@/components/ui/card", () => ({
   CardTitle: ({ children }: any) => <h3 data-oid="qa5h32q">{children}</h3>,
 }))
 
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizableHandle: () => <div data-testid="resizable-handle" data-oid="sq-shbz" />,
   ResizablePanel: ({ children, defaultSize }: any) => (
     <div data-default-size={defaultSize} data-oid="vcsm2mc">
@@ -148,23 +159,19 @@ vi.mock("@/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: any) => <div data-oid="-d0s3vl">{children}</div>,
 }))
 
-vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
-  return {
-    ...actual,
-    useCurrentProject: () => ({
-      currentProject: {
-        id: "test-project",
+vi.mock("@timeline-studio/core/hooks/use-current-project", () => ({
+  useCurrentProject: () => ({
+    currentProject: {
+      id: "test-project",
+      name: "Test Project",
+      metadata: {
         name: "Test Project",
-        metadata: {
-          name: "Test Project",
-          file_path: null,
-          is_dirty: false,
-        },
+        file_path: null,
+        is_dirty: false,
       },
-    }),
-  }
-})
+    },
+  }),
+}))
 
 vi.mock("@/features/project-settings/hooks/use-project-settings", () => ({
   useProjectSettings: vi.fn(() => ({

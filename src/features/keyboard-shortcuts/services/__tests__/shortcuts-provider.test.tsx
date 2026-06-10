@@ -40,7 +40,7 @@ vi.mock("../tauri-global-shortcuts", () => ({
   },
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getBackend: vi.fn(() => ({
       connected: false,

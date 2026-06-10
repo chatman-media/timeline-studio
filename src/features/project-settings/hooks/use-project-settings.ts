@@ -1,6 +1,6 @@
 import { useContext } from "react"
 
-import { ProjectSettingsContext, type ProjectSettingsProviderType } from "@/domains/project-management/providers"
+import { ProjectSettingsContext, type ProjectSettingsProviderType } from "@timeline-studio/core/types/project-settings-context"
 
 /**
  * Хук для доступа к настройкам проекта

@@ -3,11 +3,8 @@ import { OutputFormat } from "@/features/video-compiler/types/render"
 
 const mockShowNotification = vi.fn()
 
-// Мокаем зависимости
-vi.mock("@/domains/system-integration", () => ({
-  getSystemIntegrationOrchestrator: () => ({
-    showNotification: mockShowNotification,
-  }),
+vi.mock("@timeline-studio/core/services/notifications", () => ({
+  showSystemNotification: mockShowNotification,
 }))
 
 // Импортируем после моков

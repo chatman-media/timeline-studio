@@ -58,8 +58,8 @@ const mockBrowserState = {
   selectedFiles: new Set<string>(),
 }
 
-vi.mock("@/domains/browser", async () => {
-  const actual = await vi.importActual<typeof import("@/domains/browser")>("@/domains/browser")
+vi.mock("@/features/browser/services", async () => {
+  const actual = await vi.importActual<typeof import("@/features/browser/services")>("@/features/browser/services")
   return {
     ...actual,
     useBrowserState: () => mockBrowserState,
@@ -78,7 +78,7 @@ vi.mock("@/features/timeline/hooks", () => ({
 }))
 
 // Моки для useCurrentProject
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: null,
     openProject: vi.fn(),
@@ -106,7 +106,7 @@ vi.mock("@/features/browser/hooks/use-music-import", () => ({
 }))
 
 // Моки для useMusicFiles
-vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-music-files", () => ({
   useMusicFiles: () => ({
     musicFiles: [],
     addMusicFile: vi.fn(),
@@ -115,8 +115,8 @@ vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
 }))
 
 // Мок для useMediaManagement - синхронный мок с константами
-vi.mock("@/domains/media-management", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/media-management")>()
+vi.mock("@timeline-studio/domains/media-management", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/media-management")>()
   return {
     ...actual,
     useMediaManagement: () => ({
@@ -195,6 +195,10 @@ vi.mock("../../components/browser-loading-indicator", () => ({
       Loading
     </div>
   ),
+}))
+
+vi.mock("../../components/layout/media-status-bar-wrapper", () => ({
+  MediaStatusBarWrapper: () => <div data-testid="media-status-bar" data-oid="media-status-bar" />,
 }))
 
 // Мок для UniversalList с поддержкой onItemSelect - теперь не используется напрямую

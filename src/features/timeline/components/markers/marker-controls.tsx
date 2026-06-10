@@ -16,17 +16,17 @@ import {
 import type React from "react"
 import { useMemo, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { useTimelineMarkers } from "../../hooks/markers/use-timeline-markers"
 import { useTimeline } from "../../hooks/state/use-timeline"
 import type { MarkerFilter, MarkerType } from "../../types/markers"

@@ -2,7 +2,7 @@
  * Селектор размера модели для транскрипции
  */
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 
 interface ModelSizeSelectorProps {
   value: "medium" | "base" | "small" | "tiny" | "large-v1" | "large-v2" | "large-v3"

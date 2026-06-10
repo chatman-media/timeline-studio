@@ -15,7 +15,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
     <button onClick={onClick} {...props} data-oid="1efu_6n">
       {children}
@@ -23,7 +23,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, ...props }: any) => (
     <input
       type="range"

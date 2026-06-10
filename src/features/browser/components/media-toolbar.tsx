@@ -16,17 +16,17 @@ import {
 import type React from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import type { ViewMode } from "@/domains/browser"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import type { ViewMode } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 // Конфигурация режимов просмотра

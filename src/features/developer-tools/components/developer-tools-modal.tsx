@@ -5,8 +5,8 @@
 
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { EffectPreviewGenerator } from "@/features/effects"
 import { allMigratedEffects } from "@/features/effects/data/effects-loader"
 

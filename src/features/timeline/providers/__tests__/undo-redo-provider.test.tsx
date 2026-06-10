@@ -10,6 +10,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import {
   UndoRedoProvider,
   useClipUndoRedo,
@@ -19,7 +20,7 @@ import {
 } from "../undo-redo-provider"
 
 // Hoisted mocks
-const { mockBackend, mockUndoRedo, mockEventHandlers } = vi.hoisted(() => {
+const { mockBackend, mockUndoRedo, mockEventHandlers, mockUndoRedoHelpers } = vi.hoisted(() => {
   const mockBackend = {
     connect: vi.fn(async () => undefined),
     executeCommand: vi.fn(async () => ({ success: true, data: null })),
@@ -58,34 +59,7 @@ const { mockBackend, mockUndoRedo, mockEventHandlers } = vi.hoisted(() => {
     handleUndoBackendEvent: vi.fn(() => ({})),
   }
 
-  return { mockBackend, mockUndoRedo, mockEventHandlers }
-})
-
-// Mock logger
-vi.mock("@/lib/tauri-logger", () => ({
-  createLogger: () => ({
-    debug: vi.fn(),
-    debugSync: vi.fn(),
-    error: vi.fn(),
-    errorSync: vi.fn(),
-    info: vi.fn(),
-    infoSync: vi.fn(),
-    warn: vi.fn(),
-    warnSync: vi.fn(),
-  }),
-}))
-
-// Mock container
-vi.mock("@/core/container", () => ({
-  container: {
-    getBackend: () => mockBackend,
-  },
-}))
-
-// Mock useUndoRedo hook
-vi.mock("../hooks/use-undo-redo", () => ({
-  useUndoRedo: () => mockUndoRedo,
-  UndoRedoHelpers: {
+  const mockUndoRedoHelpers = {
     createAddClipAction: vi.fn((clipId, trackId, mediaFile, time) => ({
       type: "ADD_CLIP",
       description: `Add clip ${clipId}`,
@@ -110,7 +84,36 @@ vi.mock("../hooks/use-undo-redo", () => ({
       undoData: { originalClips },
       redoData: { updatedClips },
     })),
+  }
+
+  return { mockBackend, mockUndoRedo, mockEventHandlers, mockUndoRedoHelpers }
+})
+
+// Mock logger
+vi.mock("@/lib/tauri-logger", () => ({
+  createLogger: () => ({
+    debug: vi.fn(),
+    debugSync: vi.fn(),
+    error: vi.fn(),
+    errorSync: vi.fn(),
+    info: vi.fn(),
+    infoSync: vi.fn(),
+    warn: vi.fn(),
+    warnSync: vi.fn(),
+  }),
+}))
+
+// Mock container
+vi.mock("@timeline-studio/core/container", () => ({
+  container: {
+    getBackend: () => mockBackend,
   },
+}))
+
+// Mock useUndoRedo hook
+vi.mock("../hooks/use-undo-redo", () => ({
+  useUndoRedo: () => mockUndoRedo,
+  UndoRedoHelpers: mockUndoRedoHelpers,
 }))
 
 // Mock event handlers
@@ -118,6 +121,12 @@ vi.mock("../machines/undo-backend-event-handlers", () => mockEventHandlers)
 
 describe("UndoRedoProvider", () => {
   beforeEach(() => {
+    clearVideoEditingBindings()
+    setVideoEditingBindings({
+      getVideoEditingOrchestrator: vi.fn(),
+      UndoRedoHelpers: mockUndoRedoHelpers,
+      useUndoRedo: () => mockUndoRedo,
+    })
     vi.clearAllMocks()
 
     // Reset mock returns

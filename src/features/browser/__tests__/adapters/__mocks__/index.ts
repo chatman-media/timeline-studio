@@ -125,8 +125,8 @@ export const mockAudio = {
 // Экспорт всех моков
 export const allMocks = {
   "@/i18n": mockI18n,
-  "@/domains/project-management/hooks": mockProjectManagementHooks,
-  "@/domains/project-management/providers/app-provider": mockProjectManagementProviders,
+  "@timeline-studio/domains/project-management/hooks": mockProjectManagementHooks,
+  "@timeline-studio/domains/project-management/providers/app-provider": mockProjectManagementProviders,
   "@/features/timeline": mockTimeline,
   "@/features/media": mockMedia,
   "@/features/effects": mockEffects,

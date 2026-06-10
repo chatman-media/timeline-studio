@@ -10,7 +10,7 @@ import { ColorGradingProvider, useColorGradingContext } from "../color-grading-p
 const mockExecuteCommand = vi.fn()
 const mockOnEvent = vi.fn()
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getBackend: vi.fn(() => ({
       executeCommand: mockExecuteCommand,

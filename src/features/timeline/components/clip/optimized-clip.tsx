@@ -4,7 +4,7 @@
  */
 
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@timeline-studio/ui/components/dialog"
 import type { SubtitleClip as SubtitleClipType } from "@/features/subtitles/types"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"

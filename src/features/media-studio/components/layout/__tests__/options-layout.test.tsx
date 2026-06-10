@@ -78,7 +78,7 @@ vi.mock("@/features/project-settings/hooks", () => ({
   }),
 }))
 
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="player-provider" data-oid="byk8bu2">
       {children}
@@ -131,7 +131,7 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
 }))
 
 // Мокаем ResizablePanel компоненты
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (
     <div
       data-testid="resizable-panel"

@@ -3,10 +3,10 @@
  */
 
 import { useCallback, useMemo, useState } from "react"
-import { container } from "@/core"
-import { useNotifications } from "@/core/hooks"
-import { subtitleService } from "@/domains/subtitles"
-import { MediaType } from "@/domains/video-editing/types/media"
+import { container } from "@timeline-studio/core"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { subtitleService } from "@timeline-studio/core/services/subtitles"
+import { MediaType } from "@timeline-studio/core/types"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"

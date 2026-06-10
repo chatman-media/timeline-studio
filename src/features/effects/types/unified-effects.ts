@@ -1,7 +1,7 @@
 /**
  * Unified Effects System Types
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core-facing effect contracts.
  */
 
 export type {
@@ -28,4 +28,4 @@ export type {
   FFmpegProcessor,
   ParameterType,
   WebGLProcessor,
-} from "@/domains/video-editing/types/unified-effects"
+} from "@timeline-studio/core/types"

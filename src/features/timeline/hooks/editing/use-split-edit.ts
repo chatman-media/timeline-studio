@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
+import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import { SplitEditServiceImpl } from "../../services/split-edit-service"
 import type {
@@ -79,7 +79,7 @@ export function useSplitEdit(): UseSplitEditReturn {
   const [visualSettings, setVisualSettings] = useState(() => service.getVisualSettings())
 
   // Адаптер для преобразования domain клипа в feature клип
-  const adaptDomainClipToFeatureClip = useCallback((domainClip: DomainTimelineClip): TimelineClip => {
+  const adaptDomainClipToFeatureClip = useCallback((domainClip: CoreTimelineClip): TimelineClip => {
     return {
       ...domainClip,
       mediaFile: undefined,
@@ -97,7 +97,7 @@ export function useSplitEdit(): UseSplitEditReturn {
   const getAllClips = useCallback((): TimelineClip[] => {
     if (!project) return []
 
-    const clips: DomainTimelineClip[] = []
+    const clips: CoreTimelineClip[] = []
 
     // Клипы из глобальных треков
     for (const track of project.globalTracks || []) {

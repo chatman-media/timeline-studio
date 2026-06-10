@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
 
 /**
  * Вкладка настроек социальных сетей

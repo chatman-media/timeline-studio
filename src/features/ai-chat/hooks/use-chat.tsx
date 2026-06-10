@@ -1,9 +1,9 @@
 /**
  * @deprecated
  *
- * ChatProvider перемещён в domains/ai-services
- * Используйте: import { useChat } from '@/domains/ai-services'
+ * ChatProvider пока доступен через feature adapter.
+ * Используйте: import { useChat } from '@/features/ai-chat/services/chat-provider'
  *
  * Этот реэкспорт оставлен для обратной совместимости.
  */
-export { useChat } from "@/domains/ai-services/providers/chat-provider"
+export { useChat } from "@/features/ai-chat/services/chat-provider"

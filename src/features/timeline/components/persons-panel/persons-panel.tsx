@@ -6,14 +6,14 @@
 import { Eye, EyeOff, Filter, Search, Settings, Users } from "lucide-react"
 import { useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Input } from "@timeline-studio/ui/components/input"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 
 import { useTimelinePersons } from "../../hooks/state/use-timeline-persons"
 

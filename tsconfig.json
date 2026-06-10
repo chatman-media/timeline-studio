@@ -31,7 +31,7 @@
         "./src/types/*"
       ],
       "@ui/*": [
-        "./src/components/ui/*"
+        "./packages/ui/src/components/*"
       ],
       "@features/*": [
         "./src/features/*"
@@ -64,28 +64,28 @@
         "./packages/ui/src/components/*"
       ],
       "@domains/*": [
-        "./src/domains/*"
+        "./packages/domains/src/*"
       ],
       "@domains/ai-services/*": [
-        "./src/domains/ai-services/*"
+        "./packages/domains/src/ai-services/*"
       ],
       "@domains/browser/*": [
-        "./src/domains/browser/*"
+        "./packages/domains/src/browser/*"
       ],
       "@domains/media-management/*": [
-        "./src/domains/media-management/*"
+        "./packages/domains/src/media-management/*"
       ],
       "@domains/video-editing/*": [
-        "./src/domains/video-editing/*"
+        "./packages/domains/src/video-editing/*"
       ],
       "@domains/project-management/*": [
-        "./src/domains/project-management/*"
+        "./packages/domains/src/project-management/*"
       ],
       "@domains/system-integration/*": [
-        "./src/domains/system-integration/*"
+        "./packages/domains/src/system-integration/*"
       ],
       "@domains/shared/*": [
-        "./src/domains/shared/*"
+        "./packages/domains/src/shared/*"
       ]
     }
   },

@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { RenderJob } from "@/domains/video-editing"
-import * as videoCompilerService from "@/domains/video-editing/services/compiler"
-import { type RenderProgress, RenderStatus } from "../../types/render"
+import * as videoCompilerService from "@timeline-studio/domains/video-editing/services/compiler"
+import { type RenderJob, type RenderProgress, RenderStatus } from "../../types/render"
 
 // Типы для API ответов
 interface ApiRenderJob {

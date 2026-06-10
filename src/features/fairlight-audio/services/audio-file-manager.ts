@@ -1,5 +1,5 @@
-import { container } from "@/core"
-import type { IPlatformService } from "@/core/ports/platform.port"
+import { container } from "@timeline-studio/core"
+import type { IPlatformService } from "@timeline-studio/core/ports/platform.port"
 
 export interface AudioFile {
   id: string

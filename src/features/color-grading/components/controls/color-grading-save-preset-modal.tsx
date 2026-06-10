@@ -2,9 +2,9 @@ import { useId, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
 import { useModals } from "@/features/modals/services"
 
 interface SavePresetModalData {

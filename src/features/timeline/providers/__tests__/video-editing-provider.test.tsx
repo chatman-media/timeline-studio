@@ -10,6 +10,7 @@
 import { renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import { useVideoEditingContext, VideoEditingProvider } from "../video-editing-provider"
 
 // Mock orchestrator
@@ -48,12 +49,23 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 // Mock orchestrator service
-vi.mock("@/domains/video-editing/services/video-editing-orchestrator", () => ({
+vi.mock("@timeline-studio/domains/video-editing/services/video-editing-orchestrator", () => ({
   getVideoEditingOrchestrator: () => mockOrchestrator,
 }))
 
 describe("VideoEditingProvider", () => {
   beforeEach(() => {
+    clearVideoEditingBindings()
+    setVideoEditingBindings({
+      getVideoEditingOrchestrator: () => mockOrchestrator,
+      UndoRedoHelpers: {
+        createAddClipAction: vi.fn(),
+        createBatchOperationAction: vi.fn(),
+        createMoveClipAction: vi.fn(),
+        createRemoveClipAction: vi.fn(),
+      },
+      useUndoRedo: vi.fn(),
+    })
     vi.clearAllMocks()
   })
 

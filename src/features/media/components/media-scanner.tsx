@@ -1,12 +1,12 @@
 import { AlertCircle, FolderOpen, Loader2 } from "lucide-react"
 import { useMemo, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { container } from "@/core"
-import type { MediaFile } from "@/domains/media-management"
-import { useMediaProcessor } from "@/domains/media-management/hooks/use-media-processor"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { container } from "@timeline-studio/core"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { useMediaProcessor } from "@/features/media/hooks/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaScanner")

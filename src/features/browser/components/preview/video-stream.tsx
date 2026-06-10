@@ -1,5 +1,5 @@
 import { memo, useCallback, useRef, useState } from "react"
-import type { FfprobeStream, MediaFile } from "@/domains/media-management"
+import type { FfprobeStream, MediaFile } from "@timeline-studio/core/types"
 import { calculateAdaptiveWidth, calculateWidth, parseRotation } from "@/features/media/utils/video"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createThumbnailUrl } from "@/lib/media-url-utils"

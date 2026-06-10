@@ -3,9 +3,9 @@
 import { Moon, Sun } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { useTheme } from "@/config/providers"
-import { useUserSettings } from "@/domains/project-management/hooks"
+import { useUserSettings } from "@/features/user-settings"
 import { TOP_BAR_BUTTON_CLASS } from "../top-bar"
 
 export function ThemeToggle() {

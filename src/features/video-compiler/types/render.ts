@@ -1,8 +1,10 @@
 /**
  * Типы для системы рендеринга видео
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core-facing compiler contracts
  */
+
+import { OutputFormat as CoreOutputFormat, RenderStatus as CoreRenderStatus } from "@timeline-studio/core/types/video-editing"
 
 export type {
   RenderJob,
@@ -10,5 +12,10 @@ export type {
   RenderSettings,
   RenderStatistics,
   VideoRenderJob,
-} from "@/domains/video-editing/types/video-compiler"
-export { OutputFormat, RenderStatus } from "@/domains/video-editing/types/video-compiler"
+} from "@timeline-studio/core/types/video-editing"
+
+export type OutputFormat = import("@timeline-studio/core/types/video-editing").OutputFormat
+export type RenderStatus = import("@timeline-studio/core/types/video-editing").RenderStatus
+
+export const OutputFormat = CoreOutputFormat
+export const RenderStatus = CoreRenderStatus

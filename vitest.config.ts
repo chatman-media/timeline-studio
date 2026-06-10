@@ -27,7 +27,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}", "apps/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**/*", "node_modules/**/*"],
     testTimeout: 10000,
     // Быстрая параллельная конфигурация (Vitest 4.x)
@@ -68,7 +68,7 @@ export default defineConfig({
         "src/features/color-grading/components/scopes/scope-viewer.tsx", // Координатор отображения скопов
         "**/testing/**", // Исключаем тестовые утилиты и моки из покрытия
       ],
-      include: ["src/**/*.{ts,tsx}"],
+      include: ["src/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "apps/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
       skipFull: true,
       clean: true,
@@ -78,11 +78,12 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@features": path.resolve(__dirname, "./src/features"),
-      "@timeline-studio/core": path.resolve(__dirname, "./src/core"),
-      "@timeline-studio/domains": path.resolve(__dirname, "./src/domains"),
-      "@timeline-studio/adapters": path.resolve(__dirname, "./src/adapters"),
-      "@timeline-studio/ui/features": path.resolve(__dirname, "./src/features"),
-      "@timeline-studio/ui/components": path.resolve(__dirname, "./src/components/ui"),
+      "@timeline-studio/core": path.resolve(__dirname, "./packages/core/src"),
+      "@timeline-studio/domains": path.resolve(__dirname, "./packages/domains/src"),
+      "@timeline-studio/adapters": path.resolve(__dirname, "./packages/adapters/src"),
+      "@timeline-studio/ui": path.resolve(__dirname, "./packages/ui/src"),
+      "@timeline-studio/ui/features": path.resolve(__dirname, "./packages/ui/src/features"),
+      "@timeline-studio/ui/components": path.resolve(__dirname, "./packages/ui/src/components"),
       // Mock Tauri dependencies during testing
       "@tauri-apps/plugin-os": path.resolve(__dirname, "./src/test/mocks/tauri/plugins/os.ts"),
       "@tauri-apps/plugin-notification": path.resolve(__dirname, "./src/test/mocks/tauri/plugins/notification.ts"),

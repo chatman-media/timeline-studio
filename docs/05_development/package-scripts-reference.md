@@ -62,8 +62,9 @@
 |---------|----------|--------------|
 | `bun run check:all` | Все проверки + тесты | lint + lint:css + format + check:rust + test + test:rust |
 | `bun run check:rust` | Все проверки Rust | lint:rust + format:rust:check |
-| `bun run check:workspaces` | Проверки JS workspace shells | packages/core + packages/domains + packages/adapters + packages/ui + apps/desktop + apps/cli |
-| `bun run check:boundaries:baseline` | Baseline gate для модульных границ | падает только при росте total/severity/edge counts |
+| `bun run check:workspaces` | Проверки JS workspace packages/apps | packages/core + packages/domains + packages/adapters + packages/ui + apps/desktop + apps/cli |
+| `bun run check:boundaries:strict` | Strict gate для модульных границ | падает при любом нарушении package boundary rules |
+| `bun run check:boundaries:baseline` | Baseline audit для модульных границ | дополнительная проверка, что total/severity/edge counts не выросли |
 | `bun run fix:all` | Все автоисправления | lint:css:fix + format + fix:rust |
 | `bun run fix:rust` | Все автоисправления Rust | format:rust + lint:rust:fix |
 

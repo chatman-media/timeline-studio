@@ -1,4 +1,4 @@
-import type { OutputFormat } from "@/core/types"
+import type { OutputFormat } from "@timeline-studio/core/types"
 
 export interface OAuthToken {
   accessToken: string

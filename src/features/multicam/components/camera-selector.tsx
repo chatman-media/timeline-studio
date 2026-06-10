@@ -4,8 +4,8 @@
 
 import { Camera, Check } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@timeline-studio/ui/components/dropdown-menu"
 import { cn } from "@/lib/utils"
 
 import type { MulticamAngle } from "../hooks/use-multicam"

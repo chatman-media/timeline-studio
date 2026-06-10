@@ -10,20 +10,20 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("video-player:hdr-video-player")
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { useNotifications } from "@/core/hooks"
-import { MediaType } from "@/domains/media-management"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { TooltipProvider } from "@timeline-studio/ui/components/tooltip"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { MediaType } from "@timeline-studio/core/types"
 import { useProjectSettings } from "@/features/project-settings"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { convertVideoSrc } from "@/lib/tauri-utils"

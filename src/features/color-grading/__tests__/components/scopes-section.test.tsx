@@ -24,7 +24,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Мокаем UI компоненты
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, variant, ...props }: any) => (
     <button onClick={onClick} data-variant={variant} {...props} data-oid="g5-4a1o">
       {children}
@@ -32,7 +32,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/label", () => ({
+vi.mock("@timeline-studio/ui/components/label", () => ({
   Label: ({ children, htmlFor, ...props }: any) => (
     <label htmlFor={htmlFor} {...props} data-oid="bj:1zwy">
       {children}
@@ -40,7 +40,7 @@ vi.mock("@/components/ui/label", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/select", () => ({
+vi.mock("@timeline-studio/ui/components/select", () => ({
   Select: ({ children, value, onValueChange }: any) => (
     <div data-testid="select" data-value={value} data-oid="pyc9qou">
       {React.Children.map(children, (child) => React.cloneElement(child, { onValueChange }))}
@@ -67,7 +67,7 @@ vi.mock("@/components/ui/select", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/switch", () => ({
+vi.mock("@timeline-studio/ui/components/switch", () => ({
   Switch: ({ checked, onCheckedChange }: any) => (
     <button role="switch" aria-checked={checked} onClick={() => onCheckedChange(!checked)} data-oid="e22zevv">
       Switch

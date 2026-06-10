@@ -2,15 +2,15 @@ import { fireEvent, screen } from "@testing-library/react"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/core/types/media"
 import { renderWithTemplates } from "@/test/test-utils"
 
 import { ResizableTemplate } from "../../components/resizable-template"
 
 // Мокаем usePlayer хук
 const mockUsePlayer = vi.fn()
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@/features/timeline/providers/player-provider", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/timeline/providers/player-provider")>()
   return {
     ...actual,
     usePlayer: () => mockUsePlayer(),
@@ -18,7 +18,7 @@ vi.mock("@/domains/video-editing", async (importOriginal) => {
 })
 
 // Мокаем компоненты resizable UI
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanelGroup: ({ children, direction }: any) => (
     <div data-testid="resizable-panel-group" data-direction={direction} data-oid="o9k55qa">
       {children}

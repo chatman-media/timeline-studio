@@ -5,10 +5,8 @@
  * Автоматически добавляет используемые ресурсы в проект
  */
 
-import type { MediaFile } from "@/domains/media-management"
-import type { Transition, VideoFilter } from "@/domains/video-editing/types"
-import type { TimelineTransition } from "@/domains/video-editing/types/timeline"
-import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { MediaFile, TimelineTransition, Transition, VideoFilter } from "@timeline-studio/core/types"
+import type { BaseEffect } from "@timeline-studio/core/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type {

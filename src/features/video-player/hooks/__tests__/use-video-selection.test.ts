@@ -5,7 +5,7 @@ import { renderHook } from "@testing-library/react"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { type MediaFile, MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 
 // Мокаем backend-sync ДО импорта компонентов
 const mockPlayerState = {
@@ -13,7 +13,7 @@ const mockPlayerState = {
   videoSource: "browser" as "browser" | "timeline",
 }
 
-vi.mock("@/domains/project-management/services/backend-sync", () => ({
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
     sendCommand: vi.fn(),
@@ -31,7 +31,7 @@ vi.mock("@/features/user-settings", () => ({
 }))
 
 // Мокаем useMediaFiles
-vi.mock("@/domains/project-management/hooks/use-media-files", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-media-files", () => ({
   useMediaFiles: vi.fn(() => ({
     mediaFiles: [],
     selectedFiles: [],
@@ -50,8 +50,8 @@ vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
 }))
 
 // Мокаем usePlayer для возврата нужного состояния
-vi.mock("@/domains/video-editing", async () => {
-  const actual = await vi.importActual("@/domains/video-editing")
+vi.mock("@/features/timeline/providers/player-provider", async () => {
+  const actual = await vi.importActual("@/features/timeline/providers/player-provider")
   return {
     ...actual,
     usePlayer: () => ({
@@ -69,6 +69,7 @@ vi.mock("@/domains/video-editing", async () => {
       appliedFilters: [],
       appliedTemplate: null,
     }),
+    PlayerProvider: ({ children }: { children: React.ReactNode }) => children,
   }
 })
 

@@ -8,8 +8,8 @@ import {
   addFilterToClip,
   removeEffectFromClip,
   removeFilterFromClip,
-} from "@/domains/video-editing/services/effects"
-import type { ProjectSchema } from "@/domains/video-editing/types"
+} from "@timeline-studio/core/services/user-effects"
+import type { ProjectSchema } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../state/use-timeline"
 

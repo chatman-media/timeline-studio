@@ -12,7 +12,7 @@ The Transcription module provides high-speed speech recognition capabilities for
 
 - ✅ **Components**: 4 components for transcription UI
 - ✅ **Hooks**: 2 hooks for transcription and model management
-- ✅ **Services**: Unified service for all providers (in `/src/domains/ai-services/`)
+- ✅ **Services**: Core ports with Tauri and mock adapters
 - ✅ **Tests**: Complete unit test coverage
 - ✅ **Providers**: OpenAI Whisper, Local Whisper, Faster Whisper
 
@@ -32,8 +32,8 @@ transcription/
 │   ├── hooks/                      # Hook tests
 │   └── components/                 # Component tests
 ├── __mocks__/                      # Test mocks
-│   └── transcription-service.ts    # Mock TranscriptionService
-└── types.ts                        # TypeScript types (re-exported from domains)
+│   └── transcription-service.ts    # Mock transcription service
+└── types.ts                        # TypeScript types (re-exported from core)
 ```
 
 ## Features
@@ -114,7 +114,7 @@ function MyComponent() {
 
 ## Integration
 
-- **Depends on**: `@/domains/ai-services` (TranscriptionService)
+- **Depends on**: `@/core` transcription and enhanced subtitle ports
 - **Used by**: `@/features/subtitles`, `@/features/timeline`, `@/features/ai-chat`
 - **Integration**: Automatic subtitle creation, timeline addition, AI context
 

@@ -4,7 +4,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { ResolutionOption } from "@/domains/shared/types/project"
+import type { ResolutionOption } from "@timeline-studio/domains/shared/types/project"
 
 import { CameraSettings } from "../../components/camera-settings"
 
@@ -15,8 +15,8 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-// Мокируем компоненты Select из @/components/ui/select
-vi.mock("@/components/ui/select", () => ({
+// Мокируем компоненты Select из @timeline-studio/ui/components/select
+vi.mock("@timeline-studio/ui/components/select", () => ({
   Select: ({ children, value, onValueChange, disabled }: any) => (
     <div data-testid="select" data-value={value} data-disabled={disabled} data-oid="-r9_2k4">
       <button
@@ -51,8 +51,8 @@ vi.mock("@/components/ui/select", () => ({
   SelectValue: (props: any) => <div data-testid="select-value" {...props} data-oid="ot6ve-3" />,
 }))
 
-// Мокируем компонент Input из @/components/ui/input
-vi.mock("@/components/ui/input", () => ({
+// Мокируем компонент Input из @timeline-studio/ui/components/input
+vi.mock("@timeline-studio/ui/components/input", () => ({
   Input: ({ value, onChange, ...props }: any) => (
     <input data-testid="input" value={value} onChange={onChange} {...props} data-oid="kr11pl0" />
   ),

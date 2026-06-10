@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { BaseEffect } from "@/domains/video-editing/types"
+import type { BaseEffect } from "@timeline-studio/domains/video-editing/types"
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types"
 import {
   applyEffectToClip,

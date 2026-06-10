@@ -3,11 +3,11 @@
 import { AlertTriangle, CheckCircle, FileX, Search, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import type { SavedMediaFile } from "@/domains/media-management"
-import { promptUserToFindFile } from "@/domains/media-management/services/media-restoration-service"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { useModals } from "@timeline-studio/core/hooks"
+import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
+import type { SavedMediaFile } from "@timeline-studio/core/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 

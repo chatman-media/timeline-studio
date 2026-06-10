@@ -1,4 +1,4 @@
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/core/types/media"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { CellConfig, MediaTemplate } from "../lib/templates"

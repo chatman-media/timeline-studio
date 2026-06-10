@@ -1,11 +1,11 @@
 {
-  "updated": "2026-06-10",
-  "source": "Phase F7 transcription local types",
-  "violations": 398,
+  "updated": "2026-06-11",
+  "source": "Phase F7 register montage planner through core",
+  "violations": 0,
   "bySeverity": {
-    "warn": 398
+    "warn": 0
   },
   "byEdge": {
-    "ui -> domains": 398
+    "ui -> domains": 0
   }
 }

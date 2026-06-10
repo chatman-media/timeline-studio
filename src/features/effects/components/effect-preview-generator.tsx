@@ -5,11 +5,11 @@
 
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { useEffectPreviewGenerator } from "../hooks/use-effect-preview-generator"
 import type { BaseEffect } from "../types"
 

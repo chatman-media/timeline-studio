@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useUserSettings } from "../../hooks/use-user-settings"
 
-// Мокаем доменный хук, так как адаптер завязан на него
+// Мокаем core-facing хук, так как адаптер завязан на него
 const mockDomain = {
   // значения
   activeTab: "media" as const,
@@ -66,7 +66,7 @@ const mockDomain = {
   toggleOptionsVisibility: vi.fn(),
 }
 
-vi.mock("@/domains/project-management", () => ({
+vi.mock("@timeline-studio/core/hooks/use-user-settings", () => ({
   useUserSettings: () => mockDomain,
 }))
 

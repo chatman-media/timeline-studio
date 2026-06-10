@@ -3,13 +3,13 @@
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { MediaType } from "@timeline-studio/core/types"
 import {
   getMediaFiles,
   getMediaMetadata,
-  MediaType,
   selectAudioFile,
   selectMediaDirectory,
-} from "@/domains/media-management"
+} from "@/features/media/hooks/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 
 // Mock модулей
@@ -17,7 +17,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/core/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
     currentProject: {
       path: "/test/project",
@@ -28,23 +28,19 @@ vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
   })),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
+vi.mock("@/features/browser/services/project-music", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     updateMusicFiles: vi.fn(),
   })),
 }))
 
-vi.mock("@/domains/media-management", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/media-management")>()
-  return {
-    ...actual,
-    getMediaMetadata: vi.fn(),
-    selectAudioFile: vi.fn(),
-    selectMediaDirectory: vi.fn(),
-    getMediaFiles: vi.fn(),
-  }
-})
+vi.mock("@/features/media/hooks/media-management", () => ({
+  getMediaMetadata: vi.fn(),
+  selectAudioFile: vi.fn(),
+  selectMediaDirectory: vi.fn(),
+  getMediaFiles: vi.fn(),
+}))
 
 vi.mock("@/features/media", () => ({
   convertToSavedMusicFile: vi.fn((file) => Promise.resolve(file)),

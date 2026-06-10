@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   type CacheStatistics,
   IndexedDBCacheService,
-} from "@/domains/media-management/services/indexeddb-cache-service"
+} from "@timeline-studio/domains/media-management/services/indexeddb-cache-service"
 
 // Mock idb-keyval
 vi.mock("idb-keyval", () => {

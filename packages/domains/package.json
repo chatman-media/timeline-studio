@@ -3,7 +3,9 @@
   "version": "3.61.1",
   "private": true,
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "types": "./src/index.ts",
   "exports": {
     ".": {
@@ -11,44 +13,87 @@
       "default": "./src/index.ts"
     },
     "./ai-director": {
-      "types": "./src/ai-director.ts",
-      "default": "./src/ai-director.ts"
+      "types": "./src/ai-director/index.ts",
+      "default": "./src/ai-director/index.ts"
+    },
+    "./ai-director/*": {
+      "types": "./src/ai-director/*",
+      "default": "./src/ai-director/*"
     },
     "./ai-services": {
-      "types": "./src/ai-services.ts",
-      "default": "./src/ai-services.ts"
+      "types": "./src/ai-services/index.ts",
+      "default": "./src/ai-services/index.ts"
+    },
+    "./ai-services/*": {
+      "types": "./src/ai-services/*",
+      "default": "./src/ai-services/*"
     },
     "./ai-tools": {
-      "types": "./src/ai-tools.ts",
-      "default": "./src/ai-tools.ts"
+      "types": "./src/ai-tools/index.ts",
+      "default": "./src/ai-tools/index.ts"
+    },
+    "./ai-tools/*": {
+      "types": "./src/ai-tools/*",
+      "default": "./src/ai-tools/*"
     },
     "./browser": {
-      "types": "./src/browser.ts",
-      "default": "./src/browser.ts"
+      "types": "./src/browser/index.ts",
+      "default": "./src/browser/index.ts"
+    },
+    "./browser/*": {
+      "types": "./src/browser/*",
+      "default": "./src/browser/*"
     },
     "./media-management": {
-      "types": "./src/media-management.ts",
-      "default": "./src/media-management.ts"
+      "types": "./src/media-management/index.ts",
+      "default": "./src/media-management/index.ts"
+    },
+    "./media-management/*": {
+      "types": "./src/media-management/*",
+      "default": "./src/media-management/*"
     },
     "./project-management": {
-      "types": "./src/project-management.ts",
-      "default": "./src/project-management.ts"
+      "types": "./src/project-management/index.ts",
+      "default": "./src/project-management/index.ts"
+    },
+    "./project-management/*": {
+      "types": "./src/project-management/*",
+      "default": "./src/project-management/*"
     },
     "./shared": {
-      "types": "./src/shared.ts",
-      "default": "./src/shared.ts"
+      "types": "./src/shared/index.ts",
+      "default": "./src/shared/index.ts"
+    },
+    "./shared/styles/*": {
+      "default": "./src/shared/styles/*"
+    },
+    "./shared/*": {
+      "types": "./src/shared/*",
+      "default": "./src/shared/*"
     },
     "./subtitles": {
-      "types": "./src/subtitles.ts",
-      "default": "./src/subtitles.ts"
+      "types": "./src/subtitles/index.ts",
+      "default": "./src/subtitles/index.ts"
+    },
+    "./subtitles/*": {
+      "types": "./src/subtitles/*",
+      "default": "./src/subtitles/*"
     },
     "./system-integration": {
-      "types": "./src/system-integration.ts",
-      "default": "./src/system-integration.ts"
+      "types": "./src/system-integration/index.ts",
+      "default": "./src/system-integration/index.ts"
+    },
+    "./system-integration/*": {
+      "types": "./src/system-integration/*",
+      "default": "./src/system-integration/*"
     },
     "./video-editing": {
-      "types": "./src/video-editing.ts",
-      "default": "./src/video-editing.ts"
+      "types": "./src/video-editing/index.ts",
+      "default": "./src/video-editing/index.ts"
+    },
+    "./video-editing/*": {
+      "types": "./src/video-editing/*",
+      "default": "./src/video-editing/*"
     }
   },
   "files": [

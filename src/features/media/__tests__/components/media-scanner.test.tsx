@@ -1,12 +1,12 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { renderWithProviders } from "@/test/test-utils"
+import { render } from "@/test/test-utils"
 
 import { MediaScanner } from "../../components/media-scanner"
 
 // Мокаем container с платформенным сервисом
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn().mockReturnValue(true),
     getPlatform: vi.fn().mockReturnValue({
@@ -16,7 +16,7 @@ vi.mock("@/core", () => ({
 }))
 
 // Мокаем mediaProcessorService
-vi.mock("@/domains/media-management/services/media-processor-service", () => ({
+vi.mock("@timeline-studio/domains/media-management/services/media-processor-service", () => ({
   mediaProcessorService: {
     scanFolder: vi.fn(),
     scanFolderWithThumbnails: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock("@/domains/media-management/services/media-processor-service", () => ({
 }))
 
 // Мокаем useMediaProcessor
-vi.mock("@/domains/media-management/hooks/use-media-processor", () => ({
+vi.mock("@/features/media/hooks/media-management", () => ({
   useMediaProcessor: vi.fn(),
 }))
 
@@ -37,13 +37,13 @@ describe("MediaScanner", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const { container } = await import("@/core")
+    const { container } = await import("@timeline-studio/core")
     mockShowOpenDialog = container.getPlatform().showOpenDialog as any
   })
 
   it("should render media scanner interface", async () => {
     // Мокаем useMediaProcessor для этого теста
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -56,7 +56,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="xnkn-:4" />)
+    render(<MediaScanner data-oid="xnkn-:4" />)
 
     // Проверяем основные элементы интерфейса
     expect(screen.getByText("Сканирование медиафайлов")).toBeInTheDocument()
@@ -67,7 +67,7 @@ describe("MediaScanner", () => {
 
   it("should disable scan button when no folder selected", async () => {
     // Мокаем useMediaProcessor для этого теста
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
     vi.mocked(useMediaProcessor).mockReturnValue({
       scanFolder: vi.fn().mockResolvedValue([]),
       scanFolderWithThumbnails: vi.fn().mockResolvedValue([]),
@@ -80,14 +80,14 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="8xypai." />)
+    render(<MediaScanner data-oid="8xypai." />)
 
     // Кнопка сканирования должна быть отключена, если папка не выбрана
     expect(screen.getByRole("button", { name: /начать сканирование/i })).toBeDisabled()
   })
 
   it("should handle folder selection", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -102,7 +102,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="zu_03u." />)
+    render(<MediaScanner data-oid="zu_03u." />)
 
     // Кликаем на кнопку выбора папки
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -126,7 +126,7 @@ describe("MediaScanner", () => {
   })
 
   it("should handle folder selection cancellation", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     mockShowOpenDialog.mockResolvedValue(null) // Пользователь отменил выбор
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -141,7 +141,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="w1tykz2" />)
+    render(<MediaScanner data-oid="w1tykz2" />)
 
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
 
@@ -176,7 +176,7 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -193,7 +193,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="afcgbmq" />)
+    render(<MediaScanner data-oid="afcgbmq" />)
 
     // Выбираем папку
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -219,7 +219,7 @@ describe("MediaScanner", () => {
   })
 
   it("should show processing state", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     // Мокаем состояние обработки
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -234,7 +234,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="zdu4you" />)
+    render(<MediaScanner data-oid="zdu4you" />)
 
     // Проверяем индикатор загрузки
     expect(screen.getByText("Сканирование...")).toBeInTheDocument()
@@ -247,7 +247,7 @@ describe("MediaScanner", () => {
   })
 
   it("should display processing errors", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
     const mockErrors = new Map([
       ["file1", "Failed to read metadata"],
       ["file2", "Thumbnail generation failed"],
@@ -266,7 +266,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="ubjh6_g" />)
+    render(<MediaScanner data-oid="ubjh6_g" />)
 
     // Проверяем отображение ошибок
     expect(screen.getByText("Ошибки при обработке (2)")).toBeInTheDocument()
@@ -306,7 +306,7 @@ describe("MediaScanner", () => {
       },
     ]
 
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -323,7 +323,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="nci:067" />)
+    render(<MediaScanner data-oid="nci:067" />)
 
     // Выбираем папку и запускаем сканирование
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -346,7 +346,7 @@ describe("MediaScanner", () => {
   })
 
   it("should clear errors when selecting new folder", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     const mockErrors = new Map([["file1", "Some error"]])
     const mockClearErrors = vi.fn()
@@ -365,7 +365,7 @@ describe("MediaScanner", () => {
 
     mockShowOpenDialog.mockResolvedValue(["/new/path"])
 
-    renderWithProviders(<MediaScanner data-oid="n5h6r7f" />)
+    render(<MediaScanner data-oid="n5h6r7f" />)
 
     // Кликаем на выбор папки
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -376,7 +376,7 @@ describe("MediaScanner", () => {
   })
 
   it("should handle scan errors gracefully", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
 
     mockShowOpenDialog.mockResolvedValue(["/path/to/test/folder"])
 
@@ -393,7 +393,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="1.jpl69" />)
+    render(<MediaScanner data-oid="1.jpl69" />)
 
     // Выбираем папку
     fireEvent.click(screen.getByRole("button", { name: /выбрать папку/i }))
@@ -415,7 +415,7 @@ describe("MediaScanner", () => {
   })
 
   it("should not scan without selected folder", async () => {
-    const { useMediaProcessor } = await import("@/domains/media-management/hooks/use-media-processor")
+    const { useMediaProcessor } = await import("@/features/media/hooks/media-management")
     const mockScanFolderWithThumbnails = vi.fn()
 
     vi.mocked(useMediaProcessor).mockReturnValue({
@@ -430,7 +430,7 @@ describe("MediaScanner", () => {
       cancelProcessing: vi.fn().mockResolvedValue(undefined),
     })
 
-    renderWithProviders(<MediaScanner data-oid="k0rbhhj" />)
+    render(<MediaScanner data-oid="k0rbhhj" />)
 
     // Попытка запустить сканирование без выбранной папки (кнопка отключена)
     const scanButton = screen.getByRole("button", {

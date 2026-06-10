@@ -14,7 +14,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@timeline-studio/ui/components/context-menu"
 
 import { useTimeline } from "../hooks/state/use-timeline"
 import type { TimelineClip } from "../types"

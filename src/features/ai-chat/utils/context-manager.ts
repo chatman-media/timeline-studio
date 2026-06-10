@@ -2,7 +2,7 @@
  * Утилиты для управления размером контекста AI чатов
  */
 
-import type { ChatMessage } from "@/domains/ai-services/types/chat"
+import type { ChatMessage } from "@timeline-studio/core/types/ai-chat"
 
 // Use ChatMessage instead of deleted AiMessage type
 type AiMessage = ChatMessage

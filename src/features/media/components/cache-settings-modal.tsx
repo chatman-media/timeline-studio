@@ -2,15 +2,12 @@ import { AlertCircle, Database, HardDrive, RefreshCw, Trash2 } from "lucide-reac
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { useNotifications } from "@/core/hooks"
-import {
-  type CacheStatistics,
-  indexedDBCacheService,
-} from "@/domains/media-management/services/indexeddb-cache-service"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { type CacheStatistics, indexedDBCacheService } from "@timeline-studio/core/services/media-cache-service"
 import { createLogger } from "@/lib/tauri-logger"
 import { formatFileSize } from "@/lib/utils"
 

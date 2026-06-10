@@ -12,8 +12,8 @@ vi.unmock("@/features/modals/services/modal-provider")
 vi.unmock("@/features/modals/services")
 vi.unmock("@/features/modals")
 
-import { resetSystemIntegrationOrchestrator } from "@/domains/system-integration"
-import type { ModalType } from "@/domains/system-integration/machines/modal-machine"
+import { resetSystemIntegrationOrchestrator } from "@timeline-studio/domains/system-integration"
+import type { ModalType } from "@timeline-studio/domains/system-integration/machines/modal-machine"
 import { ModalProvider, useModal } from "../modal-provider"
 
 describe("ModalProvider", () => {

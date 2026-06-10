@@ -3,8 +3,7 @@
  * Сервис для создания и управления маркерами на основе AI анализа
  */
 
-import type { ContentInsights, KeyMoment, SceneInfo } from "@/domains/ai-services/types"
-import { KeyMomentType } from "@/domains/ai-services/types"
+import { KeyMomentType, type ContentInsights, type KeyMoment, type SceneInfo } from "@timeline-studio/core/types/ai-analysis"
 
 import type { TimelineMarker } from "../types/markers"
 

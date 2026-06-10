@@ -1,13 +1,16 @@
 # CLI App Workspace
 
-This workspace package is the package-manager shell for the existing Timeline Studio CLI.
+This workspace package owns the Timeline Studio CLI entrypoint and commands.
 
-Runtime code still lives in `src/cli` during Phase F5. Scripts proxy to root commands so the current CLI entry points and behavior remain unchanged while the repo gains app-level workspace metadata.
+Runtime code lives in `apps/cli/src`. Legacy root scripts for video and AI utilities remain available for developer compatibility, but new CLI command work should start in this workspace.
 
 Useful commands:
 
 ```bash
+bun run --cwd apps/cli cli -- --help
 bun run --cwd apps/cli check:type
 bun run --cwd apps/cli test
 bun run --cwd apps/cli video:status
 ```
+
+Command reference: [COMMANDS.md](./COMMANDS.md)

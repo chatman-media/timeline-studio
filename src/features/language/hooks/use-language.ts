@@ -6,7 +6,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { getAppLanguage, setAppLanguage } from "@/core/services/language"
+import { getAppLanguage, setAppLanguage } from "@timeline-studio/core/services/language"
 import { DEFAULT_LANGUAGE, isSupportedLanguage, type LanguageCode } from "@/i18n/constants"
 
 import { createLogger } from "@/lib/tauri-logger"

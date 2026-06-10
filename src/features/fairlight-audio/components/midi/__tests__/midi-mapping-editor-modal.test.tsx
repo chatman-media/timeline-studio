@@ -17,7 +17,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock UI components
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, variant, className }: any) => (
     <button onClick={onClick} disabled={disabled} data-variant={variant} className={className} data-oid="cmijcag">
       {children}
@@ -25,7 +25,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/label", () => ({
+vi.mock("@timeline-studio/ui/components/label", () => ({
   Label: ({ children, htmlFor, className }: any) => (
     <label htmlFor={htmlFor} className={className} data-oid="fdaf8ho">
       {children}
@@ -33,7 +33,7 @@ vi.mock("@/components/ui/label", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/select", () => ({
+vi.mock("@timeline-studio/ui/components/select", () => ({
   Select: ({ value, onValueChange, children }: any) => (
     <div data-value={value} data-testid="select" data-oid="ztxt2ok">
       {children}
@@ -75,7 +75,7 @@ vi.mock("@/components/ui/select", () => ({
   SelectValue: () => <span data-testid="select-value" data-oid="1aqe_z5" />,
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, className }: any) => (
     <input
       type="range"

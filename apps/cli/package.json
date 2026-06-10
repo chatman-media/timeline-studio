@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "check:type": "tsc --project tsconfig.json --noEmit",
-    "test": "bun run --cwd ../.. vitest run src/cli",
+    "cli": "bun run src/index.ts",
+    "test": "bun run --cwd ../.. vitest run apps/cli/src",
     "video:analyze": "bun run --cwd ../.. video:analyze",
     "video:montage": "bun run --cwd ../.. video:montage",
     "video:status": "bun run --cwd ../.. video:status",

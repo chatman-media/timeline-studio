@@ -1,24 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import type {
+  CompilerSubtitle as Subtitle,
+  CompilerSubtitlePosition as SubtitlePosition,
+  CompilerSubtitleStyle as SubtitleStyle,
+} from "@timeline-studio/core/types/video-editing"
 import {
-  type Subtitle,
-  SubtitleAlignX,
-  SubtitleAlignY,
-  SubtitleFontWeight,
-  type SubtitlePosition,
-  type SubtitleStyle,
-} from "@/domains/video-editing"
-import type { RecognitionFrame, TimelineFrame } from "@/domains/video-editing/services/compiler"
-import { ExtractionPurpose, frameExtractionService } from "@/domains/video-editing/services/compiler"
+  CompilerSubtitleAlignX as SubtitleAlignX,
+  CompilerSubtitleAlignY as SubtitleAlignY,
+  CompilerSubtitleFontWeight as SubtitleFontWeight,
+} from "@timeline-studio/core/types/video-editing"
+import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
+import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
 
 // Мокаем Tauri commands
-vi.mock("@/domains/video-editing/tauri/compiler-commands", () => ({
+vi.mock("../../services/compiler-commands", () => ({
   extractTimelineFrames: vi.fn(),
   extractRecognitionFrames: vi.fn(),
   extractSubtitleFrames: vi.fn(),
 }))
 
 // Мокаем IndexedDB Cache Service
-vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
+vi.mock("@/features/media/hooks/media-management", () => ({
   indexedDBCacheService: {
     cacheTimelineFrames: vi.fn(),
     getCachedTimelineFrames: vi.fn(),
@@ -110,12 +112,12 @@ describe("frameExtractionService", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const compilerCommands = await import("@/domains/video-editing/tauri/compiler-commands")
+    const compilerCommands = await import("../../services/compiler-commands")
     mockExtractTimelineFrames = compilerCommands.extractTimelineFrames as any
     mockExtractRecognitionFrames = compilerCommands.extractRecognitionFrames as any
     mockExtractSubtitleFrames = compilerCommands.extractSubtitleFrames as any
 
-    const { indexedDBCacheService } = await import("@/domains/media-management/services/indexeddb-cache-service")
+    const { indexedDBCacheService } = await import("@/features/media/hooks/media-management")
     mockIndexedDBCacheService = indexedDBCacheService as any
   })
 

@@ -2,18 +2,18 @@ import { AlertCircle, CheckCircle2, Clock, Loader2, StopCircle, Upload, XCircle 
 import type React from "react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Progress } from "@/components/ui/progress"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import type { RenderStatus } from "@/core/types"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import type { RenderStatus } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 import { useRenderQueue } from "../hooks/use-render-queue"

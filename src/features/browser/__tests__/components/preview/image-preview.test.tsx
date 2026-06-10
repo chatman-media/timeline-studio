@@ -3,7 +3,7 @@
  */
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 import { ImagePreview } from "../../../components/preview/image-preview"
 
 // PlayerProvider is already mocked globally in setup.ts
@@ -16,7 +16,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-app-settings", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks/use-app-settings", () => ({
   useAppSettings: () => ({
     getMediaFiles: () => ({
       allFiles: [],
@@ -37,7 +37,7 @@ vi.mock("@/domains/project-management/hooks/use-app-settings", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: () => ({
     favorites: {
       transition: [],

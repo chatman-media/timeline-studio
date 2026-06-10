@@ -4,7 +4,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { ViewMode } from "@/domains/browser"
+import { ViewMode } from "@timeline-studio/domains/browser"
 import { MediaToolbar, type MediaToolbarProps } from "../../components/media-toolbar"
 
 // Mock react-i18next
@@ -42,7 +42,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock UI components
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, className, onClick, disabled, ...props }: any) => (
     <button className={className} onClick={onClick} disabled={disabled} {...props} data-oid="kei8xe_">
       {children}
@@ -50,7 +50,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/input", () => ({
+vi.mock("@timeline-studio/ui/components/input", () => ({
   Input: ({ value, onChange, className, placeholder, ...props }: any) => (
     <input
       value={value}
@@ -63,7 +63,7 @@ vi.mock("@/components/ui/input", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/dropdown-menu", () => ({
+vi.mock("@timeline-studio/ui/components/dropdown-menu", () => ({
   DropdownMenu: ({ children }: any) => (
     <div data-testid="dropdown-menu" data-oid="hvvs78q">
       {children}
@@ -86,7 +86,7 @@ vi.mock("@/components/ui/dropdown-menu", () => ({
   DropdownMenuSeparator: () => <div data-testid="dropdown-separator" data-oid="032nkgy" />,
 }))
 
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   Tooltip: ({ children }: any) => (
     <div data-testid="tooltip" data-oid="913au1x">
       {children}

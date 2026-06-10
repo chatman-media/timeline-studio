@@ -1,6 +1,6 @@
 /**
  * AI Director Types
- * Re-exports from @/domains/ai-director
+ * Re-exports from core AI Director contracts.
  */
 
 // Re-export all types from domain
@@ -22,4 +22,4 @@ export type {
   SystemCapabilities,
   UnifiedAudioAnalysisResult,
   VideoAnalysisResult,
-} from "@/domains/ai-director"
+} from "@timeline-studio/core/types/ai-director"

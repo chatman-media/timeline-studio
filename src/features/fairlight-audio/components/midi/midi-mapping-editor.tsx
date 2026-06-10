@@ -2,11 +2,11 @@ import { useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
 
 import type { MidiMapping } from "../../services/midi/midi-engine"
 

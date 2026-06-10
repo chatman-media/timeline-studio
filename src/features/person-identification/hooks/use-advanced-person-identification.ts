@@ -4,14 +4,14 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import {
   type AdvancedFaceDetection,
   AdvancedFaceDetectionService,
   AdvancedTrackingService,
   PersonDatabaseService,
   type TrackedPerson,
-} from "@/domains/ai-services/services/person-identification"
+} from "@timeline-studio/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 

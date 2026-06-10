@@ -1,7 +1,7 @@
 /**
  * Sequence types - монтажная последовательность
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core-facing timeline sequence contract
  */
 
 export type {
@@ -18,4 +18,4 @@ export type {
   SequenceSettings,
   SequenceType,
   Title,
-} from "@/domains/video-editing/types/sequence"
+} from "@timeline-studio/core/types/timeline-sequence"

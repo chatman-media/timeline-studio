@@ -21,7 +21,7 @@ const createMockTemplate = (
 })
 
 // Mock модулей
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),

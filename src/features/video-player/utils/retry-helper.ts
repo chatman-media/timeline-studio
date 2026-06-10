@@ -1,10 +1,10 @@
 /**
  * Retry Helper
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core retry helper
  */
 
-export type { RetryOptions, RetryResult } from "@/domains/video-editing/utils/retry-helper"
+export type { RetryOptions, RetryResult } from "@timeline-studio/core/utils/retry-helper"
 export {
   createRetryWrapper,
   defaultShouldRetry,
@@ -12,4 +12,4 @@ export {
   isTransientError,
   retryWithBackoff,
   withRetry,
-} from "@/domains/video-editing/utils/retry-helper"
+} from "@timeline-studio/core/utils/retry-helper"

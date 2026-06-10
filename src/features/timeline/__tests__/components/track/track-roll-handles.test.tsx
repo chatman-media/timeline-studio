@@ -4,7 +4,7 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { MediaType } from "@/domains/media-management"
+import type { MediaType } from "@timeline-studio/domains/media-management"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { RollEditHandle } from "../../../components/edit-tools/roll-edit-handle"
 import { TrackRollHandles } from "../../../components/track/track-roll-handles"

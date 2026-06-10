@@ -23,17 +23,20 @@ vi.mock("@/lib/tauri-logger", () => ({
   })),
 }))
 
-// Mock domain function
-vi.mock("@/domains/ai-director", () => ({
+// Mock core AI service function
+vi.mock("@timeline-studio/core/services", () => ({
   aiDirectorAnalyzeBatch: vi.fn(),
+  analysisStorageService: {
+    saveComprehensiveAnalysis: vi.fn(),
+  },
 }))
 
 // Create mock event service
 const mockUnlisten = vi.fn()
 const mockListen = vi.fn()
 
-// Mock @/core container
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core container
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasEvent: vi.fn(() => true),
     getEvent: vi.fn(() => ({
@@ -45,7 +48,7 @@ vi.mock("@/core", () => ({
 }))
 
 // Import mocked functions
-import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
+import { aiDirectorAnalyzeBatch } from "@timeline-studio/core/services"
 
 const mockAnalyzeBatch = vi.mocked(aiDirectorAnalyzeBatch)
 

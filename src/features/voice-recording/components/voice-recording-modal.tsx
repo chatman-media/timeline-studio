@@ -2,12 +2,10 @@ import { RefreshCw } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { MediaType } from "@timeline-studio/core/types/media"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { useAudioDevices } from "../hooks/use-audio-devices"
@@ -25,14 +23,25 @@ import { AudioPermissionRequest } from "./audio-permission-request"
 
 const logger = createLogger({ module: "VoiceRecordingModal" })
 
-export function VoiceRecordModal() {
+interface VoiceRecordModalProps {
+  isOpen?: boolean
+  onClose?: () => void | Promise<void>
+  "data-oid"?: string
+}
+
+const noop = () => {}
+
+export function VoiceRecordModal({ isOpen = true, onClose = noop }: VoiceRecordModalProps) {
   const { t } = useTranslation()
   const [savePath, setSavePath] = useState<string>("")
   const [isMuted] = useState<boolean>(true)
   const [selectedFormat, setSelectedFormat] = useState<AudioFormat>("webm")
   const [audioFormats, setAudioFormats] = useState<AudioFormatInfo[]>([])
-  const { isModalOpen, closeModal } = useModals()
   const { addMedia } = useResources()
+
+  const handleClose = useCallback(() => {
+    void onClose()
+  }, [onClose])
 
   // Проверяем поддержку MediaDevices API
   const [isMediaDevicesSupported] = useState(() => {
@@ -72,7 +81,7 @@ export function VoiceRecordModal() {
         })
 
         // Создаем объект MediaFile для добавления в медиатеку
-        const mediaFile: MediaFile = {
+        const mediaFile = {
           id: `audio-${Date.now()}`, // Генерируем временный ID
           path: result.filePath,
           name: result.fileName,
@@ -83,19 +92,19 @@ export function VoiceRecordModal() {
           isImage: false,
           createdAt: new Date(),
           // Дополнительные поля можно будет заполнить позже через getMediaMetadata
-        }
+        } as Parameters<typeof addMedia>[0]
 
         // Добавляем в медиатеку
         await addMedia(mediaFile)
 
         // Закрываем диалог после успешного сохранения
-        closeModal()
+        handleClose()
       } catch (error) {
         logger.error("Ошибка при сохранении аудиозаписи", { error })
         setErrorMessage(t("dialogs.voiceRecord.saveError", "Ошибка при сохранении аудиозаписи"))
       }
     },
-    [closeModal, setErrorMessage, t, selectedFormat, addMedia],
+    [handleClose, setErrorMessage, t, selectedFormat, addMedia],
   )
 
   // Используем хук для управления записью голоса
@@ -139,7 +148,7 @@ export function VoiceRecordModal() {
 
   // Загружаем поддерживаемые форматы при открытии
   useEffect(() => {
-    if (isModalOpen) {
+    if (isOpen) {
       void getSupportedAudioFormats().then((formats) => {
         // Фильтруем форматы, которые поддерживаются MediaRecorder
         const supportedFormats = formats.filter((format) => isFormatSupportedByMediaRecorder(format.format))
@@ -151,23 +160,23 @@ export function VoiceRecordModal() {
         }
       })
     }
-  }, [isModalOpen, selectedFormat])
+  }, [isOpen, selectedFormat])
 
   // Запрашиваем устройства и запускаем микрофон при открытии модального окна
   useEffect(() => {
-    if (isModalOpen) {
+    if (isOpen) {
       void getDevicesAfterPermissions()
     } else {
       cleanup()
     }
-  }, [isModalOpen, getDevicesAfterPermissions, cleanup])
+  }, [isOpen, getDevicesAfterPermissions, cleanup])
 
   // Инициализируем микрофон при изменении устройства
   useEffect(() => {
-    if (isModalOpen && selectedAudioDevice) {
+    if (isOpen && selectedAudioDevice) {
       void initAudio()
     }
-  }, [isModalOpen, selectedAudioDevice, initAudio])
+  }, [isOpen, selectedAudioDevice, initAudio])
 
   // Если MediaDevices не поддерживается, показываем сообщение
   if (!isMediaDevicesSupported) {
@@ -182,7 +191,7 @@ export function VoiceRecordModal() {
             "Запись звука не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере.",
           )}
         </p>
-        <Button onClick={closeModal} variant="outline" data-oid="v6lxaks">
+        <Button onClick={handleClose} variant="outline" data-oid="v6lxaks">
           {t("common.close", "Закрыть")}
         </Button>
       </div>

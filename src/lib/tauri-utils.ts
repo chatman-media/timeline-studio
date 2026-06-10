@@ -5,7 +5,7 @@
 
 import { exists } from "@tauri-apps/plugin-fs"
 
-import { getPlatform as getPlatformService } from "@/core/container"
+import { getPlatform as getPlatformService } from "@timeline-studio/core/container"
 import { createLogger } from "./tauri-logger"
 
 const logger = createLogger("TauriUtils")

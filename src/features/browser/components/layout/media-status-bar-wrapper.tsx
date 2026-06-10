@@ -3,8 +3,8 @@
  */
 
 import { useMemo } from "react"
-import type { MediaFile } from "@/domains/media-management"
-import { useMediaManagement } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { useMediaManagement } from "@/features/media/hooks/media-management"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { useBulkMediaActions } from "../../hooks/use-bulk-media-actions"
 import { StatusBar } from "./status-bar"

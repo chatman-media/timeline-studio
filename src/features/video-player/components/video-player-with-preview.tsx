@@ -4,9 +4,9 @@
  */
 
 import { memo, useState } from "react"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
-import { MediaType } from "@/domains/media-management"
+import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
+import { Button } from "@timeline-studio/ui/components/button"
+import { MediaType } from "@timeline-studio/core/types"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"

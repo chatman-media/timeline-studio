@@ -5,7 +5,7 @@
  * который бэкенд автоматически адаптирует для Claude, OpenAI, DeepSeek и других провайдеров.
  */
 
-import type { IAITool } from "@/domains/ai-tools/types"
+import type { IAITool } from "@timeline-studio/core/types/ai-tools"
 
 // AITool type is not exported from tauri-bindings yet, using placeholder
 type AITool = {

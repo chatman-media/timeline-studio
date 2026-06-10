@@ -16,7 +16,7 @@ const mockShowError = vi.fn()
 const mockShowInfo = vi.fn()
 const mockShowWarning = vi.fn()
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useNotifications: () => ({
     showSuccess: mockShowSuccess,
     showError: mockShowError,
@@ -32,7 +32,7 @@ vi.mock("@/core/hooks", () => ({
 
 vi.mock("@/features/timeline/hooks/state/use-timeline")
 vi.mock("@/features/video-compiler/hooks/use-prerender")
-vi.mock("@/domains/video-editing")
+vi.mock("@timeline-studio/domains/video-editing")
 
 const mockUseTimeline = vi.mocked(useTimeline)
 const mockUsePrerender = vi.mocked(usePrerender)

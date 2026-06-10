@@ -5,8 +5,8 @@
 import { AlertCircle, CheckCircle2, Clock, Music } from "lucide-react"
 import { useMemo } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import type { MediaFile } from "@/domains/media-management"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import type { MediaFile } from "@timeline-studio/core/types/media"
 import { cn } from "@/lib/utils"
 
 import { useMulticam } from "../hooks/use-multicam"

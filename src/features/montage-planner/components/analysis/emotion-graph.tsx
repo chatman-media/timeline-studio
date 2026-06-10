@@ -7,9 +7,9 @@ import { Activity, Frown, Heart, Smile, Sparkles, Zap } from "lucide-react"
 import type React from "react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { cn } from "@/lib/utils"
 
 import type { EmotionalArc, MontagePlan } from "../../types"

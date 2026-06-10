@@ -11,11 +11,28 @@
 "use client"
 
 import { type ReactNode } from "react"
-import { AppInitProvider } from "@/adapters/react"
-import { ChatProvider, MCPProvider } from "@/domains/ai-services"
-import { BrowserProvider } from "@/domains/browser"
-import { MediaManagementProvider } from "@/domains/media-management"
-import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
+import { AppInitProvider } from "@timeline-studio/adapters/react"
+import { BrowserProvider as CoreBrowserProvider } from "@timeline-studio/core/services/browser-context"
+import { setAITools } from "@timeline-studio/core/services/ai-tools-registry"
+import { setMediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
+import { setMontagePlannerBindings } from "@timeline-studio/core/services/montage-planner-registry"
+import { setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
+import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@timeline-studio/domains/ai-services"
+import {
+  applyPlanToTimeline,
+  ContentAnalyzer,
+  createMarkersFromPlan,
+  MomentDetector,
+  PlanGenerator,
+  RhythmCalculator,
+} from "@timeline-studio/domains/ai-services/services/montage-planning"
+import { allAITools } from "@timeline-studio/domains/ai-tools"
+import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@timeline-studio/domains/browser"
+import * as mediaManagementBindings from "@timeline-studio/domains/media-management"
+import { AppProvider, ProjectSettingsProvider } from "@timeline-studio/domains/project-management/providers"
+import { DOMAIN_EVENTS, eventBus } from "@timeline-studio/domains/shared/events"
+import { getSystemIntegrationOrchestrator } from "@timeline-studio/domains/system-integration"
+import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@timeline-studio/domains/video-editing"
 import { ColorSchemeProvider } from "@/features/color-scheme"
 import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 import { ResourcesProvider } from "@/features/timeline/providers/resources-provider"
@@ -33,6 +50,51 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
   return ({ children }: { children: ReactNode }) => {
     return providers.reduceRight((child, Provider) => <Provider data-oid="m4b5f48">{child}</Provider>, children)
   }
+}
+
+function SystemIntegrationBootstrapProvider({ children }: { children: ReactNode }) {
+  getSystemIntegrationOrchestrator()
+  return <>{children}</>
+}
+
+function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
+  setAITools(allAITools)
+  return <>{children}</>
+}
+
+function MediaManagementBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setMediaManagementBindings(mediaManagementBindings)
+  return <>{children}</>
+}
+
+function MontagePlannerBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setMontagePlannerBindings({
+    applyPlanToTimeline,
+    ContentAnalyzer,
+    createMarkersFromPlan,
+    DOMAIN_EVENTS,
+    eventBus,
+    MomentDetector,
+    montagePlannerMachine,
+    PlanGenerator,
+    RhythmCalculator,
+    unifiedOrchestrator,
+  })
+  return <>{children}</>
+}
+
+function VideoEditingBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setVideoEditingBindings({
+    getVideoEditingOrchestrator,
+    UndoRedoHelpers,
+    useUndoRedo,
+  })
+  return <>{children}</>
+}
+
+function BrowserCoreBridgeProvider({ children }: { children: ReactNode }) {
+  const browser = useDomainBrowser()
+  return <CoreBrowserProvider value={browser}>{children}</CoreBrowserProvider>
 }
 
 /**
@@ -77,14 +139,20 @@ const AppProviderComposite = composeProviders(
   I18nProvider, // Локализация
   ThemeProvider, // Тема (light/dark/system через next-themes)
   ColorSchemeProvider, // Применение цветовых схем + синхронизация режима темы со стором
+  SystemIntegrationBootstrapProvider, // Регистрирует backend-aware modal service в core container
+  AIToolsBootstrapProvider, // Регистрирует domain AI tools через core registry
+  MontagePlannerBindingsBootstrapProvider, // Регистрирует domain montage planner API через core registry
 
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками
   ProjectSettingsProvider, // Настройки проекта с backend синхронизацией
-  MediaManagementProvider, // MediaManagementOrchestrator - управление медиа файлами
+  MediaManagementBindingsBootstrapProvider, // Регистрирует domain media hooks через core registry
+  mediaManagementBindings.MediaManagementProvider, // MediaManagementOrchestrator - управление медиа файлами
   ResourcesProvider, // Ресурсы (effects/filters/transitions) с backend интеграцией
-  BrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
+  DomainBrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
+  BrowserCoreBridgeProvider, // Публикует browser state в core context для features
 
+  VideoEditingBindingsBootstrapProvider, // Регистрирует domain video editing API через core registry
   TimelineProvider, // VideoEditingOrchestrator - timeline редактор
 
   PlayerProvider, // Видеоплеер с backend синхронизацией

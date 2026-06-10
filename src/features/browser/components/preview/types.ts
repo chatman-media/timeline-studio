@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import type { ViewMode } from "@/domains/browser"
+import type { ViewMode } from "@timeline-studio/core/types"
 import type { PreviewSize } from "@/features/browser/types/list"
 
 // Re-export for convenience

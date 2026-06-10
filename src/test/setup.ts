@@ -143,9 +143,9 @@ vi.mock("@/features/user-settings", async (importOriginal) => {
 
 // Mock PlayerProvider, ResourcesProvider, and usePlayer
 // После миграции providers в features, этот мок обеспечивает обратную совместимость
-vi.mock("@/domains/video-editing", async () => {
+vi.mock("@timeline-studio/domains/video-editing", async () => {
   // Импортируем actual domain exports
-  const actual = await vi.importActual("@/domains/video-editing")
+  const actual = await vi.importActual("@timeline-studio/domains/video-editing")
 
   return {
     ...actual,
@@ -273,7 +273,7 @@ vi.mock("@/features/ai-chat/__mocks__/api-key-loader", () => ({
 }))
 
 // Modal mocks removed - tests should control their own modal mocks using the new architecture
-// from @/domains/system-integration via useModals hook
+// from @timeline-studio/domains/system-integration via useModals hook
 // Each test can mock useModals individually as needed
 
 // Mock ResourcesProvider and useResources
@@ -295,8 +295,8 @@ vi.mock("@/features/resources", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
+vi.mock("@timeline-studio/domains/project-management/hooks", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/project-management/hooks")>()
   return {
     ...actual,
     useCurrentProject: () => ({
@@ -348,7 +348,7 @@ vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
 })
 
 // Mock new project management domain hooks
-vi.mock("@/domains/project-management", () => ({
+vi.mock("@timeline-studio/domains/project-management", () => ({
   useProject: () => ({
     projectState: {
       project: {
@@ -442,8 +442,8 @@ vi.mock("@/domains/project-management", () => ({
   }),
 }))
 
-vi.mock("@/domains/project-management/services/app-directories-service", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/project-management/services/app-directories-service")>()
+vi.mock("@timeline-studio/domains/project-management/services/app-directories-service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/domains/project-management/services/app-directories-service")>()
   const mockBaseDir = "/Users/test/Movies/Timeline Studio"
   const mockResourcesDir = `${mockBaseDir}/Resources`
   return {
@@ -452,6 +452,47 @@ vi.mock("@/domains/project-management/services/app-directories-service", async (
       getAppDirectories: vi.fn().mockResolvedValue({
         base_dir: mockBaseDir,
         media_dir: `${mockResourcesDir}/Media`, // Media теперь внутри Resources
+        projects_dir: `${mockBaseDir}/Projects`,
+        snapshot_dir: `${mockBaseDir}/Snapshot`,
+        cinematic_dir: `${mockBaseDir}/Cinematic`,
+        output_dir: `${mockBaseDir}/Output`,
+        render_dir: `${mockBaseDir}/Render`,
+        recognition_dir: `${mockBaseDir}/Recognition`,
+        backup_dir: `${mockBaseDir}/Backup`,
+        media_proxy_dir: `${mockBaseDir}/MediaProxy`,
+        caches_dir: `${mockBaseDir}/Caches`,
+        recorded_dir: `${mockBaseDir}/Recorded`,
+        audio_dir: `${mockBaseDir}/Audio`,
+        cloud_project_dir: `${mockBaseDir}/Cloud Project`,
+        upload_dir: `${mockBaseDir}/Upload`,
+      }),
+      getMediaSubdirectory: vi.fn((type: string) => {
+        const subdirs: Record<string, string> = {
+          videos: "Videos",
+          effects: "Effects",
+          transitions: "Transitions",
+          images: "Images",
+          music: "Music",
+          style_templates: "StyleTemplates",
+          subtitles: "Subtitles",
+          filters: "Filters",
+        }
+        return `${mockResourcesDir}/Media/${subdirs[type] || type}`
+      }),
+    },
+  }
+})
+
+vi.mock("@timeline-studio/core/services/app-directories-service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/core/services/app-directories-service")>()
+  const mockBaseDir = "/Users/test/Movies/Timeline Studio"
+  const mockResourcesDir = `${mockBaseDir}/Resources`
+  return {
+    ...actual,
+    appDirectoriesService: {
+      getAppDirectories: vi.fn().mockResolvedValue({
+        base_dir: mockBaseDir,
+        media_dir: `${mockResourcesDir}/Media`,
         projects_dir: `${mockBaseDir}/Projects`,
         snapshot_dir: `${mockBaseDir}/Snapshot`,
         cinematic_dir: `${mockBaseDir}/Cinematic`,
@@ -496,7 +537,7 @@ vi.mock("@/features/ai-chat/services/unified-ai-service", () => ({
 
 // PersonDatabaseService is not mocked globally to allow testing the real implementation
 
-vi.mock("@/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine", () => ({
+vi.mock("@timeline-studio/domains/ai-services/services/engines/scene-analysis/scene-analysis-engine", () => ({
   SceneAnalysisEngine: class MockSceneAnalysisEngine {
     analyzeScene = vi.fn().mockResolvedValue({
       objects: [],
@@ -610,8 +651,8 @@ declare module "vitest" {
 }
 
 // Mock media-management domain
-vi.mock("@/domains/media-management", async () => {
-  const actual = await vi.importActual("@/domains/media-management")
+vi.mock("@timeline-studio/domains/media-management", async () => {
+  const actual = await vi.importActual("@timeline-studio/domains/media-management")
   return {
     ...actual,
     DEFAULT_PREVIEW_SIZE_INDEX: 3,

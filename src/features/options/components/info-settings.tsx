@@ -2,9 +2,9 @@ import { ChevronDown, FileText, Info, Monitor, Music, Settings, Video } from "lu
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Label } from "@/components/ui/label"
-import type { MediaFile } from "@/core/types"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@timeline-studio/ui/components/collapsible"
+import { Label } from "@timeline-studio/ui/components/label"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { useTimeline } from "@/features/timeline"
 
 interface InfoSettingsState {

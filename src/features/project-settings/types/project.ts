@@ -1,5 +1,5 @@
 /**
- * Типы перемещены в @/domains/shared/types/project
+ * Types are exposed from core for feature-facing compatibility.
  * Реэкспортируются здесь для обратной совместимости
  */
 export type {
@@ -11,7 +11,7 @@ export type {
   ProjectSettings,
   Resolution,
   ResolutionOption,
-} from "@/domains/shared/types/project"
+} from "@timeline-studio/core/types/project"
 
 export {
   ASPECT_RATIOS,
@@ -28,4 +28,4 @@ export {
   RESOLUTIONS_9_16,
   RESOLUTIONS_16_9,
   RESOLUTIONS_21_9,
-} from "@/domains/shared/types/project"
+} from "@timeline-studio/core/types/project"

@@ -64,7 +64,7 @@ function createMockProject() {
 }
 
 // Mock всех необходимых хуков из провайдеров
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   useTimelineProject: () => ({
     project: mockProject,
     isLoading: false,

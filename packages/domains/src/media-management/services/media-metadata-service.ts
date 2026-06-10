@@ -1,0 +1,246 @@
+/**
+ * Media Metadata Service - Media Management Domain
+ *
+ * Сервис для извлечения и анализа метаданных медиа файлов
+ *
+ * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
+ */
+
+import { getMedia } from "@timeline-studio/core/container"
+import { createLogger } from "@/lib/tauri-logger"
+import type {
+  MediaAnalysisResult,
+  MediaMetadata,
+  MediaMetadataService,
+  QualityMetrics,
+  SceneDetectionResult,
+} from "../types"
+
+const logger = createLogger("MediaMetadataService")
+
+class MediaMetadataServiceImpl implements MediaMetadataService {
+  /**
+   * Извлечение метаданных из медиа файла
+   */
+  async extractMetadata(filePath: string): Promise<MediaMetadata> {
+    logger.info("[Media Metadata] Extracting metadata from:", { filePath })
+
+    try {
+      const metadata = await getMedia().extractMediaMetadata(filePath)
+
+      logger.debug("[Media Metadata] Extracted metadata:", { data: metadata })
+      return metadata
+    } catch (error) {
+      logger.error("[Media Metadata] Failed to extract metadata:", { error })
+      throw new Error(`Failed to extract metadata: ${error}`)
+    }
+  }
+
+  /**
+   * Генерация thumbnail для видео файла
+   */
+  async generateThumbnail(filePath: string, time: number = 0): Promise<string> {
+    logger.info(`[Media Metadata] Generating thumbnail for: ${filePath} at`, { time })
+
+    try {
+      const thumbnailPath = await getMedia().generateVideoThumbnail(filePath, time)
+
+      logger.info("[Media Metadata] Generated thumbnail:", { thumbnailPath })
+      return thumbnailPath
+    } catch (error) {
+      logger.error("[Media Metadata] Failed to generate thumbnail:", { error })
+      throw new Error(`Failed to generate thumbnail: ${error}`)
+    }
+  }
+
+  /**
+   * Полный анализ медиа файла
+   */
+  async analyzeMedia(filePath: string): Promise<MediaAnalysisResult> {
+    logger.info("[Media Metadata] Analyzing media:", { filePath })
+
+    try {
+      // Извлекаем метаданные
+      const metadata = await this.extractMetadata(filePath)
+
+      // Для видео файлов делаем дополнительный анализ
+      let thumbnailPath: string | undefined
+      let scenes: SceneDetectionResult[] | undefined
+      let waveformData: Float32Array | undefined
+
+      if (metadata.type === "Video") {
+        // Генерируем thumbnail
+        try {
+          thumbnailPath = await this.generateThumbnail(filePath)
+        } catch (error) {
+          logger.warn("[Media Metadata] Thumbnail generation failed:", { data: error })
+        }
+
+        // Детекция сцен
+        try {
+          scenes = await this.detectScenes(filePath)
+        } catch (error) {
+          logger.warn("[Media Metadata] Scene detection failed:", { data: error })
+        }
+      } else if (metadata.type === "Audio") {
+        // Генерируем waveform для аудио
+        try {
+          waveformData = await this.generateWaveform(filePath)
+        } catch (error) {
+          logger.warn("[Media Metadata] Waveform generation failed:", { data: error })
+        }
+      }
+
+      // Анализ качества
+      const quality = await this.analyzeQuality(metadata)
+
+      return {
+        metadata,
+        thumbnailPath,
+        waveformData,
+        scenes,
+        quality,
+      }
+    } catch (error) {
+      logger.error("[Media Metadata] Media analysis failed:", { error })
+      throw new Error(`Media analysis failed: ${error}`)
+    }
+  }
+
+  /**
+   * Получение длительности медиа файла
+   */
+  async getMediaDuration(filePath: string): Promise<number> {
+    logger.info("[Media Metadata] Getting duration for:", { filePath })
+
+    try {
+      const duration = await getMedia().getMediaDuration(filePath)
+
+      logger.info("[Media Metadata] Duration:", { duration })
+      return duration
+    } catch (error) {
+      logger.error("[Media Metadata] Failed to get duration:", { error })
+      throw new Error(`Failed to get media duration: ${error}`)
+    }
+  }
+
+  /**
+   * Детекция сцен в видео
+   */
+  private async detectScenes(filePath: string): Promise<SceneDetectionResult[]> {
+    try {
+      const scenes = await getMedia().detectVideoScenes(filePath)
+
+      logger.info("[Media Metadata] Detected scenes", { scenesCount: scenes.length })
+      return scenes as SceneDetectionResult[]
+    } catch (error) {
+      logger.error("[Media Metadata] Scene detection failed:", { error })
+      return []
+    }
+  }
+
+  /**
+   * Генерация waveform для аудио
+   */
+  private async generateWaveform(filePath: string): Promise<Float32Array> {
+    try {
+      const waveformData = await getMedia().generateAudioWaveform(filePath)
+
+      logger.info("[Media Metadata] Generated waveform with samples", { samplesCount: waveformData.length })
+      return new Float32Array(waveformData)
+    } catch (error) {
+      logger.error("[Media Metadata] Waveform generation failed:", { error })
+      return new Float32Array(0)
+    }
+  }
+
+  /**
+   * Анализ качества медиа файла
+   */
+  private async analyzeQuality(metadata: MediaMetadata): Promise<QualityMetrics | undefined> {
+    if (metadata.type === "Video") {
+      const resolution = `${metadata.width}x${metadata.height}`
+      const qualityScore = this.calculateQualityScore(metadata)
+
+      return {
+        resolution,
+        bitrate: metadata.bitrate || 0,
+        fps: metadata.fps || 0,
+        codec: metadata.codec || "unknown",
+        qualityScore,
+      }
+    }
+
+    return undefined
+  }
+
+  /**
+   * Расчет оценки качества видео
+   */
+  private calculateQualityScore(metadata: MediaMetadata & { type: "Video" }): number {
+    let score = 0
+
+    // Resolution score (0-40)
+    if (metadata.width && metadata.height) {
+      const pixels = metadata.width * metadata.height
+      if (pixels >= 3840 * 2160)
+        score += 40 // 4K
+      else if (pixels >= 1920 * 1080)
+        score += 35 // Full HD
+      else if (pixels >= 1280 * 720)
+        score += 25 // HD
+      else if (pixels >= 854 * 480)
+        score += 15 // SD
+      else score += 5
+    }
+
+    // FPS score (0-20)
+    if (metadata.fps) {
+      if (metadata.fps >= 60) score += 20
+      else if (metadata.fps >= 30) score += 15
+      else if (metadata.fps >= 24) score += 10
+      else score += 5
+    }
+
+    // Bitrate score (0-20)
+    if (metadata.bitrate) {
+      const mbps = metadata.bitrate / 1_000_000
+      if (mbps >= 50) score += 20
+      else if (mbps >= 20) score += 15
+      else if (mbps >= 10) score += 10
+      else if (mbps >= 5) score += 5
+    }
+
+    // Codec score (0-20)
+    if (metadata.codec) {
+      const modernCodecs = ["h265", "hevc", "av1", "vp9"]
+      const goodCodecs = ["h264", "avc"]
+
+      if (modernCodecs.some((c) => metadata.codec!.toLowerCase().includes(c))) {
+        score += 20
+      } else if (goodCodecs.some((c) => metadata.codec!.toLowerCase().includes(c))) {
+        score += 15
+      } else {
+        score += 5
+      }
+    }
+
+    return Math.min(100, score)
+  }
+}
+
+// Singleton instance
+let instance: MediaMetadataServiceImpl | null = null
+
+/**
+ * Получить экземпляр сервиса метаданных
+ */
+export function getMediaMetadataService(): MediaMetadataService {
+  if (!instance) {
+    instance = new MediaMetadataServiceImpl()
+  }
+  return instance
+}
+
+// Export service type
+export type { MediaMetadataService } from "../types"

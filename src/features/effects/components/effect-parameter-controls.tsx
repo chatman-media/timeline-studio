@@ -2,10 +2,10 @@ import { RotateCcw, Save } from "lucide-react"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import type { BaseEffect, EffectParameter } from "@/features/effects/types"
 
 interface EffectParameterControlsProps {

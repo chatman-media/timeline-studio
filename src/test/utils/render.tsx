@@ -77,7 +77,7 @@ const getProviders = async () => {
     // Provider not available
   }
   try {
-    const { AppProvider } = await import("@/domains/project-management/providers/app-provider")
+    const { AppProvider } = await import("@timeline-studio/domains/project-management/providers/app-provider")
     providers.AppSettingsProvider = AppProvider
   } catch (_e) {
     // Provider not available
@@ -89,7 +89,7 @@ const getProviders = async () => {
     // Provider not available (or mocked as no-op in tests)
   }
   try {
-    const { ProjectSettingsProvider } = await import("@/domains/project-management/providers")
+    const { ProjectSettingsProvider } = await import("@timeline-studio/domains/project-management/providers")
     providers.ProjectSettingsProvider = ProjectSettingsProvider
   } catch (_e) {
     // Provider not available

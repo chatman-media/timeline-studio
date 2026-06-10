@@ -4,7 +4,7 @@
  */
 
 import { useCallback } from "react"
-import type { AppliedEffect, BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   applyEffectToBatch,

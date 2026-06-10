@@ -4,7 +4,7 @@
 import { renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { Track as TimelineTrack } from "@/domains/video-editing/types"
+import type { Track as TimelineTrack } from "@timeline-studio/domains/video-editing/types"
 import type { AudioChannel } from "../../types"
 import { convertTrackToChannel, useTimelineMixerSync } from "../timeline-sync-service"
 

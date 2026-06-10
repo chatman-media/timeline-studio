@@ -2,7 +2,7 @@
  * Utilities for drag and drop position calculations
  */
 
-import { type MediaFile, MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 
 import type { TimelineClip, TimelineProject, TrackType } from "../types"
 

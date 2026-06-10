@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { type MediaFile, MediaType } from "@/domains/media-management"
-import type { TemplateResource } from "@/domains/shared/types/resources"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types/media"
+import type { TemplateResource } from "@timeline-studio/core/types/resources"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { usePlayer, useVideoSelection } from "@/features/video-player"
@@ -160,12 +160,14 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
 
       {/* Кнопка добавления в избранное */}
       <FavoriteButton
-        file={{
-          id: template.id,
-          path: "",
-          name: template.id,
-          type: MediaType.Graphics,
-        }}
+        file={
+          {
+            id: template.id,
+            path: "",
+            name: template.id,
+            type: MediaType.Graphics,
+          } as any
+        }
         size={size}
         type="template"
         noTime={true}
@@ -189,7 +191,7 @@ export function TemplatePreview({ template, onClick, size, dimensions }: Templat
               id: template.id,
               type: "template",
               name: template.id,
-            } as TemplateResource
+            } as TemplateResource as any
           }
           size={size}
           type="template"

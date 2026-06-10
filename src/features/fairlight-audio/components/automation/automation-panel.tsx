@@ -2,8 +2,8 @@ import { Circle, Hand, Lock, Play, Plus, Square } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { cn } from "@/lib/utils"
 
 import type { AutomationLane, AutomationMode } from "../../services/automation-engine"

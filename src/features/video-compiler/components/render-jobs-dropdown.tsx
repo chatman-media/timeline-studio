@@ -2,17 +2,17 @@ import { AlertCircle, CheckCircle2, Clock, FileVideo, ListTodo, Loader2, StopCir
 import type React from "react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Progress } from "@/components/ui/progress"
-import { ScrollArea } from "@/components/ui/scroll-area"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { cn } from "@/lib/utils"
 
 import { formatJobDuration, getJobStatusColor, useRenderJobs } from "../hooks/use-render-jobs"

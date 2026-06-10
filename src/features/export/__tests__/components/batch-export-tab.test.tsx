@@ -25,7 +25,7 @@ vi.mock("../../hooks/use-render-queue", () => ({
   useRenderQueue: () => mockRenderQueue,
 }))
 
-// Mock @/core container
+// Mock @timeline-studio/core container
 const mockShowOpenDialog = vi.fn()
 const mockPlatform = {
   showOpenDialog: mockShowOpenDialog,
@@ -44,7 +44,7 @@ const mockPlatform = {
   convertFileSrc: vi.fn((path: string) => path),
 }
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => mockPlatform),

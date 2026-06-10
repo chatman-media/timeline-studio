@@ -18,7 +18,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock dependencies
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: vi.fn(() => ({
     activeModal: "none",
     modalData: null,
@@ -50,25 +50,13 @@ vi.mock("@/features/timeline/hooks/state/use-timeline", () => ({
   })),
 }))
 
-vi.mock("@/domains/project-management/hooks", () => ({
-  useMediaFiles: vi.fn(() => ({
-    mediaFiles: [],
-  })),
-}))
-
-vi.mock("@/features/ai-chat/services/whisper-service", () => ({
-  WhisperService: {
-    getInstance: vi.fn(() => ({
-      loadApiKey: vi.fn().mockResolvedValue(false),
-      hasApiKey: vi.fn(() => false),
-      isLocalWhisperAvailable: vi.fn().mockResolvedValue(true),
-      extractAudioForTranscription: vi.fn().mockResolvedValue("/tmp/audio.wav"),
-      transcribeWithOpenAI: vi.fn(),
-      transcribeWithLocalModel: vi.fn(),
-      convertToSRT: vi.fn(),
-      recommendModel: vi.fn(() => "whisper-base"),
-    })),
-  },
+vi.mock("@/features/transcription/components/enhanced-transcription-panel", () => ({
+  EnhancedTranscriptionPanel: () => (
+    <section>
+      <h2>AI Генерация субтитров</h2>
+      <p>Автоматическое создание субтитров с использованием AI</p>
+    </section>
+  ),
 }))
 
 vi.mock("sonner", () => ({
@@ -79,17 +67,13 @@ vi.mock("sonner", () => ({
   },
 }))
 
-import { WhisperService } from "@/domains/ai-services/services/whisper-service"
-import { useMediaFiles } from "@/domains/project-management/hooks"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@timeline-studio/core/hooks"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 import { SubtitleAIToolsModal } from "../subtitle-ai-tools-modal"
 
 const mockedUseModals = vi.mocked(useModals)
 const mockedUseTimeline = vi.mocked(useTimeline)
-const mockedUseMediaFiles = vi.mocked(useMediaFiles)
-const mockedWhisperService = vi.mocked(WhisperService.getInstance)
 
 /**
  * NOTE: Большинство тестов пропущены, так как требуют integration/E2E testing:
@@ -171,28 +155,6 @@ describe("SubtitleAIToolsModal", () => {
     mockedUseTimeline.mockReturnValue({
       project: mockProject as any,
       send: mockSend,
-    } as any)
-
-    // Extract media files from mock project
-    const mediaFiles = []
-    for (const section of mockProject.sections) {
-      for (const track of section.tracks) {
-        for (const clip of track.clips) {
-          if (clip.mediaFile) {
-            mediaFiles.push({
-              id: clip.id,
-              path: clip.mediaFile.path,
-              name: clip.mediaFile.name,
-              duration: clip.duration,
-              media_type: track.type === "video" ? "Video" : "Audio",
-            })
-          }
-        }
-      }
-    }
-
-    mockedUseMediaFiles.mockReturnValue({
-      mediaFiles: mediaFiles as any,
     } as any)
   })
 

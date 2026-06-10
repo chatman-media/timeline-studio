@@ -9,7 +9,7 @@ import { MediaProviders } from "@/test/test-utils"
 import { useFiltersImport } from "../../hooks/use-filters-import"
 
 // Mock AppProvider to avoid backend connection issues
-vi.mock("@/domains/project-management/providers/app-provider", async () => {
+vi.mock("@timeline-studio/domains/project-management/providers/app-provider", async () => {
   const React = await import("react")
 
   const mockContext = {
@@ -54,7 +54,7 @@ const mockPlatform = {
   convertFileSrc: vi.fn((path: string) => path),
 }
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => mockPlatform),
@@ -65,8 +65,8 @@ vi.mock("@/core", () => ({
 const mockAddFilter = vi.fn()
 
 // Мокаем useResources для возврата mockAddFilter
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@/features/timeline/providers/resources-provider", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/timeline/providers/resources-provider")>()
   return {
     ...actual,
     useResources: () => ({

@@ -16,7 +16,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock Radix UI Tabs with our custom mock
-vi.mock("@/components/ui/tabs", async () => {
+vi.mock("@timeline-studio/ui/components/tabs", async () => {
   const tabsMock = await import("./test-utils/tabs-mock")
   return {
     Tabs: tabsMock.Tabs,
@@ -27,7 +27,7 @@ vi.mock("@/components/ui/tabs", async () => {
 })
 
 // Mock other UI components
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, variant, size, className }: any) => (
     <button
       onClick={onClick}
@@ -42,7 +42,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/card", () => ({
+vi.mock("@timeline-studio/ui/components/card", () => ({
   Card: ({ children, className }: any) => (
     <div className={className} data-oid="c7n5ct9">
       {children}
@@ -68,7 +68,7 @@ vi.mock("@/components/ui/card", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/label", () => ({
+vi.mock("@timeline-studio/ui/components/label", () => ({
   Label: ({ children, htmlFor, className }: any) => (
     <label htmlFor={htmlFor} className={className} data-oid="3r1xddw">
       {children}
@@ -76,7 +76,7 @@ vi.mock("@/components/ui/label", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/select", () => ({
+vi.mock("@timeline-studio/ui/components/select", () => ({
   Select: ({ children }: any) => <div data-oid="267-p39">{children}</div>,
   SelectContent: ({ children }: any) => <div data-oid="nme6vvh">{children}</div>,
   SelectItem: ({ children }: any) => <div data-oid="z6pzpbr">{children}</div>,

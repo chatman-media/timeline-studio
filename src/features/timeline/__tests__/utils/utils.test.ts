@@ -5,8 +5,8 @@
  */
 
 import { describe, expect, it } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/domains/media-management"
+import { MediaType } from "@timeline-studio/domains/media-management"
 
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types"
 import {

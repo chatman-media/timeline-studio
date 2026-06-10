@@ -12,7 +12,7 @@ export const AdapterTestProviders = ({ children }: { children: ReactNode }) => {
 // Моки для всех необходимых провайдеров без их реального импорта
 export const setupAdapterMocks = () => {
   // Mock hooks from project-management domain
-  vi.mock("@/domains/project-management/hooks", () => ({
+  vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
     useFavorites: vi.fn(() => ({
       isItemFavorite: vi.fn(() => false),
     })),

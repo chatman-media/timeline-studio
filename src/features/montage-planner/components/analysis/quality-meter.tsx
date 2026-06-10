@@ -6,9 +6,9 @@
 import { AlertTriangle, CheckCircle, Minus, TrendingDown, TrendingUp } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { cn } from "@/lib/utils"
 
 import type { AudioAnalysis, MomentScore, VideoAnalysis } from "../../types"

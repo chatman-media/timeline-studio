@@ -1,13 +1,13 @@
 import { useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { useModals } from "@timeline-studio/core/hooks"
 
-import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect } from "@timeline-studio/core/types"
 
 // Тип для активного аудио эффекта
 interface ActiveAudioEffect {

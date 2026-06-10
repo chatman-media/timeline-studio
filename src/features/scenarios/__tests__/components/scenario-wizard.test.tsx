@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/domains/project-management/types"
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 
 import { ScenarioWizard } from "../../components/scenario-wizard"
 import type { Scenario } from "../../types/scenario"
@@ -28,7 +28,7 @@ vi.mock("lucide-react", () => ({
 }))
 
 // Mock Dialog components
-vi.mock("@/components/ui/dialog", () => ({
+vi.mock("@timeline-studio/ui/components/dialog", () => ({
   Dialog: ({ open, children }: any) => (open ? <div data-oid="qmbhl:i">{children}</div> : null),
   DialogContent: ({ children }: any) => <div data-oid="ddzg_d.">{children}</div>,
   DialogHeader: ({ children }: any) => <div data-oid="p-znu8o">{children}</div>,
@@ -37,15 +37,15 @@ vi.mock("@/components/ui/dialog", () => ({
 }))
 
 // Mock other UI components
-vi.mock("@/components/ui/progress", () => ({
+vi.mock("@timeline-studio/ui/components/progress", () => ({
   Progress: ({ value }: any) => <div data-testid="progress" data-value={value} data-oid="8z49w1j" />,
 }))
 
-vi.mock("@/components/ui/scroll-area", () => ({
+vi.mock("@timeline-studio/ui/components/scroll-area", () => ({
   ScrollArea: ({ children }: any) => <div data-oid="-obk-q:">{children}</div>,
 }))
 
-vi.mock("@/components/ui/alert", () => ({
+vi.mock("@timeline-studio/ui/components/alert", () => ({
   Alert: ({ children }: any) => <div data-oid="d7ywd.m">{children}</div>,
   AlertDescription: ({ children }: any) => <div data-oid="8f0xz.8">{children}</div>,
 }))

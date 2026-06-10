@@ -24,14 +24,14 @@ vi.mock("@/lib/duration-formatter", () => ({
 }))
 
 // Мокаем все зависимости напрямую
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@timeline-studio/domains/project-management/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
   })),
 }))
 
 // Мокируем основной экспорт из index
-vi.mock("@/domains/media-management", () => ({
+vi.mock("@/features/media/hooks/media-management", () => ({
   DEFAULT_PREVIEW_SIZE_INDEX: 3,
   DEFAULT_CONTENT_SIZES: {
     MEDIA: 250,

@@ -1,6 +1,6 @@
 /**
  * Subtitle Styling types for Timeline
- * TODO: Consider migrating to @/domains/video-editing/types or @/features/subtitles/types
+ * TODO: Consider migrating to @timeline-studio/domains/video-editing/types or @/features/subtitles/types
  */
 
 /**

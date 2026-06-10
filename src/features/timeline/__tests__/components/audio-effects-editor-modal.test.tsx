@@ -8,12 +8,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { AudioEffectsEditorModal } from "@/features/timeline/components/audio-effects-editor-modal"
 
 // Mock the modal service
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: vi.fn(),
 }))
 
 // Mock UI components
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, variant, ...props }: any) => (
     <button onClick={onClick} data-variant={variant} {...props} data-oid="o.-puu.">
       {children}
@@ -21,7 +21,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/label", () => ({
+vi.mock("@timeline-studio/ui/components/label", () => ({
   Label: ({ children, ...props }: any) => (
     <label {...props} data-oid="_zc40go">
       {children}
@@ -29,7 +29,7 @@ vi.mock("@/components/ui/label", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, ...props }: any) => (
     <input
       type="range"
@@ -45,7 +45,7 @@ vi.mock("@/components/ui/slider", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/switch", () => ({
+vi.mock("@timeline-studio/ui/components/switch", () => ({
   Switch: ({ checked, onCheckedChange, ...props }: any) => (
     <button
       role="switch"
@@ -63,7 +63,7 @@ vi.mock("@/components/ui/switch", () => ({
 // Track active tab globally for tests
 let activeTab = "basic"
 
-vi.mock("@/components/ui/tabs", () => ({
+vi.mock("@timeline-studio/ui/components/tabs", () => ({
   Tabs: ({ children, value, onValueChange, ...props }: any) => {
     // Update active tab when value changes
     if (value) activeTab = value
@@ -115,7 +115,7 @@ describe("AudioEffectsEditorModal", () => {
     vi.clearAllMocks()
     activeTab = "basic" // Reset tab state
 
-    const { useModals } = await import("@/domains/system-integration")
+    const { useModals } = await import("@timeline-studio/core/hooks")
     vi.mocked(useModals).mockImplementation(mockUseModals)
 
     mockUseModals.mockReturnValue({

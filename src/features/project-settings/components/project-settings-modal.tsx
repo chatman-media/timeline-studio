@@ -2,12 +2,11 @@ import { Lock, Unlock } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { DialogFooter } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useModals } from "@/domains/system-integration"
+import { Button } from "@timeline-studio/ui/components/button"
+import { DialogFooter } from "@timeline-studio/ui/components/dialog"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import {
   ASPECT_RATIOS,
   COLOR_SPACES,
@@ -24,6 +23,13 @@ import { getAspectRatioLabel, getAspectRatioString } from "../utils"
 
 const logger = createLogger({ module: "ProjectSettingsModal" })
 
+interface ProjectSettingsModalProps {
+  onClose?: () => void | Promise<void>
+  "data-oid"?: string
+}
+
+const noop = () => {}
+
 /**
  * Модальное окно настроек проекта
  * Позволяет пользователю настраивать параметры проекта, такие как:
@@ -34,10 +40,13 @@ const logger = createLogger({ module: "ProjectSettingsModal" })
  *
  * @returns {JSX.Element} Компонент модального окна настроек проекта
  */
-export function ProjectSettingsModal() {
+export function ProjectSettingsModal({ onClose = noop }: ProjectSettingsModalProps) {
   const { t } = useTranslation() // Хук для интернационализации
-  const { closeModal } = useModals() // Хук для управления модальными окнами
   const { settings, updateSettings } = useProjectSettings() // Хук для доступа к настройкам проекта
+
+  const handleClose = () => {
+    void onClose()
+  }
 
   // Состояние для хранения доступных разрешений для выбранного соотношения сторон
   const [availableResolutions, setAvailableResolutions] = useState<ResolutionOption[]>([])
@@ -509,7 +518,7 @@ export function ProjectSettingsModal() {
         <Button
           variant="default"
           className="flex-1 cursor-pointer"
-          onClick={() => closeModal()} // Закрываем модальное окно без сохранения
+          onClick={handleClose} // Закрываем модальное окно без сохранения
           data-oid="mgq2xh4"
         >
           {t("dialogs.projectSettings.cancel")}
@@ -570,7 +579,7 @@ export function ProjectSettingsModal() {
 
             // Закрываем диалог с небольшой задержкой, чтобы дать время обновиться всем компонентам
             setTimeout(() => {
-              closeModal()
+              handleClose()
 
               // Принудительно вызываем событие изменения размера окна,
               // чтобы обновить все компоненты, которые зависят от размеров

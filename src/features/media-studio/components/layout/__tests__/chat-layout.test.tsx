@@ -105,7 +105,7 @@ vi.mock("@/features/video-player/components/prerender-controls", () => ({
   PrerenderControls: () => null,
 }))
 
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@timeline-studio/domains/video-editing", () => ({
   PlayerProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="player-provider" data-oid="blx9gza">
       {children}
@@ -139,7 +139,7 @@ const mockTimelineContext = {
 }
 
 // Мокаем ResizablePanel компоненты
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (
     <div
       data-testid="resizable-panel"

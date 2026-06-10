@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { CommandQueue } from "../command-queue"
 
 // Мокаем performance monitor
-vi.mock("../performance-monitor", () => ({
+vi.mock("@timeline-studio/core/services/video-player-performance-monitor", () => ({
   globalPerformanceMonitor: {
     recordSync: vi.fn(),
     recordFailure: vi.fn(),

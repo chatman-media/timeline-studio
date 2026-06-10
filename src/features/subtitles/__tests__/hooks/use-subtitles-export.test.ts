@@ -8,17 +8,19 @@ import { useTracks } from "@/features/timeline/hooks/state/use-tracks"
 
 import { useSubtitlesExport } from "../../hooks/use-subtitles-export"
 
-// Mock subtitle commands
+// Mock core subtitle service
 const mockSaveSubtitleFile = vi.fn()
 
-vi.mock("@/domains/subtitles/tauri/subtitle-commands", () => ({
-  saveSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
+vi.mock("@timeline-studio/core/services/subtitles", () => ({
+  subtitleService: {
+    exportSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
+  },
 }))
 
-// Mock @/core container
+// Mock @timeline-studio/core container
 const mockShowSaveDialog = vi.fn()
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -56,7 +58,7 @@ vi.mock("@/features/timeline/hooks/state/use-tracks", () => ({
   })),
 }))
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@timeline-studio/domains/system-integration", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

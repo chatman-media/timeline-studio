@@ -14,7 +14,7 @@ import type { TimelinePersonAppearance } from "@/features/timeline/hooks/state/u
 import { PersonIndicator } from "../person-indicator"
 
 // Mock для tooltip компонентов
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <div data-oid="1cfjeb9">{children}</div>,
   TooltipTrigger: ({ children }: { children: React.ReactNode }) => <div data-oid="kdn9cxx">{children}</div>,
   TooltipContent: ({ children }: { children: React.ReactNode }) => (
@@ -25,7 +25,7 @@ vi.mock("@/components/ui/tooltip", () => ({
 }))
 
 // Mock для badge компонента
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({
     children,
     onClick,

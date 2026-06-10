@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { runRustAIReviewSmoke } from "../src/adapters/node/rust-ai-review-smoke"
+import { runRustAIReviewSmoke } from "@timeline-studio/adapters/node/rust-ai-review-smoke"
 
 const result = await runRustAIReviewSmoke({
   repoRoot: process.cwd(),

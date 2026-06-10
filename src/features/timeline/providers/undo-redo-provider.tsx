@@ -7,15 +7,15 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { container } from "@/core/container"
-import { UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing/hooks/use-undo-redo"
+import { container } from "@timeline-studio/core/container"
+import { UndoRedoHelpers, useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 import {
   createInitialUndoState,
   handleHistoryLoaded,
   handleUndoBackendEvent,
   type UndoAction,
   type UndoRedoState,
-} from "@/domains/video-editing/machines/undo-backend-event-handlers"
+} from "./undo-backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UndoRedoProvider")

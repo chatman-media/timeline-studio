@@ -6,7 +6,7 @@ import React from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Мокаем backend-sync ДО импорта компонентов
-vi.mock("@/domains/project-management/services/backend-sync", () => ({
+vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () => ({
   getBackendSync: () => ({
     onStateChange: vi.fn(() => () => {}),
     onEvent: vi.fn(() => () => {}),
@@ -16,7 +16,7 @@ vi.mock("@/domains/project-management/services/backend-sync", () => ({
   }),
 }))
 
-import { ProjectSettingsProvider } from "@/domains/project-management/providers"
+import { ProjectSettingsProvider } from "@timeline-studio/domains/project-management/providers"
 import { useProjectSettings } from "../../hooks/use-project-settings"
 import { DEFAULT_PROJECT_SETTINGS } from "../../types/project"
 
@@ -155,7 +155,7 @@ describe("useProjectSettings", () => {
       const { result } = renderHook(() => useProjectSettings(), { wrapper })
 
       // Проверяем, что aspectRatio имеет правильную структуру
-      expect(result.current.settings.aspectRatio).toBe(DEFAULT_PROJECT_SETTINGS.aspectRatio)
+      expect(result.current.settings.aspectRatio).toStrictEqual(DEFAULT_PROJECT_SETTINGS.aspectRatio)
     })
 
     it("должен корректно обрабатывать экстремальные значения FPS", () => {

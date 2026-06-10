@@ -6,7 +6,7 @@
 import { Eye, EyeOff, Gauge, Loader2, Play, Settings, Sparkles } from "lucide-react"
 import { useId, useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,12 +14,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { useAIDirectorEvents } from "@/domains/ai-director/hooks/use-ai-director-events"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { useAIDirectorEvents } from "@timeline-studio/core/hooks/use-ai-director-events"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"

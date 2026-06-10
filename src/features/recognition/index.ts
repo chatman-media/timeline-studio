@@ -1,8 +1,8 @@
 // Компоненты
 
-export type { AISceneContext } from "@/domains/ai-services/services/recognition"
+export type { AISceneContext } from "@timeline-studio/core/services"
 // Сервисы - реэкспорт из домена для обратной совместимости
-export { SceneContextService, YoloDataService } from "@/domains/ai-services/services/recognition"
+export { SceneContextService, YoloDataService } from "@timeline-studio/core/services"
 export * from "./components/yolo-data-overlay"
 export * from "./components/yolo-data-visualization"
 export * from "./components/yolo-graph-overlay"

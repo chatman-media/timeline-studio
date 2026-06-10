@@ -58,8 +58,8 @@ MockResizablePanel.displayName = "MockResizablePanel"
 MockResizablePanelGroup.displayName = "MockResizablePanelGroup"
 MockResizableHandle.displayName = "MockResizableHandle"
 
-// Mock the entire @/components/ui/resizable module
-vi.mock("@/components/ui/resizable", () => ({
+// Mock the entire @timeline-studio/ui/components/resizable module
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanel: MockResizablePanel,
   ResizablePanelGroup: MockResizablePanelGroup,
   ResizableHandle: MockResizableHandle,

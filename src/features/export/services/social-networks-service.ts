@@ -1,6 +1,6 @@
 // Объединяющий сервис для всех социальных сетей
 
-import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
+import { showSystemNotification } from "@timeline-studio/core/services/notifications"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"
@@ -10,7 +10,6 @@ import * as VimeoService from "./vimeo-service"
 import * as YouTubeService from "./youtube-service"
 
 const logger = createLogger({ module: "SocialNetworksService" })
-const getOrchestrator = () => getSystemIntegrationOrchestrator()
 
 export interface SocialUploadResult {
   success: boolean
@@ -21,7 +20,7 @@ export interface SocialUploadResult {
 
 export async function login(network: string): Promise<boolean> {
   try {
-    getOrchestrator().showNotification({
+    showSystemNotification({
       type: "info",
       notification_type: "info",
       title: "Connecting",
@@ -42,7 +41,7 @@ export async function login(network: string): Promise<boolean> {
       localStorage.setItem(`${network}_user_info`, JSON.stringify(userInfo))
     }
 
-    getOrchestrator().showNotification({
+    showSystemNotification({
       type: "success",
       notification_type: "success",
       title: "Connected",
@@ -52,7 +51,7 @@ export async function login(network: string): Promise<boolean> {
     return true
   } catch (error) {
     logger.error(`Login failed for ${network}: ${String(error)}`)
-    getOrchestrator().showNotification({
+    showSystemNotification({
       type: "error",
       notification_type: "error",
       title: "Connection Failed",
@@ -64,7 +63,7 @@ export async function login(network: string): Promise<boolean> {
 
 export async function logout(network: string): Promise<void> {
   await OAuthService.logout(network)
-  getOrchestrator().showNotification({
+  showSystemNotification({
     type: "info",
     notification_type: "info",
     title: "Disconnected",

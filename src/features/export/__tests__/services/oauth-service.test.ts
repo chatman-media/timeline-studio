@@ -13,11 +13,8 @@ vi.mock("@/lib/environment", () => ({
   }),
 }))
 
-// Mock system integration orchestrator
-vi.mock("@/domains/system-integration", () => ({
-  getSystemIntegrationOrchestrator: () => ({
-    showNotification: mockShowNotification,
-  }),
+vi.mock("@timeline-studio/core/services/notifications", () => ({
+  showSystemNotification: mockShowNotification,
 }))
 
 // Mock SecureTokenStorage

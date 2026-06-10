@@ -1,9 +1,9 @@
 import { ArrowRightLeft, Clock } from "lucide-react"
 import type React from "react"
 
-import { useFavorites } from "@/core/hooks"
-import type { MediaFile } from "@/domains/media-management"
-import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
+import { useFavorites } from "@timeline-studio/core/hooks"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { calculateDimensionsWithAspectRatio } from "@timeline-studio/core/utils/preview-sizes"
 import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"

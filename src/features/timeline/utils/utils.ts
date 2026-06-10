@@ -2,7 +2,7 @@
  * Утилиты для работы с Timeline
  */
 
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@timeline-studio/core/types"
 import type {
   TimelineClip,
   TimelineProject,

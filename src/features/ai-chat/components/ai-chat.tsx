@@ -2,16 +2,17 @@ import { Bot, ChevronDown, History, Plus, Send, Settings, StopCircle, User } fro
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { TooltipProvider } from "@/components/ui/tooltip"
-import { backendAI } from "@/domains/ai-services/services/backend-ai-service"
-import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/chat"
-import { useMediaImport } from "@/domains/media-management"
-import { useModals } from "@/domains/system-integration"
-import { useTimeline } from "@/domains/video-editing/hooks"
+import { Button } from "@timeline-studio/ui/components/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@timeline-studio/ui/components/dropdown-menu"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { TooltipProvider } from "@timeline-studio/ui/components/tooltip"
+import type { Agent, AgentId, ChatMessage } from "@timeline-studio/core/types/ai-chat"
+import { useModals } from "@timeline-studio/core/hooks"
+import { getAITools } from "@timeline-studio/core/services/ai-tools-registry"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
+import { backendAI } from "@/features/ai-chat/services/backend-ai"
+import { useMediaImport } from "@/features/media/hooks/media-management"
+import { useTimeline } from "@/features/timeline/hooks"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
@@ -19,8 +20,6 @@ import { cn } from "@/lib/utils"
 // AI types are not exported from tauri-bindings yet, using placeholders
 type AIMessage = { role: string; content: string }
 type AIProvider = "claude" | "openai" | "deepseek" | "ollama"
-
-import { allAITools } from "@/domains/ai-tools"
 
 import { useChat } from "../hooks/use-chat"
 import { useResourcesAIIntegration } from "../hooks/use-resources-ai-integration"
@@ -101,6 +100,7 @@ export function AiChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const aiTools = useMemo(() => getAITools(), [])
 
   // В режиме agent показываем только модели с поддержкой инструментов (Claude, OpenAI)
   const displayedModels = useMemo(() => {
@@ -390,7 +390,7 @@ export function AiChat() {
         }))
 
         // Получаем и конвертируем AI tools для режима "agent"
-        const tools = chatMode === "agent" ? convertToolsToUnifiedFormat(allAITools) : []
+        const tools = chatMode === "agent" ? convertToolsToUnifiedFormat(aiTools) : []
 
         logger.info(`Sending AI request in ${chatMode} mode`, {
           provider,
@@ -462,7 +462,7 @@ export function AiChat() {
                 input: toolCall.input,
               })
 
-              const result = await executeToolByName(allAITools, toolCall.name, toolCall.input)
+              const result = await executeToolByName(aiTools, toolCall.name, toolCall.input)
 
               toolResults.push({
                 id: toolCall.id,
@@ -610,6 +610,7 @@ export function AiChat() {
     timelineContext,
     resourceStats,
     isIntegrated,
+    aiTools,
   ])
 
   // Auto-send effect - triggers message send when autoSendTrigger is set

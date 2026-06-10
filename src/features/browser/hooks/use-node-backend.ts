@@ -5,9 +5,9 @@
  */
 
 import { useCallback, useState } from "react"
-import { getNodeBackend } from "@/core/container"
-import type { NodeBackendHealth } from "@/core/ports"
-import type { ScannedMediaFile } from "@/core/ports/media.port"
+import { getNodeBackend } from "@timeline-studio/core/container"
+import type { NodeBackendHealth } from "@timeline-studio/core/ports"
+import type { ScannedMediaFile } from "@timeline-studio/core/ports/media.port"
 
 interface UseNodeBackendOptions {
   enabled?: boolean

@@ -1,15 +1,11 @@
 /**
  * AI Director Feature - Export Module
  * Comprehensive media analysis orchestrator
- *
- * Domain types and services are now in @/domains/ai-director
  */
 
 export type {
   AIDirectorConfig,
   AIDirectorEvent,
-  AIDirectorEventCallbacks,
-  AIDirectorVideoAnalysisOptions,
   AnalysisCompleted,
   AnalysisError,
   AnalysisProgress,
@@ -24,18 +20,18 @@ export type {
   SceneAnalysisResult,
   SystemCapabilities,
   UnifiedAudioAnalysisResult,
-  UnifiedAudioConfig,
-  UseAIDirectorEventsReturn,
   VideoAnalysisResult,
-} from "@/domains/ai-director"
-// Re-export from AI Director domain
+} from "@timeline-studio/core/types/ai-director"
+export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "@timeline-studio/core/hooks"
+export type { AIDirectorVideoAnalysisOptions, UnifiedAudioConfig } from "@timeline-studio/core/services/ai-director-service"
 export {
   AI_DIRECTOR_EVENTS,
-  AIDirectorService,
-  aiDirectorMachine,
-  aiDirectorService,
   useAIDirectorEvents,
-} from "@/domains/ai-director"
+} from "@timeline-studio/core/hooks"
+export {
+  AIDirectorService,
+  aiDirectorService,
+} from "@timeline-studio/core/services"
 
 // Components (UI components removed - now using Timeline Analysis tab)
 

@@ -28,7 +28,7 @@ vi.mock("@/lib/utils", () => ({
 }))
 
 // Мокаем Tooltip компоненты
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   Tooltip: ({ children }: any) => children,
   TooltipContent: ({ children, className }: any) => (
     <div data-testid="tooltip-content" className={className} data-oid="bczrglz">

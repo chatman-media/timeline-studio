@@ -2,8 +2,8 @@ import { useMemo, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { useColorGrading } from "../../services/color-grading-provider"
 import { CurveEditor, type CurvePoint } from "./curve-editor"
 

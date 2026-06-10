@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { type ModalType, useModals } from "@/domains/system-integration"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
+import type { ModalType } from "@timeline-studio/core/types/modals"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
 import { EffectDetailModal } from "@/features/effects/components/effect-detail-modal"
@@ -19,6 +19,7 @@ import { UserSettingsModal } from "@/features/user-settings"
 import { CacheStatisticsModal } from "@/features/video-compiler/components/cache-statistics-modal"
 import { VoiceRecordModal } from "@/features/voice-recording"
 import { AboutModal } from "./about-modal"
+import { useModals } from "../services"
 
 /**
  * Контейнер для модальных окон
@@ -31,7 +32,7 @@ export function ModalContainer() {
   const renderAllModals = () => {
     switch (activeModal) {
       case "project-settings":
-        return <ProjectSettingsModal data-oid="57:eax3" />
+        return <ProjectSettingsModal onClose={closeModal} data-oid="57:eax3" />
       // Temporarily disabled - keyboard-shortcuts feature needs review
       // case "keyboard-shortcuts":
       //   return <KeyboardShortcutsModal />
@@ -40,11 +41,11 @@ export function ModalContainer() {
       case "about":
         return <AboutModal />
       case "camera-capture":
-        return <CameraCaptureModal data-oid="f2i6s-a" />
+        return <CameraCaptureModal isOpen={isModalOpen} onClose={closeModal} data-oid="f2i6s-a" />
       case "voice-recording":
-        return <VoiceRecordModal data-oid="f7i.sio" />
+        return <VoiceRecordModal isOpen={isModalOpen} onClose={closeModal} data-oid="f7i.sio" />
       case "export":
-        return <ExportModal data-oid="ass50fv" />
+        return <ExportModal onClose={closeModal} data-oid="ass50fv" />
       case "cache-settings":
         return <CacheSettingsModal data-oid=".2vovbs" />
       case "cache-statistics":

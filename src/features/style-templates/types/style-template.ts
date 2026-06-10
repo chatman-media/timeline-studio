@@ -12,4 +12,4 @@ export type {
   StyleTemplateSortField,
   StyleTemplateSortOrder,
   TemplateElement,
-} from "@/core/types"
+} from "@timeline-studio/core/types"

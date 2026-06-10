@@ -14,10 +14,10 @@ on:
       - "vitest.config.ts"
       - "vitest.bot-ai.config.ts"
       - "scripts/smoke-ai-review-rust.ts"
-      - "src/core/**"
-      - "src/adapters/node/**"
-      - "src/adapters/mock/**"
-      - "src/cli/**"
+      - "packages/core/**"
+      - "packages/adapters/src/node/**"
+      - "packages/adapters/src/mock/**"
+      - "apps/cli/**"
       - "src/types/contracts/project-schema.ts"
   workflow_dispatch:
 

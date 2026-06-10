@@ -4,15 +4,15 @@
 
 import { Upload } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Progress } from "@/components/ui/progress"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Progress } from "@timeline-studio/ui/components/progress"
 
 import { useSubtitleImport } from "../hooks/use-subtitle-import"
 

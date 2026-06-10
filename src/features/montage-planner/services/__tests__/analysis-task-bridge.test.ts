@@ -3,22 +3,19 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { AnalysisWorkflow } from "@/domains/ai-services/services/unified-orchestrator"
-import { unifiedOrchestrator } from "@/domains/ai-services/services/unified-orchestrator"
 import { AnalysisTaskStatus } from "../../types/analysis-task"
+import type { AnalysisWorkflow } from "../domain-adapters"
+import { unifiedOrchestrator } from "../domain-adapters"
 import { AnalysisTaskBridge } from "../analysis-task-bridge"
 
 // Mock dependencies
-vi.mock("@/domains/ai-services/services/unified-orchestrator", () => ({
+vi.mock("../domain-adapters", () => ({
   unifiedOrchestrator: {
     getActiveWorkflows: vi.fn(),
     getWorkflow: vi.fn(),
     analyzeComprehensive: vi.fn(),
     cancelWorkflow: vi.fn(),
   },
-}))
-
-vi.mock("@/domains/shared/events", () => ({
   DOMAIN_EVENTS: {
     AI_SERVICES: {
       AI_DIRECTOR_ANALYSIS_PROGRESS: "ai-services.ai-director.analysis-progress",
