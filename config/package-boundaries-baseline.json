@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 move chat provider to core",
-  "violations": 12,
+  "source": "Phase F7 keep project music hook in browser feature",
+  "violations": 11,
   "bySeverity": {
-    "warn": 12
+    "warn": 11
   },
   "byEdge": {
-    "ui -> domains": 12
+    "ui -> domains": 11
   }
 }

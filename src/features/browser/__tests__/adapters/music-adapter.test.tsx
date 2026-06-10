@@ -9,12 +9,15 @@ import { MediaType } from "@/domains/media-management"
 import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 
 // Mock модулей
-vi.mock("@/domains/project-management/hooks", () => ({
+vi.mock("@/core/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),
     removeFavorite: vi.fn(),
   })),
+}))
+
+vi.mock("@/features/browser/services/project-music", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     updateMusicFiles: vi.fn(),
@@ -50,7 +53,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Import mocked modules after vi.mock
-const { useMusicFiles } = await import("@/domains/project-management/hooks")
+const { useMusicFiles } = await import("@/features/browser/services/project-music")
 const { useMusicImport } = await import("@/features/browser/hooks/use-music-import")
 
 describe("useMusicAdapter", () => {

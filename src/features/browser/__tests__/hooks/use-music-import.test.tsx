@@ -28,7 +28,7 @@ vi.mock("@/core/hooks/use-current-project", () => ({
   })),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-music-files", () => ({
+vi.mock("@/features/browser/services/project-music", () => ({
   useMusicFiles: vi.fn(() => ({
     musicFiles: [],
     updateMusicFiles: vi.fn(),
