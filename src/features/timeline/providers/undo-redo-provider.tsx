@@ -15,7 +15,7 @@ import {
   handleUndoBackendEvent,
   type UndoAction,
   type UndoRedoState,
-} from "@/domains/video-editing/machines/undo-backend-event-handlers"
+} from "./undo-backend-event-handlers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UndoRedoProvider")

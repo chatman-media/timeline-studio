@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local undo redo hook adapter",
-  "violations": 51,
+  "source": "Phase F7 local undo backend handlers",
+  "violations": 49,
   "bySeverity": {
-    "warn": 51
+    "warn": 49
   },
   "byEdge": {
-    "ui -> domains": 51
+    "ui -> domains": 49
   }
 }
