@@ -2,13 +2,13 @@ import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNotifications } from "@/core/hooks"
 import {
-  CompilerSettings,
-  FfmpegCapabilities,
-  GpuCapabilities,
   GpuEncoder,
-  GpuInfo,
-  SystemInfo,
-} from "@/domains/video-editing"
+  type CompilerSettings,
+  type FfmpegCapabilities,
+  type GpuCapabilities,
+  type GpuInfo,
+  type SystemInfo,
+} from "@/core/types/video-editing"
 import { videoCompilerSystemService } from "@/domains/video-editing/services/video-compiler-system-service"
 import { createLogger } from "@/lib/tauri-logger"
 

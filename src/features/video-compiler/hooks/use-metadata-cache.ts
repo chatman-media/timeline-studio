@@ -11,10 +11,22 @@ import {
   getCacheMemoryUsage,
 } from "@/domains/video-editing/services/compiler"
 import { createLogger } from "@/lib/tauri-logger"
-import type { MediaMetadata } from "../../../domains/shared/types"
 import type { CacheMemoryUsage } from "../types/cache"
 
 const logger = createLogger("UseMetadataCache")
+
+interface MediaMetadata {
+  file_path: string
+  file_size: number
+  modified_time: string
+  duration: number
+  resolution?: [number, number]
+  fps?: number
+  bitrate?: number
+  video_codec?: string
+  audio_codec?: string
+  cached_at: string
+}
 
 interface UseMetadataCacheReturn {
   // Получение метаданных
@@ -43,7 +55,7 @@ export function useMetadataCache(): UseMetadataCacheReturn {
   const getMetadata = useCallback(async (filePath: string) => {
     try {
       setError(null)
-      return await getCachedMetadata(filePath)
+      return (await getCachedMetadata(filePath)) as MediaMetadata | null
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to get metadata")
       setError(error)
@@ -54,7 +66,7 @@ export function useMetadataCache(): UseMetadataCacheReturn {
   const saveMetadata = useCallback(async (filePath: string, metadata: MediaMetadata) => {
     try {
       setError(null)
-      await cacheMediaMetadata(filePath, metadata)
+      await cacheMediaMetadata(filePath, metadata as any)
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to save metadata")
       setError(error)
@@ -66,7 +78,7 @@ export function useMetadataCache(): UseMetadataCacheReturn {
     try {
       setError(null)
       setIsLoading(true)
-      await cacheMultipleMetadata(files)
+      await cacheMultipleMetadata(files as any)
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to save multiple metadata")
       setError(error)

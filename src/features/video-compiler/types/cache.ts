@@ -1,7 +1,7 @@
 /**
  * Типы для системы кэширования video-compiler
  *
- * Re-export from canonical source in video-editing domain
+ * Re-export from core-facing compiler contracts
  */
 
 export type {
@@ -10,4 +10,4 @@ export type {
   MetadataCacheEntry,
   PreviewCacheEntry,
   VideoCompilerCacheStats,
-} from "@/domains/video-editing/types/video-compiler"
+} from "@/core/types/video-editing"

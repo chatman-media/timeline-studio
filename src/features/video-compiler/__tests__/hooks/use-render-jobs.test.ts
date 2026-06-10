@@ -3,9 +3,8 @@
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { RenderJob } from "@/domains/video-editing/types/video-compiler"
 import { useRenderJobs } from "../../hooks/use-render-jobs"
-import { RenderStatus } from "../../types/render"
+import { type RenderJob, RenderStatus } from "../../types/render"
 
 // Мокаем Tauri API
 vi.mock("@tauri-apps/api/core", () => ({
