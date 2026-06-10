@@ -57,4 +57,6 @@ export interface MediaFile {
   lastCheckedAt?: number
   isLoadingMetadata?: boolean
   source?: string
+  startTime?: number
+  endTime?: number
 }

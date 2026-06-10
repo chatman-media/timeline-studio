@@ -1,5 +1,6 @@
 import type { VideoFilter } from "./filters"
 import type { MediaFile } from "./media"
+import type { MediaTemplate } from "./templates"
 import type { Transition } from "./transitions"
 
 export type ResourceType =
@@ -43,3 +44,11 @@ export interface TransitionResource extends Resource {
   transition: Transition
   params?: Record<string, unknown>
 }
+
+export interface TemplateResource extends Resource {
+  type: "template"
+  template: MediaTemplate
+  params?: Record<string, unknown>
+}
+
+export type TimelineResource = MediaResource | MusicResource | FilterResource | TransitionResource | TemplateResource

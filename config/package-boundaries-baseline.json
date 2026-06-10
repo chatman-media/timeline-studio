@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 project settings core types",
-  "violations": 347,
+  "source": "Phase F7 template core types",
+  "violations": 340,
   "bySeverity": {
-    "warn": 347
+    "warn": 340
   },
   "byEdge": {
-    "ui -> domains": 347
+    "ui -> domains": 340
   }
 }
