@@ -1,1 +1,1 @@
-export { type ChatContextType, useChat } from "@/domains/ai-services/providers/chat-provider"
+export { type ChatContextType, useChat } from "@/core/services/chat-provider"

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 move backend AI facade to core",
-  "violations": 13,
+  "source": "Phase F7 move chat provider to core",
+  "violations": 12,
   "bySeverity": {
-    "warn": 13
+    "warn": 12
   },
   "byEdge": {
-    "ui -> domains": 13
+    "ui -> domains": 12
   }
 }
