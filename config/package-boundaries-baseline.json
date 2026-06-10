@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local timeline project transform",
-  "violations": 47,
+  "source": "Phase F7 remove unused timeline import export adapter",
+  "violations": 46,
   "bySeverity": {
-    "warn": 47
+    "warn": 46
   },
   "byEdge": {
-    "ui -> domains": 47
+    "ui -> domains": 46
   }
 }
