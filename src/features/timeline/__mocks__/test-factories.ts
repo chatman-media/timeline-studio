@@ -2,7 +2,7 @@
  * Фабрики для создания тестовых данных
  */
 
-import type { MediaFile, MediaType } from "@/domains/media-management"
+import type { MediaFile, MediaType } from "@/core/types"
 import type {
   Section,
   Timeline,

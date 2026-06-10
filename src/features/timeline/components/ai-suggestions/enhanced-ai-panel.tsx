@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 // REMOVED: executeContentIntelligenceTool - legacy code deleted, will be replaced by AI Director v2
 // import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
-import { MediaInfo } from "@/domains/media-management"
+import { MediaInfo } from "@/core/types"
 import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
 // MIGRATION NOTE: UnifiedDashboard removed - use AI Director integration instead
 // import { UnifiedDashboard } from "@/features/ai-content-intelligence"

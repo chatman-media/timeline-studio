@@ -4,8 +4,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType as LocalMediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType as LocalMediaType } from "@/core/types"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { StyleTemplate } from "@/features/style-templates/types"
@@ -19,8 +18,16 @@ vi.mock("@/lib/tauri-logger", () => ({
   logInfo: vi.fn(),
   logError: vi.fn(),
   createLogger: () => ({
-    errorSync: vi.fn(),
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    traceSync: vi.fn(),
+    debugSync: vi.fn(),
     infoSync: vi.fn(),
+    warnSync: vi.fn(),
+    errorSync: vi.fn(),
   }),
 }))
 

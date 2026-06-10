@@ -14,7 +14,7 @@ import { createSnapModifier } from "@dnd-kit/modifiers"
 import type React from "react"
 import { useEffect } from "react"
 
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useDragDropTimeline } from "@/features/timeline/hooks/drag-drop/use-drag-drop-timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { initializeDragDropBridge } from "../services/drag-drop-bridge"

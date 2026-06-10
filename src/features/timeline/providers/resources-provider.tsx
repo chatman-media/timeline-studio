@@ -7,8 +7,8 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { container } from "@/core/container"
-import type { FfprobeData, MediaFile } from "@/domains/media-management"
-import { MediaType as LocalMediaType } from "@/domains/media-management"
+import type { FfprobeData, MediaFile } from "@/core/types"
+import { MediaType as LocalMediaType } from "@/core/types"
 import { useApp } from "@/domains/project-management/providers"
 // Backend event handlers removed - simplified architecture
 import {
