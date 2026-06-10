@@ -15,12 +15,22 @@ import { AppInitProvider } from "@/adapters/react"
 import { BrowserProvider as CoreBrowserProvider } from "@/core/services/browser-context"
 import { setAITools } from "@/core/services/ai-tools-registry"
 import { setMediaManagementBindings } from "@/core/services/media-management-registry"
+import { setMontagePlannerBindings } from "@/core/services/montage-planner-registry"
 import { setVideoEditingBindings } from "@/core/services/video-editing-registry"
-import { ChatProvider, MCPProvider } from "@/domains/ai-services"
+import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@/domains/ai-services"
+import {
+  applyPlanToTimeline,
+  ContentAnalyzer,
+  createMarkersFromPlan,
+  MomentDetector,
+  PlanGenerator,
+  RhythmCalculator,
+} from "@/domains/ai-services/services/montage-planning"
 import { allAITools } from "@/domains/ai-tools"
 import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@/domains/browser"
 import * as mediaManagementBindings from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
+import { DOMAIN_EVENTS, eventBus } from "@/domains/shared/events"
 import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing"
 import { ColorSchemeProvider } from "@/features/color-scheme"
@@ -54,6 +64,22 @@ function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
 
 function MediaManagementBindingsBootstrapProvider({ children }: { children: ReactNode }) {
   setMediaManagementBindings(mediaManagementBindings)
+  return <>{children}</>
+}
+
+function MontagePlannerBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setMontagePlannerBindings({
+    applyPlanToTimeline,
+    ContentAnalyzer,
+    createMarkersFromPlan,
+    DOMAIN_EVENTS,
+    eventBus,
+    MomentDetector,
+    montagePlannerMachine,
+    PlanGenerator,
+    RhythmCalculator,
+    unifiedOrchestrator,
+  })
   return <>{children}</>
 }
 
@@ -115,6 +141,7 @@ const AppProviderComposite = composeProviders(
   ColorSchemeProvider, // Применение цветовых схем + синхронизация режима темы со стором
   SystemIntegrationBootstrapProvider, // Регистрирует backend-aware modal service в core container
   AIToolsBootstrapProvider, // Регистрирует domain AI tools через core registry
+  MontagePlannerBindingsBootstrapProvider, // Регистрирует domain montage planner API через core registry
 
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками

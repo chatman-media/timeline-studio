@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 register video editing through core",
-  "violations": 5,
+  "source": "Phase F7 register montage planner through core",
+  "violations": 0,
   "bySeverity": {
-    "warn": 5
+    "warn": 0
   },
   "byEdge": {
-    "ui -> domains": 5
+    "ui -> domains": 0
   }
 }

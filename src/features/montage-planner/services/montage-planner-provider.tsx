@@ -46,7 +46,8 @@ interface MontagePlannerProviderProps {
  * Упрощенный провайдер который работает с новой архитектурой BackendSync
  */
 export function MontagePlannerProvider({ children }: MontagePlannerProviderProps) {
-  const [state, send] = useActor(montagePlannerMachine, {})
+  const [state, rawSend] = useActor(montagePlannerMachine as any, {})
+  const send = rawSend as (event: MontagePlannerEvent) => void
   const [error, setError] = useState<string | null>(null)
   const { connectionError } = useApp()
 
