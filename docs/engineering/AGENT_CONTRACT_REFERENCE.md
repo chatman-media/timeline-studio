@@ -6,6 +6,9 @@
 > All types live in `crates/ts-schema/src/contracts.rs`.  
 > TypeScript mirrors are in `packages/shared-types/src/contracts.ts` (generated).  
 > Schema version: **`1.0.0`**
+>
+> Supported CLI entrypoints, postim/headless guidance, and unsupported internal
+> imports are defined in [External And Headless Integration Contracts](external-headless-contracts.md).
 
 ---
 
@@ -321,4 +324,4 @@ Telegram publish target shape, `emit-example -> render`, and `pipeline`
 
 ---
 
-*Last updated: 2026-06-07 — initial contract release.*
+*Last updated: 2026-06-11 — linked supported headless entrypoint contract.*

@@ -1,7 +1,7 @@
 # Telegram Bot Worker Production Runbook
 
 **Status:** Production foundation documented for [#225](https://github.com/chatman-media/timeline-studio/issues/225)
-**Related:** [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md)
+**Related:** [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md), [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
 
 This runbook defines the supported operating model for the Telegram bot-first and AI review worker. It covers topology, persistence, deployment, restart behavior, media retention, startup smoke and sandbox validation.
 

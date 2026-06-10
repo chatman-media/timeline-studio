@@ -42,6 +42,7 @@
 
 ### [04_api_reference/](04_api_reference/)
 Документация всех API:
+- **[External And Headless Integration Contracts](engineering/external-headless-contracts.md)** - Supported `ProjectSchema`, Rust `timeline`, `render-job`, `bot-workflow`, `bot-worker`, and postim/headless integration surface
 - **[Media API](04_api_reference/media-api.md)** - API для работы с медиафайлами
 - **[AI Chat API](04_api_reference/ai-chat-api.md)** - API для AI чат функциональности
 - **[Export API](04_api_reference/export-api.md)** - API для экспорта проектов
