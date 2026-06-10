@@ -1,0 +1,27 @@
+{
+  "owner": "@timeline-studio/desktop",
+  "status": "root-compatibility",
+  "reason": "The current root Next project and Tauri static export flow resolve entrypoints from the repository root.",
+  "ownedRootEntrypoints": [
+    {
+      "path": "src/app",
+      "kind": "next-app-router",
+      "moveBlockedBy": "Root next dev/build scripts discover the app router from the repository root."
+    },
+    {
+      "path": "src/config",
+      "kind": "desktop-composition",
+      "moveBlockedBy": "Root app-router entrypoints import these providers during desktop composition."
+    },
+    {
+      "path": "next.config.ts",
+      "kind": "next-config",
+      "moveBlockedBy": "Root Next and Tauri export scripts currently load this config from the repository root."
+    },
+    {
+      "path": "src-tauri",
+      "kind": "tauri-native-shell",
+      "moveBlockedBy": "Tauri CLI commands currently run from the repository root and use this native shell path."
+    }
+  ]
+}

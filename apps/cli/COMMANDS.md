@@ -6,10 +6,10 @@
 
 ```bash
 # Запуск через ts-node
-npx ts-node src/cli/index.ts --help
+npx ts-node apps/cli/src/index.ts --help
 
 # Или через bun
-bun run src/cli/index.ts --help
+bun run apps/cli/src/index.ts --help
 ```
 
 ## Команды
@@ -20,13 +20,13 @@ bun run src/cli/index.ts --help
 
 ```bash
 # Базовое использование
-npx ts-node src/cli/index.ts info video.mp4
+npx ts-node apps/cli/src/index.ts info video.mp4
 
 # Вывод в JSON
-npx ts-node src/cli/index.ts info video.mp4 --json
+npx ts-node apps/cli/src/index.ts info video.mp4 --json
 
 # Сохранить превью
-npx ts-node src/cli/index.ts info video.mp4 --thumbnail thumb.jpg
+npx ts-node apps/cli/src/index.ts info video.mp4 --thumbnail thumb.jpg
 ```
 
 **Пример вывода:**
@@ -50,22 +50,22 @@ npx ts-node src/cli/index.ts info video.mp4 --thumbnail thumb.jpg
 
 ```bash
 # Базовое использование
-npx ts-node src/cli/index.ts transcribe video.mp4
+npx ts-node apps/cli/src/index.ts transcribe video.mp4
 
 # С указанием языка
-npx ts-node src/cli/index.ts transcribe video.mp4 --language ru
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --language ru
 
 # Выбор модели
-npx ts-node src/cli/index.ts transcribe video.mp4 --model large
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --model large
 
 # Сохранить в файл
-npx ts-node src/cli/index.ts transcribe video.mp4 --output transcript.txt
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --output transcript.txt
 
 # Формат субтитров
-npx ts-node src/cli/index.ts transcribe video.mp4 --format srt --output subtitles.srt
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --format srt --output subtitles.srt
 
 # Использовать OpenAI API
-npx ts-node src/cli/index.ts transcribe video.mp4 --openai --api-key sk-...
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --openai --api-key sk-...
 ```
 
 **Опции:**
@@ -84,19 +84,19 @@ npx ts-node src/cli/index.ts transcribe video.mp4 --openai --api-key sk-...
 
 ```bash
 # Базовое использование
-npx ts-node src/cli/index.ts render project.json output.mp4
+npx ts-node apps/cli/src/index.ts render project.json output.mp4
 
 # С настройками качества
-npx ts-node src/cli/index.ts render project.json output.mp4 --quality ultra
+npx ts-node apps/cli/src/index.ts render project.json output.mp4 --quality ultra
 
 # Указать разрешение
-npx ts-node src/cli/index.ts render project.json output.mp4 --width 3840 --height 2160
+npx ts-node apps/cli/src/index.ts render project.json output.mp4 --width 3840 --height 2160
 
 # Без аудио
-npx ts-node src/cli/index.ts render project.json output.mp4 --no-audio
+npx ts-node apps/cli/src/index.ts render project.json output.mp4 --no-audio
 
 # Подробный вывод
-npx ts-node src/cli/index.ts render project.json output.mp4 --verbose
+npx ts-node apps/cli/src/index.ts render project.json output.mp4 --verbose
 ```
 
 **Опции:**
@@ -118,13 +118,13 @@ Production topology, systemd setup, retention policy and sandbox smoke are docum
 
 ```bash
 # Локальный smoke без Telegram token и без сетевых вызовов
-bun run src/cli/index.ts bot-worker \
+bun run apps/cli/src/index.ts bot-worker \
   --update-file docs/08_tasks/planned/fixtures/telegram-help-update.json \
   --pretty
 
 # Один getUpdates batch
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
-bun run src/cli/index.ts bot-worker --poll-once --pretty
+bun run apps/cli/src/index.ts bot-worker --poll-once --pretty
 
 # Долгоживущий polling worker с сохранением offset
 TIMELINE_BOT_TELEGRAM_TOKEN=123:token \
@@ -139,7 +139,7 @@ TIMELINE_BOT_ASYNC_WORKFLOWS=true \
 TIMELINE_BOT_WORKFLOW_CONCURRENCY=1 \
 TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20 \
 TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
-bun run src/cli/index.ts bot-worker --poll --rust-render
+bun run apps/cli/src/index.ts bot-worker --poll --rust-render
 ```
 
 Для проверки Rust-backed AI review preview/publish path без запуска Telegram worker:
@@ -204,10 +204,10 @@ bun run smoke:ai-review:rust
 
 ```bash
 # Safe preview
-bun run src/cli/index.ts bot-cleanup --pretty
+bun run apps/cli/src/index.ts bot-cleanup --pretty
 
 # Destructive cleanup after reviewing the dry-run output
-bun run src/cli/index.ts bot-cleanup --delete --pretty
+bun run apps/cli/src/index.ts bot-cleanup --delete --pretty
 ```
 
 **Опции:**
@@ -282,12 +282,12 @@ For production, prefer the dedicated env template at `config/bot-worker.producti
 ```bash
 # Получить информацию о всех видео в папке
 for f in *.mp4; do
-  npx ts-node src/cli/index.ts info "$f" --json >> metadata.json
+  npx ts-node apps/cli/src/index.ts info "$f" --json >> metadata.json
 done
 
 # Транскрибировать все видео
 for f in *.mp4; do
-  npx ts-node src/cli/index.ts transcribe "$f" -l ru -o "${f%.mp4}.txt"
+  npx ts-node apps/cli/src/index.ts transcribe "$f" -l ru -o "${f%.mp4}.txt"
 done
 ```
 
@@ -295,17 +295,17 @@ done
 
 ```bash
 # Получить длительность видео
-duration=$(npx ts-node src/cli/index.ts info video.mp4 --json | jq '.duration')
+duration=$(npx ts-node apps/cli/src/index.ts info video.mp4 --json | jq '.duration')
 
 # Создать субтитры и встроить в видео
-npx ts-node src/cli/index.ts transcribe video.mp4 --format srt -o subs.srt
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 --format srt -o subs.srt
 ffmpeg -i video.mp4 -vf subtitles=subs.srt output.mp4
 ```
 
 ## Архитектура
 
 ```
-src/cli/
+apps/cli/src/
 ├── index.ts              # Точка входа, регистрация команд
 └── commands/
     ├── index.ts          # Реэкспорты
@@ -314,7 +314,7 @@ src/cli/
     └── render.ts         # Команда render
 ```
 
-CLI использует [Node.js адаптеры](../adapters/node/README.md) для всех операций.
+CLI использует [Node.js адаптеры](../../packages/adapters/src/node/README.md) для всех операций.
 
 ## Зависимости
 
@@ -324,5 +324,5 @@ CLI использует [Node.js адаптеры](../adapters/node/README.md) 
 
 ## См. также
 
-- [Node.js адаптеры](../adapters/node/README.md)
-- [Core Ports](../core/ports/README.md)
+- [Node.js адаптеры](../../packages/adapters/src/node/README.md)
+- [Core](../../packages/core/src/README.md)

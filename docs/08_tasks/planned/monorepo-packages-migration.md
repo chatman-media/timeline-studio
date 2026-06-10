@@ -55,7 +55,7 @@ domains -> core
 adapters -> core
 ```
 
-`app-shell` - это композиционный слой (`src/app`, `src/cli`, `src/config`), где допустимо связывать UI, domains и adapters. Все остальные слои должны двигаться к зависимостям через `core`.
+`app-shell` - это композиционный слой (`apps/cli/src`, `src/app`, `src/config`, `apps/desktop` compatibility ownership), где допустимо связывать UI, domains и adapters. Все остальные слои должны двигаться к зависимостям через `core`.
 
 ## Bot-first priority
 
@@ -188,10 +188,10 @@ adapters -> core
 
 **Цель:** `apps/desktop` и `apps/cli` перестают быть только package-manager shells.
 
-- [ ] Перенести или явно зафиксировать compatibility ownership для Next/Tauri entrypoints.
-- [ ] Перенести CLI command ownership в `apps/cli` или app-owned wrappers.
-- [ ] Сохранить root scripts для developer compatibility.
-- [ ] Документировать root files, которые пока нельзя перенести из-за Next/Tauri constraints.
+- [x] Перенести или явно зафиксировать compatibility ownership для Next/Tauri entrypoints: `apps/desktop/entrypoints.json` владеет root paths `src/app`, `src/config`, `next.config.ts`, `src-tauri`.
+- [x] Перенести CLI command ownership в `apps/cli`: source и tests живут в `apps/cli/src`.
+- [x] Сохранить root scripts для developer compatibility.
+- [x] Документировать root files, которые пока нельзя перенести из-за Next/Tauri constraints.
 
 ### F14: Finalize workspace CI, build, and docs
 

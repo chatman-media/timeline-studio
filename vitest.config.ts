@@ -27,7 +27,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "packages/**/*.test.{ts,tsx}", "apps/**/*.test.{ts,tsx}"],
     exclude: ["e2e/**/*", "node_modules/**/*"],
     testTimeout: 10000,
     // Быстрая параллельная конфигурация (Vitest 4.x)
@@ -68,7 +68,7 @@ export default defineConfig({
         "src/features/color-grading/components/scopes/scope-viewer.tsx", // Координатор отображения скопов
         "**/testing/**", // Исключаем тестовые утилиты и моки из покрытия
       ],
-      include: ["src/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}"],
+      include: ["src/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "apps/**/*.{ts,tsx}"],
       reportsDirectory: "./coverage",
       skipFull: true,
       clean: true,

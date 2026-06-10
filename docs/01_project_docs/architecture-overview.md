@@ -10,23 +10,23 @@ Timeline Studio построен на **Hexagonal Architecture** (Ports & Adapte
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │  ┌───────────────────────────────────────────────────────────────────┐  │
-│  │                    UI Layer (src/features/)                       │  │
+│  │              UI Layer (src/features + packages/ui/src)           │  │
 │  │         React 19, XState v5, shadcn/ui, Tailwind CSS v4           │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
 │                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                  Domain Layer (src/domains/)                      │  │
+│  │              Domain Layer (packages/domains/src)                 │  │
 │  │    ai-director, media-management, project-management, browser     │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
 │                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                   Core Layer (src/core/)                          │  │
+│  │               Core Layer (packages/core/src)                    │  │
 │  │    Ports (interfaces) + DI Container                              │  │
 │  │    IMediaService, IVideoService, IAIService, IStorageService...   │  │
 │  └─────────────────────────────┬─────────────────────────────────────┘  │
 │                                │                                        │
 │  ┌─────────────────────────────▼─────────────────────────────────────┐  │
-│  │                 Adapters Layer (src/adapters/)                    │  │
+│  │             Adapters Layer (packages/adapters/src)              │  │
 │  ├───────────────┬─────────────────┬─────────────────────────────────┤  │
 │  │ Tauri (Rust)  │   Node.js       │           Mock                  │  │
 │  │ Desktop App   │   CLI/Server    │          Testing                │  │
@@ -49,16 +49,17 @@ Timeline Studio построен на **Hexagonal Architecture** (Ports & Adapte
 ```
 ┌─────────────────┐
 │   UI Layer      │  React компоненты, хуки, XState машины
-│  (features/)    │  Зависит от: domains/, core/
+│ (src/features + │  Зависит от: @timeline-studio/ui/core
+│ packages/ui)    │
 ├─────────────────┤
 │  Domain Layer   │  Бизнес-логика, сервисы, типы
-│  (domains/)     │  Зависит от: core/ (только интерфейсы)
+│ packages/domains│  Зависит от: @timeline-studio/core
 ├─────────────────┤
 │   Core Layer    │  Интерфейсы (порты), DI контейнер
-│   (core/)       │  Не зависит ни от чего
+│ packages/core   │  Не зависит от верхних слоев
 ├─────────────────┤
 │ Adapters Layer  │  Реализации для Tauri/Node/Mock
-│  (adapters/)    │  Реализует: core/ интерфейсы
+│packages/adapters│  Реализует: @timeline-studio/core
 └─────────────────┘
 ```
 
@@ -67,7 +68,7 @@ Timeline Studio построен на **Hexagonal Architecture** (Ports & Adapte
 Центральная часть системы - интерфейсы сервисов и DI контейнер.
 
 ```
-src/core/
+packages/core/src/
 ├── ports/                # Интерфейсы сервисов
 │   ├── ai.port.ts        # IAIService - Whisper, YOLO, анализ
 │   ├── backend.port.ts   # IBackendService - команды проекта
@@ -97,7 +98,7 @@ src/core/
 
 ```typescript
 // Получение сервиса через контейнер - независимо от платформы
-import { getMedia, getVideo, getAI } from "@/core/container"
+import { getMedia, getVideo, getAI } from "@timeline-studio/core/container"
 
 const metadata = await getMedia().getMetadata("/path/to/video.mp4")
 const jobId = await getVideo().renderProject(schema, "/output.mp4")
@@ -109,7 +110,7 @@ const result = await getAI().whisperTranscribeLocal("/path/to/audio.wav")
 Реализации интерфейсов для разных платформ.
 
 ```
-src/adapters/
+packages/adapters/src/
 ├── tauri/                # Desktop (Tauri + Rust)
 │   ├── ai.ts             # ONNX Runtime через Rust
 │   ├── media.ts          # FFmpeg через Rust bindings
@@ -144,17 +145,17 @@ src/adapters/
 
 ```typescript
 // Desktop приложение
-import { initTauriApp } from "@/adapters/tauri"
+import { initTauriApp } from "@timeline-studio/adapters/tauri"
 await initTauriApp()
 
 // CLI / Server
-import { initNodeApp } from "@/adapters/node"
+import { initNodeApp } from "@timeline-studio/adapters/node"
 const services = await initNodeApp({
   ai: { openaiApiKey: process.env.OPENAI_API_KEY },
 })
 
 // Тестирование
-import { initMockApp } from "@/adapters/mock"
+import { initMockApp } from "@timeline-studio/adapters/mock"
 initMockApp()
 ```
 
@@ -163,7 +164,7 @@ initMockApp()
 Бизнес-логика, независимая от UI и инфраструктуры.
 
 ```
-src/domains/
+packages/domains/src/
 ├── ai-director/          # AI режиссёр и планировщик монтажа
 ├── ai-services/          # Интеграция с AI моделями
 ├── ai-tools/             # AI инструменты для пользователя
@@ -190,8 +191,8 @@ src/domains/
 
 ```typescript
 // Домен использует порты, не зная о реализации
-import { getMedia } from "@/core/container"
-import type { MediaMetadata } from "@/core/ports"
+import { getMedia } from "@timeline-studio/core/container"
+import type { MediaMetadata } from "@timeline-studio/core/ports"
 
 export class MediaManagementService {
   async analyzeFile(path: string): Promise<MediaMetadata> {
@@ -232,7 +233,7 @@ src/features/
 CLI приложение использует Node.js адаптеры.
 
 ```
-src/cli/
+apps/cli/src/
 ├── index.ts              # Точка входа
 ├── commands/
 │   ├── info.ts           # timeline-studio info <file>
@@ -244,13 +245,13 @@ src/cli/
 
 ```bash
 # Информация о файле
-npx ts-node src/cli/index.ts info video.mp4
+npx ts-node apps/cli/src/index.ts info video.mp4
 
 # Транскрибация
-npx ts-node src/cli/index.ts transcribe video.mp4 -l ru
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 -l ru
 
 # Рендеринг
-npx ts-node src/cli/index.ts render project.json output.mp4
+npx ts-node apps/cli/src/index.ts render project.json output.mp4
 ```
 
 ## 🦀 Backend (Rust/Tauri)
@@ -356,10 +357,10 @@ bun run tauri build
 ---
 
 *Для детальной информации смотрите README в соответствующих директориях:*
-- [Core](../../src/core/README.md)
-- [Adapters](../../src/adapters/README.md)
-- [Domains](../../src/domains/README.md)
-- [CLI](../../src/cli/README.md)
+- [Core](../../packages/core/src/README.md)
+- [Adapters](../../packages/adapters/src/README.md)
+- [Domains](../../packages/domains/src/README.md)
+- [CLI](../../apps/cli/COMMANDS.md)
 
 ---
 

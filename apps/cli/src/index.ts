@@ -8,13 +8,13 @@
  * @example
  * ```bash
  * # Получить информацию о файле
- * npx ts-node src/cli/index.ts info video.mp4
+ * npx ts-node apps/cli/src/index.ts info video.mp4
  *
  * # Транскрибировать аудио/видео
- * npx ts-node src/cli/index.ts transcribe video.mp4 -l ru
+ * npx ts-node apps/cli/src/index.ts transcribe video.mp4 -l ru
  *
  * # Рендеринг проекта
- * npx ts-node src/cli/index.ts render project.json output.mp4
+ * npx ts-node apps/cli/src/index.ts render project.json output.mp4
  * ```
  */
 

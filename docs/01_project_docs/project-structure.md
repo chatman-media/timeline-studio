@@ -18,18 +18,18 @@
 
 ```
 timeline-studio/
+├── packages/
+│   ├── core/src          # 🎯 Ядро: порты (интерфейсы) и DI контейнер
+│   ├── adapters/src      # 🔌 Адаптеры: Tauri, Node, mock, HTTP, React
+│   ├── domains/src       # 📦 Домены: бизнес-логика
+│   └── ui/src            # Общие UI primitives и reusable feature surfaces
+├── apps/
+│   ├── cli/src           # 💻 CLI приложение и bot-worker commands
+│   └── desktop           # Desktop workspace ownership metadata
 ├── src/
-│   ├── core/             # 🎯 Ядро: порты (интерфейсы) и DI контейнер
-│   ├── adapters/         # 🔌 Адаптеры: реализации для разных платформ
-│   │   ├── tauri/        #    └── Tauri (десктоп)
-│   │   ├── node/         #    └── Node.js (CLI, сервер)
-│   │   ├── mock/         #    └── Моки (тестирование)
-│   │   └── react/        #    └── React-специфичные
-│   ├── domains/          # 📦 Домены: бизнес-логика
 │   ├── features/         # 🎨 Фичи: UI компоненты и хуки
-│   ├── cli/              # 💻 CLI приложение
-│   ├── app/              # Next.js App Router
-│   ├── components/       # Общие UI компоненты
+│   ├── app/              # Next.js App Router compatibility path
+│   ├── config/           # Desktop composition providers
 │   ├── i18n/             # Интернационализация
 │   ├── lib/              # Утилиты
 │   └── test/             # Тестовые утилиты
@@ -87,7 +87,7 @@ Timeline Studio использует **Hexagonal Architecture** (Ports & Adapter
 Ядро содержит интерфейсы (порты) и DI контейнер.
 
 ```
-src/core/
+packages/core/src/
 ├── ports/                # Интерфейсы сервисов
 │   ├── ai.port.ts        # IAIService - AI/ML функции
 │   ├── backend.port.ts   # IBackendService - взаимодействие с бэкендом
@@ -108,7 +108,7 @@ src/core/
 
 ```typescript
 // Получение сервиса через контейнер
-import { getMedia, getVideo, getAI } from "@/core/container"
+import { getMedia, getVideo, getAI } from "@timeline-studio/core/container"
 
 // Сервис реализует интерфейс, независимо от платформы
 const metadata = await getMedia().getMetadata("/path/to/video.mp4")
@@ -132,7 +132,7 @@ const jobId = await getVideo().renderProject(schema, "/output.mp4")
 Реализации портов для разных платформ.
 
 ```
-src/adapters/
+packages/adapters/src/
 ├── tauri/                # Tauri Desktop адаптеры
 │   ├── ai.ts             # TauriAIService
 │   ├── backend.ts        # TauriBackendService
@@ -172,17 +172,17 @@ src/adapters/
 
 ```typescript
 // Tauri Desktop App
-import { initTauriApp } from "@/adapters/tauri"
+import { initTauriApp } from "@timeline-studio/adapters/tauri"
 await initTauriApp()
 
 // Node.js CLI/Server
-import { initNodeApp } from "@/adapters/node"
+import { initNodeApp } from "@timeline-studio/adapters/node"
 const services = await initNodeApp({
   ai: { openaiApiKey: process.env.OPENAI_API_KEY },
 })
 
 // Тестирование
-import { initMockApp } from "@/adapters/mock"
+import { initMockApp } from "@timeline-studio/adapters/mock"
 initMockApp()
 ```
 
@@ -201,7 +201,7 @@ initMockApp()
 Бизнес-логика, независимая от UI и инфраструктуры.
 
 ```
-src/domains/
+packages/domains/src/
 ├── ai-director/          # AI режиссёр и планировщик
 │   ├── services/         # Сервисы анализа
 │   ├── hooks/            # React хуки для UI
@@ -256,7 +256,7 @@ src/domains/
 
 1. **Домен = бизнес-область** - каждый домен отвечает за конкретную область
 2. **Независимость** - домены не импортируют друг друга напрямую
-3. **Использование портов** - взаимодействие через интерфейсы из `@/core/ports`
+3. **Использование портов** - взаимодействие через интерфейсы из `@timeline-studio/core/ports`
 4. **Тестируемость** - каждый домен тестируется отдельно с моками
 
 ### Ключевые домены
@@ -340,7 +340,7 @@ features/timeline/
 CLI приложение для работы с медиа без GUI.
 
 ```
-src/cli/
+apps/cli/src/
 ├── index.ts              # Точка входа
 ├── commands/
 │   ├── info.ts           # timeline-studio info <file>
@@ -354,16 +354,16 @@ src/cli/
 
 ```bash
 # Информация о медиафайле
-npx ts-node src/cli/index.ts info video.mp4
+npx ts-node apps/cli/src/index.ts info video.mp4
 
 # Транскрибация
-npx ts-node src/cli/index.ts transcribe video.mp4 -l ru
+npx ts-node apps/cli/src/index.ts transcribe video.mp4 -l ru
 
 # Рендеринг проекта
-npx ts-node src/cli/index.ts render project.json output.mp4
+npx ts-node apps/cli/src/index.ts render project.json output.mp4
 ```
 
-CLI использует Node.js адаптеры из `@/adapters/node`.
+CLI использует Node.js адаптеры из `@timeline-studio/adapters/node`.
 
 ## 🦀 Backend (Rust/Tauri)
 
@@ -444,7 +444,7 @@ bun run lint             # Проверка
 bun run lint:fix         # Автоисправление
 
 # CLI
-npx ts-node src/cli/index.ts --help
+npx ts-node apps/cli/src/index.ts --help
 ```
 
 ## 📊 Архитектурные принципы
@@ -458,9 +458,9 @@ npx ts-node src/cli/index.ts --help
 
 ## 🎯 Что дальше?
 
-1. [Изучите Core и Ports](../../src/core/README.md) - интерфейсы сервисов
-2. [Изучите Adapters](../../src/adapters/README.md) - реализации
-3. [Изучите Domains](../../src/domains/README.md) - бизнес-логика
+1. [Изучите Core и Ports](../../packages/core/src/README.md) - интерфейсы сервисов
+2. [Изучите Adapters](../../packages/adapters/src/README.md) - реализации
+3. [Изучите Domains](../../packages/domains/src/README.md) - бизнес-логика
 4. [Настройте среду разработки](../05_development/setup.md)
 
 ---
