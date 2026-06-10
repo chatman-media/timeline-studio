@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 bridge browser state through core",
-  "violations": 8,
+  "source": "Phase F7 register media management through core",
+  "violations": 7,
   "bySeverity": {
-    "warn": 8
+    "warn": 7
   },
   "byEdge": {
-    "ui -> domains": 8
+    "ui -> domains": 7
   }
 }

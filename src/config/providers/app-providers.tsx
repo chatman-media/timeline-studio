@@ -14,10 +14,11 @@ import { type ReactNode } from "react"
 import { AppInitProvider } from "@/adapters/react"
 import { BrowserProvider as CoreBrowserProvider } from "@/core/services/browser-context"
 import { setAITools } from "@/core/services/ai-tools-registry"
+import { setMediaManagementBindings } from "@/core/services/media-management-registry"
 import { ChatProvider, MCPProvider } from "@/domains/ai-services"
 import { allAITools } from "@/domains/ai-tools"
 import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@/domains/browser"
-import { MediaManagementProvider } from "@/domains/media-management"
+import * as mediaManagementBindings from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
 import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import { ColorSchemeProvider } from "@/features/color-scheme"
@@ -46,6 +47,11 @@ function SystemIntegrationBootstrapProvider({ children }: { children: ReactNode 
 
 function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
   setAITools(allAITools)
+  return <>{children}</>
+}
+
+function MediaManagementBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setMediaManagementBindings(mediaManagementBindings)
   return <>{children}</>
 }
 
@@ -102,7 +108,8 @@ const AppProviderComposite = composeProviders(
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками
   ProjectSettingsProvider, // Настройки проекта с backend синхронизацией
-  MediaManagementProvider, // MediaManagementOrchestrator - управление медиа файлами
+  MediaManagementBindingsBootstrapProvider, // Регистрирует domain media hooks через core registry
+  mediaManagementBindings.MediaManagementProvider, // MediaManagementOrchestrator - управление медиа файлами
   ResourcesProvider, // Ресурсы (effects/filters/transitions) с backend интеграцией
   DomainBrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
   BrowserCoreBridgeProvider, // Публикует browser state в core context для features

@@ -31,7 +31,7 @@ vi.mock("@/domains/project-management/hooks", () => ({
 }))
 
 // Мокируем основной экспорт из index
-vi.mock("@/domains/media-management", () => ({
+vi.mock("@/features/media/hooks/media-management", () => ({
   DEFAULT_PREVIEW_SIZE_INDEX: 3,
   DEFAULT_CONTENT_SIZES: {
     MEDIA: 250,
