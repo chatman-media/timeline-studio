@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 central timeline orchestrator adapter",
-  "violations": 48,
+  "source": "Phase F7 local timeline project transform",
+  "violations": 47,
   "bySeverity": {
-    "warn": 48
+    "warn": 47
   },
   "byEdge": {
-    "ui -> domains": 48
+    "ui -> domains": 47
   }
 }

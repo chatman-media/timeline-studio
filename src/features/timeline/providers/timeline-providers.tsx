@@ -27,9 +27,9 @@ type TimelineTrack = Track
 type TimelineSection = Section
 
 import { container } from "@/core/container"
-import { transformProjectStateToTimeline } from "@/domains/video-editing/utils/project-transform"
 import type { ProjectState as BackendProjectState } from "@/types/generated/tauri-bindings"
 import { getVideoEditingOrchestrator } from "../services/video-editing-orchestrator"
+import { transformProjectStateToTimeline } from "../utils/project-transform"
 
 // ===========================
 // Project Provider
