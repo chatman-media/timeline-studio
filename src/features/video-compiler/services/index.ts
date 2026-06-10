@@ -4,3 +4,4 @@
  * Re-export from core for backward compatibility
  */
 export * from "@/core/services/video-compiler"
+export * from "./frame-extraction-service"

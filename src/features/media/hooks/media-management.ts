@@ -1,5 +1,6 @@
 export {
   getMediaMetadataService,
+  indexedDBCacheService,
   getMediaFiles,
   getMediaMetadata,
   selectAudioFile,

@@ -10,7 +10,7 @@ import {
   type RecognitionFrame,
   type SubtitleFrame,
   type TimelineFrame,
-} from "@/domains/video-editing/services/compiler"
+} from "../services/frame-extraction-service"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 route montage app settings through core",
-  "violations": 17,
+  "source": "Phase F7 keep frame extraction service in feature",
+  "violations": 16,
   "bySeverity": {
-    "warn": 17
+    "warn": 16
   },
   "byEdge": {
-    "ui -> domains": 17
+    "ui -> domains": 16
   }
 }
