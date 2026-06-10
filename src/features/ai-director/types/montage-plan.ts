@@ -2,7 +2,7 @@
  * AI Montage Plan Types
  * Структура плана монтажа, создаваемого AI Director
  *
- * LEGACY: Этот файл deprecated, типы мигрированы в domains/ai-services/types/unified
+ * LEGACY: Этот файл deprecated, типы мигрированы в core/types/unified-montage
  * Сохранен для обратной совместимости с реэкспортом из unified
  */
 
@@ -13,14 +13,14 @@ export type {
   TransitionType,
   UnifiedMontagePlan as MontagePlan,
   UnifiedMontageStyle as MontageStyle,
-} from "@/domains/ai-services/types/unified"
+} from "@/core/types/unified-montage"
 
 // Import types for local use
 import type {
   UnifiedMontagePlan as MontagePlan,
   UnifiedMontageStyle as MontageStyle,
   TransitionType,
-} from "@/domains/ai-services/types/unified"
+} from "@/core/types/unified-montage"
 
 // Legacy clip type - kept for backward compatibility
 export interface MontageClip {
@@ -41,7 +41,7 @@ export interface MontageClip {
 }
 
 // Helper functions to convert between legacy and unified types
-import type { UnifiedFragment } from "@/domains/ai-services/types/unified"
+import type { UnifiedFragment } from "@/core/types/unified-montage"
 
 /**
  * Converts UnifiedFragment to legacy MontageClip
@@ -83,7 +83,7 @@ export function clipToFragment(clip: MontageClip): UnifiedFragment {
 // Use UnifiedMontageStyle from unified types instead
 
 /**
- * @deprecated Use UnifiedMontageStyle from @/domains/ai-services/types/unified
+ * @deprecated Use UnifiedMontageStyle from @/core/types/unified-montage
  */
 export type _LegacyMontageStyle =
   | "dynamic" // Быстрый, энергичный

@@ -23,9 +23,12 @@ vi.mock("@/lib/tauri-logger", () => ({
   })),
 }))
 
-// Mock domain function
-vi.mock("@/domains/ai-director", () => ({
+// Mock core AI service function
+vi.mock("@/core/services", () => ({
   aiDirectorAnalyzeBatch: vi.fn(),
+  analysisStorageService: {
+    saveComprehensiveAnalysis: vi.fn(),
+  },
 }))
 
 // Create mock event service
@@ -45,7 +48,7 @@ vi.mock("@/core", () => ({
 }))
 
 // Import mocked functions
-import { aiDirectorAnalyzeBatch } from "@/domains/ai-director"
+import { aiDirectorAnalyzeBatch } from "@/core/services"
 
 const mockAnalyzeBatch = vi.mocked(aiDirectorAnalyzeBatch)
 

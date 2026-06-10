@@ -1,11 +1,11 @@
 /**
  * Hook для применения montage планов к timeline
  *
- * Uses domain services instead of direct invoke() calls.
+ * Uses core services instead of direct invoke() calls.
  */
 
 import { useCallback, useState } from "react"
-import { fileSystemService } from "@/domains/media-management/services/file-system-service"
+import { fileSystemService } from "@/core/services"
 
 import type { MontagePlan } from "../types/montage-plan"
 import { validateMontagePlan } from "../utils/montage-plan-parser"
@@ -161,7 +161,7 @@ export function useMontageApplicator(callbacks?: ApplicatorCallbacks) {
 
     for (const clip of clips) {
       try {
-        // Проверяем существование файла через domain service
+        // Проверяем существование файла через platform-backed service
         const sourceFile = clip.sourceFile
         const sourceFilePath = typeof sourceFile === "string" ? sourceFile : sourceFile?.path
         const filePath = clip.filePath || sourceFilePath || ""

@@ -5,6 +5,8 @@
  * Features should use these hooks instead of importing directly from domains.
  */
 
+export { AI_DIRECTOR_EVENTS, useAIDirectorEvents } from "./use-ai-director-events"
+export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "./use-ai-director-events"
 export { useApp } from "./use-app"
 export { useCurrentProject } from "./use-current-project"
 export { useFavorites } from "./use-favorites"

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 person identification core services",
-  "violations": 309,
+  "source": "Phase F7 AI Director core services",
+  "violations": 300,
   "bySeverity": {
-    "warn": 309
+    "warn": 300
   },
   "byEdge": {
-    "ui -> domains": 309
+    "ui -> domains": 300
   }
 }
