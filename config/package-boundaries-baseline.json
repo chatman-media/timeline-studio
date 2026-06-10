@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 subtitles core type hooks",
-  "violations": 252,
+  "source": "Phase F7 browser toolbar type bridges",
+  "violations": 250,
   "bySeverity": {
-    "warn": 252
+    "warn": 250
   },
   "byEdge": {
-    "ui -> domains": 252
+    "ui -> domains": 250
   }
 }
