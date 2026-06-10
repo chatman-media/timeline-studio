@@ -1,2 +1,2 @@
-export * from "@/domains/video-editing"
+export * from "./types"
 export * from "./components/resources-panel"

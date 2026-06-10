@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 style-template preview boundary",
-  "violations": 403,
+  "source": "Phase F7 resources local types",
+  "violations": 400,
   "bySeverity": {
-    "warn": 403
+    "warn": 400
   },
   "byEdge": {
-    "ui -> domains": 403
+    "ui -> domains": 400
   }
 }
