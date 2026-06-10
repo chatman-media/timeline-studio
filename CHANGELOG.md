@@ -1,3 +1,10 @@
+## [3.92.1](https://github.com/chatman-media/timeline-studio/compare/v3.92.0...v3.92.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* restore main CI checks ([#280](https://github.com/chatman-media/timeline-studio/issues/280)) ([efb5ecb](https://github.com/chatman-media/timeline-studio/commit/efb5ecbb5efb893216a922a26be8db70627943ab))
+
 # [3.92.0](https://github.com/chatman-media/timeline-studio/compare/v3.91.0...v3.92.0) (2026-06-09)
 
 
