@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react"
-
 import { Input } from "@timeline-studio/ui/components/input"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { useMemo, useState } from "react"
 import { cn } from "@/lib/utils"
 
 import { nodeLibrary } from "../../services/node-library"

@@ -3,9 +3,6 @@
  * Fine-tune timing, transitions, and pacing of montage sequences
  */
 
-import { Film, Music, Pause, Play, Settings2, Zap } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -14,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Film, Music, Pause, Play, Settings2, Zap } from "lucide-react"
+import { useState } from "react"
 import { formatTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 import type { MontagePlan, PacingProfile, TransitionStyle } from "../../types"

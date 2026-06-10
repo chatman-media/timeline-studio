@@ -6,8 +6,8 @@
  */
 
 import { renderHook } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
 import type { ChatMessage } from "@timeline-studio/core/types/ai-chat"
+import { describe, expect, it, vi } from "vitest"
 import { useChatState } from "../use-chat-state"
 
 // Mock useChat hook

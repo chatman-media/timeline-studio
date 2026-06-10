@@ -4,16 +4,16 @@
  * Новая версия player provider с синхронизацией через backend
  */
 
+import { container } from "@timeline-studio/core/container"
+import { usePlaybackTimeSync } from "@timeline-studio/core/hooks/use-playback-time-sync"
+import { useUserSettings } from "@timeline-studio/core/hooks/use-user-settings"
+import { PlayerCommands } from "@timeline-studio/core/services/player-commands"
+import { type CommandPriority, CommandQueue } from "@timeline-studio/core/services/video-player-command-queue"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { defaultShouldRetry, retryWithBackoff } from "@timeline-studio/core/utils/retry-helper"
 import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { isServiceEnabled } from "@/config/service-config"
-import { container } from "@timeline-studio/core/container"
-import { useUserSettings } from "@timeline-studio/core/hooks/use-user-settings"
-import { PlayerCommands } from "@timeline-studio/core/services/player-commands"
-import type { MediaFile } from "@timeline-studio/core/types"
-import { usePlaybackTimeSync } from "@timeline-studio/core/hooks/use-playback-time-sync"
-import { type CommandPriority, CommandQueue } from "@timeline-studio/core/services/video-player-command-queue"
-import { defaultShouldRetry, retryWithBackoff } from "@timeline-studio/core/utils/retry-helper"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectState } from "@/types/generated/tauri-bindings"
 

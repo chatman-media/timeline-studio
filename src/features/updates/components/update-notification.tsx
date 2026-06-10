@@ -3,11 +3,10 @@
  * Показывает информацию об обновлении и предоставляет действия для пользователя
  */
 
-import { X } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { X } from "lucide-react"
 
 import { useUpdateManager } from "../hooks/use-update-manager"
 

@@ -3,12 +3,11 @@
  * Displays AI-generated recommendations for improving the montage plan
  */
 
-import { AlertTriangle, CheckCircle, Info, Lightbulb } from "lucide-react"
-
 import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { AlertTriangle, CheckCircle, Info, Lightbulb } from "lucide-react"
 
 import { useMontagePlanner } from "../../hooks/use-montage-planner"
 import { usePlanGenerator } from "../../hooks/use-plan-generator"

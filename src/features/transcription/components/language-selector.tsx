@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { useTranslation } from "react-i18next"
 
 interface LanguageSelectorProps {
   value?: string

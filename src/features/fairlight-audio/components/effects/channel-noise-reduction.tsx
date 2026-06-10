@@ -3,15 +3,14 @@
  * Simplified UI for channel strip integration
  */
 
-import { Mic, MicOff } from "lucide-react"
-import { useCallback, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { Mic, MicOff } from "lucide-react"
+import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import type { NoiseReductionConfig } from "../../services/noise-reduction/noise-reduction-engine"
 

@@ -3,10 +3,6 @@
  * Professional noise reduction interface with multiple algorithms
  */
 
-import { Activity, AlertCircle, Brain, Mic, MicOff, Volume2, Waves, Zap } from "lucide-react"
-import { useCallback, useId, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
@@ -17,6 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Activity, AlertCircle, Brain, Mic, MicOff, Volume2, Waves, Zap } from "lucide-react"
+import { useCallback, useId, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import type {
   AnalysisResult,

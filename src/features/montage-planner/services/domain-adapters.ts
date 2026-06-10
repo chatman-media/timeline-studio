@@ -1,4 +1,7 @@
-import { getMontagePlannerBindings, type MontagePlannerBindings } from "@timeline-studio/core/services/montage-planner-registry"
+import {
+  getMontagePlannerBindings,
+  type MontagePlannerBindings,
+} from "@timeline-studio/core/services/montage-planner-registry"
 
 export type MontagePlannerContext = any
 export type MontagePlannerEvent = any

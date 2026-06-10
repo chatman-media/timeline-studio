@@ -2,8 +2,6 @@
  * Кнопка для импорта субтитров
  */
 
-import { Upload } from "lucide-react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -13,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { Upload } from "lucide-react"
 
 import { useSubtitleImport } from "../hooks/use-subtitle-import"
 

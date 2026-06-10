@@ -2,8 +2,8 @@
  * Wrapper для StatusBar с интеграцией данных из браузера
  */
 
-import { useMemo } from "react"
 import type { MediaFile } from "@timeline-studio/core/types"
+import { useMemo } from "react"
 import { useMediaManagement } from "@/features/media/hooks/media-management"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { useBulkMediaActions } from "../../hooks/use-bulk-media-actions"

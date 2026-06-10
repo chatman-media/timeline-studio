@@ -2,8 +2,8 @@
  * Тесты для утилит преобразования медиафайлов
  */
 
-import { describe, expect, it } from "vitest"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { describe, expect, it } from "vitest"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 import { mediaItemsToMediaFiles, mediaItemToMediaFile } from "../media-mapper"
 

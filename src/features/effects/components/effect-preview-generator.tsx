@@ -3,13 +3,13 @@
  * Используется в Developer Tools для предварительного рендеринга превью всех эффектов
  */
 
-import { useCallback, useState } from "react"
-import { useTranslation } from "react-i18next"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useEffectPreviewGenerator } from "../hooks/use-effect-preview-generator"
 import type { BaseEffect } from "../types"
 

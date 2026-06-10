@@ -1,3 +1,10 @@
+import { Button } from "@timeline-studio/ui/components/button"
+import { Checkbox } from "@timeline-studio/ui/components/checkbox"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@timeline-studio/ui/components/collapsible"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import {
   AudioLines,
   ChevronDown,
@@ -13,14 +20,6 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Checkbox } from "@timeline-studio/ui/components/checkbox"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@timeline-studio/ui/components/collapsible"
-import { Input } from "@timeline-studio/ui/components/input"
-import { Label } from "@timeline-studio/ui/components/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
-import { Slider } from "@timeline-studio/ui/components/slider"
 import { useTimeline } from "@/features/timeline"
 
 import { createLogger } from "@/lib/tauri-logger"

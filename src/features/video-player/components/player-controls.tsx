@@ -1,3 +1,6 @@
+import type { MediaFile } from "@timeline-studio/core/types"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import {
   Camera,
   ChevronFirst,
@@ -17,10 +20,6 @@ import {
 } from "lucide-react"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Slider } from "@timeline-studio/ui/components/slider"
-import type { MediaFile } from "@timeline-studio/core/types"
 import { getFrameTime } from "@/features/media/utils/video"
 import { useMulticam } from "@/features/multicam"
 import { createLogger } from "@/lib/tauri-logger"

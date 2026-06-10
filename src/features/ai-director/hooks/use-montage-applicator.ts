@@ -4,8 +4,8 @@
  * Uses core services instead of direct invoke() calls.
  */
 
-import { useCallback, useState } from "react"
 import { fileSystemService } from "@timeline-studio/core/services"
+import { useCallback, useState } from "react"
 
 import type { MontagePlan } from "../types/montage-plan"
 import { validateMontagePlan } from "../utils/montage-plan-parser"

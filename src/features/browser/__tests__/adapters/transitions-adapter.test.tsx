@@ -449,7 +449,8 @@ describe("useTransitionsAdapter", () => {
         complexity: "basic",
       }
 
-      const { useFavorites } = await vi.importMock<typeof import("@timeline-studio/core/hooks")>("@timeline-studio/core/hooks")
+      const { useFavorites } =
+        await vi.importMock<typeof import("@timeline-studio/core/hooks")>("@timeline-studio/core/hooks")
       const mockIsItemFavorite = vi.fn(() => true)
 
       vi.mocked(useFavorites).mockReturnValue({

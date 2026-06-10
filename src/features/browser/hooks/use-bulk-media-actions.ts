@@ -3,8 +3,8 @@
  * Позволяет добавлять несколько файлов в ресурсы одновременно
  */
 
-import { useCallback } from "react"
 import type { MediaFile } from "@timeline-studio/core/types"
+import { useCallback } from "react"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 

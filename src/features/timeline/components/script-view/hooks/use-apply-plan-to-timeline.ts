@@ -2,8 +2,8 @@
  * Hook для применения Script Plan к Timeline
  */
 
-import { useCallback, useState } from "react"
 import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
+import { useCallback, useState } from "react"
 import { mediaItemToMediaFile } from "@/features/multicam/utils/media-mapper"
 import { useClips } from "@/features/timeline/hooks/clips/use-clips"
 import { useTracks } from "@/features/timeline/hooks/state/use-tracks"

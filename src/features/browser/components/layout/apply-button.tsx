@@ -1,8 +1,7 @@
+import type { MediaFile } from "@timeline-studio/core/types"
 import { Play } from "lucide-react"
 import { memo, useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import type { MediaFile } from "@timeline-studio/core/types"
 import { usePlayer } from "@/features/video-player"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

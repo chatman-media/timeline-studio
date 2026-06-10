@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { GpuEncoder } from "@timeline-studio/core/types/video-editing"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { GpuStatus, GpuStatusBadge } from "../../components/gpu-status"
 import * as useGpuCapabilitiesModule from "../../hooks/use-gpu-capabilities"
 

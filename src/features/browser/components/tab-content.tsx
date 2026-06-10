@@ -1,6 +1,5 @@
-import { memo } from "react"
-
 import { TabsContent } from "@timeline-studio/ui/components/tabs"
+import { memo } from "react"
 import { UniversalList } from "@/features/browser/components/universal-list"
 
 import { useEffectsAdapter } from "../adapters/use-effects-adapter"

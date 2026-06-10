@@ -3,11 +3,11 @@
  * Расширяет существующую функциональность транскрипции
  */
 
-import { useCallback, useRef, useState } from "react"
-import { useTranslation } from "react-i18next"
 import { container } from "@timeline-studio/core/container"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import type { EnhancedSubtitleInput, EnhancedSubtitleResult } from "@timeline-studio/core/types/enhanced-subtitle"
+import { useCallback, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции

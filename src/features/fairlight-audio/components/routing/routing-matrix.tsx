@@ -1,11 +1,10 @@
-import { Minus, Plus, Radio, Settings, Users, Volume2, VolumeX } from "lucide-react"
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { Minus, Plus, Radio, Settings, Users, Volume2, VolumeX } from "lucide-react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import type { AudioBus, ChannelGroup, ChannelSend } from "../../services/bus-router"

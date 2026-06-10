@@ -1,10 +1,9 @@
-import { ExternalLink, Eye, EyeOff, Loader2, X } from "lucide-react"
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
+import { ExternalLink, Eye, EyeOff, Loader2, X } from "lucide-react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { createLogger } from "@/lib/tauri-logger"
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { KeyStatusIndicator } from "./key-status-indicator"

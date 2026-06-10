@@ -1,6 +1,6 @@
+import { container } from "@timeline-studio/core/container"
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
-import { container } from "@timeline-studio/core/container"
 import { useModals } from "@/features/modals/services"
 import { createLogger } from "@/lib/tauri-logger"
 import { ShortcutHandler } from "../components/shortcut-handler"

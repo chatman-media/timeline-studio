@@ -2,8 +2,6 @@
  * Компонент для выбора активной камеры в мультикамерном режиме
  */
 
-import { Camera, Check } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
@@ -14,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
+import { Camera, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import type { MulticamAngle } from "../hooks/use-multicam"

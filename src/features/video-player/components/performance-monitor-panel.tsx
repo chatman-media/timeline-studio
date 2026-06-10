@@ -3,11 +3,11 @@
  * Отображает метрики производительности видеоплеера в реальном времени
  */
 
-import { Activity, AlertCircle, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Activity, AlertCircle, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react"
+import { useState } from "react"
 import { usePerformanceMonitor } from "../hooks/use-performance-monitor"
 
 export interface PerformanceMonitorPanelProps {

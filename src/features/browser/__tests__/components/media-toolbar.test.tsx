@@ -3,8 +3,8 @@
  */
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { ViewMode } from "@timeline-studio/domains/browser"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { MediaToolbar, type MediaToolbarProps } from "../../components/media-toolbar"
 
 // Mock react-i18next

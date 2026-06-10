@@ -2,9 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act, render, screen } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { FileMetadata } from "../../components/file-metadata"
 

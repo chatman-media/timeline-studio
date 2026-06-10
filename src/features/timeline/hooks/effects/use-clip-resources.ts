@@ -2,11 +2,11 @@
  * Hook для работы с ресурсами (эффектами, фильтрами, переходами) на клипах
  */
 
-import { useCallback } from "react"
 import type { VideoEffect } from "@timeline-studio/core/types/effects"
 import type { VideoFilter } from "@timeline-studio/core/types/filters"
 import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { Transition } from "@timeline-studio/core/types/transitions"
+import { useCallback } from "react"
 import type { TimelineClip } from "../../types"
 import { useTimeline } from "../state/use-timeline"
 

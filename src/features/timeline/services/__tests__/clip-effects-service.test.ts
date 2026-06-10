@@ -2,8 +2,8 @@
  * Тесты для Clip Effects Service
  */
 
-import { describe, expect, it } from "vitest"
 import type { BaseEffect } from "@timeline-studio/domains/video-editing/types"
+import { describe, expect, it } from "vitest"
 import type { TimelineClip, TimelineProject, TimelineSection, TimelineTrack } from "../../types"
 import {
   applyEffectToClip,

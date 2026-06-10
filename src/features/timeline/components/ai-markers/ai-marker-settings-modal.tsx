@@ -3,13 +3,13 @@
  * Модальное окно настроек для AI маркеров
  */
 
-import { useEffect, useState } from "react"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import { Button } from "@timeline-studio/ui/components/button"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
-import { useModals } from "@timeline-studio/core/hooks"
+import { useEffect, useState } from "react"
 
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 

@@ -1,7 +1,3 @@
-import { AlertCircle, CheckCircle2, Clock, FileVideo, ListTodo, Loader2, StopCircle, XCircle } from "lucide-react"
-import type React from "react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
@@ -13,6 +9,9 @@ import {
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { AlertCircle, CheckCircle2, Clock, FileVideo, ListTodo, Loader2, StopCircle, XCircle } from "lucide-react"
+import type React from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import { formatJobDuration, getJobStatusColor, useRenderJobs } from "../hooks/use-render-jobs"

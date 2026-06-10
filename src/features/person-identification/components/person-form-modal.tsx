@@ -3,15 +3,14 @@
  * Позволяет пользователю создавать новых персон или редактировать существующих
  */
 
-import { Tag as TagIcon, Upload, User, X } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
-
+import { useModals } from "@timeline-studio/core/hooks"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Textarea } from "@timeline-studio/ui/components/textarea"
-import { useModals } from "@timeline-studio/core/hooks"
+import { Tag as TagIcon, Upload, User, X } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 import type { PersonProfile } from "../types/person"
 

@@ -3,9 +3,6 @@
  * Экспорт всех компонентов, хуков и сервисов для работы с обновлениями
  */
 
-// Сервисы
-export { updateService } from "./services/update-service"
-export type { UpdateService } from "./services/update-service"
 export { InlineUpdateManager, UpdateManager } from "./components/update-manager"
 // Компоненты
 export { UpdateNotification } from "./components/update-notification"
@@ -18,6 +15,9 @@ export {
 export type { UseUpdateManagerReturn } from "./hooks/use-update-manager"
 // Хуки
 export { useUpdateAvailability, useUpdateManager } from "./hooks/use-update-manager"
+export type { UpdateService } from "./services/update-service"
+// Сервисы
+export { updateService } from "./services/update-service"
 // Типы
 export type {
   AutoCheckSettings,

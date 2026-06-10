@@ -35,6 +35,8 @@ describe("media-management-registry", () => {
   })
 
   it("throws before media management bindings are registered", () => {
+    clearMediaManagementBindings()
+
     expect(() => getMediaManagementBindings().useMediaManagement()).toThrow(
       'Media management binding "useMediaManagement" is not registered',
     )

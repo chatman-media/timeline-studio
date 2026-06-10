@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import { type MediaFile, MediaType } from "@timeline-studio/core/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import {
   calculateRelativePath,

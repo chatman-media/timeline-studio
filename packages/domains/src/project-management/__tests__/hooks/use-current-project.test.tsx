@@ -8,9 +8,9 @@
  */
 
 import { renderHook } from "@testing-library/react"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useCurrentProject } from "../../hooks/use-current-project"
-import * as appProvider from "../../providers/app-provider"
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", () => ({
@@ -51,17 +51,14 @@ const mockProjectState = {
   },
 }
 
-vi.mock("../../providers/app-provider", () => ({
-  useApp: vi.fn(() => ({
-    projectState: mockProjectState,
-    executeCommand: mockExecuteCommand,
-  })),
-}))
-
 describe("useCurrentProject Hook", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockExecuteCommand.mockResolvedValue({ success: true })
+    vi.mocked(useApp).mockReturnValue({
+      projectState: mockProjectState,
+      executeCommand: mockExecuteCommand,
+    } as any)
     // Reset console.log mock
     vi.spyOn(console, "log").mockImplementation(() => {})
   })
@@ -74,7 +71,7 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should return null when no project state", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: null,
         executeCommand: mockExecuteCommand,
       } as any)
@@ -85,7 +82,7 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should return null when project is not in state", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: {},
         executeCommand: mockExecuteCommand,
       } as any)
@@ -322,7 +319,7 @@ describe("useCurrentProject Hook", () => {
     })
 
     it("should use default filename when no project name", async () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: { project: null },
         executeCommand: mockExecuteCommand,
       } as any)

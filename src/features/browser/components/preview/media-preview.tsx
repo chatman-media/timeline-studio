@@ -1,7 +1,6 @@
+import type { MediaFile } from "@timeline-studio/core/types"
 import { Loader2 } from "lucide-react"
 import { useEffect, useRef } from "react"
-
-import type { MediaFile } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { AudioPreview } from "./audio-preview"

@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { fireEvent, render, screen } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { ApplyButton } from "@/features/browser/components/layout/apply-button"
 
 // Mock the logger

@@ -3,7 +3,6 @@
  * Tests how Media Pool, Sequences, and Project Service work together
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaPoolItem } from "@timeline-studio/domains/media-management"
 import {
   addItemToPool,
@@ -13,6 +12,7 @@ import {
   updateItemUsage,
 } from "@timeline-studio/domains/media-management"
 import { TimelineStudioProjectService } from "@timeline-studio/domains/project-management/services/timeline-studio-project-service"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/features/timeline/types"
 import type { Sequence } from "@/features/timeline/types/sequence"
 

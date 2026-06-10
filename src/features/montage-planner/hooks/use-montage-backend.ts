@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useState } from "react"
-
+import { createLogger } from "@/lib/tauri-logger"
 import {
   analyzeAudioContentCommand,
   analyzeFrameQualityCommand,
@@ -12,7 +12,6 @@ import {
   detectKeyMomentsFromDetections,
   generateMontagePlanFromMoments,
 } from "../services/domain-adapters"
-import { createLogger } from "@/lib/tauri-logger"
 
 import type {
   AudioContentAnalysis,

@@ -1,12 +1,11 @@
-import { Lock, Unlock } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { DialogFooter } from "@timeline-studio/ui/components/dialog"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Lock, Unlock } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import {
   ASPECT_RATIOS,
   COLOR_SPACES,
@@ -83,7 +82,7 @@ export function ProjectSettingsModal({ onClose = noop }: ProjectSettingsModalPro
         if (parts.length === 2) {
           const w = Number.parseInt(parts[0], 10)
           const h = Number.parseInt(parts[1], 10)
-          if (!isNaN(w) && !isNaN(h)) {
+          if (!Number.isNaN(w) && !Number.isNaN(h)) {
             setCustomWidth(w)
             setCustomHeight(h)
           }

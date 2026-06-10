@@ -1,13 +1,12 @@
-import { Info, Zap } from "lucide-react"
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Info, Zap } from "lucide-react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { GpuStatus } from "@/features/video-compiler/components/gpu-status"
 
 import { useUserSettings } from "../../hooks/use-user-settings"

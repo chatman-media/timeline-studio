@@ -2,7 +2,6 @@
  * Hook для управления эффектами на клипах timeline
  */
 
-import { useCallback } from "react"
 import {
   addEffectToClip,
   addFilterToClip,
@@ -10,6 +9,7 @@ import {
   removeFilterFromClip,
 } from "@timeline-studio/core/services/user-effects"
 import type { ProjectSchema } from "@timeline-studio/core/types"
+import { useCallback } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../state/use-timeline"
 

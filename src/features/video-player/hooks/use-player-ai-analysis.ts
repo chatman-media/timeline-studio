@@ -8,10 +8,10 @@
  * - Поддерживает сцены, объекты и ключевые моменты из AI Director
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
 import { aiDirectorAnalyzeQuick } from "@timeline-studio/core/services/ai-director-service"
-import type { ComprehensiveAnalysisResult } from "@timeline-studio/core/types/ai-director"
 import type { KeyMoment, ObjectDetection, SceneInfo } from "@timeline-studio/core/types/ai-analysis"
+import type { ComprehensiveAnalysisResult } from "@timeline-studio/core/types/ai-director"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"
 

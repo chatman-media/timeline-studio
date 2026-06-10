@@ -3,13 +3,12 @@
  * Provides overview and control of the montage planning process
  */
 
-import { AlertCircle, Download, Play, Settings, Sparkles, Upload } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { AlertCircle, Download, Play, Settings, Sparkles, Upload } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { useMontagePlanner } from "../../hooks/use-montage-planner"
 import { ExportFormat, MONTAGE_STYLES } from "../../types"
 import { PlanViewer } from "./plan-viewer"

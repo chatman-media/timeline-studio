@@ -2,9 +2,9 @@
  * Компонент отображения статистики кеша эффектов
  */
 
-import { memo } from "react"
 import { Card } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { memo } from "react"
 import { cn } from "@/lib/utils"
 
 interface CacheStatsDisplayProps {

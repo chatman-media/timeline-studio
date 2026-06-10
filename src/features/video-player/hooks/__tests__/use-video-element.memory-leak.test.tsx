@@ -3,8 +3,8 @@
  */
 
 import { renderHook } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { type MediaFile, MediaType } from "@timeline-studio/domains/media-management"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useVideoElement } from "../use-video-element"
 
 describe("useVideoElement - Memory Leak Prevention", () => {

@@ -1,6 +1,5 @@
-import { describe, expect, it } from "vitest"
-
 import { PersonDatabaseService } from "@timeline-studio/domains/ai-services/services/person-identification"
+import { describe, expect, it } from "vitest"
 
 import type { PersonProfile as Person } from "../../types/person"
 

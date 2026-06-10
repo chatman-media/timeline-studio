@@ -1,9 +1,8 @@
+import { Button } from "@timeline-studio/ui/components/button"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import { Pause, Play, RotateCcw } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Slider } from "@timeline-studio/ui/components/slider"
 import type { VideoEffect } from "@/features/effects/types"
 
 import { generateCSSFilterForEffect, getPlaybackRate } from "../utils/css-effects"

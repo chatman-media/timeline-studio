@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { Sector, Track } from "@/features/media/types/types"
 
 import { processVideoFiles } from "../../utils/video-tracks"

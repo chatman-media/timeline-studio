@@ -2,7 +2,6 @@
  * Хук для работы с кэшем метаданных медиафайлов
  */
 
-import { useCallback, useEffect, useState } from "react"
 import {
   cacheMediaMetadata,
   cacheMultipleMetadata,
@@ -10,6 +9,7 @@ import {
   getCachedMetadata,
   getCacheMemoryUsage,
 } from "@timeline-studio/core/services/video-compiler"
+import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { CacheMemoryUsage } from "../types/cache"
 

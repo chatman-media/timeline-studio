@@ -8,8 +8,8 @@
  * - Оптимизация производительности
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
-
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { MediaType } from "@timeline-studio/core/types"
 import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -18,8 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { TooltipProvider } from "@timeline-studio/ui/components/tooltip"
-import { useNotifications } from "@timeline-studio/core/hooks"
-import { MediaType } from "@timeline-studio/core/types"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useProjectSettings } from "@/features/project-settings"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import type { TimelineClip } from "@/features/timeline/types"

@@ -10,11 +10,11 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 // Убираем ненужные иконки
 
+import { useCurrentProject } from "@timeline-studio/core/hooks/use-current-project"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
-import { useCurrentProject } from "@timeline-studio/core/hooks/use-current-project"
 import { useTimelineAIIntegration } from "@/features/ai-chat"
 import { getDragDropManager } from "@/features/drag-drop"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"

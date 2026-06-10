@@ -2,8 +2,8 @@
  * Hook для управления предпросмотром переходов в видеоплеере
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { TimelineTransition } from "@timeline-studio/core/types"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { logError, logInfo } from "@/lib/tauri-logger"
 

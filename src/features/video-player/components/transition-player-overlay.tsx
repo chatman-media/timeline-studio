@@ -2,12 +2,12 @@
  * Оверлей с информацией о переходе в видеоплеере
  */
 
-import { X } from "lucide-react"
+import type { TimelineTransition } from "@timeline-studio/core/types"
 
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
-import type { TimelineTransition } from "@timeline-studio/core/types"
+import { X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface TransitionPlayerOverlayProps {

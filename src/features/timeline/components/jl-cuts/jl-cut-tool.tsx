@@ -1,12 +1,11 @@
-import { Link2, RotateCcw, ScissorsLineDashed, Unlink2 } from "lucide-react"
-import { useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Link2, RotateCcw, ScissorsLineDashed, Unlink2 } from "lucide-react"
+import { useState } from "react"
 
 import { useJLCuts } from "../../hooks/editing/use-jl-cuts"
 

@@ -1,7 +1,4 @@
-import { AlertCircle, CheckCircle2, Clock, Loader2, StopCircle, Upload, XCircle } from "lucide-react"
-import type React from "react"
-import { useTranslation } from "react-i18next"
-
+import type { RenderStatus } from "@timeline-studio/core/types"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
@@ -13,7 +10,9 @@ import {
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
-import type { RenderStatus } from "@timeline-studio/core/types"
+import { AlertCircle, CheckCircle2, Clock, Loader2, StopCircle, Upload, XCircle } from "lucide-react"
+import type React from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import { useRenderQueue } from "../hooks/use-render-queue"

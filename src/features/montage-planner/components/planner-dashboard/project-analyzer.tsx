@@ -3,13 +3,12 @@
  * Displays results of content analysis including quality metrics and detected moments
  */
 
-import { Eye, Film, MessageSquare, Music, Star, Zap } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Eye, Film, MessageSquare, Music, Star, Zap } from "lucide-react"
 
 import { useContentAnalysis } from "../../hooks/use-content-analysis"
 import { MomentCategory } from "../../types"

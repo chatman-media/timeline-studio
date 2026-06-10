@@ -28,7 +28,7 @@ vi.mock("@/features/timeline/hooks/state/use-timeline-selection", () => ({
   }),
 }))
 
-vi.mock("@timeline-studio/domains/video-editing", () => ({
+vi.mock("@/features/timeline/providers/player-provider", () => ({
   usePlayer: () => ({
     currentTime: 5.0,
     isPlaying: false,
@@ -169,14 +169,6 @@ describe("useTimelineIntegration", () => {
     })
 
     it("should return 0 when no media file", () => {
-      vi.mock("@timeline-studio/domains/video-editing", () => ({
-        usePlayer: () => ({
-          currentTime: 5.0,
-          isPlaying: false,
-          currentVideo: null,
-        }),
-      }))
-
       const { result } = renderHook(() =>
         useTimelineIntegration({
           renderer: mockRenderer,
@@ -318,14 +310,6 @@ describe("useTimelineIntegration", () => {
 
   describe("edge cases", () => {
     it("should handle renderer without currentVideo", () => {
-      vi.mock("@timeline-studio/domains/video-editing", () => ({
-        usePlayer: () => ({
-          currentTime: 0,
-          isPlaying: false,
-          currentVideo: null,
-        }),
-      }))
-
       const { result } = renderHook(() =>
         useTimelineIntegration({
           renderer: mockRenderer,

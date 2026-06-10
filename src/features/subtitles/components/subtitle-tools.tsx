@@ -1,6 +1,3 @@
-import { FileDown, FileUp, Loader2 } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -10,6 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
+import { FileDown, FileUp, Loader2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 import { useSubtitlesExport } from "../hooks/use-subtitles-export"
 import { useSubtitlesImport } from "../hooks/use-subtitles-import"

@@ -1,6 +1,3 @@
-import { ChevronDown, Eye, EyeOff, RotateCcw, Save, Wand2 } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -10,6 +7,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
+import { ChevronDown, Eye, EyeOff, RotateCcw, Save, Wand2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { useModals } from "@/features/modals/services"
 
 import { useColorGradingContext } from "../../services/color-grading-provider"

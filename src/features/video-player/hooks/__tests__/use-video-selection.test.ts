@@ -2,10 +2,9 @@
  * @vitest-environment jsdom
  */
 import { renderHook } from "@testing-library/react"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
-import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 
 // Мокаем backend-sync ДО импорта компонентов
 const mockPlayerState = {

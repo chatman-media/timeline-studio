@@ -3,14 +3,14 @@
  * Компонент для управления video fade in/out эффектами
  */
 
-import { Sparkles as Fade } from "lucide-react"
-import { memo, useCallback } from "react"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { Sparkles as Fade } from "lucide-react"
+import { memo, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import { useClips } from "../../hooks/clips/use-clips"
 import { VideoFadeService } from "../../services/video-fade-service"

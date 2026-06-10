@@ -16,10 +16,10 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
-import React from "react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/video-editing/types"
 import { MediaCodec, MediaType } from "@timeline-studio/domains/video-editing/types"
+import React from "react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { TimelineProviders } from "@/test/test-utils"
 
 // ============================================================================

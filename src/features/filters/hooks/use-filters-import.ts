@@ -1,6 +1,5 @@
-import { useCallback, useMemo, useState } from "react"
-
 import { container } from "@timeline-studio/core"
+import { useCallback, useMemo, useState } from "react"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { logError, logInfo } from "@/lib/tauri-logger"
 

@@ -11,10 +11,9 @@
 
 import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { createSnapModifier } from "@dnd-kit/modifiers"
+import type { MediaFile } from "@timeline-studio/core/types"
 import type React from "react"
 import { useEffect } from "react"
-
-import type { MediaFile } from "@timeline-studio/core/types"
 import { useDragDropTimeline } from "@/features/timeline/hooks/drag-drop/use-drag-drop-timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import { initializeDragDropBridge } from "../services/drag-drop-bridge"

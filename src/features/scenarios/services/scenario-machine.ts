@@ -3,8 +3,8 @@
  * XState машина для управления состоянием выполнения сценария
  */
 
-import { assign, setup } from "xstate"
 import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
+import { assign, setup } from "xstate"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Scenario, ScenarioResult, ScenarioStep } from "../types/scenario"

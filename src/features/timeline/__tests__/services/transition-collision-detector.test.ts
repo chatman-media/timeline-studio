@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest"
 import type { TimelineTransition } from "@timeline-studio/domains/video-editing/types"
+import { beforeEach, describe, expect, it } from "vitest"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   autoFixCollisions,

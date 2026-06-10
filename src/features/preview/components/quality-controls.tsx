@@ -2,13 +2,12 @@
  * Quality Controls - Adjust preview quality settings
  */
 
-import { Eye, Gauge, Monitor, Settings, Zap } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card } from "@timeline-studio/ui/components/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { Eye, Gauge, Monitor, Settings, Zap } from "lucide-react"
 
 import type { GPUTier, PreviewQuality } from "../types"
 

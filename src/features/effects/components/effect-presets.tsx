@@ -1,9 +1,8 @@
+import { Button } from "@timeline-studio/ui/components/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { ChevronDown, ChevronRight, Settings, Trash2 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import type { EffectPreset, VideoEffect } from "@/features/effects/types"
 
 import { createLogger } from "@/lib/tauri-logger"

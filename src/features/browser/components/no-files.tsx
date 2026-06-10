@@ -5,14 +5,13 @@
  * с инструкциями по добавлению и поддерживаемыми форматами
  */
 
-import { FileText, Filter, FolderOpen, Music, Palette, Sparkles, Upload, Video } from "lucide-react"
-import type React from "react"
-import { useEffect, useState } from "react"
-
+import { appDirectoriesService } from "@timeline-studio/core/services/app-directories-service"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent } from "@timeline-studio/ui/components/card"
-import { appDirectoriesService } from "@timeline-studio/core/services/app-directories-service"
+import { FileText, Filter, FolderOpen, Music, Palette, Sparkles, Upload, Video } from "lucide-react"
+import type React from "react"
+import { useEffect, useState } from "react"
 import { replaceHomeWithTilde } from "@/lib/path-utils"
 import { createLogger } from "@/lib/tauri-logger"
 

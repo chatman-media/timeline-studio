@@ -2,8 +2,8 @@
  * Hook для работы с шаблонами проектов
  */
 
-import { useCallback, useMemo, useState } from "react"
 import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
+import { useCallback, useMemo, useState } from "react"
 import type { Sequence } from "@/features/timeline/types/sequence"
 import { createLogger } from "@/lib/tauri-logger"
 

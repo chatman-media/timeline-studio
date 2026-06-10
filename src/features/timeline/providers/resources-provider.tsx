@@ -4,8 +4,6 @@
  * Новая версия с интеграцией backend state management
  */
 
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
-
 import { container } from "@timeline-studio/core/container"
 import { useApp } from "@timeline-studio/core/hooks/use-app"
 import type {
@@ -15,6 +13,7 @@ import type {
   StyleTemplate,
   SubtitleStyleTemplate,
   Transition,
+  BaseEffect as VideoEffect,
   VideoFilter,
 } from "@timeline-studio/core/types"
 import { MediaType as LocalMediaType } from "@timeline-studio/core/types"
@@ -30,7 +29,7 @@ import {
   type TimelineResource,
   type TransitionResource,
 } from "@timeline-studio/core/types/resources"
-import type { BaseEffect as VideoEffect } from "@timeline-studio/core/types"
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
 

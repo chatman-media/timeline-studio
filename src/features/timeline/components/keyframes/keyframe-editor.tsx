@@ -2,8 +2,6 @@
  * Редактор keyframe анимаций для клипов
  */
 
-import { Eye, Move, Plus, RotateCcw, Scale, Settings, Trash2, Zap } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -13,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Eye, Move, Plus, RotateCcw, Scale, Settings, Trash2, Zap } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { useKeyframeAnimation } from "../../hooks/animation/use-keyframe-animation"
 import { useTimeline } from "../../hooks/state/use-timeline"
 import type { AnimatableProperty, InterpolationType } from "../../services/keyframe-animation-service"

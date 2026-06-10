@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef } from "react"
 import { MediaType } from "@timeline-studio/core/types"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 

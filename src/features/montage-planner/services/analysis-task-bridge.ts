@@ -12,6 +12,9 @@
  */
 
 import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
+import { createLogger } from "@/lib/tauri-logger"
+import type { AnalysisTask, AnalysisTaskOptions, AnalysisTaskProgress } from "../types/analysis-task"
+import { AnalysisTaskStatus } from "../types/analysis-task"
 import {
   AIDirectorAnalysisProgressEvent,
   AIDirectorStageCompletedEvent,
@@ -22,9 +25,6 @@ import {
   eventBus,
   unifiedOrchestrator,
 } from "./domain-adapters"
-import { createLogger } from "@/lib/tauri-logger"
-import type { AnalysisTask, AnalysisTaskOptions, AnalysisTaskProgress } from "../types/analysis-task"
-import { AnalysisTaskStatus } from "../types/analysis-task"
 
 const logger = createLogger({ module: "AnalysisTaskBridge" })
 

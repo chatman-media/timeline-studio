@@ -2,12 +2,11 @@
  * TrackHeader - Заголовок трека с элементами управления
  */
 
-import { Eye, EyeOff, Image, Lock, Mic, Music, Type, Unlock, Video, Volume2, VolumeX } from "lucide-react"
-import React from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { Eye, EyeOff, Image, Lock, Mic, Music, Type, Unlock, Video, Volume2, VolumeX } from "lucide-react"
+import React from "react"
 import { cn } from "@/lib/utils"
 
 import type { TimelineTrack, TrackType } from "../../types"

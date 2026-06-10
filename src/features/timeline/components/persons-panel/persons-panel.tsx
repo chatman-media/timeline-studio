@@ -3,9 +3,6 @@
  * Показывает всех обнаруженных персон и их статистику
  */
 
-import { Eye, EyeOff, Filter, Search, Settings, Users } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -14,6 +11,8 @@ import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Eye, EyeOff, Filter, Search, Settings, Users } from "lucide-react"
+import { useState } from "react"
 
 import { useTimelinePersons } from "../../hooks/state/use-timeline-persons"
 

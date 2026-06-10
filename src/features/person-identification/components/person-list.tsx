@@ -3,13 +3,12 @@
  * Отображает список всех персон с возможностью поиска и фильтрации
  */
 
-import { Edit, Search, Trash2, User } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Edit, Search, Trash2, User } from "lucide-react"
+import { useState } from "react"
 
 import type { PersonProfile } from "../types/person"
 

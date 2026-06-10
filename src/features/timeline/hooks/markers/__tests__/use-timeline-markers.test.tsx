@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook } from "@testing-library/react"
+import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { TimelineProviders } from "@/test/test-utils"
 import type { MarkerType } from "../../../types/markers"
 import { useTimelineMarkers } from "../use-timeline-markers"
 
@@ -31,8 +31,8 @@ const mockUpdateMarker = vi.fn()
 const mockRemoveMarker = vi.fn()
 const mockGoToMarker = vi.fn()
 
-// Мокируем domain provider
-vi.mock("@timeline-studio/domains/video-editing", () => ({
+// Мокируем feature timeline provider
+vi.mock("@/features/timeline/providers/timeline-providers", () => ({
   useTimelineMarkers: () => ({
     markers: mockMarkers,
     addMarker: mockAddMarker,
@@ -40,11 +40,10 @@ vi.mock("@timeline-studio/domains/video-editing", () => ({
     removeMarker: mockRemoveMarker,
     goToMarker: mockGoToMarker,
   }),
-  TimelineMarkersProvider: ({ children }: any) => children,
-  ResourcesProvider: ({ children }: any) => children,
-  PlayerProvider: ({ children }: any) => children,
   TimelineProvider: ({ children }: any) => children,
 }))
+
+const TimelineProviders = ({ children }: { children: ReactNode }) => <>{children}</>
 
 describe("useTimelineMarkers", () => {
   beforeEach(() => {

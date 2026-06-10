@@ -3,9 +3,6 @@
  * Позволяет пользователю настроить автоматическую проверку обновлений
  */
 
-import { Clock, Download, Info, RefreshCw, Settings } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -13,6 +10,8 @@ import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { Clock, Download, Info, RefreshCw, Settings } from "lucide-react"
+import { useState } from "react"
 
 import { useUpdateManager } from "../hooks/use-update-manager"
 

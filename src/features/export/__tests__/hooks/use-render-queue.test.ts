@@ -2,9 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import { type RenderJob, RenderStatus } from "@timeline-studio/domains/video-editing/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { logError } from "@/lib/tauri-logger"
 
 import { useRenderQueue } from "../../hooks/use-render-queue"

@@ -3,16 +3,21 @@
  * Пошаговый мастер выполнения сценария монтажа
  */
 
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
+import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
+import { Button } from "@timeline-studio/ui/components/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@timeline-studio/ui/components/dialog"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { AlertCircle, ArrowLeft, ArrowRight, Check, SkipForward, X } from "lucide-react"
 import type React from "react"
 import { useCallback, useState } from "react"
-
-import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
-import { Button } from "@timeline-studio/ui/components/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
-import { Progress } from "@timeline-studio/ui/components/progress"
-import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
-import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 
 import { useScenarioWizard, type WizardData } from "../hooks/use-scenario-wizard"
 import type { Scenario } from "../types/scenario"

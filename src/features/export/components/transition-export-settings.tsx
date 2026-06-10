@@ -3,10 +3,6 @@
  * Интегрируется с основным экспорт модалом
  */
 
-import { AlertTriangle, CheckCircle, Cpu, Settings, Zap } from "lucide-react"
-import { useId } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -16,6 +12,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { AlertTriangle, CheckCircle, Cpu, Settings, Zap } from "lucide-react"
+import { useId } from "react"
+import { useTranslation } from "react-i18next"
 import type { TimelineProject } from "@/features/timeline/types"
 import { cn } from "@/lib/utils"
 

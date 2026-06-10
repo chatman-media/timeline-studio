@@ -2,8 +2,8 @@
  * Tests for media file converter utilities
  */
 
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import { describe, expect, it } from "vitest"
-import { MediaType, type MediaFile } from "@timeline-studio/core/types"
 import type { Fragment } from "../../types"
 import { MomentCategory } from "../../types"
 import { convertFragmentForAIServices, convertToAIServicesMediaFile } from "../media-file-converter"

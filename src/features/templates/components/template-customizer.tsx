@@ -1,11 +1,11 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { AnimationType, CellConfiguration, MediaTemplateConfig } from "../lib/template-config"
 
 interface TemplateCustomizerProps {

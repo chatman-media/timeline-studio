@@ -2,9 +2,8 @@
  * Hook for Timeline actions - добавление медиафайлов на таймлайн
  */
 
-import { useCallback } from "react"
-
 import { type MediaFile, MediaType } from "@timeline-studio/core/types"
+import { useCallback } from "react"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TrackType } from "../../types"

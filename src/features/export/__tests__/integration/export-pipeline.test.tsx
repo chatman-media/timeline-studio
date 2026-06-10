@@ -15,10 +15,9 @@
  * - Cloud upload integration (YouTube, Vimeo, Telegram)
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { ProjectSchema } from "@timeline-studio/domains/video-editing/types/video-compiler"
 import { AspectRatio, OutputFormat } from "@timeline-studio/domains/video-editing/types/video-compiler"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { RenderProgress } from "@/features/video-compiler/types/render"
 import { RenderStatus } from "@/features/video-compiler/types/render"
 import { QUALITY_PRESETS } from "../../constants/export-constants"

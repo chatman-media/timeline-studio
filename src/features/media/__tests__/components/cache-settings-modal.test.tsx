@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { indexedDBCacheService } from "@timeline-studio/core/services/media-cache-service"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { renderWithProviders } from "@/test/test-utils"
 import { CacheSettingsModal } from "../../components/cache-settings-modal"
 

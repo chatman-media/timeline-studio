@@ -1,4 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   deleteUserEffect,
   getUserEffectsList,
@@ -9,6 +8,7 @@ import {
   type UserEffect,
   type UserEffectsCollection,
 } from "@timeline-studio/domains/video-editing/services/effects"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { BaseEffect } from "../../types/unified-effects"
 import { prepareEffectForExport } from "../../utils/user-effects"
 

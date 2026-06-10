@@ -3,6 +3,19 @@
  * Comprehensive media analysis orchestrator
  */
 
+export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "@timeline-studio/core/hooks"
+export {
+  AI_DIRECTOR_EVENTS,
+  useAIDirectorEvents,
+} from "@timeline-studio/core/hooks"
+export {
+  AIDirectorService,
+  aiDirectorService,
+} from "@timeline-studio/core/services"
+export type {
+  AIDirectorVideoAnalysisOptions,
+  UnifiedAudioConfig,
+} from "@timeline-studio/core/services/ai-director-service"
 export type {
   AIDirectorConfig,
   AIDirectorEvent,
@@ -22,16 +35,6 @@ export type {
   UnifiedAudioAnalysisResult,
   VideoAnalysisResult,
 } from "@timeline-studio/core/types/ai-director"
-export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "@timeline-studio/core/hooks"
-export type { AIDirectorVideoAnalysisOptions, UnifiedAudioConfig } from "@timeline-studio/core/services/ai-director-service"
-export {
-  AI_DIRECTOR_EVENTS,
-  useAIDirectorEvents,
-} from "@timeline-studio/core/hooks"
-export {
-  AIDirectorService,
-  aiDirectorService,
-} from "@timeline-studio/core/services"
 
 // Components (UI components removed - now using Timeline Analysis tab)
 

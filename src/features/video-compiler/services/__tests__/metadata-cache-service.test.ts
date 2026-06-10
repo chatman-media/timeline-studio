@@ -1,5 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaMetadata } from "@timeline-studio/domains/shared/types"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { CacheMemoryUsage } from "../../types/cache"
 
 // Mock logger

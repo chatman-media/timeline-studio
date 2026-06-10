@@ -1,9 +1,8 @@
 import { useVirtualizer } from "@tanstack/react-virtual"
+import { Button } from "@timeline-studio/ui/components/button"
 import { CopyPlus } from "lucide-react"
 import React, { useRef } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 /**

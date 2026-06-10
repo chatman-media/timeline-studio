@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-
 import { videoCompilerRenderService } from "@timeline-studio/core/services/video-compiler"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 

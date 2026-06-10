@@ -1,9 +1,8 @@
-import { Copy, Loader2, Trash2 } from "lucide-react"
-import { useState } from "react"
-
+import type { ChatListItem } from "@timeline-studio/core/types/ai-chat"
 import { Button } from "@timeline-studio/ui/components/button"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
-import type { ChatListItem } from "@timeline-studio/core/types/ai-chat"
+import { Copy, Loader2, Trash2 } from "lucide-react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface ChatListProps {

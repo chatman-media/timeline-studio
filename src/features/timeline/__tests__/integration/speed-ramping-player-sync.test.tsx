@@ -12,7 +12,9 @@ import { createMockClip } from "../test-utils"
 
 vi.mock("@/features/timeline/hooks/state/use-timeline")
 vi.mock("@/features/timeline/hooks/state/use-timeline-selection")
-vi.mock("@timeline-studio/domains/video-editing")
+vi.mock("@/features/timeline/providers/player-provider", () => ({
+  usePlayer: vi.fn(),
+}))
 vi.mock("../../services/timeline-player-sync", () => ({
   timelinePlayerSync: {
     setPlayerContext: vi.fn(),

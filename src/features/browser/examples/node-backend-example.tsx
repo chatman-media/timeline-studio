@@ -5,8 +5,8 @@
  * for media file scanning and processing
  */
 
-import { useState } from "react"
 import type { ScannedMediaFile } from "@timeline-studio/core/ports/media.port"
+import { useState } from "react"
 import { useNodeBackend } from "../hooks/use-node-backend"
 
 export function NodeBackendExample() {

@@ -3,12 +3,11 @@
  * Integrates real-time preview with Media Studio timeline
  */
 
-import { Eye, EyeOff, Monitor, Settings, Zap } from "lucide-react"
-import { useEffect, useRef } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card } from "@timeline-studio/ui/components/card"
+import { Eye, EyeOff, Monitor, Settings, Zap } from "lucide-react"
+import { useEffect, useRef } from "react"
 import { useWebGL2Preview } from "../hooks/use-webgl2-preview"
 import { QualityControls } from "./quality-controls"
 

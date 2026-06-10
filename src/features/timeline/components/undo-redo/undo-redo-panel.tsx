@@ -2,8 +2,6 @@
  * Панель управления Undo/Redo с расширенными возможностями
  */
 
-import { ChevronDown, Clock, History, Layers, Redo, RotateCcw, Settings, Trash2, Undo } from "lucide-react"
-import { useState } from "react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -20,6 +18,8 @@ import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { ChevronDown, Clock, History, Layers, Redo, RotateCcw, Settings, Trash2, Undo } from "lucide-react"
+import { useState } from "react"
 import { useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 import type { ActionType } from "../../services/undo-redo-service"
 

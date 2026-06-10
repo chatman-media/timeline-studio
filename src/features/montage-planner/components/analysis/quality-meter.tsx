@@ -3,12 +3,11 @@
  * Displays real-time quality metrics for video fragments and overall plan
  */
 
-import { AlertTriangle, CheckCircle, Minus, TrendingDown, TrendingUp } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { AlertTriangle, CheckCircle, Minus, TrendingDown, TrendingUp } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import type { AudioAnalysis, MomentScore, VideoAnalysis } from "../../types"

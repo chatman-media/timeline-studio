@@ -1,7 +1,6 @@
+import { Button } from "@timeline-studio/ui/components/button"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { useUserSettings } from "@/features/user-settings"
 
 /**

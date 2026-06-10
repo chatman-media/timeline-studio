@@ -4,8 +4,8 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType, type MediaFile } from "@timeline-studio/core/types"
 import { ExportFormat, MONTAGE_STYLES } from "../../types"
 import { useMontagePlanner } from "../use-montage-planner"
 

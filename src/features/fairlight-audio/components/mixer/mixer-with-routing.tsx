@@ -1,9 +1,8 @@
+import { Button } from "@timeline-studio/ui/components/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { LayoutGrid, Radio, Settings, Users } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { useBusRouting } from "../../hooks/use-bus-routing"
 import { useMixerState } from "../../hooks/use-mixer-state"
 import { GroupStrip } from "../routing/group-strip"

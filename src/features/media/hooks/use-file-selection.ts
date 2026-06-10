@@ -1,6 +1,5 @@
-import { useCallback } from "react"
-
 import type { MediaFile } from "@timeline-studio/core/types"
+import { useCallback } from "react"
 import { useBrowserState } from "@/features/browser/services"
 
 /**

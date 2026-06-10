@@ -2,7 +2,6 @@
  * Утилиты для работы с Media Pool
  */
 
-import { nanoid } from "nanoid"
 import type {
   MediaBin,
   MediaFile,
@@ -13,6 +12,7 @@ import type {
   SavedMediaFile,
   SavedMusicFile,
 } from "@timeline-studio/core/types"
+import { nanoid } from "nanoid"
 
 /**
  * Конвертация MediaFile в MediaPoolItem

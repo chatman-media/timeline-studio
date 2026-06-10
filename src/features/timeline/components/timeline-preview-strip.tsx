@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react"
-
 import { Skeleton } from "@timeline-studio/ui/components/skeleton"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useSmartTimelinePreviews } from "@/features/video-compiler/hooks/use-frame-extraction"
 import { cn } from "@/lib/utils"
 

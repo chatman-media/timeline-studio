@@ -3,9 +3,6 @@
  * Manages montage style settings and visual preferences
  */
 
-import { Camera, Film, Music, Palette, Sparkles, Zap } from "lucide-react"
-import type React from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -14,6 +11,8 @@ import { RadioGroup, RadioGroupItem } from "@timeline-studio/ui/components/radio
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Camera, Film, Music, Palette, Sparkles, Zap } from "lucide-react"
+import type React from "react"
 import { cn } from "@/lib/utils"
 import type { MontagePreferences, StyleParameters, VisualParameters } from "../../types"
 import { MONTAGE_STYLES } from "../../types"

@@ -4,11 +4,10 @@
  * Показывает что AI планирует сделать и позволяет подтвердить или отменить
  */
 
+import { Button } from "@timeline-studio/ui/components/button"
 import { AlertCircle, Check, ChevronDown, ChevronRight, X } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 export interface ActionPreviewItem {

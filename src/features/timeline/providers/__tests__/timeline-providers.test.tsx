@@ -2,9 +2,12 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook } from "@testing-library/react"
+import {
+  clearVideoEditingBindings,
+  setVideoEditingBindings,
+} from "@timeline-studio/core/services/video-editing-registry"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { clearVideoEditingBindings, setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import {
   TimelineProvider,
   useTimelineClips,

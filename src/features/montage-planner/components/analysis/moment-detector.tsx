@@ -3,14 +3,13 @@
  * Visualizes detected key moments and their scores
  */
 
-import { Camera, Heart, Music, Sparkles, Target, Users, Zap } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Camera, Heart, Music, Sparkles, Target, Users, Zap } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { formatTime } from "@/lib/date"
 import { cn } from "@/lib/utils"
 import type { Fragment } from "../../types"

@@ -185,24 +185,14 @@ export function StyleTemplatePreview({
         </div>
 
         {/* Кнопка избранного */}
-        <FavoriteButton
-          file={favoriteFile}
-          size={size}
-          type="styleTemplate"
-          data-oid="igl6i04"
-        />
+        <FavoriteButton file={favoriteFile} size={size} type="styleTemplate" data-oid="igl6i04" />
 
         {/* Кнопка добавления в ресурсы */}
         <div
           className={`${isAdded ? "opacity-100" : "opacity-0 group-hover:opacity-100"} transition-opacity duration-200`}
           data-oid="nfarhzu"
         >
-          <AddMediaButton
-            resource={styleTemplateResource}
-            size={size}
-            type="styleTemplate"
-            data-oid="b8fv3fd"
-          />
+          <AddMediaButton resource={styleTemplateResource} size={size} type="styleTemplate" data-oid="b8fv3fd" />
         </div>
       </div>
 

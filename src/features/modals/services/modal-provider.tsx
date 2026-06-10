@@ -10,9 +10,9 @@
 
 import type { ReactNode } from "react"
 
+export { useModals, useModals as useModal } from "@timeline-studio/core/hooks"
 // Re-export types for backward compatibility.
 export type { ModalData, ModalType } from "@timeline-studio/core/types/modals"
-export { useModals, useModals as useModal } from "@timeline-studio/core/hooks"
 
 /**
  * Пропсы для провайдера модальных окон

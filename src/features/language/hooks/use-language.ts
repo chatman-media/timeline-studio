@@ -3,10 +3,9 @@
  * Заменяет устаревший хук из @/i18n/hooks/use-language
  */
 
+import { getAppLanguage, setAppLanguage } from "@timeline-studio/core/services/language"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { getAppLanguage, setAppLanguage } from "@timeline-studio/core/services/language"
 import { DEFAULT_LANGUAGE, isSupportedLanguage, type LanguageCode } from "@/i18n/constants"
 
 import { createLogger } from "@/lib/tauri-logger"

@@ -2,13 +2,12 @@
  * Улучшенный видеоплеер с поддержкой пререндера
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { MediaType } from "@timeline-studio/core/types"
 import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Skeleton } from "@timeline-studio/ui/components/skeleton"
-import { useNotifications } from "@timeline-studio/core/hooks"
-import { MediaType } from "@timeline-studio/core/types"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { usePlayer } from "@/features/timeline/providers/player-provider"

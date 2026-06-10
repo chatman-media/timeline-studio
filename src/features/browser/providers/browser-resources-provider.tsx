@@ -1,8 +1,8 @@
 "use client"
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { container } from "@timeline-studio/core/container"
 import type { ResourceType } from "@timeline-studio/core/types"
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { Transition } from "@/features/transitions/types/transitions"

@@ -3,8 +3,6 @@
  * Объединяет Undo/Redo и Project Version Control
  */
 
-import { AlertTriangle, CheckCircle, GitBranch, GitCommit, History, Redo, Settings, Undo } from "lucide-react"
-import { useEffect, useState } from "react"
 import { Alert, AlertDescription, AlertTitle } from "@timeline-studio/ui/components/alert"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
@@ -16,6 +14,8 @@ import { Separator } from "@timeline-studio/ui/components/separator"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { AlertTriangle, CheckCircle, GitBranch, GitCommit, History, Redo, Settings, Undo } from "lucide-react"
+import { useEffect, useState } from "react"
 import {
   type IntegrationRecommendation,
   useIntegratedVersionControl,

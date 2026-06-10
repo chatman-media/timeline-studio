@@ -1,8 +1,6 @@
-import { useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { AiServicesTab } from "./tabs/ai-services-tab"
 import { AppearanceTab } from "./tabs/appearance-tab"

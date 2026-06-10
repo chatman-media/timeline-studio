@@ -2,9 +2,8 @@
  * Fragment Library - библиотека фрагментов из AI анализа
  */
 
-import { Film, Users } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
+import { Film, Users } from "lucide-react"
 import type { ScriptFragment } from "@/features/timeline/types/script"
 
 export interface FragmentLibraryProps {

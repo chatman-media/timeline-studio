@@ -2,9 +2,6 @@
  * ClipContextMenu - Контекстное меню для клипа на Timeline
  */
 
-import { Copy, Film, Layers, Scissors, Settings2, Trash2, Volume2 } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import {
   ContextMenu,
   ContextMenuContent,
@@ -15,6 +12,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@timeline-studio/ui/components/context-menu"
+import { Copy, Film, Layers, Scissors, Settings2, Trash2, Volume2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 import { useTimeline } from "../hooks/state/use-timeline"
 import type { TimelineClip } from "../types"

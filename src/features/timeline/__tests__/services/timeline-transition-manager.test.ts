@@ -1,6 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { Transition } from "@timeline-studio/domains/video-editing/types"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   addTransitionBetweenClips,

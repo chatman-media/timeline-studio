@@ -3,6 +3,13 @@
  * Main UI for managing motion graphics animations
  */
 
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Input } from "@timeline-studio/ui/components/input"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import {
   Download,
   Filter,
@@ -20,14 +27,6 @@ import {
   Upload,
 } from "lucide-react"
 import { useCallback, useState } from "react"
-
-import { Badge } from "@timeline-studio/ui/components/badge"
-import { Button } from "@timeline-studio/ui/components/button"
-import { Card } from "@timeline-studio/ui/components/card"
-import { Input } from "@timeline-studio/ui/components/input"
-import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
-import { Separator } from "@timeline-studio/ui/components/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { createLogger } from "@/lib/tauri-logger"
 import { getAllPresets, getPresetCategories, getPresetsByCategory, searchPresets } from "../services/preset-manager"
 import type { AnimationLayer, AnimationTrack, MotionPreset } from "../types/keyframe"

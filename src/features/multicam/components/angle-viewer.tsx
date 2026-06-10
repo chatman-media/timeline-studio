@@ -2,11 +2,10 @@
  * Компонент для просмотра всех углов камер в мультикамерном режиме
  */
 
-import { Camera, Pause, Play } from "lucide-react"
-import { memo, useCallback, useEffect, useRef, useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
+import { Camera, Pause, Play } from "lucide-react"
+import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { MulticamAngle } from "../hooks/use-multicam"

@@ -2,9 +2,8 @@
  * @vitest-environment jsdom
  */
 import { render, screen } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import { Separator } from "@timeline-studio/ui/components/separator"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { SubtitleAITools } from "../../components/subtitle-ai-tools"
 import { SubtitleImportButton } from "../../components/subtitle-import-button"

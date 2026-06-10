@@ -1,11 +1,10 @@
-import { Activity, BarChart3, CircleDot, Settings } from "lucide-react"
-import { useCallback, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { Activity, BarChart3, CircleDot, Settings } from "lucide-react"
+import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useColorGrading } from "../../services/color-grading-provider"
 import { ScopeViewer } from "./scope-viewer"
 

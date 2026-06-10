@@ -1,6 +1,6 @@
 import type { MediaFile } from "@timeline-studio/core/types/media"
 import type { Timeline, Track } from "@timeline-studio/core/types/timeline"
-import type { Project, ProjectState, Track as BackendTrack } from "@/types/generated/tauri-bindings"
+import type { Track as BackendTrack, Project, ProjectState } from "@/types/generated/tauri-bindings"
 
 export function transformProjectStateToTimeline(projectState: ProjectState | null): Timeline | null {
   const backendProject = projectState?.project

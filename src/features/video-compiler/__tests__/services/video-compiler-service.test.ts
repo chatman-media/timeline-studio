@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import * as videoCompilerService from "@timeline-studio/domains/video-editing/services/compiler"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type RenderJob, type RenderProgress, RenderStatus } from "../../types/render"
 
 // Типы для API ответов

@@ -1,10 +1,5 @@
 "use client"
 
-import { Check, Palette, Settings2 } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -14,6 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
+import { Check, Palette, Settings2 } from "lucide-react"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useModals } from "@/features/modals/services"
 import { useColorScheme } from "../hooks/use-color-scheme"
 import { schemePreviewColor } from "../lib"

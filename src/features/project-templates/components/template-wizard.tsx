@@ -3,13 +3,18 @@
  * Пошаговый мастер выбора и применения шаблона проекта
  */
 
+import { Button } from "@timeline-studio/ui/components/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@timeline-studio/ui/components/dialog"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import type React from "react"
 import { useCallback, useState } from "react"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
-import { Progress } from "@timeline-studio/ui/components/progress"
 
 import type { ApplyTemplateOptions } from "../services"
 import type { ProjectTemplate } from "../types/project-template"

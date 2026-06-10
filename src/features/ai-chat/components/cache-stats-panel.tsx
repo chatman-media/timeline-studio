@@ -1,10 +1,9 @@
-import { Database, RefreshCw, Trash2 } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Database, RefreshCw, Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { backendAI } from "@/features/ai-chat/services/backend-ai"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

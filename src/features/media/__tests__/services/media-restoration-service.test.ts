@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@timeline-studio/domains/media-management"
 import {
   generateRestorationReport,
@@ -6,6 +5,7 @@ import {
   restoreFile,
   restoreProjectMedia,
 } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Мокаем модули Tauri
 vi.mock("@tauri-apps/api/path", () => ({

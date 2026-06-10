@@ -3,8 +3,8 @@
  * Управляет пошаговой навигацией и состоянием wizard'а
  */
 
-import { useCallback, useState } from "react"
 import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
+import { useCallback, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Scenario, ScenarioStep } from "../types/scenario"

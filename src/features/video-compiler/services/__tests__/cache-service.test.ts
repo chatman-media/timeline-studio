@@ -1,5 +1,3 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import {
   clearAllCache,
   clearPreviewCache,
@@ -7,6 +5,7 @@ import {
   getCacheSize,
   getCacheStats,
 } from "@timeline-studio/domains/video-editing/services/compiler/cache-service"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock Tauri compiler commands
 vi.mock("@timeline-studio/domains/video-editing/tauri/compiler-commands", () => ({

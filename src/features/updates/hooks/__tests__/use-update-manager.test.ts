@@ -6,9 +6,9 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { container, resetContainer } from "@timeline-studio/core/container"
 import type { IUpdateService } from "@timeline-studio/core/ports"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { UpdateMachineContext } from "../../types"
 import { useUpdateAvailability, useUpdateManager } from "../use-update-manager"
 

@@ -2,11 +2,11 @@
  * Хук для импорта субтитров в Timeline
  */
 
-import { useCallback, useMemo, useState } from "react"
 import { container } from "@timeline-studio/core"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import { subtitleService } from "@timeline-studio/core/services/subtitles"
 import { MediaType } from "@timeline-studio/core/types"
+import { useCallback, useMemo, useState } from "react"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import type { TrackType } from "@/features/timeline/types"
 import { type LogContext, logError, logInfo } from "@/lib/tauri-logger"

@@ -3,13 +3,12 @@
  * Visualizes emotional arc and intensity throughout the montage
  */
 
-import { Activity, Frown, Heart, Smile, Sparkles, Zap } from "lucide-react"
-import type React from "react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Activity, Frown, Heart, Smile, Sparkles, Zap } from "lucide-react"
+import type React from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import type { EmotionalArc, MontagePlan } from "../../types"

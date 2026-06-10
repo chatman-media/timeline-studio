@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react"
-
-import { useTranslation } from "react-i18next"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import type { CompilerSubtitle } from "@timeline-studio/core/types/video-editing"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useFramePreview } from "@/features/media/hooks/media-management"
+import { createLogger } from "@/lib/tauri-logger"
 import {
   type ExtractionPurpose,
   frameExtractionService,
@@ -11,7 +11,6 @@ import {
   type SubtitleFrame,
   type TimelineFrame,
 } from "../services/frame-extraction-service"
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseFrameExtraction")
 

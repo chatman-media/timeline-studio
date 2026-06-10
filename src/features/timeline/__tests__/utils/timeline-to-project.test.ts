@@ -4,7 +4,6 @@
  * Тесты для преобразования Timeline в ProjectSchema
  */
 
-import { describe, expect, it } from "vitest"
 import { MediaType } from "@timeline-studio/domains/media-management"
 import {
   AlignX,
@@ -28,6 +27,7 @@ import {
   SubtitleFontWeight,
   TextAlign,
 } from "@timeline-studio/domains/video-editing/types"
+import { describe, expect, it } from "vitest"
 
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import { timelineToProjectSchema } from "../../utils/timeline-to-project"

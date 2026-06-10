@@ -3,14 +3,13 @@
  * Компонент для управления созданием маркеров из AI анализа
  */
 
-import { AlertCircle, Bookmark, CheckCircle, Settings, Sparkles, X } from "lucide-react"
-import { useState } from "react"
-
+import { useModals } from "@timeline-studio/core/hooks"
 import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
-import { useModals } from "@timeline-studio/core/hooks"
+import { AlertCircle, Bookmark, CheckCircle, Settings, Sparkles, X } from "lucide-react"
+import { useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimelineAIAnalysis } from "../../hooks/integration/use-timeline-ai-analysis"
 import { useTimeline } from "../../hooks/state/use-timeline"

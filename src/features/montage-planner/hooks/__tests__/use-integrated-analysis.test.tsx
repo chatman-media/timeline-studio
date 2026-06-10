@@ -4,8 +4,8 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType, type MediaFile } from "@timeline-studio/core/types"
 import { MomentCategory } from "../../types"
 import { useContentAnalysis } from "../use-content-analysis"
 import { useIntegratedAnalysis } from "../use-integrated-analysis"
@@ -14,7 +14,7 @@ import { usePlanGenerator } from "../use-plan-generator"
 
 // Mock dependencies
 const mockGetMediaDuration = vi.fn()
-vi.mock("@timeline-studio/domains/media-management/services/media-metadata-service", () => ({
+vi.mock("@/features/media/hooks/media-management", () => ({
   getMediaMetadataService: () => ({
     getMediaDuration: mockGetMediaDuration,
   }),

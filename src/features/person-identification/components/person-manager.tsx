@@ -3,11 +3,10 @@
  * Объединяет список персон, детальный просмотр и форму редактирования
  */
 
-import { useEffect, useState } from "react"
-
-import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { useModals } from "@timeline-studio/core/hooks"
 import { PersonDatabaseService } from "@timeline-studio/core/services"
+import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
+import { useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"

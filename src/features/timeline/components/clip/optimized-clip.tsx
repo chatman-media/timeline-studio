@@ -3,8 +3,8 @@
  * Поддерживает различные уровни детализации в зависимости от размера и видимости
  */
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import { Dialog, DialogContent } from "@timeline-studio/ui/components/dialog"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 import type { SubtitleClip as SubtitleClipType } from "@/features/subtitles/types"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"

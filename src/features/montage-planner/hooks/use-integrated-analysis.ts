@@ -2,9 +2,9 @@
  * Интегрированный хук для анализа контента с подключением к backend
  */
 
-import { useCallback, useState } from "react"
 import type { MediaFile } from "@timeline-studio/core/types"
 import { MediaType } from "@timeline-studio/core/types"
+import { useCallback, useState } from "react"
 import { getMediaMetadataService } from "@/features/media/hooks/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import type { Fragment, MontagePlan } from "../types"
