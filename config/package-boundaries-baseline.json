@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 voice recording core AI port",
-  "violations": 356,
+  "source": "Phase F7 modal core types and backend handlers",
+  "violations": 352,
   "bySeverity": {
-    "warn": 356
+    "warn": 352
   },
   "byEdge": {
-    "ui -> domains": 356
+    "ui -> domains": 352
   }
 }

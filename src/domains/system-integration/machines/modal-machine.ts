@@ -7,60 +7,14 @@
  */
 
 import { assign, setup } from "xstate"
+import type { ModalData, ModalMachineContext, ModalType } from "@/core/types/modals"
+import type { ModalBackendEvent } from "@/core/services/modal-backend-handlers"
+import { handleModalBackendEvent } from "@/core/services/modal-backend-handlers"
 import { createLogger } from "@/lib/tauri-logger"
-import type { ModalBackendEvent } from "../utils/modal-backend-handlers"
-import { handleModalBackendEvent } from "../utils/modal-backend-handlers"
 
 const logger = createLogger("ModalMachine")
 
-/**
- * Типы модальных окон в приложении
- */
-export type ModalType =
-  | "camera-capture"
-  | "voice-recording"
-  | "export"
-  | "project-settings"
-  | "user-settings"
-  | "about"
-  | "keyboard-shortcuts"
-  | "cache-settings"
-  | "cache-statistics"
-  | "subtitle-editor"
-  | "person-form"
-  | "missing-files"
-  | "ai-marker-settings"
-  | "subtitle-ai-tools"
-  | "audio-effects"
-  | "midi-learn"
-  | "midi-mapping"
-  | "midi-configuration"
-  | "effect-detail"
-  | "color-grading"
-  | "none"
-
-/**
- * Интерфейс для данных модального окна
- */
-export interface ModalData {
-  /** Класс для размера модального окна */
-  dialogClass?: string
-  /** Модальное окно, к которому нужно вернуться при закрытии */
-  returnTo?: ModalType
-  /** Дополнительные данные */
-  [key: string]: unknown
-}
-
-/**
- * Контекст машины состояний для модальных окон
- */
-export interface ModalMachineContext {
-  modalType: ModalType
-  modalData: ModalData | null
-  previousModal: ModalType | null
-  isLoading?: boolean
-  error?: string | null
-}
+export type { ModalData, ModalMachineContext, ModalType } from "@/core/types/modals"
 
 /**
  * Создание машины состояний для модальных окон

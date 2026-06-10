@@ -10,8 +10,8 @@
 
 import type { ReactNode } from "react"
 
-// Re-export types from domain for backward compatibility
-export type { ModalData, ModalType } from "@/domains/system-integration"
+// Re-export types for backward compatibility.
+export type { ModalData, ModalType } from "@/core/types/modals"
 
 /**
  * Пропсы для провайдера модальных окон
