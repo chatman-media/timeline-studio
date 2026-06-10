@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 filter transition export core types",
-  "violations": 370,
+  "source": "Phase F7 export notification core service",
+  "violations": 368,
   "bySeverity": {
-    "warn": 370
+    "warn": 368
   },
   "byEdge": {
-    "ui -> domains": 370
+    "ui -> domains": 368
   }
 }
