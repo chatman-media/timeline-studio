@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { useFavorites } from "@/core/hooks"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useMusicFiles } from "@/domains/project-management/hooks"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
 import { parseDuration, parseFileSize } from "@/features/browser/utils"

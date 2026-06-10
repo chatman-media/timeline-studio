@@ -3,7 +3,7 @@ import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { container } from "@/core/container"
-import type { ResourceType, TimelineResource } from "@/domains/shared/types/resources"
+import type { ResourceType, TimelineResource } from "@/core/types"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

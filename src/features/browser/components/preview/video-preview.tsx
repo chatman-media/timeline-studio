@@ -1,6 +1,6 @@
 import { useDraggable } from "@dnd-kit/core"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useAutoProxy, useMediaPreview } from "@/domains/media-management"
 import { getTrackTypeForMediaFile } from "@/features/timeline"
 import type { DragData } from "@/features/timeline/types/drag-drop"

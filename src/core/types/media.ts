@@ -22,49 +22,153 @@ export enum MediaType {
   Unknown = "unknown",
 }
 
+export enum MediaCodec {
+  H264 = "h264",
+  H265 = "h265",
+  ProRes422 = "prores_422",
+  ProRes4444 = "prores_4444",
+  DNxHD = "dnxhd",
+  DNxHR = "dnxhr",
+  AV1 = "av1",
+  VP9 = "vp9",
+  AAC = "aac",
+  PCM = "pcm",
+  FLAC = "flac",
+  MP3 = "mp3",
+  Opus = "opus",
+  Vorbis = "vorbis",
+}
+
+export enum MediaColorSpace {
+  Rec709 = "rec709",
+  Rec2020 = "rec2020",
+  sRGB = "srgb",
+  DCI_P3 = "dci-p3",
+  Adobe_RGB = "adobe-rgb",
+}
+
+export interface FfprobeData {
+  streams: FfprobeStream[]
+  format: FfprobeFormat
+}
+
+export interface FfprobeFormat {
+  [key: string]: any
+  filename?: string
+  nb_streams?: number
+  nb_programs?: number
+  format_name?: string
+  format_long_name?: string
+  start_time?: number
+  duration?: number
+  size?: number
+  bit_rate?: number
+  probe_score?: number
+  tags?: Record<string, string | number>
+}
+
+export interface FfprobeStream {
+  [key: string]: any
+  index?: number
+  streamKey?: string
+  codec_name?: string
+  codec_long_name?: string
+  profile?: number
+  codec_type?: string
+  codec_time_base?: string
+  codec_tag_string?: string
+  codec_tag?: string
+  width?: number
+  height?: number
+  coded_width?: number
+  coded_height?: number
+  has_b_frames?: number
+  sample_aspect_ratio?: string
+  display_aspect_ratio?: string
+  pix_fmt?: string
+  level?: string
+  color_range?: string
+  color_space?: string
+  color_transfer?: string
+  color_primaries?: string
+  chroma_location?: string
+  field_order?: string
+  timecode?: string
+  refs?: number
+  id?: string
+  r_frame_rate?: string
+  avg_frame_rate?: string
+  time_base?: string
+  start_pts?: number
+  start_time?: number
+  duration_ts?: string
+  duration?: string
+  bit_rate?: string
+  max_bit_rate?: string
+  bits_per_raw_sample?: string
+  nb_frames?: string
+  nb_read_frames?: string
+  nb_read_packets?: string
+  sample_fmt?: string
+  sample_rate?: number
+  channels?: number
+  channel_layout?: string
+  bits_per_sample?: number
+  disposition?: FfprobeStreamDisposition
+  rotation?: string | number
+}
+
+interface FfprobeStreamDisposition {
+  [key: string]: any
+  default?: number
+  dub?: number
+  original?: number
+  comment?: number
+  lyrics?: number
+  karaoke?: number
+  forced?: number
+  hearing_impaired?: number
+  visual_impaired?: number
+  clean_effects?: number
+  attached_pic?: number
+  timed_thumbnails?: number
+}
+
 export interface MediaFile {
   id: string
   name: string
   path: string
-  type: string
+  type: MediaType
   duration?: number
   size?: number
   createdAt?: Date
   updatedAt?: Date
   width?: number
   height?: number
+  aspectRatio?: string
   fps?: number
+  pixelAspectRatio?: number
+  videoCodec?: MediaCodec | string
+  videoBitrate?: number
+  audioCodec?: MediaCodec | string
+  audioBitrate?: number
   bitrate?: number
+  sampleRate?: number
+  audioChannels?: number
+  colorSpace?: MediaColorSpace | string
+  colorPrimaries?: string
+  transferCharacteristics?: string
+  chromaSubsampling?: string
+  bitDepth?: number
   thumbnailPath?: string
   metadata?: {
-    type?: string
+    type: "Video" | "Audio" | "Image"
     bitrate?: number
     codec?: string
-    width?: number
-    height?: number
-    fps?: number
-    duration?: number
-    channels?: number
-    sample_rate?: number
-    [key: string]: unknown
+    [key: string]: any
   }
-  probeData?: {
-    streams: Array<{
-      codec_type?: string
-      sample_rate?: number
-      channels?: number
-      duration?: string | number
-      index?: number
-      timecode?: string
-      r_frame_rate?: string
-      [key: string]: unknown
-    }>
-    format: {
-      duration?: string | number
-      tags?: Record<string, unknown>
-      [key: string]: unknown
-    }
-  }
+  probeData?: FfprobeData
+  checksum?: string
   isVideo?: boolean
   isImage?: boolean
   isAudio?: boolean
@@ -73,7 +177,38 @@ export interface MediaFile {
   isUnavailable?: boolean
   lastCheckedAt?: number
   isLoadingMetadata?: boolean
-  source?: string
+  source?: "browser" | "timeline"
   startTime?: number
   endTime?: number
+  proxy?: {
+    path: string
+    width: number
+    height: number
+    bitrate: number
+  }
+  proxies?: Array<{
+    path: string
+    width: number
+    height: number
+    bitrate: number
+    streamKey: string
+  }>
+  lrv?: {
+    path: string
+    width: number
+    height: number
+    duration: number
+    probeData?: FfprobeData
+  }
+  insv?: {
+    path: string
+    gyroPath?: string
+  }
+  is360?: boolean
+  stereoMode?: "mono" | "side-by-side" | "top-bottom"
+  projectionType?: "equirectangular" | "cubemap" | "fisheye"
+  timecode?: {
+    start: string
+    format: "SMPTE" | "DF" | "NDF"
+  }
 }

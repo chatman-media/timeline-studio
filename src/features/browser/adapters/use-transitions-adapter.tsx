@@ -2,7 +2,7 @@ import { ArrowRightLeft, Clock } from "lucide-react"
 import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
 import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"

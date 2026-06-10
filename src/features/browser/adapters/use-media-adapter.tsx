@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { useFavorites } from "@/core/hooks"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useMediaManagement } from "@/domains/media-management"
 import { parseFileSize } from "@/domains/shared/utils/file"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"

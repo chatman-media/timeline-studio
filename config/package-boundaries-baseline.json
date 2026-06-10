@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 user settings core hooks",
-  "violations": 290,
+  "source": "Phase F7 browser media type bridges",
+  "violations": 270,
   "bySeverity": {
-    "warn": 290
+    "warn": 270
   },
   "byEdge": {
-    "ui -> domains": 290
+    "ui -> domains": 270
   }
 }

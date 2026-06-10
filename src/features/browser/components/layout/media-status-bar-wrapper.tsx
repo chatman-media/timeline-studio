@@ -3,7 +3,7 @@
  */
 
 import { useMemo } from "react"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useMediaManagement } from "@/domains/media-management"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { useBulkMediaActions } from "../../hooks/use-bulk-media-actions"

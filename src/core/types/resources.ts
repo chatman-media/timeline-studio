@@ -33,6 +33,18 @@ export interface MusicResource extends Resource {
   params?: Record<string, unknown>
 }
 
+export interface SubtitleResource extends Resource {
+  type: "subtitle"
+  style: any
+  params?: Record<string, unknown>
+}
+
+export interface EffectResource extends Resource {
+  type: "effect"
+  effect: any
+  params?: Record<string, unknown>
+}
+
 export interface FilterResource extends Resource {
   type: "filter"
   filter: VideoFilter
@@ -51,4 +63,18 @@ export interface TemplateResource extends Resource {
   params?: Record<string, unknown>
 }
 
-export type TimelineResource = MediaResource | MusicResource | FilterResource | TransitionResource | TemplateResource
+export interface StyleTemplateResource extends Resource {
+  type: "styleTemplate"
+  template: any
+  params?: Record<string, unknown>
+}
+
+export type TimelineResource =
+  | MediaResource
+  | MusicResource
+  | SubtitleResource
+  | EffectResource
+  | FilterResource
+  | TransitionResource
+  | TemplateResource
+  | StyleTemplateResource

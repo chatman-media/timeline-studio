@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from "react"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { usePlayer } from "@/features/video-player"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
