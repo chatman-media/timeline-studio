@@ -97,9 +97,9 @@ Acceptance:
 
 Текущие выводы:
 
-- `NodeTelegramBotWorker` содержит review-loop extension points, но `bot-worker` CLI пока не прокидывает production `editSessionStore`, `feedbackTranscriber`, `aiProjectEditor`, `firstCutGenerator` and `previewRenderer`.
-- `IAIProjectEditor` пока реализован только mock adapter; production OpenAI-compatible adapter и/или Rust `llm-edit` command еще нужны.
-- Rust `montage-plan`/`llm-plan` output сейчас drift-ит от TS `ProjectSchema` validation и может приводить к deterministic fallback.
+- `bot-worker` CLI прокидывает production `editSessionStore`, `feedbackTranscriber`, `aiProjectEditor`, Rust first-cut planner/generator fallback, preview renderer and publish services.
+- `IAIProjectEditor` имеет production OpenAI-compatible adapter; Rust `llm-edit` command остается medium-term направлением.
+- Rust `montage-plan`/`llm-plan` output покрыт TS `ProjectSchema` validation fixtures; deterministic fallback остается явным диагностируемым режимом.
 - Render and publish should stay Rust-first through `timeline render` / `timeline publish`; Node owns orchestration, sessions, provider glue and Telegram runtime.
 
 Acceptance:

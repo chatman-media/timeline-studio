@@ -10,10 +10,10 @@
 
 Telegram AI review workflow уже добавил продуктовый контракт: upload media, first preview, текстовые/голосовые правки, AI revision loop, explicit approval and publish.
 
-Следующая проблема не в UX-сценарии, а в production runtime:
+Этот эпик закрывает не UX-сценарий, а production runtime:
 
-- текущий bot-worker CLI не прокидывает все AI review зависимости;
-- production `IAIProjectEditor` еще не реализован;
+- bot-worker CLI должен прокидывать AI review зависимости через явные CLI/env boundaries;
+- production `IAIProjectEditor` должен валидировать structured output до записи revision;
 - Rust `montage-plan`/`llm-plan` output не совпадает с TS `ProjectSchema` validation shape;
 - AI codebase split между `src/adapters/node`, `src/domains/ai-services`, `src/features/ai-director`, `src/features/montage-planner`, `crates/ts-agent` and `crates/ts-montage`;
 - publish/render уже есть в Rust, поэтому TypeScript не должен становиться вторым полноценным production backend для этих операций.
@@ -30,15 +30,11 @@ Telegram AI review workflow уже добавил продуктовый кон�
 - `NodeRustRenderVideoService` already delegates rendering to `timeline render` or `timeline-render`.
 - `NodeRustPublishService` already delegates Telegram/YouTube publish to `timeline publish ... --json`.
 - `initNodeApp` умеет создать `botEditSessions`, `botFeedbackTranscriber`, `botFirstCutPlanner`, `botFirstCutGenerator`, `botStatus`, Rust render and Rust publish services.
+- `bot-worker` CLI прокидывает edit session store, transcriber provider/model/language, Rust first-cut planner/generator fallback, AI editor, Rust preview render and Rust publish config через CLI/env.
 
 ### Production gaps
 
-- `src/cli/commands/bot-worker.ts` creates `NodeTelegramBotWorker` without `editSessionStore`, `aiProjectEditor`, `feedbackTranscriber`, `previewRenderer` and `botFirstCutGenerator`.
-- `src/adapters/node/ai.ts` is mostly media/transcription and analysis stubs. It does not implement project editing or chat-completions for `IAIProjectEditor`.
-- Only `MockAIProjectEditor` implements `IAIProjectEditor`; it is deterministic test scaffolding, not production AI editing.
-- `DefaultBotFirstCutGenerator` validates planner output with `validateProjectSchemaShape`; invalid Rust planner output silently falls back to deterministic clip assembly unless fallback is disabled.
-- `crates/ts-montage/src/headless.rs` emits simplified JSON with `id`, `name`, `timeline`, `tracks`, `settings`, `meta`; it does not emit required TS contract fields such as `version`, `metadata`, `effects`, `filters`, `templates`, `style_templates`, `subtitles`.
-- `crates/ts-agent/src/llm_planner.rs` prompt asks for a simplified schema with camelCase clip fields; it also omits required TS `ProjectSchema` fields.
+- Rust planner/editor parity still needs continued care when the Rust side changes its `ProjectSchema` emission.
 - Rust `llm-plan` is currently a first-cut planner only. It is not an edit command that accepts `currentProject + instruction + revisionHistory -> nextProject`.
 - Legacy AI docs and modules claim a broader ready state than the actual headless bot path supports.
 
@@ -184,10 +180,10 @@ Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](
 
 **GitHub:** [#243](https://github.com/chatman-media/timeline-studio/issues/243)
 
-- [ ] Add CLI/env flags for edit session store, feedback transcriber, first-cut planner/generator and AI editor.
-- [ ] Pass those services into `NodeTelegramBotWorker`.
-- [ ] Add preview renderer backed by Rust render.
-- [ ] Add one-shot worker smoke that uses production wiring with mocked external commands.
+- [x] Add CLI/env flags for edit session store, feedback transcriber, first-cut planner/generator and AI editor.
+- [x] Pass those services into `NodeTelegramBotWorker`.
+- [x] Add preview renderer backed by Rust render.
+- [x] Add one-shot worker smoke that uses production wiring with mocked external commands.
 
 ### B44: Add Rust preview render and publish validate smoke for AI review
 
