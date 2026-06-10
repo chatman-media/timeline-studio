@@ -8,7 +8,7 @@ import {
   globalPerformanceMonitor,
   type PerformanceMetrics,
   type SyncRecord,
-} from "@/domains/video-editing/services/performance-monitor"
+} from "@/core/services/video-player-performance-monitor"
 
 export interface UsePerformanceMonitorOptions {
   /** Включить автоматическое обновление метрик */

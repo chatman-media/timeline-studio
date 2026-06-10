@@ -64,7 +64,7 @@ vi.mock("@/domains/video-editing/hooks", () => ({
 }))
 
 // Mock CommandQueue - define inside vi.mock to avoid hoisting issues
-vi.mock("@/features/video-player/services/command-queue", () => {
+vi.mock("@/core/services/video-player-command-queue", () => {
   class MockCommandQueue {
     enqueue = vi.fn(async (fn: () => Promise<any>) => await fn())
   }
@@ -75,7 +75,7 @@ vi.mock("@/features/video-player/services/command-queue", () => {
 })
 
 // Mock retry helper
-vi.mock("@/features/video-player/utils/retry-helper", () => ({
+vi.mock("@/core/utils/retry-helper", () => ({
   retryWithBackoff: vi.fn(async (fn: () => Promise<any>) => await fn()),
   defaultShouldRetry: vi.fn(() => true),
 }))

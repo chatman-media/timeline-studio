@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core retry helper",
-  "violations": 101,
+  "source": "Phase F7 core video-player services",
+  "violations": 95,
   "bySeverity": {
-    "warn": 101
+    "warn": 95
   },
   "byEdge": {
-    "ui -> domains": 101
+    "ui -> domains": 95
   }
 }
