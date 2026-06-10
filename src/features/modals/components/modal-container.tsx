@@ -44,7 +44,7 @@ export function ModalContainer() {
       case "voice-recording":
         return <VoiceRecordModal data-oid="f7i.sio" />
       case "export":
-        return <ExportModal data-oid="ass50fv" />
+        return <ExportModal onClose={closeModal} data-oid="ass50fv" />
       case "cache-settings":
         return <CacheSettingsModal data-oid=".2vovbs" />
       case "cache-statistics":

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 export notification core service",
-  "violations": 368,
+  "source": "Phase F7 export modal close callback",
+  "violations": 367,
   "bySeverity": {
-    "warn": 368
+    "warn": 367
   },
   "byEdge": {
-    "ui -> domains": 368
+    "ui -> domains": 367
   }
 }
