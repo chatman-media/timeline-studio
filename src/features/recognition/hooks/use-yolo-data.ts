@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
-import { YoloDataService } from "@/domains/ai-services/services/recognition"
-import type { YoloDetection, YoloVideoData, YoloVideoSummary } from "@/features/recognition/types/yolo"
+import { YoloDataService } from "@/core/services"
+import type { YoloDetection, YoloVideoData, YoloVideoSummary } from "@/core/types/yolo"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import { useRecognitionPreview } from "./use-recognition-preview"
 

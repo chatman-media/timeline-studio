@@ -6,23 +6,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { createMockYoloData } from "../../__mocks__"
 import { useRecognitionPreview } from "../../hooks/use-recognition-preview"
 
-// Mock Tauri API
 const mockInvoke = vi.fn()
-vi.mock("@tauri-apps/api/core", () => ({
-  invoke: (...args: any[]) => mockInvoke(...args),
-}))
-
-// Mock useMediaPreview
 const mockGetPreviewData = vi.fn()
-vi.mock("@/domains/media-management", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/media-management")>()
-  return {
-    ...actual,
-    useMediaPreview: () => ({
-      getPreviewData: mockGetPreviewData,
-    }),
-  }
-})
+
+vi.mock("@/core/container", () => ({
+  getAI: () => ({
+    processVideoRecognition: (videoPath: string, modelPath?: string, targetClasses?: string[]) =>
+      mockInvoke("process_video_recognition", { videoPath, modelPath, targetClasses }),
+    getPreviewDataWithRecognition: (fileId: string) => mockInvoke("get_preview_data_with_recognition", { fileId }),
+    clearRecognitionResults: (fileId: string) => mockInvoke("clear_recognition_results", { fileId }),
+  }),
+  getMedia: () => ({
+    getPreviewData: mockGetPreviewData,
+  }),
+}))
 
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: vi.fn(() => ({

@@ -5,6 +5,8 @@
  * Реализации: TauriAIService, MockAIService
  */
 
+import type { YoloVideoData } from "../types/yolo"
+
 // ============================================================================
 // Types - Chat & API Keys
 // ============================================================================
@@ -30,6 +32,29 @@ export interface YOLODetectionResult {
   }>
   processingTime: number
   frameCount?: number
+}
+
+export interface RecognitionYoloProcessorOptions {
+  modelType: string
+  confidenceThreshold: number
+}
+
+export interface RecognitionYoloVideoRequest {
+  video_path: string
+  confidence_threshold: number
+  skip_frames: number
+}
+
+export interface RecognitionYoloFrameResult {
+  frame_number: number
+  timestamp: number
+  detections: Array<{
+    class: string
+    class_id?: number
+    confidence: number
+    bbox: { x: number; y: number; width: number; height: number }
+    track_id?: number
+  }>
 }
 
 export interface FaceDetectionResult {
@@ -370,6 +395,10 @@ export interface IAIService {
     videoPath: string,
     options?: { frameInterval?: number; maxFrames?: number; confidenceThreshold?: number },
   ): Promise<YOLODetectionResult[]>
+  initRecognitionYoloProcessor(options: RecognitionYoloProcessorOptions): Promise<void>
+  loadYoloData(videoId: string): Promise<YoloVideoData | null>
+  saveYoloData(videoId: string, data: YoloVideoData): Promise<void>
+  analyzeVideoWithYoloData(request: RecognitionYoloVideoRequest): Promise<RecognitionYoloFrameResult[]>
   getYOLOClassNames(processorId: string): Promise<string[]>
   updateYOLOConfidenceThreshold(processorId: string, threshold: number): Promise<void>
   getAvailableYOLOModels(): Promise<string[]>

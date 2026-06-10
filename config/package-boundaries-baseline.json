@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 multicam core media hooks",
-  "violations": 324,
+  "source": "Phase F7 recognition core AI/media services",
+  "violations": 317,
   "bySeverity": {
-    "warn": 324
+    "warn": 317
   },
   "byEdge": {
-    "ui -> domains": 324
+    "ui -> domains": 317
   }
 }

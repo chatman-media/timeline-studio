@@ -5,6 +5,10 @@
  * Реализации: TauriMediaService, NodeMediaService, MockMediaService
  */
 
+import type { MediaPreviewData } from "../types/media-preview"
+
+export type { MediaPreviewData } from "../types/media-preview"
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -120,12 +124,6 @@ export interface ProxyGenerationResult {
   size: number
   resolution: { width: number; height: number }
   generationTime: number
-}
-
-export interface MediaPreviewData {
-  thumbnailPath?: string
-  waveformData?: WaveformData
-  timelineFrames?: string[]
 }
 
 export interface ScanFolderOptions {

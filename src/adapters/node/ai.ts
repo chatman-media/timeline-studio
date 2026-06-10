@@ -36,6 +36,9 @@ import type {
   PlanGenerationOptions,
   PlanStatistics,
   PlanValidation,
+  RecognitionYoloFrameResult,
+  RecognitionYoloProcessorOptions,
+  RecognitionYoloVideoRequest,
   SaveAudioParams,
   SaveAudioResult,
   SpeechOnsetData,
@@ -46,6 +49,7 @@ import type {
   VideoRecognitionResult,
   YOLODetectionResult,
 } from "@/core/ports"
+import type { YoloVideoData } from "@/core/types/yolo"
 
 const execAsync = promisify(exec)
 
@@ -61,6 +65,7 @@ export class NodeAIService implements IAIService {
   private whisperPath: string
   private apiKeys = new Map<string, string>()
   private persons = new Map<string, PersonData>()
+  private yoloData = new Map<string, YoloVideoData>()
 
   constructor(options: NodeAIOptions = {}) {
     this.cacheDir = options.cacheDir || path.join(os.tmpdir(), "timeline-studio-ai")
@@ -141,6 +146,22 @@ export class NodeAIService implements IAIService {
     _videoPath: string,
     _options?: { frameInterval?: number; maxFrames?: number; confidenceThreshold?: number },
   ): Promise<YOLODetectionResult[]> {
+    return []
+  }
+
+  async initRecognitionYoloProcessor(_options: RecognitionYoloProcessorOptions): Promise<void> {
+    console.warn("NodeAIService: recognition YOLO requires onnxruntime-node")
+  }
+
+  async loadYoloData(videoId: string): Promise<YoloVideoData | null> {
+    return this.yoloData.get(videoId) ?? null
+  }
+
+  async saveYoloData(videoId: string, data: YoloVideoData): Promise<void> {
+    this.yoloData.set(videoId, data)
+  }
+
+  async analyzeVideoWithYoloData(_request: RecognitionYoloVideoRequest): Promise<RecognitionYoloFrameResult[]> {
     return []
   }
 

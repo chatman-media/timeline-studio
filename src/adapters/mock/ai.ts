@@ -25,6 +25,9 @@ import type {
   PlanGenerationOptions,
   PlanStatistics,
   PlanValidation,
+  RecognitionYoloFrameResult,
+  RecognitionYoloProcessorOptions,
+  RecognitionYoloVideoRequest,
   SaveAudioParams,
   SaveAudioResult,
   SpeechOnsetData,
@@ -35,10 +38,12 @@ import type {
   VideoRecognitionResult,
   YOLODetectionResult,
 } from "@/core/ports"
+import type { YoloVideoData } from "@/core/types/yolo"
 
 export class MockAIService implements IAIService {
   private apiKeys: Map<string, string> = new Map()
   private persons: Map<string, PersonData> = new Map()
+  private yoloData: Map<string, YoloVideoData> = new Map()
 
   // ============================================================================
   // API Key Management
@@ -97,6 +102,20 @@ export class MockAIService implements IAIService {
     _videoPath: string,
     _options?: { frameInterval?: number; maxFrames?: number; confidenceThreshold?: number },
   ): Promise<YOLODetectionResult[]> {
+    return []
+  }
+
+  async initRecognitionYoloProcessor(_options: RecognitionYoloProcessorOptions): Promise<void> {}
+
+  async loadYoloData(videoId: string): Promise<YoloVideoData | null> {
+    return this.yoloData.get(videoId) ?? null
+  }
+
+  async saveYoloData(videoId: string, data: YoloVideoData): Promise<void> {
+    this.yoloData.set(videoId, data)
+  }
+
+  async analyzeVideoWithYoloData(_request: RecognitionYoloVideoRequest): Promise<RecognitionYoloFrameResult[]> {
     return []
   }
 

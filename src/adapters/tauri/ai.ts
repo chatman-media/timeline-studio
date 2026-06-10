@@ -27,6 +27,9 @@ import type {
   PlanGenerationOptions,
   PlanStatistics,
   PlanValidation,
+  RecognitionYoloFrameResult,
+  RecognitionYoloProcessorOptions,
+  RecognitionYoloVideoRequest,
   SaveAudioParams,
   SaveAudioResult,
   SpeechOnsetData,
@@ -37,6 +40,7 @@ import type {
   VideoRecognitionResult,
   YOLODetectionResult,
 } from "@/core/ports"
+import type { YoloVideoData } from "@/core/types/yolo"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TauriAIService")
@@ -114,6 +118,32 @@ export class TauriAIService implements IAIService {
   ): Promise<YOLODetectionResult[]> {
     logger.infoSync("Analyzing video with YOLO", { processorId, videoPath })
     return invoke("analyze_video_with_yolo", { processorId, videoPath, options: options || {} })
+  }
+
+  async initRecognitionYoloProcessor(options: RecognitionYoloProcessorOptions): Promise<void> {
+    logger.infoSync("Initializing recognition YOLO processor", { options })
+    return invoke("init_yolo_processor", {
+      modelType: options.modelType,
+      confidenceThreshold: options.confidenceThreshold,
+    })
+  }
+
+  async loadYoloData(videoId: string): Promise<YoloVideoData | null> {
+    logger.debugSync("Loading YOLO data", { videoId })
+    return invoke("load_yolo_data", { videoId })
+  }
+
+  async saveYoloData(videoId: string, data: YoloVideoData): Promise<void> {
+    logger.infoSync("Saving YOLO data", { videoId })
+    return invoke("save_yolo_data", { videoId, data })
+  }
+
+  async analyzeVideoWithYoloData(request: RecognitionYoloVideoRequest): Promise<RecognitionYoloFrameResult[]> {
+    logger.infoSync("Analyzing video with YOLO data service", {
+      videoPath: request.video_path,
+      skipFrames: request.skip_frames,
+    })
+    return invoke("analyze_video_with_yolo", { request })
   }
 
   async getYOLOClassNames(processorId: string): Promise<string[]> {

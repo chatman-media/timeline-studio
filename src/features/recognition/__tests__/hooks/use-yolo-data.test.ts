@@ -34,7 +34,7 @@ const MockYoloDataService = vi.hoisted(() => {
   }
 })
 
-vi.mock("@/domains/ai-services/services/recognition", () => ({
+vi.mock("@/core/services", () => ({
   YoloDataService: MockYoloDataService,
 }))
 
