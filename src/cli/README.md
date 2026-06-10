@@ -114,6 +114,7 @@ npx ts-node src/cli/index.ts render project.json output.mp4 --verbose
 
 Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
 В polling-режиме ошибки обработки отдельного update возвращаются как failed-result, отправляют короткий ответ в чат при наличии chat id и не останавливают batch.
+Production topology, systemd setup, retention policy and sandbox smoke are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
 
 ```bash
 # Локальный smoke без Telegram token и без сетевых вызовов
@@ -229,6 +230,7 @@ export AI_REVIEW_RUST_SMOKE_YOUTUBE_TOKEN=ya29...
 ```
 
 `bot-worker` also accepts `TELEGRAM_BOT_TOKEN` as a generic fallback. Explicit CLI flags take priority over `TIMELINE_BOT_*` environment defaults.
+For production, prefer the dedicated env template at `config/bot-worker.production.env.example` instead of copying these inline examples.
 
 ## Примеры использования
 

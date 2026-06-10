@@ -84,6 +84,7 @@
 Руководства по развертыванию:
 - **[Руководство по сборке](06_deployment/build-guide.md)** - Инструкции по сборке приложения
 - **[Настройка OAuth](06_deployment/oauth-setup.md)** - Настройка OAuth интеграций
+- **[Telegram Bot Worker Production Runbook](06_deployment/telegram-bot-worker-production.md)** - Production topology, systemd setup, retention and sandbox smoke for bot-first worker
 - **[Платформы](06_deployment/platforms/)** - Специфика развертывания по платформам
 
 ### [07_milestones/](07_milestones/)
