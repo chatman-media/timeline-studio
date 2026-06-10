@@ -3,7 +3,7 @@ import type React from "react"
 
 import { useFavorites } from "@/core/hooks"
 import type { MediaFile } from "@/core/types"
-import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
+import { calculateDimensionsWithAspectRatio } from "@/core/utils/preview-sizes"
 import { useTransitionsAdapter as useUnifiedTransitionsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"

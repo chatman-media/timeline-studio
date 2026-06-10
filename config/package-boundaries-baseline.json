@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 media core type bridges",
-  "violations": 235,
+  "source": "Phase F7 core utility bridges",
+  "violations": 231,
   "bySeverity": {
-    "warn": 235
+    "warn": 231
   },
   "byEdge": {
-    "ui -> domains": 235
+    "ui -> domains": 231
   }
 }

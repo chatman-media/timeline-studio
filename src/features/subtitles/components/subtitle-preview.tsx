@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import { useTranslation } from "react-i18next"
 import { MediaType, type SubtitleResource } from "@/core/types"
-import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
+import { calculateDimensionsWithAspectRatio } from "@/core/utils/preview-sizes"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 

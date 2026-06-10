@@ -3,7 +3,7 @@ import type React from "react"
 import { useTranslation } from "react-i18next"
 
 import { useFavorites } from "@/core/hooks"
-import { calculateDimensionsWithAspectRatio } from "@/domains/media-management/utils/preview-sizes"
+import { calculateDimensionsWithAspectRatio } from "@/core/utils/preview-sizes"
 import { useEffectsAdapter as useUnifiedEffectsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { EffectPreview } from "@/features/effects/components/effect-preview"
