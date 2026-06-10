@@ -337,6 +337,7 @@ bot message
 - [#219](https://github.com/chatman-media/timeline-studio/issues/219) - B25: Bot workflow status update throttling
 - [#221](https://github.com/chatman-media/timeline-studio/issues/221) - B26: Telegram bot idempotent workflow updates
 - [#223](https://github.com/chatman-media/timeline-studio/issues/223) - B27: Telegram bot access control allowlist
+- [Telegram Bot Worker Production Runbook](../../06_deployment/telegram-bot-worker-production.md)
 - [telegram-mini-app.md](./telegram-mini-app.md)
 - [cloud-rendering.md](./cloud-rendering.md)
 - [export-architecture-refactoring.md](./export-architecture-refactoring.md)

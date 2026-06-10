@@ -1,0 +1,26 @@
+[Unit]
+Description=Timeline Studio Telegram bot worker
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=timeline-bot
+Group=timeline-bot
+WorkingDirectory=/opt/timeline-studio
+Environment=NODE_ENV=production
+EnvironmentFile=/etc/timeline-studio/bot-worker.env
+ExecStart=/usr/bin/env bun run src/cli/index.ts bot-worker --poll
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGINT
+TimeoutStopSec=60
+StateDirectory=timeline-studio
+CacheDirectory=timeline-studio
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/timeline-studio /var/cache/timeline-studio /opt/timeline-studio/test-results
+
+[Install]
+WantedBy=multi-user.target
