@@ -4,6 +4,24 @@
  * move off domain re-exports before media-management is extracted.
  */
 
+export enum MediaType {
+  Video = "Video",
+  VideoWithAudio = "video_with_audio",
+  StillImage = "Image",
+  ImageSequence = "image_sequence",
+  Audio = "Audio",
+  Music = "music",
+  Voiceover = "voiceover",
+  SFX = "sfx",
+  Ambient = "ambient",
+  Subtitle = "subtitle",
+  Title = "title",
+  Graphics = "graphics",
+  LUT = "lut",
+  Project = "project",
+  Unknown = "unknown",
+}
+
 export interface MediaFile {
   id: string
   name: string
@@ -39,5 +57,4 @@ export interface MediaFile {
   lastCheckedAt?: number
   isLoadingMetadata?: boolean
   source?: string
-  [key: string]: unknown
 }

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 project templates and scenarios project types",
-  "violations": 382,
+  "source": "Phase F7 filters and transitions core types",
+  "violations": 372,
   "bySeverity": {
-    "warn": 382
+    "warn": 372
   },
   "byEdge": {
-    "ui -> domains": 382
+    "ui -> domains": 372
   }
 }

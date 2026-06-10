@@ -1,6 +1,6 @@
 /**
  * Transitions Types
- * Re-exports from canonical source in video-editing domain
+ * Re-exports from canonical source in core.
  */
 
 export type {
@@ -14,4 +14,4 @@ export type {
   TransitionPreset,
   TransitionTag,
   TransitionType,
-} from "@/domains/video-editing/types"
+} from "@/core/types/transitions"

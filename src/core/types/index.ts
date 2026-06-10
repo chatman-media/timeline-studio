@@ -32,9 +32,12 @@ export type {
 // Re-export core-facing compatibility types for features
 export * from "./bot-workflow"
 export * from "./enhanced-subtitle"
+export * from "./filters"
 export * from "./media"
 export * from "./render-job"
+export * from "./resources"
 export * from "./style-template"
 export * from "./transcription"
+export * from "./transitions"
 export * from "./updates"
 export * from "./video-editing"

@@ -1,7 +1,7 @@
 /**
  * Filters Types
  *
- * Re-export from canonical source in domains
+ * Re-export from canonical source in core.
  */
 
-export type { VideoFilter } from "@/domains/video-editing/types/filters"
+export type { VideoFilter } from "@/core/types/filters"
