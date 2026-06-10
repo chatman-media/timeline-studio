@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core timeline sequence types",
-  "violations": 104,
+  "source": "Phase F7 core retry helper",
+  "violations": 101,
   "bySeverity": {
-    "warn": 104
+    "warn": 101
   },
   "byEdge": {
-    "ui -> domains": 104
+    "ui -> domains": 101
   }
 }
