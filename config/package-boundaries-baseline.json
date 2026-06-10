@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 media pool core types",
-  "violations": 228,
+  "source": "Phase F7 media core services",
+  "violations": 225,
   "bySeverity": {
-    "warn": 228
+    "warn": 225
   },
   "byEdge": {
-    "ui -> domains": 228
+    "ui -> domains": 225
   }
 }

@@ -1,11 +1,11 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { indexedDBCacheService } from "@/domains/media-management/services/indexeddb-cache-service"
+import { indexedDBCacheService } from "@/core/services/media-cache-service"
 import { renderWithProviders } from "@/test/test-utils"
 import { CacheSettingsModal } from "../../components/cache-settings-modal"
 
 // Мокаем сервис кеша
-vi.mock("@/domains/media-management/services/indexeddb-cache-service", () => ({
+vi.mock("@/core/services/media-cache-service", () => ({
   indexedDBCacheService: {
     getCacheStatistics: vi.fn(),
     clearPreviewCache: vi.fn(),
