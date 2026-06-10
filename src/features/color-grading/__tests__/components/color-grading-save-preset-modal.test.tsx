@@ -18,7 +18,7 @@ const mockCloseModal = vi.fn()
 const mockOnSave = vi.fn()
 const mockUseModals = vi.fn()
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => mockUseModals(),
 }))
 

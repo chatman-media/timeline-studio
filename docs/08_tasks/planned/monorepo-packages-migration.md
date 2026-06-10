@@ -135,7 +135,8 @@ adapters -> core
 - [x] `options`: добавить core-facing `MediaFile` type bridge и убрать type-only imports из `@/domains/media-management`.
 - [x] `keyboard-shortcuts`: перевести modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
 - [x] `color-scheme`: расширить feature-facing `user-settings` adapter и убрать прямые imports из `project-management`/`system-integration`.
-- [ ] Следующие маленькие кандидаты: `color-grading`.
+- [x] `color-grading`: перевести modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
+- [ ] Следующие маленькие кандидаты: `resources`, `style-templates`, `fairlight-audio`, `updates`.
 
 ## Проверка каждого PR
 
@@ -157,13 +158,13 @@ bun run check:type
 
 CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает только при росте total/severity/edge counts. Strict mode останется выключенным до burn-down `domains -> ui`, `domains -> app-shell` и `ui -> domains`.
 
-Baseline на 2026-06-08:
+Baseline на 2026-06-10:
 
-- Scanned files: 1587
-- Violations: 412
+- Scanned files: 1628
+- Violations: 410
 - `error`: 0
-- `warn`: 412
-- Edges: `ui -> domains` 412
+- `warn`: 410
+- Edges: `ui -> domains` 410
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 
