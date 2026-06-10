@@ -12,9 +12,9 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+} from "@timeline-studio/ui/components/alert-dialog"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
 import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
 import type { SavedMediaFile } from "@timeline-studio/core/types"
 

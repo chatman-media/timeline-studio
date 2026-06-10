@@ -5,17 +5,17 @@
 import { AlertCircle, Check, Clock, Hash, Loader2, Music, Wand2 } from "lucide-react"
 import { useCallback, useState } from "react"
 
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Slider } from "@/components/ui/slider"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useMulticam } from "../hooks/use-multicam"

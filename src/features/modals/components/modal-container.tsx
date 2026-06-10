@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
 import type { ModalType } from "@timeline-studio/core/types/modals"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"

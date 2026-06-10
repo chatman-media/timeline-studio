@@ -7,9 +7,9 @@ import { useDraggable } from "@dnd-kit/core"
 import { ChevronDown, ChevronRight, Filter, Layers, Palette, Search, Shuffle, Sparkles } from "lucide-react"
 import { memo, useState } from "react"
 
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@timeline-studio/ui/components/input"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import type { BaseEffect, Transition, VideoFilter } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 

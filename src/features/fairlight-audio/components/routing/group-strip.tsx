@@ -1,6 +1,6 @@
 import { Settings, Users, X } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 import type { ChannelGroup } from "../../services/bus-router"

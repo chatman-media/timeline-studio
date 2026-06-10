@@ -5,7 +5,7 @@ import { renderWithTimeline } from "@/test/test-utils"
 import { SpeedRampingToggle } from "../../../components/speed-ramping/speed-ramping-toggle"
 
 // Mock компонентов
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
     <button onClick={onClick} {...props} data-oid="fo3dggj">
       {children}
@@ -13,7 +13,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   TooltipProvider: ({ children }: any) => <div data-oid="dr3owfl">{children}</div>,
   Tooltip: ({ children }: any) => <div data-oid="76po3b4">{children}</div>,
   TooltipContent: ({ children }: any) => <div data-oid="4qqvgaa">{children}</div>,

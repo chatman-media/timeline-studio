@@ -4,9 +4,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
+import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Skeleton } from "@timeline-studio/ui/components/skeleton"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import { MediaType } from "@timeline-studio/core/types"
 import { useProjectSettings } from "@/features/project-settings"

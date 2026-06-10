@@ -179,10 +179,10 @@ adapters -> core
 
 **Цель:** package-safe UI primitives и reusable feature surfaces живут в `packages/ui/src`.
 
-- [ ] Перенести shared UI primitives из `src/components/ui`.
-- [ ] Перенести только те feature surfaces, которые не тащат domains/adapters напрямую.
-- [ ] Мигрировать imports на `@timeline-studio/ui/*` для moved public surfaces.
-- [ ] Проверить, что `packages/ui` зависит только от UI/core-safe контрактов.
+- [x] Перенести shared UI primitives из `src/components/ui`.
+- [x] Перенести только те feature surfaces, которые не тащат domains/adapters напрямую: pilot `version-control`.
+- [x] Мигрировать imports на `@timeline-studio/ui/*` для moved public surfaces.
+- [x] Проверить, что `packages/ui` зависит только от UI/core-safe контрактов.
 
 ### F13: Move desktop and CLI entrypoints into `apps`
 
@@ -224,7 +224,7 @@ CI использует `bun run check:boundaries:baseline`, который ср
 
 Baseline на 2026-06-11:
 
-- Scanned files: 1760
+- Scanned files: 1730
 - Violations: 0
 - `error`: 0
 - `warn`: 0

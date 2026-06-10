@@ -2,7 +2,7 @@ import { BarChart3, ChevronDown, Image, Palette, Sliders, TrendingUp } from "luc
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@timeline-studio/ui/components/collapsible"
 
 import { ColorGradingProvider } from "../services/color-grading-provider"
 import { ColorWheelsSection } from "./color-wheels/color-wheels-section"

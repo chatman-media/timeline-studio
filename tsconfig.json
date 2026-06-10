@@ -31,7 +31,7 @@
         "./src/types/*"
       ],
       "@ui/*": [
-        "./src/components/ui/*"
+        "./packages/ui/src/components/*"
       ],
       "@features/*": [
         "./src/features/*"

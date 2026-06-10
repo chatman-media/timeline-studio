@@ -7,9 +7,9 @@ import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import type React from "react"
 import { useCallback, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Progress } from "@/components/ui/progress"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
+import { Progress } from "@timeline-studio/ui/components/progress"
 
 import type { ApplyTemplateOptions } from "../services"
 import type { ProjectTemplate } from "../types/project-template"

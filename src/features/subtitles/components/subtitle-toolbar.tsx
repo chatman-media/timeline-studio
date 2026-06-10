@@ -1,4 +1,4 @@
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@timeline-studio/ui/components/separator"
 
 import { SubtitleAITools } from "./subtitle-ai-tools"
 import { SubtitleImportButton } from "./subtitle-import-button"

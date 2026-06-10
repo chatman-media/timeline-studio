@@ -2,7 +2,7 @@ import { Eye, EyeOff, Lock, Unlock } from "lucide-react"
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 import type { AutomationLane, AutomationPoint } from "../../services/automation-engine"

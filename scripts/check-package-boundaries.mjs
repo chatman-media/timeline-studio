@@ -80,7 +80,7 @@ function resolveInternalSpecifier(sourceFile, specifier) {
   }
 
   if (cleanSpecifier.startsWith("@ui/")) {
-    return `src/components/ui/${cleanSpecifier.slice("@ui/".length)}`
+    return `packages/ui/src/components/${cleanSpecifier.slice("@ui/".length)}`
   }
 
   if (cleanSpecifier.startsWith("@types/")) {

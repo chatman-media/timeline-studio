@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
 
-import { ResizableHandle as PanelResizeHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ResizableHandle as PanelResizeHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
 import type { MediaFile } from "@timeline-studio/core/types/media"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { createLogger } from "@/lib/tauri-logger"

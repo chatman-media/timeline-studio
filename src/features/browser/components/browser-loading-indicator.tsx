@@ -1,7 +1,7 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Skeleton } from "@timeline-studio/ui/components/skeleton"
 
 import { useLoadingState, useResourcesStats } from "../hooks/use-resources"
 

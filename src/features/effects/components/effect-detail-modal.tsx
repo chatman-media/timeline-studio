@@ -2,9 +2,9 @@ import { Download, Pause, Play, RotateCcw, SplitSquareHorizontal, X } from "luci
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { useModals } from "@timeline-studio/core/hooks"
 import { saveUserEffect } from "@timeline-studio/core/services/user-effects"
 import { createLogger } from "@/lib/tauri-logger"

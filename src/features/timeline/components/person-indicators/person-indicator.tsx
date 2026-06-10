@@ -6,8 +6,8 @@
 import { User, Users } from "lucide-react"
 import { useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 
 import type { PersonProfile } from "../../../person-identification/types/person"
 import type { TimelinePersonAppearance } from "../../hooks/state/use-timeline-persons"

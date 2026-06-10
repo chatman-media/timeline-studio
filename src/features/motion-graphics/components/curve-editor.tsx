@@ -6,10 +6,10 @@
 import { Grid, Lock, Maximize2, Pause, Play, SkipBack, SkipForward, Unlock } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
 
 import { interpolateKeyframes } from "../services/interpolation"
 

@@ -1,7 +1,7 @@
 import { AlertCircle, RefreshCw } from "lucide-react"
 import React, { Component, type ErrorInfo, type ReactNode } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("video-player:error-boundary")

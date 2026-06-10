@@ -6,9 +6,9 @@
 import { AlertCircle, Check, Clock, Sparkles, Zap } from "lucide-react"
 import type React from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 
 import type { Scenario } from "../types/scenario"
 

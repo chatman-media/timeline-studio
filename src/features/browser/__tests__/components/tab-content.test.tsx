@@ -151,7 +151,7 @@ vi.mock("@/features/timeline/hooks", () => ({
   })),
 }))
 
-vi.mock("@/components/ui/tabs", () => ({
+vi.mock("@timeline-studio/ui/components/tabs", () => ({
   TabsContent: ({ value, children }: any) => (
     <div data-testid={`tabs-content-${value}`} data-value={value} data-oid="390zs:a">
       {children}

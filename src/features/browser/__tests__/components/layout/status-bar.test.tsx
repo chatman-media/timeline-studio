@@ -34,7 +34,7 @@ vi.mock("lucide-react", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, className, title, ...props }: any) => (
     <button
       className={className}

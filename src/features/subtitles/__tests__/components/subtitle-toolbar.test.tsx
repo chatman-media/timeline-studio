@@ -4,7 +4,7 @@
 import { render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@timeline-studio/ui/components/separator"
 
 import { SubtitleAITools } from "../../components/subtitle-ai-tools"
 import { SubtitleImportButton } from "../../components/subtitle-import-button"
@@ -68,7 +68,7 @@ vi.mock("../../components/subtitle-tools", () => ({
   )),
 }))
 
-vi.mock("@/components/ui/separator", () => ({
+vi.mock("@timeline-studio/ui/components/separator", () => ({
   Separator: vi.fn(({ orientation, className }) => (
     <div data-testid="separator" data-orientation={orientation} className={className} data-oid="y6lx-k3" />
   )),

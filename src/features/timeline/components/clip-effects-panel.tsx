@@ -7,8 +7,8 @@ import { GripVertical, Plus, Trash2 } from "lucide-react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import {
   Dialog,
   DialogContent,
@@ -16,10 +16,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Switch } from "@/components/ui/switch"
+} from "@timeline-studio/ui/components/dialog"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { Switch } from "@timeline-studio/ui/components/switch"
 import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
 import { EffectManagerPanel } from "@/features/effects/components/effect-manager-panel"
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"

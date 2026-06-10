@@ -54,7 +54,7 @@ const setupMocks = () => {
   }
 
   Object.entries(components).forEach(([name, _component]) => {
-    const path = `@/components/ui/${name
+    const path = `@timeline-studio/ui/components/${name
       .toLowerCase()
       .replace(/([A-Z])/g, "-$1")
       .toLowerCase()
@@ -63,11 +63,11 @@ const setupMocks = () => {
   })
 }
 
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children }: any) => <span data-oid=":d9sqcg">{children}</span>,
 }))
 
-vi.mock("@/components/ui/card", () => ({
+vi.mock("@timeline-studio/ui/components/card", () => ({
   Card: ({ children }: any) => <div data-oid="4wmfxa8">{children}</div>,
   CardContent: ({ children }: any) => <div data-oid="bigl.hn">{children}</div>,
   CardDescription: ({ children }: any) => <div data-oid="w_p.vl8">{children}</div>,
@@ -75,7 +75,7 @@ vi.mock("@/components/ui/card", () => ({
   CardTitle: ({ children }: any) => <div data-oid="elg2uot">{children}</div>,
 }))
 
-vi.mock("@/components/ui/scroll-area", () => ({
+vi.mock("@timeline-studio/ui/components/scroll-area", () => ({
   ScrollArea: ({ children }: any) => <div data-oid="bua.lm4">{children}</div>,
 }))
 

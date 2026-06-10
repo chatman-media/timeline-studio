@@ -10,10 +10,10 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { Loader2, Sparkles, X } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Progress } from "@/components/ui/progress"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { cn } from "@/lib/utils"
 
 export interface AnalysisProgressIndicatorProps {

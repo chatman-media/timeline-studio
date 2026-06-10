@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 import {

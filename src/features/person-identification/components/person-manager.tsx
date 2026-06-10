@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from "react"
 
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { useModals } from "@timeline-studio/core/hooks"
 import { PersonDatabaseService } from "@timeline-studio/core/services"
 import { createLogger } from "@/lib/tauri-logger"

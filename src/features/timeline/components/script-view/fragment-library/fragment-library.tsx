@@ -4,7 +4,7 @@
 
 import { Film, Users } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@timeline-studio/ui/components/badge"
 import type { ScriptFragment } from "@/features/timeline/types/script"
 
 export interface FragmentLibraryProps {

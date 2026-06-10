@@ -15,12 +15,16 @@
       "default": "./src/components/index.ts"
     },
     "./components/*": {
-      "types": "./src/components/*.ts",
-      "default": "./src/components/*.ts"
+      "types": "./src/components/*.tsx",
+      "default": "./src/components/*.tsx"
     },
     "./features/version-control": {
-      "types": "./src/features/version-control.ts",
-      "default": "./src/features/version-control.ts"
+      "types": "./src/features/version-control/index.ts",
+      "default": "./src/features/version-control/index.ts"
+    },
+    "./features/version-control/*": {
+      "types": "./src/features/version-control/*",
+      "default": "./src/features/version-control/*"
     }
   },
   "files": [

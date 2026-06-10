@@ -6,8 +6,8 @@
 import { Activity, AlertCircle, Eye, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Progress } from "@timeline-studio/ui/components/progress"
 import { cn } from "@/lib/utils"
 
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"

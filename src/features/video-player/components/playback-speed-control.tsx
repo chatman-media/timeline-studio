@@ -1,13 +1,13 @@
 import { Gauge } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@timeline-studio/ui/components/dropdown-menu"
 
 import { usePlayerSpeedRamping } from "../hooks/use-player-speed-ramping"
 

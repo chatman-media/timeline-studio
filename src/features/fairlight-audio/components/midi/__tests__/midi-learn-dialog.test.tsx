@@ -12,7 +12,7 @@ import { mockUIComponents, resetSelectStates } from "./test-utils/mocks"
 mockUIComponents()
 
 // Override the dialog mock to show the test version
-vi.mock("@/components/ui/dialog", () => ({
+vi.mock("@timeline-studio/ui/components/dialog", () => ({
   Dialog: ({ open, onOpenChange, children }: any) =>
     open ? (
       <div data-testid="dialog" onClick={() => onOpenChange?.(false)} data-oid=":.au3wh">

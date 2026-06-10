@@ -18,7 +18,7 @@ vi.mock("@/features/timeline/providers/player-provider", async (importOriginal) 
 })
 
 // Мокаем компоненты resizable UI
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanelGroup: ({ children, direction }: any) => (
     <div data-testid="resizable-panel-group" data-direction={direction} data-oid="o9k55qa">
       {children}

@@ -5,7 +5,7 @@ import { renderWithTimeline } from "@/test/test-utils"
 import { SpeedCurveEditor } from "../../../components/speed-ramping/speed-curve-editor"
 
 // Mock компонентов
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
     <button onClick={onClick} {...props} data-oid="u4tdy_o">
       {children}
@@ -13,7 +13,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/dropdown-menu", () => ({
+vi.mock("@timeline-studio/ui/components/dropdown-menu", () => ({
   DropdownMenu: ({ children }: any) => (
     <div data-testid="dropdown-menu" data-oid="mj0n77.">
       {children}
@@ -40,7 +40,7 @@ vi.mock("@/components/ui/dropdown-menu", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   TooltipProvider: ({ children }: any) => <div data-oid="fc79y93">{children}</div>,
   Tooltip: ({ children }: any) => <div data-oid="d8e90vt">{children}</div>,
   TooltipContent: ({ children }: any) => <div data-oid="a.du44q">{children}</div>,

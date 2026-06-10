@@ -10,7 +10,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@timeline-studio/ui/components/context-menu"
 import type { TimelineClip } from "@/features/timeline/types"
 import { useClipGroups } from "../../hooks/clips/use-clip-groups"
 import { useTimeline } from "../../hooks/state/use-timeline"

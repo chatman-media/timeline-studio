@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 
 interface AudioPermissionRequestProps {
   permissionStatus: "pending" | "granted" | "denied" | "error"

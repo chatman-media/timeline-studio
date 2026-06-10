@@ -20,7 +20,7 @@ import { useTimelinePersons } from "@/features/timeline/hooks/state/use-timeline
 import { PersonsPanel } from "../persons-panel"
 
 // Mock для UI компонентов
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children, onClick, className, variant }: any) => (
     <span onClick={onClick} className={className} data-testid="badge" data-variant={variant} data-oid=":d_4m0o">
       {children}
@@ -28,7 +28,7 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, className, variant, size }: any) => (
     <button
       onClick={onClick}
@@ -44,7 +44,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/card", () => ({
+vi.mock("@timeline-studio/ui/components/card", () => ({
   Card: ({ children, className }: any) => (
     <div className={className} data-testid="card" data-oid="pvbgn56">
       {children}
@@ -70,7 +70,7 @@ vi.mock("@/components/ui/card", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/input", () => ({
+vi.mock("@timeline-studio/ui/components/input", () => ({
   Input: ({ placeholder, value, onChange, className }: any) => (
     <input
       placeholder={placeholder}
@@ -83,7 +83,7 @@ vi.mock("@/components/ui/input", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/scroll-area", () => ({
+vi.mock("@timeline-studio/ui/components/scroll-area", () => ({
   ScrollArea: ({ children, className }: any) => (
     <div className={className} data-testid="scroll-area" data-oid="ai3.-01">
       {children}
@@ -91,7 +91,7 @@ vi.mock("@/components/ui/scroll-area", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, className }: any) => (
     <input
       type="range"
@@ -107,7 +107,7 @@ vi.mock("@/components/ui/slider", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/switch", () => ({
+vi.mock("@timeline-studio/ui/components/switch", () => ({
   Switch: ({ checked, onCheckedChange }: any) => (
     <input
       type="checkbox"
@@ -119,7 +119,7 @@ vi.mock("@/components/ui/switch", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   Tooltip: ({ children }: any) => <div data-oid=".6spu62">{children}</div>,
   TooltipTrigger: ({ children }: any) => (
     <div data-testid="tooltip-trigger" data-oid="6wcm378">

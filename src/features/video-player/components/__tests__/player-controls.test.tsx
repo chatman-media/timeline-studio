@@ -148,7 +148,7 @@ vi.mock("lucide-react", async (importOriginal) => {
 })
 
 // Мокаем компоненты UI
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, variant, size, className, ...props }: any) => (
     <button
       onClick={onClick}
@@ -163,7 +163,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, max, step, className, disabled }: any) => (
     <input
       type="range"

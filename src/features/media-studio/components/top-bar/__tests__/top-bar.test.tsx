@@ -152,7 +152,7 @@ vi.mock("@/features/export", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/popover", () => ({
+vi.mock("@timeline-studio/ui/components/popover", () => ({
   Popover: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="popover" data-oid="zsfszu7">
       {children}

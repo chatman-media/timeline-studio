@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
 
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Separator } from "@timeline-studio/ui/components/separator"
 
 import { useApiKeys } from "../../hooks/use-api-keys"
 import { ApiKeyInput } from "../widgets/api-key-input"

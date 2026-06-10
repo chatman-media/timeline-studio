@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import type { ResolutionOption } from "@timeline-studio/core/types/project"
 
 import type { CaptureDevice } from "../types"

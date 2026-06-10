@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event"
 import { useTranslation } from "react-i18next"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 import { TimelineWorkspaceTabs, type WorkspaceView } from "../../components/timeline-workspace-tabs"
@@ -25,7 +25,7 @@ vi.mock("react-i18next", () => ({
   })),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: vi.fn(({ children, variant, size, onClick, className, ...props }) => (
     <button
       data-variant={variant}

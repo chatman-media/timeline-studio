@@ -6,8 +6,8 @@
 import { AlertCircle, BarChart3, Bot, Globe, Sparkles, Target } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
+import { Button } from "@timeline-studio/ui/components/button"
 // REMOVED: executeContentIntelligenceTool - legacy code deleted, will be replaced by AI Director v2
 // import { executeContentIntelligenceTool } from "@timeline-studio/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@timeline-studio/core/types"

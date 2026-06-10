@@ -1,14 +1,14 @@
 import { Activity, Cpu, HardDrive, Info, Settings, Zap } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Switch } from "@/components/ui/switch"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Progress } from "@timeline-studio/ui/components/progress"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { Skeleton } from "@timeline-studio/ui/components/skeleton"
+import { Switch } from "@timeline-studio/ui/components/switch"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 import {

@@ -13,8 +13,8 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-// Мокируем компонент Button из @/components/ui/button
-vi.mock("@/components/ui/button", () => ({
+// Мокируем компонент Button из @timeline-studio/ui/components/button
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, className, ...props }: any) => (
     <button
       onClick={onClick}

@@ -13,8 +13,8 @@ import {
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@timeline-studio/ui/components/context-menu"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 import { type ExtendedTimelineMarker, MarkerColors, type MarkerType } from "../../types/markers"

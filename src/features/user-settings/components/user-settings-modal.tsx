@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { DialogFooter } from "@/components/ui/dialog"
+import { Button } from "@timeline-studio/ui/components/button"
+import { DialogFooter } from "@timeline-studio/ui/components/dialog"
 import { useModals } from "@timeline-studio/core/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 import { UserSettingsModalTabs } from "./user-settings-modal-tabs"

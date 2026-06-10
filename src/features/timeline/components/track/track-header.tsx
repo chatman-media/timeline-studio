@@ -5,9 +5,9 @@
 import { Eye, EyeOff, Image, Lock, Mic, Music, Type, Unlock, Video, Volume2, VolumeX } from "lucide-react"
 import React from "react"
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import { cn } from "@/lib/utils"
 
 import type { TimelineTrack, TrackType } from "../../types"

@@ -2,9 +2,9 @@ import { Plus, RotateCcw, RotateCw, Volume2, VolumeX, X } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import { cn } from "@/lib/utils"
 
 import type { AudioBus, ChannelSend } from "../../services/bus-router"

@@ -15,7 +15,7 @@ import { useLoadingState, useResourcesStats } from "../../hooks/use-resources"
 vi.mock("../../hooks/use-resources")
 
 // Мокаем UI компоненты
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children, variant, className }: any) => (
     <span data-testid="badge" data-variant={variant} className={className} data-oid="4p9yxiv">
       {children}
@@ -23,7 +23,7 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/skeleton", () => ({
+vi.mock("@timeline-studio/ui/components/skeleton", () => ({
   Skeleton: ({ className }: any) => <div data-testid="skeleton" className={className} data-oid="-th9k6f" />,
 }))
 

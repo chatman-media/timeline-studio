@@ -12,7 +12,7 @@ vi.mock("@/features/video-compiler/hooks/use-frame-extraction", () => ({
 }))
 
 // Mock Skeleton component
-vi.mock("@/components/ui/skeleton", () => ({
+vi.mock("@timeline-studio/ui/components/skeleton", () => ({
   Skeleton: ({ className, style }: any) => (
     <div className={className} style={style} data-testid="skeleton" data-oid="5k_i1qu" />
   ),

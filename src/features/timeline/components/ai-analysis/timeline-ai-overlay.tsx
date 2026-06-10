@@ -18,7 +18,7 @@ import {
 } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 import { useTimelineAIAnalysis } from "../../hooks/integration/use-timeline-ai-analysis"

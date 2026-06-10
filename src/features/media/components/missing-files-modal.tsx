@@ -3,8 +3,8 @@
 import { AlertTriangle, CheckCircle, FileX, Search, Trash2 } from "lucide-react"
 import { useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
 import { useModals } from "@timeline-studio/core/hooks"
 import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
 import type { SavedMediaFile } from "@timeline-studio/core/types"

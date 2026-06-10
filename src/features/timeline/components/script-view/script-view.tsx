@@ -5,7 +5,7 @@
 
 import { useState } from "react"
 
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
 import type { ScriptFragment } from "@/features/timeline/types/script"
 import { FragmentLibrary } from "./fragment-library/fragment-library"
 import { useApplyPlanToTimeline } from "./hooks/use-apply-plan-to-timeline"

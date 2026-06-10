@@ -5,11 +5,11 @@
 import { Paintbrush, Palette, Plus, Search, Sparkles, Star, Wrench } from "lucide-react"
 import { useRef, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import type { EffectPreset } from "../services/effect-pipeline-manager"
 import { EffectPipelineManager } from "../services/effect-pipeline-manager"
 

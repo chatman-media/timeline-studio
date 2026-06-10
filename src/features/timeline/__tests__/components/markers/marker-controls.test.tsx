@@ -116,7 +116,7 @@ vi.mock("../../../hooks/markers/use-timeline-markers", () => ({
 }))
 
 // Мок для UI компонентов
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, ...props }: any) => (
     <button onClick={onClick} disabled={disabled} {...props} data-oid="-2oo7si">
       {children}
@@ -124,7 +124,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children, ...props }: any) => (
     <span {...props} data-oid="o5._822">
       {children}
@@ -132,13 +132,13 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/input", () => ({
+vi.mock("@timeline-studio/ui/components/input", () => ({
   Input: ({ onChange, onKeyDown, ...props }: any) => (
     <input onChange={onChange} onKeyDown={onKeyDown} {...props} data-oid="bxsp-rv" />
   ),
 }))
 
-vi.mock("@/components/ui/popover", () => ({
+vi.mock("@timeline-studio/ui/components/popover", () => ({
   Popover: ({ children, open }: any) => (
     <div data-open={open} data-testid="popover" data-oid="ur06bkw">
       {children}
@@ -158,7 +158,7 @@ vi.mock("@/components/ui/popover", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/dropdown-menu", () => ({
+vi.mock("@timeline-studio/ui/components/dropdown-menu", () => ({
   DropdownMenu: ({ children }: any) => <div data-oid="8wvngw8">{children}</div>,
   DropdownMenuTrigger: ({ children, asChild }: any) => (
     <div data-testid="dropdown-trigger" data-oid="-4g9lra">

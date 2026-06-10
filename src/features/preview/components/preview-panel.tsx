@@ -5,9 +5,9 @@
 import { Eye, EyeOff, Layers, Monitor, Settings, Zap } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card } from "@timeline-studio/ui/components/card"
 import { useWebGL2Preview } from "../hooks/use-webgl2-preview"
 import { EffectChainList } from "./effect-chain-list"
 import { PresetGallery } from "./preset-gallery"

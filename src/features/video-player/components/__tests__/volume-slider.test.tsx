@@ -13,8 +13,8 @@ vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
   }),
 }))
 
-// Мокаем компонент Slider из @/components/ui/slider
-vi.mock("@/components/ui/slider", () => ({
+// Мокаем компонент Slider из @timeline-studio/ui/components/slider
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, min, max, step, onValueChange, onValueCommit, className }: any) => (
     <input
       type="range"

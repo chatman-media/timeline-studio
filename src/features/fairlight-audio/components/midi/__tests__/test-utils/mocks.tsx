@@ -13,7 +13,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/components/ui/alert", () => ({
+vi.mock("@timeline-studio/ui/components/alert", () => ({
   Alert: ({ children, className }: any) => (
     <div className={className} role="alert" data-oid="h621whe">
       {children}
@@ -23,7 +23,7 @@ vi.mock("@/components/ui/alert", () => ({
   AlertDescription: ({ children }: any) => <div data-oid="o9lmuqn">{children}</div>,
 }))
 
-vi.mock("@/components/ui/badge", () => ({
+vi.mock("@timeline-studio/ui/components/badge", () => ({
   Badge: ({ children, variant }: any) => (
     <span data-variant={variant} data-oid="l9wogh0">
       {children}
@@ -31,7 +31,7 @@ vi.mock("@/components/ui/badge", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, disabled, variant, size, className }: any) => (
     <button
       onClick={onClick}
@@ -46,7 +46,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/card", () => ({
+vi.mock("@timeline-studio/ui/components/card", () => ({
   Card: ({ children, className }: any) => (
     <div className={className} data-oid="ggo2bgi">
       {children}
@@ -72,7 +72,7 @@ vi.mock("@/components/ui/card", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/dialog", () => ({
+vi.mock("@timeline-studio/ui/components/dialog", () => ({
   Dialog: ({ open, onOpenChange, children }: any) => {
     const isOpen = open !== undefined ? open : true
     return isOpen ? (
@@ -96,7 +96,7 @@ vi.mock("@/components/ui/dialog", () => ({
   DialogTitle: ({ children }: any) => <h2 data-oid="n.3fj8a">{children}</h2>,
 }))
 
-vi.mock("@/components/ui/dropdown-menu", () => ({
+vi.mock("@timeline-studio/ui/components/dropdown-menu", () => ({
   DropdownMenu: ({ children }: any) => <div data-oid=":_9mvq.">{children}</div>,
 
   DropdownMenuContent: ({ children }: any) => (
@@ -118,7 +118,7 @@ vi.mock("@/components/ui/dropdown-menu", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/label", () => ({
+vi.mock("@timeline-studio/ui/components/label", () => ({
   Label: ({ children, htmlFor, className }: any) => (
     <label htmlFor={htmlFor} className={className} data-oid="z7bquhv">
       {children}
@@ -126,13 +126,13 @@ vi.mock("@/components/ui/label", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/progress", () => ({
+vi.mock("@timeline-studio/ui/components/progress", () => ({
   Progress: ({ value, className }: any) => (
     <div className={className} data-value={value} data-testid="progress" data-oid="u5p_8.7" />
   ),
 }))
 
-vi.mock("@/components/ui/scroll-area", () => ({
+vi.mock("@timeline-studio/ui/components/scroll-area", () => ({
   ScrollArea: ({ children, className }: any) => (
     <div className={className} data-oid="-cev07.">
       {children}
@@ -140,7 +140,7 @@ vi.mock("@/components/ui/scroll-area", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/select", () => {
+vi.mock("@timeline-studio/ui/components/select", () => {
   const SelectContext = React.createContext<any>(null)
 
   return {
@@ -199,7 +199,7 @@ vi.mock("@/components/ui/select", () => {
   }
 })
 
-vi.mock("@/components/ui/slider", () => ({
+vi.mock("@timeline-studio/ui/components/slider", () => ({
   Slider: ({ value, onValueChange, min, max, step, className }: any) => (
     <input
       type="range"
@@ -215,7 +215,7 @@ vi.mock("@/components/ui/slider", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/switch", () => ({
+vi.mock("@timeline-studio/ui/components/switch", () => ({
   Switch: ({ checked, onCheckedChange, "aria-label": ariaLabel }: any) => (
     <input
       type="checkbox"
@@ -228,7 +228,7 @@ vi.mock("@/components/ui/switch", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tabs", () => {
+vi.mock("@timeline-studio/ui/components/tabs", () => {
   const TabsContext = React.createContext<any>(null)
 
   return {
@@ -293,7 +293,7 @@ vi.mock("@/components/ui/tabs", () => {
   }
 })
 
-vi.mock("@/components/ui/textarea", () => ({
+vi.mock("@timeline-studio/ui/components/textarea", () => ({
   Textarea: ({ value, onChange, placeholder, className, rows }: any) => (
     <textarea
       value={value}

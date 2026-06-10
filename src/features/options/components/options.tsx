@@ -2,7 +2,7 @@ import { AudioLines, Gauge, Info, Palette } from "lucide-react"
 import { type JSX, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import type { MediaFile } from "@timeline-studio/core/types"
 import { TAB_BUTTON_STYLES } from "@/features/browser"
 import { ColorSettings } from "@/features/color-grading"

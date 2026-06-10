@@ -10,10 +10,7 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "../../src/components/ui/**/*",
-    "../../src/core/**/*",
-    "../../src/features/version-control/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "dist",

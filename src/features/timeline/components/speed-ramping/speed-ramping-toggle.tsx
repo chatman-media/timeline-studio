@@ -1,7 +1,7 @@
 import { Gauge } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"

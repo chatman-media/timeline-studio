@@ -4,9 +4,9 @@
 
 import { Zap } from "lucide-react"
 import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Dialog, DialogContent } from "@timeline-studio/ui/components/dialog"
 import type { TimelineClip } from "../../types"
 import { KeyframeEditor } from "./keyframe-editor"
 

@@ -33,7 +33,7 @@ vi.mock("../../components/curves/curve-editor", () => ({
 }))
 
 // Мокаем UI компоненты
-vi.mock("@/components/ui/button", () => ({
+vi.mock("@timeline-studio/ui/components/button", () => ({
   Button: ({ children, onClick, ...props }: any) => (
     <button onClick={onClick} {...props} data-oid="evwmnr7">
       {children}
@@ -41,7 +41,7 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
-vi.mock("@/components/ui/tabs", () => ({
+vi.mock("@timeline-studio/ui/components/tabs", () => ({
   Tabs: ({ children, value, onValueChange, className }: any) => (
     <div data-testid="tabs" data-value={value} className={className} data-oid="pmsuo:n">
       {React.Children.map(children, (child) =>

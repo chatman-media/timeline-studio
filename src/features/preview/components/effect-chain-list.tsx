@@ -6,19 +6,19 @@ import { ChevronDown, ChevronRight, Copy, GripVertical, MoreVertical, Plus, Tras
 import type React from "react"
 import { useRef, useState } from "react"
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card } from "@timeline-studio/ui/components/card"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@timeline-studio/ui/components/collapsible"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Switch } from "@timeline-studio/ui/components/switch"
 
 import { EffectPipelineManager } from "../services/effect-pipeline-manager"
 

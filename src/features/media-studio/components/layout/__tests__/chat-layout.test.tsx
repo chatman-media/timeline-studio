@@ -139,7 +139,7 @@ const mockTimelineContext = {
 }
 
 // Мокаем ResizablePanel компоненты
-vi.mock("@/components/ui/resizable", () => ({
+vi.mock("@timeline-studio/ui/components/resizable", () => ({
   ResizablePanel: ({ children, defaultSize, minSize, maxSize }: any) => (
     <div
       data-testid="resizable-panel"

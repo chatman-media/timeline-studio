@@ -16,8 +16,8 @@ import {
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { useCurrentProject, useModals, useNotifications } from "@timeline-studio/core/hooks"
 import { ColorSchemeDropdown } from "@/features/color-scheme"
 import { RenderQueueDropdown } from "@/features/export"

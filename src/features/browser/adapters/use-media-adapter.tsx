@@ -3,7 +3,7 @@ import type React from "react"
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@timeline-studio/ui/components/context-menu"
 import { useFavorites } from "@timeline-studio/core/hooks"
 import type { MediaFile } from "@timeline-studio/core/types"
 import { parseFileSize } from "@timeline-studio/core/utils/file"

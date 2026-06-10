@@ -5,7 +5,7 @@
 import { Copy, Image, Scissors, Trash2, Video } from "lucide-react"
 import React, { memo, useCallback, useMemo } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 import { useClips } from "../../hooks/clips/use-clips"

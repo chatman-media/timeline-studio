@@ -8,14 +8,14 @@ import { TimelineMarker } from "../../../components/markers/timeline-marker"
 import type { ExtendedTimelineMarker } from "../../../types/markers"
 
 // Mock компонентов
-vi.mock("@/components/ui/tooltip", () => ({
+vi.mock("@timeline-studio/ui/components/tooltip", () => ({
   TooltipProvider: ({ children }: any) => <div data-oid="qtgn51v">{children}</div>,
   Tooltip: ({ children }: any) => <div data-oid="etku::7">{children}</div>,
   TooltipContent: ({ children }: any) => <div data-oid="s9vd76x">{children}</div>,
   TooltipTrigger: ({ children }: any) => <div data-oid="679zn76">{children}</div>,
 }))
 
-vi.mock("@/components/ui/context-menu", () => ({
+vi.mock("@timeline-studio/ui/components/context-menu", () => ({
   ContextMenu: ({ children }: any) => <div data-oid="x.tx:qe">{children}</div>,
   ContextMenuContent: ({ children }: any) => <div data-oid="5w-3ft5">{children}</div>,
   ContextMenuItem: ({ children, onClick }: any) => (
