@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core playback time sync",
-  "violations": 92,
+  "source": "Phase F7 core player commands",
+  "violations": 91,
   "bySeverity": {
-    "warn": 92
+    "warn": 91
   },
   "byEdge": {
-    "ui -> domains": 92
+    "ui -> domains": 91
   }
 }

@@ -9,8 +9,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { isServiceEnabled } from "@/config/service-config"
 import { container } from "@/core/container"
 import { useUserSettings } from "@/core/hooks/use-user-settings"
+import { PlayerCommands } from "@/core/services/player-commands"
 import type { MediaFile } from "@/core/types"
-import { AppCommands } from "@/domains/project-management/machines/app-machine"
 import { usePlaybackTimeSync } from "@/core/hooks/use-playback-time-sync"
 import { type CommandPriority, CommandQueue } from "@/core/services/video-player-command-queue"
 import { defaultShouldRetry, retryWithBackoff } from "@/core/utils/retry-helper"
@@ -371,7 +371,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
         return
       }
 
-      await executeCommand(AppCommands.playerSetMedia(mediaId, startTime))
+      await executeCommand(PlayerCommands.playerSetMedia(mediaId, startTime))
     },
     [isVideoPlayerServiceEnabled, executeCommand],
   )
@@ -382,7 +382,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
         setLocalState((prev) => ({ ...prev, volume }))
         return
       }
-      await executeCommand(AppCommands.playerSetVolume(volume))
+      await executeCommand(PlayerCommands.playerSetVolume(volume))
     },
     [isVideoPlayerServiceEnabled, executeCommand],
   )
@@ -393,7 +393,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
         logger.debug("playerSelectClip (local fallback)", { clipId })
         return
       }
-      await executeCommand(AppCommands.playerSelectClip(clipId))
+      await executeCommand(PlayerCommands.playerSelectClip(clipId))
     },
     [isVideoPlayerServiceEnabled, executeCommand],
   )
@@ -403,7 +403,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
       logger.debug("playerClearSelection (local fallback)")
       return
     }
-    await executeCommand(AppCommands.playerClearSelection())
+    await executeCommand(PlayerCommands.playerClearSelection())
   }, [isVideoPlayerServiceEnabled, executeCommand])
 
   const playerSetSourceBackend = useCallback(
@@ -414,42 +414,42 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
         logger.debug("playerSetSource (local fallback)", { source })
         return
       }
-      await executeCommand(AppCommands.playerSetSource(source))
+      await executeCommand(PlayerCommands.playerSetSource(source))
     },
     [isVideoPlayerServiceEnabled, executeCommand],
   )
 
   const playerApplyEffectBackend = useCallback(
     async (effectId: string, params: Record<string, any>) => {
-      await executeCommand(AppCommands.playerApplyEffect(effectId, params))
+      await executeCommand(PlayerCommands.playerApplyEffect(effectId, params))
     },
     [executeCommand],
   )
 
   const playerApplyFilterBackend = useCallback(
     async (filterId: string, params: Record<string, any>) => {
-      await executeCommand(AppCommands.playerApplyFilter(filterId, params))
+      await executeCommand(PlayerCommands.playerApplyFilter(filterId, params))
     },
     [executeCommand],
   )
 
   const playerApplyTemplateBackend = useCallback(
     async (templateId: string, mediaIds: string[]) => {
-      await executeCommand(AppCommands.playerApplyTemplate(templateId, mediaIds))
+      await executeCommand(PlayerCommands.playerApplyTemplate(templateId, mediaIds))
     },
     [executeCommand],
   )
 
   const playerClearEffectsBackend = useCallback(async () => {
-    await executeCommand(AppCommands.playerClearEffects())
+    await executeCommand(PlayerCommands.playerClearEffects())
   }, [executeCommand])
 
   const playerClearFiltersBackend = useCallback(async () => {
-    await executeCommand(AppCommands.playerClearFilters())
+    await executeCommand(PlayerCommands.playerClearFilters())
   }, [executeCommand])
 
   const playerClearTemplateBackend = useCallback(async () => {
-    await executeCommand(AppCommands.playerClearTemplate())
+    await executeCommand(PlayerCommands.playerClearTemplate())
   }, [executeCommand])
 
   // Локальные действия

@@ -80,9 +80,9 @@ vi.mock("@/core/utils/retry-helper", () => ({
   defaultShouldRetry: vi.fn(() => true),
 }))
 
-// Mock AppCommands - define inside vi.mock to avoid hoisting issues
-vi.mock("@/domains/project-management/machines/app-machine", () => ({
-  AppCommands: {
+// Mock PlayerCommands - define inside vi.mock to avoid hoisting issues
+vi.mock("@/core/services/player-commands", () => ({
+  PlayerCommands: {
     playerSetMedia: vi.fn((mediaId, startTime) => ({
       type: "PlayerSetMedia",
       params: { mediaId, startTime },
@@ -131,7 +131,7 @@ vi.mock("@/domains/project-management/machines/app-machine", () => ({
 }))
 
 // Import after mocks
-import { AppCommands } from "@/domains/project-management/machines/app-machine"
+import { PlayerCommands } from "@/core/services/player-commands"
 
 describe("PlayerProvider", () => {
   let mockBackendState: any
@@ -709,7 +709,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerSetMedia("media-123", 10)
 
-      expect(AppCommands.playerSetMedia).toHaveBeenCalledWith("media-123", 10)
+      expect(PlayerCommands.playerSetMedia).toHaveBeenCalledWith("media-123", 10)
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerSetMedia",
         params: { mediaId: "media-123", startTime: 10 },
@@ -729,7 +729,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerSetVolume(0.7)
 
-      expect(AppCommands.playerSetVolume).toHaveBeenCalledWith(0.7)
+      expect(PlayerCommands.playerSetVolume).toHaveBeenCalledWith(0.7)
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerSetVolume",
         params: { volume: 0.7 },
@@ -741,7 +741,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerSelectClip("clip-456")
 
-      expect(AppCommands.playerSelectClip).toHaveBeenCalledWith("clip-456")
+      expect(PlayerCommands.playerSelectClip).toHaveBeenCalledWith("clip-456")
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerSelectClip",
         params: { clipId: "clip-456" },
@@ -753,7 +753,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerClearSelection()
 
-      expect(AppCommands.playerClearSelection).toHaveBeenCalled()
+      expect(PlayerCommands.playerClearSelection).toHaveBeenCalled()
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerClearSelection",
         params: {},
@@ -765,7 +765,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerSetSource("browser")
 
-      expect(AppCommands.playerSetSource).toHaveBeenCalledWith("browser")
+      expect(PlayerCommands.playerSetSource).toHaveBeenCalledWith("browser")
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerSetSource",
         params: { source: "browser" },
@@ -777,7 +777,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerApplyEffect("blur-effect", { intensity: 10 })
 
-      expect(AppCommands.playerApplyEffect).toHaveBeenCalledWith("blur-effect", { intensity: 10 })
+      expect(PlayerCommands.playerApplyEffect).toHaveBeenCalledWith("blur-effect", { intensity: 10 })
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerApplyEffect",
         params: { effectId: "blur-effect", params: { intensity: 10 } },
@@ -791,7 +791,7 @@ describe("PlayerProvider", () => {
         saturation: 0.8,
       })
 
-      expect(AppCommands.playerApplyFilter).toHaveBeenCalledWith("vintage-filter", { saturation: 0.8 })
+      expect(PlayerCommands.playerApplyFilter).toHaveBeenCalledWith("vintage-filter", { saturation: 0.8 })
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerApplyFilter",
         params: { filterId: "vintage-filter", params: { saturation: 0.8 } },
@@ -803,7 +803,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerApplyTemplate("split-screen", ["media-1", "media-2"])
 
-      expect(AppCommands.playerApplyTemplate).toHaveBeenCalledWith("split-screen", ["media-1", "media-2"])
+      expect(PlayerCommands.playerApplyTemplate).toHaveBeenCalledWith("split-screen", ["media-1", "media-2"])
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerApplyTemplate",
         params: {
@@ -818,7 +818,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerClearEffects()
 
-      expect(AppCommands.playerClearEffects).toHaveBeenCalled()
+      expect(PlayerCommands.playerClearEffects).toHaveBeenCalled()
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerClearEffects",
         params: {},
@@ -830,7 +830,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerClearFilters()
 
-      expect(AppCommands.playerClearFilters).toHaveBeenCalled()
+      expect(PlayerCommands.playerClearFilters).toHaveBeenCalled()
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerClearFilters",
         params: {},
@@ -842,7 +842,7 @@ describe("PlayerProvider", () => {
 
       await result.current.playerClearTemplate()
 
-      expect(AppCommands.playerClearTemplate).toHaveBeenCalled()
+      expect(PlayerCommands.playerClearTemplate).toHaveBeenCalled()
       expect(mockExecuteCommand).toHaveBeenCalledWith({
         type: "PlayerClearTemplate",
         params: {},
