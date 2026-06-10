@@ -290,5 +290,5 @@ jobs:
       - name: Run workspace type checks
         run: bun run check:workspaces
 
-      - name: Run package boundary baseline gate
-        run: bun run check:boundaries:baseline
+      - name: Run package boundary strict gate
+        run: bun run check:boundaries:strict

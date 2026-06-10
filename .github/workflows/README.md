@@ -36,7 +36,7 @@ Timeline Studio использует набор оптимизированных
 
 #### `bot-ai-headless.yml` - Bot/AI headless smoke
 **Назначение**: Быстрая проверка Telegram bot-first, AI review, Rust adapter glue и CLI headless контрактов
-**Триггеры**: Push в main, Pull Requests с изменениями в `src/core`, `src/adapters/node`, `src/cli`, bot fixtures или smoke scripts
+**Триггеры**: Push в main, Pull Requests с изменениями в `packages/core`, `packages/adapters/src/node`, `packages/adapters/src/mock`, `apps/cli`, bot fixtures или smoke scripts
 **Платформы**: Ubuntu
 **Ключевые особенности**:
 - Запускает `bun run test:bot-ai` с отдельным Vitest config и JUnit отчетом `test-results/bot-ai-junit.xml`

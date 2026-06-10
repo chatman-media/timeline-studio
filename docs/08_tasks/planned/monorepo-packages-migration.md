@@ -197,10 +197,10 @@ adapters -> core
 
 **Цель:** закрепить итоговую workspace ownership model в scripts, CI и docs.
 
-- [ ] Обновить workspace scripts, package exports, TS paths, test configs и CI cache keys.
-- [ ] Удалить устаревшие bridge wrappers или документировать оставшиеся shims с owners.
-- [ ] Решить судьбу `check:boundaries:strict` как default CI gate.
-- [ ] Проверить lockfiles и package metadata.
+- [x] Обновить workspace scripts, package exports, TS paths, test configs и CI cache keys.
+- [x] Удалить устаревшие bridge wrappers или документировать оставшиеся shims с owners: desktop root compatibility paths documented in `apps/desktop/entrypoints.json`.
+- [x] Решить судьбу `check:boundaries:strict` как default CI gate: основной CI запускает strict gate; baseline остается audit-командой.
+- [x] Проверить lockfiles и package metadata: `bun install --frozen-lockfile --ignore-scripts` проходит без изменений.
 
 ## Проверка каждого PR
 
@@ -209,6 +209,7 @@ adapters -> core
 ```bash
 bun install --frozen-lockfile --ignore-scripts
 bun run check:boundaries
+bun run check:boundaries:strict
 bun run check:boundaries:baseline
 bun run check:workspaces
 bun run check:type
@@ -220,7 +221,7 @@ bun run check:type
 
 `bun run check:boundaries` сейчас работает в report-only режиме. После F7 отчет должен оставаться на нуле; любые новые нарушения считаются регрессией.
 
-CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает при росте total/severity/edge counts. `check:boundaries:strict` остается отдельным gate до завершения F14, потому что physical extraction временно сохраняет compatibility shims.
+CI использует `bun run check:boundaries:strict` как default gate после F14. `check:boundaries:baseline` остается audit-командой, которая сравнивает отчет с `config/package-boundaries-baseline.json` и падает при росте total/severity/edge counts.
 
 Baseline на 2026-06-11:
 
