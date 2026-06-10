@@ -109,16 +109,13 @@ export function useTimelineAI() {
    * @param provider Провайдер AI (claude, openai, и т.д.)
    * @param apiKey API ключ
    */
-  const setApiKey = useCallback(
-    (provider: string, apiKey: string) => {
-      logger.warn(legacyUnsupportedMessage, {
-        hasApiKey: apiKey.length > 0,
-        operation: "set-api-key",
-        provider,
-      })
-    },
-    [],
-  )
+  const setApiKey = useCallback((provider: string, apiKey: string) => {
+    logger.warn(legacyUnsupportedMessage, {
+      hasApiKey: apiKey.length > 0,
+      operation: "set-api-key",
+      provider,
+    })
+  }, [])
 
   const timelineAI = useMemo(
     () => ({

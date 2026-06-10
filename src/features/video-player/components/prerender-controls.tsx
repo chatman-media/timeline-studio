@@ -2,9 +2,7 @@
  * Компонент управления пререндером
  */
 
-import { Settings2, Sparkles } from "lucide-react"
-import { useCallback, useId } from "react"
-
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -17,7 +15,8 @@ import {
 import { Label } from "@timeline-studio/ui/components/label"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
-import { useNotifications } from "@timeline-studio/core/hooks"
+import { Settings2, Sparkles } from "lucide-react"
+import { useCallback, useId } from "react"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { usePrerender, usePrerenderCache } from "@/features/video-compiler/hooks/use-prerender"

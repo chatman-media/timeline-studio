@@ -1,6 +1,6 @@
 export type {
-  PlayerMachineContext as PlayerMachineContextType,
   PlayerEvent,
+  PlayerMachineContext as PlayerMachineContextType,
 } from "@timeline-studio/core/types/player-machine"
 export type { PlayerContextType } from "@/features/timeline/providers/player-provider"
 // Export from player-provider

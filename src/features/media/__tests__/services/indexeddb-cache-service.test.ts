@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
   type CacheStatistics,
   IndexedDBCacheService,
 } from "@timeline-studio/domains/media-management/services/indexeddb-cache-service"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock idb-keyval
 vi.mock("idb-keyval", () => {

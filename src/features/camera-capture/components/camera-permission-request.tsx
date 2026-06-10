@@ -1,6 +1,5 @@
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
+import { useTranslation } from "react-i18next"
 
 interface CameraPermissionRequestProps {
   permissionStatus: "pending" | "granted" | "denied" | "error"

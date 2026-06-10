@@ -3,7 +3,6 @@
  * Хук для работы с продвинутыми возможностями распознавания лиц
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import {
   type AdvancedFaceDetection,
@@ -12,6 +11,7 @@ import {
   PersonDatabaseService,
   type TrackedPerson,
 } from "@timeline-studio/core/services"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 

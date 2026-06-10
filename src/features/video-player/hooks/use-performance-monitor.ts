@@ -3,12 +3,12 @@
  * Предоставляет доступ к метрикам производительности видеоплеера
  */
 
-import { useEffect, useState } from "react"
 import {
   globalPerformanceMonitor,
   type PerformanceMetrics,
   type SyncRecord,
 } from "@timeline-studio/core/services/video-player-performance-monitor"
+import { useEffect, useState } from "react"
 
 export interface UsePerformanceMonitorOptions {
   /** Включить автоматическое обновление метрик */

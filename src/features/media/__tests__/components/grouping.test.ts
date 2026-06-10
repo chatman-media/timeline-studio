@@ -1,7 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import * as i18nConstants from "@/i18n/constants"
 
 import { getGroupedFiles, getTopDateWithRemainingFiles, groupFilesByDate } from "../../utils"

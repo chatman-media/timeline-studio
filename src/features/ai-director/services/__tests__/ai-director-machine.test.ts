@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 
+import { aiDirectorMachine } from "@timeline-studio/domains/ai-director"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createActor, waitFor } from "xstate"
-import { aiDirectorMachine } from "@timeline-studio/domains/ai-director"
 import {
   AIDirectorConfig,
   AnalysisError,

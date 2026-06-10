@@ -4,8 +4,8 @@
 
 import { container } from "@timeline-studio/core/container"
 import type {
-  AudioFormat as AudioFormatType,
   AudioFormatInfo,
+  AudioFormat as AudioFormatType,
   SaveAudioParams,
   SaveAudioResult,
 } from "@timeline-studio/core/ports"

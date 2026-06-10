@@ -5,10 +5,10 @@
  * с синхронизацией через BackendSync
  */
 
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
-
 import { container } from "@timeline-studio/core/container"
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 import { UndoRedoHelpers, useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
+import { createLogger } from "@/lib/tauri-logger"
 import {
   createInitialUndoState,
   handleHistoryLoaded,
@@ -16,7 +16,6 @@ import {
   type UndoAction,
   type UndoRedoState,
 } from "./undo-backend-event-handlers"
-import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UndoRedoProvider")
 

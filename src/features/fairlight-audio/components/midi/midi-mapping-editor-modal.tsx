@@ -1,11 +1,9 @@
-import { useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useModals } from "@/features/modals/services"
 
 import type { MidiMapping } from "../../services/midi/midi-engine"

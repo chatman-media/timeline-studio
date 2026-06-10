@@ -2,9 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useScenario } from "../../hooks/use-scenario"
 import { scenarioExecutor } from "../../services/scenario-executor"

@@ -2,11 +2,10 @@
  * Storyboard Editor - редактор раскадровки
  */
 
-import { ArrowRight, Film, X } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
+import { ArrowRight, Film, X } from "lucide-react"
+import { useState } from "react"
 import type { ScriptFragment, ScriptPlan, ScriptScene } from "@/features/timeline/types/script"
 
 export interface StoryboardEditorProps {

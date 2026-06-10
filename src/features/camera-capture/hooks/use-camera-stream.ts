@@ -1,7 +1,6 @@
-import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
-
-import { useTranslation } from "react-i18next"
 import type { ResolutionOption } from "@timeline-studio/core/types/project"
+import { type RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import { cleanupMediaStream } from "../utils"

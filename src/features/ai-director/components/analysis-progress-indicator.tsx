@@ -7,13 +7,12 @@
 
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
-import { Loader2, Sparkles, X } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { AnimatePresence, motion } from "framer-motion"
+import { Loader2, Sparkles, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export interface AnalysisProgressIndicatorProps {

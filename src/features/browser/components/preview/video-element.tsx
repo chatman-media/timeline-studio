@@ -1,5 +1,5 @@
-import { type MutableRefObject, memo } from "react"
 import type { MediaFile } from "@timeline-studio/core/types"
+import { type MutableRefObject, memo } from "react"
 import { createThumbnailUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"
 

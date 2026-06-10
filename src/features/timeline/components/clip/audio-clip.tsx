@@ -2,12 +2,12 @@
  * AudioClip - Компонент аудио клипа
  */
 
-import { Copy, Music, Scissors, Sparkles, Trash2, Volume2 } from "lucide-react"
-import React from "react"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { useModals } from "@timeline-studio/core/hooks"
 import type { AppliedEffect } from "@timeline-studio/core/types"
+
+import { Button } from "@timeline-studio/ui/components/button"
+import { Copy, Music, Scissors, Sparkles, Trash2, Volume2 } from "lucide-react"
+import React from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"

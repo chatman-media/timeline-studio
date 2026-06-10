@@ -2,15 +2,15 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook } from "@testing-library/react"
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 import type { CompilerSubtitle as Subtitle } from "@timeline-studio/core/types/video-editing"
 import {
   CompilerSubtitleAlignX as SubtitleAlignX,
   CompilerSubtitleAlignY as SubtitleAlignY,
   CompilerSubtitleFontWeight as SubtitleFontWeight,
 } from "@timeline-studio/core/types/video-editing"
-import * as frameExtractionServiceModule from "../../services/frame-extraction-service"
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
 import { useFrameExtraction } from "../../hooks/use-frame-extraction"
+import * as frameExtractionServiceModule from "../../services/frame-extraction-service"
 
 // Ensure console.error is mocked to see errors
 const originalConsoleError = console.error

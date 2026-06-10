@@ -8,10 +8,9 @@
  * - Real-time обновления через Tauri events
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react"
-
 import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
 import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { createFileProgressFromResult } from "@/features/ai-director"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {

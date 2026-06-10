@@ -1,10 +1,10 @@
 "use client"
 
-import { CheckCircle2, Clock, Loader2, XCircle } from "lucide-react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { CheckCircle2, Clock, Loader2, XCircle } from "lucide-react"
 import type { AnalyzerProgress, FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
 import { ANALYZER_METADATA } from "@/features/ai-director/types/analysis-progress"
 import { cn } from "@/lib/utils"

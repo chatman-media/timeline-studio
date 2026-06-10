@@ -14,6 +14,11 @@ vi.mock("@timeline-studio/domains/video-editing", () => ({
   TimelineProvider: ({ children }: { children: any }) => children,
 }))
 
+vi.mock("@/features/timeline/providers/player-provider", () => ({
+  usePlayer: vi.fn(),
+  PlayerProvider: ({ children }: { children: any }) => children,
+}))
+
 vi.mock("../../state/use-timeline", () => ({
   useTimeline: vi.fn(),
 }))

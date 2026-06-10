@@ -1,7 +1,6 @@
-import { useCallback, useState } from "react"
-
-import { useTranslation } from "react-i18next"
 import { COMMON_FRAMERATES, COMMON_RESOLUTIONS, type ResolutionOption } from "@timeline-studio/core/types/project"
+import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 interface UseCameraPermissionsResult {

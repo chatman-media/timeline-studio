@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   Dialog,
@@ -14,6 +12,7 @@ import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { useState } from "react"
 
 import type { SubtitleClip } from "@/features/subtitles/types"
 

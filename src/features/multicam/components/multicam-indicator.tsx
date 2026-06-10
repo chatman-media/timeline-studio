@@ -2,9 +2,8 @@
  * Индикатор мультикамерного режима для плеера
  */
 
-import { Camera } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
+import { Camera } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface MulticamIndicatorProps {

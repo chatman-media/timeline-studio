@@ -8,10 +8,10 @@
  */
 
 import { renderHook } from "@testing-library/react"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 import { useMediaFiles } from "../../hooks/use-media-files"
-import * as appProvider from "../../providers/app-provider"
 
 // Mock useApp hook
 const mockExecuteCommand = vi.fn()
@@ -64,17 +64,14 @@ const mockProjectState = {
   },
 }
 
-vi.mock("../../providers/app-provider", () => ({
-  useApp: vi.fn(() => ({
-    projectState: mockProjectState,
-    executeCommand: mockExecuteCommand,
-  })),
-}))
-
 describe("useMediaFiles Hook", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockExecuteCommand.mockResolvedValue({ success: true })
+    vi.mocked(useApp).mockReturnValue({
+      projectState: mockProjectState,
+      executeCommand: mockExecuteCommand,
+    } as any)
   })
 
   describe("mediaFiles", () => {
@@ -87,7 +84,7 @@ describe("useMediaFiles Hook", () => {
     })
 
     it("should return empty array when no project state", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: null,
         executeCommand: mockExecuteCommand,
       } as any)
@@ -98,7 +95,7 @@ describe("useMediaFiles Hook", () => {
     })
 
     it("should return empty array when media_pool is empty", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: { project: { media_pool: { items: {} } } },
         executeCommand: mockExecuteCommand,
       } as any)
@@ -109,7 +106,7 @@ describe("useMediaFiles Hook", () => {
     })
 
     it("should filter out undefined items", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: {
           project: {
             media_pool: {
@@ -281,7 +278,7 @@ describe("useMediaFiles Hook", () => {
     })
 
     it("should handle empty media_pool gracefully", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: { project: {} },
         executeCommand: mockExecuteCommand,
       } as any)
@@ -292,7 +289,7 @@ describe("useMediaFiles Hook", () => {
     })
 
     it("should handle null project gracefully", () => {
-      vi.mocked(appProvider.useApp).mockReturnValueOnce({
+      vi.mocked(useApp).mockReturnValueOnce({
         projectState: { project: null },
         executeCommand: mockExecuteCommand,
       } as any)

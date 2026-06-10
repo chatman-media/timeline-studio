@@ -1,5 +1,3 @@
-import { Gauge } from "lucide-react"
-import { useTranslation } from "react-i18next"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -8,6 +6,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
+import { Gauge } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 import { usePlayerSpeedRamping } from "../hooks/use-player-speed-ramping"
 

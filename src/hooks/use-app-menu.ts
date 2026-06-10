@@ -1,8 +1,8 @@
 import { emit, listen } from "@tauri-apps/api/event"
-import { useEffect } from "react"
 import { useMediaImport } from "@timeline-studio/domains/media-management"
 import { useCurrentProject } from "@timeline-studio/domains/project-management/hooks/use-current-project"
 import { useModals } from "@timeline-studio/domains/system-integration"
+import { useEffect } from "react"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"
 

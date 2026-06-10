@@ -2,9 +2,6 @@
  * Настройки предпросмотра переходов в видеоплеере
  */
 
-import { Eye, EyeOff, Settings } from "lucide-react"
-import { useId } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Label } from "@timeline-studio/ui/components/label"
@@ -13,6 +10,8 @@ import { Separator } from "@timeline-studio/ui/components/separator"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Eye, EyeOff, Settings } from "lucide-react"
+import { useId } from "react"
 import { cn } from "@/lib/utils"
 
 interface TransitionPreviewSettingsProps {

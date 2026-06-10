@@ -1,9 +1,8 @@
+import { container } from "@timeline-studio/core/container"
+import type { ResourceType, TimelineResource } from "@timeline-studio/core/types"
 import { Check, Plus, X } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { container } from "@timeline-studio/core/container"
-import type { ResourceType, TimelineResource } from "@timeline-studio/core/types"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"

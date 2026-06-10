@@ -1,6 +1,5 @@
-import { Maximize2, MoveHorizontal } from "lucide-react"
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Maximize2, MoveHorizontal } from "lucide-react"
 import { useEditModeContext } from "@/features/timeline/hooks/editing/use-edit-mode"
 import { cn } from "@/lib/utils"
 import type { TimelineClip } from "../../types"

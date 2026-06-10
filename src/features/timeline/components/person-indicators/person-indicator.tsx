@@ -3,11 +3,10 @@
  * Показывает маленькие аватары персон, обнаруженных в клипе
  */
 
-import { User, Users } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { User, Users } from "lucide-react"
+import { useState } from "react"
 
 import type { PersonProfile } from "../../../person-identification/types/person"
 import type { TimelinePersonAppearance } from "../../hooks/state/use-timeline-persons"

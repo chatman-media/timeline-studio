@@ -3,8 +3,8 @@
  */
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@timeline-studio/domains/video-editing/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { JLCutTool } from "../jl-cut-tool"
 
 // Mock hooks

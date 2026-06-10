@@ -2,6 +2,11 @@
  * Панель инструментов Split Edit
  */
 
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Separator } from "@timeline-studio/ui/components/separator"
+import { Toggle } from "@timeline-studio/ui/components/toggle"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import {
   AlignCenter,
   ArrowLeftRight,
@@ -15,12 +20,6 @@ import {
   Scissors,
   Target,
 } from "lucide-react"
-
-import { Badge } from "@timeline-studio/ui/components/badge"
-import { Button } from "@timeline-studio/ui/components/button"
-import { Separator } from "@timeline-studio/ui/components/separator"
-import { Toggle } from "@timeline-studio/ui/components/toggle"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 import { useSplitEdit } from "../hooks/editing/use-split-edit"

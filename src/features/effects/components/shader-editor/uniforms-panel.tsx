@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react"
-
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@timeline-studio/ui/components/accordion"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { useMemo, useState } from "react"
 import { cn } from "@/lib/utils"
 
 import type { ShaderUniform } from "../../types/shader-system"

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"

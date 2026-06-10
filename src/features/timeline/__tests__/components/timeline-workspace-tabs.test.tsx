@@ -3,10 +3,9 @@
  */
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { Button } from "@timeline-studio/ui/components/button"
 import { useTranslation } from "react-i18next"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { cn } from "@/lib/utils"
 
 import { TimelineWorkspaceTabs, type WorkspaceView } from "../../components/timeline-workspace-tabs"

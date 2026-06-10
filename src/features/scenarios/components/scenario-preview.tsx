@@ -3,12 +3,11 @@
  * Предпросмотр структуры и шагов сценария монтажа
  */
 
-import { AlertCircle, Check, Clock, Sparkles, Zap } from "lucide-react"
-import type React from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { AlertCircle, Check, Clock, Sparkles, Zap } from "lucide-react"
+import type React from "react"
 
 import type { Scenario } from "../types/scenario"
 

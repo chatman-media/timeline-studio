@@ -3,15 +3,14 @@
  * Позволяет пользователю создавать новых персон или редактировать существующих
  */
 
-import { Tag as TagIcon, Upload, User, X } from "lucide-react"
-import { useRef, useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { Tag as TagIcon, Upload, User, X } from "lucide-react"
+import { useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { PersonProfile } from "../types/person"
 

@@ -1,6 +1,3 @@
-import { Code, Cpu, Package } from "lucide-react"
-import { useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   Dialog,
@@ -16,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { Code, Cpu, Package } from "lucide-react"
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import type { ShaderExportOptions, ShaderProject } from "../../types/shader-system"
 import type { BaseEffect, EffectParameter } from "../../types/unified-effects"

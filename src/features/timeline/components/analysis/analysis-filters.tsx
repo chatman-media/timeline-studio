@@ -1,8 +1,8 @@
 "use client"
 
-import { X } from "lucide-react"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { X } from "lucide-react"
 import type { AnalyzerType, FileAnalysisStatus } from "@/features/ai-director/types/analysis-progress"
 import type { AnalysisFilters as Filters } from "../../hooks/state/use-timeline-analysis"
 

@@ -1,6 +1,3 @@
-import { Edit2, FolderClosed, FolderOpen, Layers, Lock, Palette, Ungroup, Unlock, Users } from "lucide-react"
-import type React from "react"
-
 import {
   ContextMenu,
   ContextMenuContent,
@@ -11,6 +8,8 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "@timeline-studio/ui/components/context-menu"
+import { Edit2, FolderClosed, FolderOpen, Layers, Lock, Palette, Ungroup, Unlock, Users } from "lucide-react"
+import type React from "react"
 import type { TimelineClip } from "@/features/timeline/types"
 import { useClipGroups } from "../../hooks/clips/use-clip-groups"
 import { useTimeline } from "../../hooks/state/use-timeline"

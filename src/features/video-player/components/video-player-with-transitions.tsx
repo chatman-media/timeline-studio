@@ -3,10 +3,10 @@
  * Интегрирует существующий VideoPlayer с TransitionsPreviewService
  */
 
-import { useEffect, useRef } from "react"
+import { MediaType } from "@timeline-studio/core/types"
 
 import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
-import { MediaType } from "@timeline-studio/core/types"
+import { useEffect, useRef } from "react"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"

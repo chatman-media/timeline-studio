@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { renderHook, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { container, resetContainer } from "@timeline-studio/core/container"
 import type { ITranscriptionService } from "@timeline-studio/core/ports"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useTranscription, useWhisperModels } from "../../hooks/use-transcription"
 import { createMockModels, createMockTranscriptionOptions, createMockTranscriptionResult } from "../test-utils"
 
@@ -233,6 +233,8 @@ describe("useTranscription", () => {
 
 describe("useWhisperModels", () => {
   beforeEach(() => {
+    resetContainer()
+    registerMockTranscriptionService()
     vi.clearAllMocks()
     mockGetAvailableModels.mockResolvedValue(createMockModels())
     mockDownloadModel.mockResolvedValue(true)

@@ -6,8 +6,8 @@
  */
 
 import { renderHook } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/core/types"
+import { describe, expect, it, vi } from "vitest"
 import { useBrowserAIIntegration } from "../use-browser-ai-integration"
 
 // Mock browser state

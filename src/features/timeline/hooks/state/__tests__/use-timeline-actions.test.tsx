@@ -6,10 +6,10 @@
  */
 
 import { act, renderHook } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
-import { TimelineProviders } from "@/test/test-utils"
+import type { ReactNode } from "react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { useClips } from "../../clips/use-clips"
 import { useTimeline } from "../use-timeline"
@@ -26,11 +26,13 @@ vi.mock("../use-tracks", () => ({
 vi.mock("../../clips/use-clips", () => ({
   useClips: vi.fn(),
 }))
-vi.mock("@/features/resources", () => ({
+vi.mock("@/features/timeline/providers/resources-provider", () => ({
   useResources: vi.fn(() => ({
     addMedia: vi.fn(),
   })),
 }))
+
+const TimelineProviders = ({ children }: { children: ReactNode }) => <>{children}</>
 
 // Мокаем медиафайл для тестов
 const mockVideoFile: MediaFile = {

@@ -24,11 +24,7 @@ export async function detectKeyMomentsFromDetections(detections: any[], qualityS
   })
 }
 
-export async function generateMontagePlanFromMoments(
-  moments: any[],
-  config: any,
-  sourceFiles: string[],
-): Promise<any> {
+export async function generateMontagePlanFromMoments(moments: any[], config: any, sourceFiles: string[]): Promise<any> {
   logger.infoSync("Generating montage plan from moments", { momentsCount: moments.length })
   return invoke("generate_montage_plan", {
     moments,

@@ -2,11 +2,11 @@
  * Кнопка для открытия keyframe редактора
  */
 
-import { Zap } from "lucide-react"
-import { useState } from "react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Dialog, DialogContent } from "@timeline-studio/ui/components/dialog"
+import { Zap } from "lucide-react"
+import { useState } from "react"
 import type { TimelineClip } from "../../types"
 import { KeyframeEditor } from "./keyframe-editor"
 

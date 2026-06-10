@@ -1,6 +1,5 @@
-import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
-
 import { container } from "@timeline-studio/core/container"
+import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { useColorGrading } from "../hooks/use-color-grading"

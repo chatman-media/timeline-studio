@@ -1,9 +1,9 @@
-import { CheckCircle, Download, HardDrive, Loader2 } from "lucide-react"
-import { useEffect } from "react"
-import { useTranslation } from "react-i18next"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { CheckCircle, Download, HardDrive, Loader2 } from "lucide-react"
+import { useEffect } from "react"
+import { useTranslation } from "react-i18next"
 import { useWhisperModels } from "../hooks/use-transcription"
 
 export function ModelSelector() {

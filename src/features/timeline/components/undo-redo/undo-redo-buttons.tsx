@@ -2,10 +2,10 @@
  * Простые кнопки Undo/Redo для интеграции в toolbar
  */
 
-import { Redo, Undo } from "lucide-react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { Redo, Undo } from "lucide-react"
 import { useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 
 interface UndoRedoButtonsProps {

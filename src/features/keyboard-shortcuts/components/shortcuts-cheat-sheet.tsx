@@ -1,8 +1,8 @@
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Printer } from "lucide-react"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { Button } from "@timeline-studio/ui/components/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { useShortcuts } from "../services/shortcuts-provider"
 import { shortcutsRegistry } from "../services/shortcuts-registry"
 

@@ -1,11 +1,10 @@
 "use client"
 
+import { Button } from "@timeline-studio/ui/components/button"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
 import { Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
 import { useTimelineAnalysis } from "../hooks/state/use-timeline-analysis"
 import { AnalysisDetail } from "./analysis/analysis-detail"
 import { AnalysisFilters } from "./analysis/analysis-filters"

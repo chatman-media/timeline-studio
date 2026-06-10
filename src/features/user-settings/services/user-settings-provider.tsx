@@ -1,7 +1,7 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 import { getUserSettingsService } from "@timeline-studio/core/services"
 import type { BrowserTab } from "@timeline-studio/core/types"
 import type { LayoutMode, UserSettingsContextType } from "@timeline-studio/core/types/user-settings"
+import { createContext, useCallback, useEffect, useMemo, useState } from "react"
 
 export type UserSettingsThemeMode = "light" | "dark" | "system"
 

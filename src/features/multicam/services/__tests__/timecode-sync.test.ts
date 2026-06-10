@@ -2,9 +2,9 @@
  * Тесты для сервиса синхронизации по таймкоду
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/features/timeline/types"
 
 import {

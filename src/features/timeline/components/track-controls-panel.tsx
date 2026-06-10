@@ -7,11 +7,10 @@
  * - Управление видимостью и блокировкой
  */
 
-import { Eye, EyeOff, Image, Lock, Music, Type, Unlock, Video, Volume2 } from "lucide-react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
+import { Eye, EyeOff, Image, Lock, Music, Type, Unlock, Video, Volume2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTracks } from "../hooks/state/use-tracks"
 import { PersonsPanel } from "./persons-panel"

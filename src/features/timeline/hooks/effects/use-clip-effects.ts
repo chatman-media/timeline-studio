@@ -3,8 +3,8 @@
  * Интегрирует Effects Feature с Timeline
  */
 
-import { useCallback } from "react"
 import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
+import { useCallback } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   applyEffectToBatch,

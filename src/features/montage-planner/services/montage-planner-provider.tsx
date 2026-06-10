@@ -3,10 +3,10 @@
  * Simplified provider that works with the new BackendSync architecture
  */
 
-import { useActor } from "@xstate/react"
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { container } from "@timeline-studio/core"
 import { useApp } from "@timeline-studio/core/hooks/use-app"
+import { useActor } from "@xstate/react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { type MontagePlannerEvent, montagePlannerMachine } from "./domain-adapters"
 

@@ -3,10 +3,6 @@
  * UI для выбора шаблона проекта с фильтрами и поиском
  */
 
-import { Filter, Grid, List, Search, X } from "lucide-react"
-import type React from "react"
-import { useCallback, useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Input } from "@timeline-studio/ui/components/input"
@@ -15,6 +11,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tabs, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Filter, Grid, List, Search, X } from "lucide-react"
+import type React from "react"
+import { useCallback, useState } from "react"
 
 import { type UseTemplatePickerOptions, useTemplatePicker } from "../hooks/use-template-picker"
 import type { ProjectTemplate } from "../types/project-template"

@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/video-editing/types/media"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { AddMediaButton } from "../../../components/layout/add-media-button"
 
@@ -17,7 +17,7 @@ vi.mock("@timeline-studio/domains/project-management/services/backend-sync", () 
 }))
 
 // Создаем общий объект моков, который будет переиспользоваться
-const mockUseResourcesReturn = {
+const mockUseResourcesReturn = vi.hoisted(() => ({
   addResource: vi.fn(),
   removeResource: vi.fn(),
   isAdded: vi.fn().mockReturnValue(false),
@@ -49,12 +49,11 @@ const mockUseResourcesReturn = {
   filterResources: [],
   transitionResources: [],
   templateResources: [],
-}
+}))
 
-vi.mock("@timeline-studio/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@timeline-studio/domains/video-editing")>()
+vi.mock("@/features/timeline/providers/resources-provider", () => {
   return {
-    ...actual,
+    ResourcesProvider: ({ children }: { children: React.ReactNode }) => children,
     useResources: vi.fn(() => mockUseResourcesReturn),
   }
 })

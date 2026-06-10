@@ -1,8 +1,7 @@
+import { Button } from "@timeline-studio/ui/components/button"
 import { Download, Maximize2, Pause, Play, RotateCcw } from "lucide-react"
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { ShaderCompilationResult, ShaderUniform } from "../../types/shader-system"

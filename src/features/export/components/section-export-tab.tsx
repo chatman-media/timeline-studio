@@ -1,7 +1,3 @@
-import { Clock, Flag, Play, Scissors, Video } from "lucide-react"
-import { useCallback, useEffect, useId, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Checkbox } from "@timeline-studio/ui/components/checkbox"
@@ -10,6 +6,9 @@ import { Label } from "@timeline-studio/ui/components/label"
 import { RadioGroup, RadioGroupItem } from "@timeline-studio/ui/components/radio-group"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Clock, Flag, Play, Scissors, Video } from "lucide-react"
+import { useCallback, useEffect, useId, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 import type { ExportSettings } from "../types/export-types"

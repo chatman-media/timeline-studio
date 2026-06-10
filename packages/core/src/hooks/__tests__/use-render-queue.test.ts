@@ -2,21 +2,18 @@
  * @vitest-environment jsdom
  */
 import { renderHook } from "@testing-library/react"
+import { container } from "../../container"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useRenderQueue } from "../use-render-queue"
 
-// Mock video-editing domain functions
-vi.mock("@timeline-studio/domains/video-editing", () => ({
-  renderProject: vi.fn(),
-  cancelRender: vi.fn(),
-  getActiveJobs: vi.fn(),
-}))
-
-const {
-  renderProject: mockRenderProject,
-  cancelRender: mockCancelRender,
-  getActiveJobs: mockGetActiveJobs,
-} = await import("@timeline-studio/domains/video-editing")
+function getVideoMocks() {
+  const video = container.getVideo()
+  return {
+    renderProject: vi.mocked(video.renderProject),
+    cancelRender: vi.mocked(video.cancelRender),
+    getActiveJobs: vi.mocked(video.getActiveJobs),
+  }
+}
 
 describe("useRenderQueue", () => {
   beforeEach(() => {
@@ -26,7 +23,8 @@ describe("useRenderQueue", () => {
   describe("renderProject", () => {
     it("should call renderProject from domain and return job ID", async () => {
       const mockJobId = "job-123"
-      vi.mocked(mockRenderProject).mockResolvedValue(mockJobId)
+      const { renderProject } = getVideoMocks()
+      renderProject.mockResolvedValue(mockJobId)
 
       const { result } = renderHook(() => useRenderQueue())
 
@@ -34,13 +32,14 @@ describe("useRenderQueue", () => {
       const outputPath = "/output/video.mp4"
       const jobId = await result.current.renderProject(schema, outputPath)
 
-      expect(mockRenderProject).toHaveBeenCalledWith(schema, outputPath)
+      expect(renderProject).toHaveBeenCalledWith(schema, outputPath)
       expect(jobId).toBe(mockJobId)
     })
 
     it("should propagate errors from renderProject", async () => {
       const error = new Error("Render failed")
-      vi.mocked(mockRenderProject).mockRejectedValue(error)
+      const { renderProject } = getVideoMocks()
+      renderProject.mockRejectedValue(error)
 
       const { result } = renderHook(() => useRenderQueue())
 
@@ -60,19 +59,21 @@ describe("useRenderQueue", () => {
 
   describe("cancelRender", () => {
     it("should call cancelRender from domain and return success status", async () => {
-      vi.mocked(mockCancelRender).mockResolvedValue(true)
+      const { cancelRender } = getVideoMocks()
+      cancelRender.mockResolvedValue(true)
 
       const { result } = renderHook(() => useRenderQueue())
 
       const jobId = "job-123"
       const success = await result.current.cancelRender(jobId)
 
-      expect(mockCancelRender).toHaveBeenCalledWith(jobId)
+      expect(cancelRender).toHaveBeenCalledWith(jobId)
       expect(success).toBe(true)
     })
 
     it("should return false when cancel fails", async () => {
-      vi.mocked(mockCancelRender).mockResolvedValue(false)
+      const { cancelRender } = getVideoMocks()
+      cancelRender.mockResolvedValue(false)
 
       const { result } = renderHook(() => useRenderQueue())
 
@@ -98,18 +99,31 @@ describe("useRenderQueue", () => {
         { id: "job-1", status: "rendering", progress: 50 },
         { id: "job-2", status: "queued", progress: 0 },
       ]
-      vi.mocked(mockGetActiveJobs).mockResolvedValue(mockJobs)
+      const { getActiveJobs } = getVideoMocks()
+      getActiveJobs.mockResolvedValue(mockJobs as any)
 
       const { result } = renderHook(() => useRenderQueue())
 
       const jobs = await result.current.getActiveJobs()
 
-      expect(mockGetActiveJobs).toHaveBeenCalled()
-      expect(jobs).toEqual(mockJobs)
+      expect(getActiveJobs).toHaveBeenCalled()
+      expect(jobs).toEqual([
+        expect.objectContaining({
+          id: "job-1",
+          status: "rendering",
+          progress: expect.objectContaining({ percentage: 50 }),
+        }),
+        expect.objectContaining({
+          id: "job-2",
+          status: "queued",
+          progress: expect.objectContaining({ percentage: 0 }),
+        }),
+      ])
     })
 
     it("should return empty array when no active jobs", async () => {
-      vi.mocked(mockGetActiveJobs).mockResolvedValue([])
+      const { getActiveJobs } = getVideoMocks()
+      getActiveJobs.mockResolvedValue([])
 
       const { result } = renderHook(() => useRenderQueue())
 

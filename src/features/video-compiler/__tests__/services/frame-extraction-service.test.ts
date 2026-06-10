@@ -1,4 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import type {
   CompilerSubtitle as Subtitle,
   CompilerSubtitlePosition as SubtitlePosition,
@@ -9,6 +8,7 @@ import {
   CompilerSubtitleAlignY as SubtitleAlignY,
   CompilerSubtitleFontWeight as SubtitleFontWeight,
 } from "@timeline-studio/core/types/video-editing"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
 import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
 

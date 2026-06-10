@@ -18,12 +18,11 @@
  */
 
 import { act, renderHook, waitFor } from "@testing-library/react"
-import type React from "react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import { container } from "@timeline-studio/core/container"
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import type React from "react"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"
 import { useDebouncedSeek } from "@/features/video-player/hooks/use-debounced-seek"
 import { usePlaybackTimeSync } from "@/features/video-player/hooks/use-playback-time-sync"

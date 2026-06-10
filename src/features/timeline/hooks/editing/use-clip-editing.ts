@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from "react"
 import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
+import { useCallback, useRef, useState } from "react"
 import { useTimelineUI } from "../../context/timeline-ui-context"
 import { EDIT_MODES } from "../../types/edit-modes"
 import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../../utils/edit-operations"

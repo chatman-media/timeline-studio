@@ -4,7 +4,10 @@
  * Re-export from core-facing compiler contracts
  */
 
-import { OutputFormat as CoreOutputFormat, RenderStatus as CoreRenderStatus } from "@timeline-studio/core/types/video-editing"
+import {
+  OutputFormat as CoreOutputFormat,
+  RenderStatus as CoreRenderStatus,
+} from "@timeline-studio/core/types/video-editing"
 
 export type {
   RenderJob,

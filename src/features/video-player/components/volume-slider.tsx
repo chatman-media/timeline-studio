@@ -1,6 +1,5 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
-
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useUserSettings } from "@/features/user-settings"
 
 // Интерфейс для компонента слайдера громкости

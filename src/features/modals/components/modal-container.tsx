@@ -1,7 +1,7 @@
-import { useTranslation } from "react-i18next"
+import type { ModalType } from "@timeline-studio/core/types/modals"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
-import type { ModalType } from "@timeline-studio/core/types/modals"
+import { useTranslation } from "react-i18next"
 import { CameraCaptureModal } from "@/features/camera-capture"
 import { ColorGradingSavePresetModal } from "@/features/color-grading/components/controls/color-grading-save-preset-modal"
 import { EffectDetailModal } from "@/features/effects/components/effect-detail-modal"
@@ -18,8 +18,8 @@ import { AIMarkerSettingsModal, AudioEffectsEditorModal, SubtitleEditorModal } f
 import { UserSettingsModal } from "@/features/user-settings"
 import { CacheStatisticsModal } from "@/features/video-compiler/components/cache-statistics-modal"
 import { VoiceRecordModal } from "@/features/voice-recording"
-import { AboutModal } from "./about-modal"
 import { useModals } from "../services"
+import { AboutModal } from "./about-modal"
 
 /**
  * Контейнер для модальных окон

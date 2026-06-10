@@ -1,6 +1,6 @@
-import { useCallback, useRef, useState } from "react"
 import { container } from "@timeline-studio/core/container"
 import type { ITranscriptionService } from "@timeline-studio/core/ports"
+import { useCallback, useRef, useState } from "react"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type {
   ModelInfo,

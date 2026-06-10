@@ -2,6 +2,14 @@
  * Панель batch операций для множественных клипов
  */
 
+import { Badge } from "@timeline-studio/ui/components/badge"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Label } from "@timeline-studio/ui/components/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
+import { Slider } from "@timeline-studio/ui/components/slider"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import {
   AlignCenterVertical,
   AlignEndVertical,
@@ -16,14 +24,6 @@ import {
   Zap,
 } from "lucide-react"
 import { useState } from "react"
-import { Badge } from "@timeline-studio/ui/components/badge"
-import { Button } from "@timeline-studio/ui/components/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
-import { Input } from "@timeline-studio/ui/components/input"
-import { Label } from "@timeline-studio/ui/components/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
-import { Slider } from "@timeline-studio/ui/components/slider"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { useBatchOperations } from "../../hooks/batch/use-batch-operations"
 import { useTimeline } from "../../hooks/state/use-timeline"
 import { useTimelineSelection } from "../../hooks/state/use-timeline-selection"

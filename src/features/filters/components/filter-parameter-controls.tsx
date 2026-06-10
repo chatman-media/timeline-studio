@@ -4,12 +4,10 @@
  * Provides interactive controls for adjusting filter parameters
  */
 
-import { useCallback, useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import { Label } from "@timeline-studio/ui/components/label"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { useCallback, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { VideoFilter } from "../types/filters"
 
 interface FilterParameterControlsProps {

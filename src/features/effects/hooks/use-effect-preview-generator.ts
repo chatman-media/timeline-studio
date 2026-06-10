@@ -2,9 +2,9 @@
  * Хук для генерации превью видео для эффектов
  */
 
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@timeline-studio/core/hooks"
 import type { BaseEffect } from "../types"
 import {
   type EffectPreviewConfig,

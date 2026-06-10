@@ -1,11 +1,10 @@
-import { Activity, HardDrive, Loader2, RefreshCw, Trash2 } from "lucide-react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { Separator } from "@timeline-studio/ui/components/separator"
+import { Activity, HardDrive, Loader2, RefreshCw, Trash2 } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import { formatCacheRatio, useCacheStats } from "../hooks/use-cache-stats"

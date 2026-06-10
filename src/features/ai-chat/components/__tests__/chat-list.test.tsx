@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { fireEvent } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
 import type { ChatListItem } from "@timeline-studio/core/types/ai-chat"
+import { describe, expect, it, vi } from "vitest"
 import { render } from "@/test/test-utils"
 import { ChatList } from "../chat-list"
 

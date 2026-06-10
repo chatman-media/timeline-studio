@@ -3,14 +3,13 @@
  * Показывает подробную информацию о персоне, включая все обнаруженные лица
  */
 
-import { Calendar, Camera, Clock, Image, MapPin, Tag, User } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Calendar, Camera, Clock, Image, MapPin, Tag, User } from "lucide-react"
+import { useState } from "react"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 
 import type { PersonAppearance, PersonProfile, Timecode } from "../types/person"

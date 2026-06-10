@@ -1,7 +1,6 @@
 "use client"
 
-import { AudioLines, Film, ImageIcon, Loader2, Play, Sparkles, Zap } from "lucide-react"
-import { useCallback, useMemo, useState } from "react"
+import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -10,7 +9,8 @@ import { Label } from "@timeline-studio/ui/components/label"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
-import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
+import { AudioLines, Film, ImageIcon, Loader2, Play, Sparkles, Zap } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import {
   ANALYZER_METADATA,

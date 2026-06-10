@@ -1,7 +1,6 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { AlertCircle, CheckCircle, Clock, Loader2, XCircle } from "lucide-react"
 import { useTranslation } from "react-i18next"
-
-import { Tooltip, TooltipContent, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { cn } from "@/lib/utils"
 
 interface KeyStatusIndicatorProps {

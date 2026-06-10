@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
+import type { MediaFile } from "@timeline-studio/core/types"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@timeline-studio/core/types"
 import { PlayerProvider, usePlayer } from "../player-provider"
 
 // Mock dependencies

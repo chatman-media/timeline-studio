@@ -5,11 +5,8 @@
  */
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import {
-  getVideoEditingOrchestrator,
-  type VideoEditingOrchestrator,
-} from "../services/video-editing-orchestrator"
 import { createLogger } from "@/lib/tauri-logger"
+import { getVideoEditingOrchestrator, type VideoEditingOrchestrator } from "../services/video-editing-orchestrator"
 
 const logger = createLogger("VideoEditingProvider")
 

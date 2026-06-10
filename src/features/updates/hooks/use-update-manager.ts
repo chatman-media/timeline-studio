@@ -3,10 +3,10 @@
  * Предоставляет интерфейс для работы с XState машиной обновлений
  */
 
-import { useMachine } from "@xstate/react"
-import { useEffect, useMemo } from "react"
 import { container } from "@timeline-studio/core/container"
 import { createUpdateMachine } from "@timeline-studio/core/services/update-machine"
+import { useMachine } from "@xstate/react"
+import { useEffect, useMemo } from "react"
 import type { AutoCheckSettings, UpdateAvailability, UpdateEventPayload, UpdateMachineContext } from "../types"
 
 export interface UseUpdateManagerReturn {

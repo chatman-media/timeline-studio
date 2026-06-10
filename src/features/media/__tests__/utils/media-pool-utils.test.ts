@@ -2,8 +2,8 @@
  * Тесты для утилит Media Pool
  */
 
-import { describe, expect, it } from "vitest"
 import type { MediaFile, SavedMediaFile, SavedMusicFile } from "@timeline-studio/domains/media-management"
+import { describe, expect, it } from "vitest"
 import {
   addItemToPool,
   convertMediaFileToPoolItem,

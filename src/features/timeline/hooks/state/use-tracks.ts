@@ -2,9 +2,8 @@
  * Hook for working with Timeline tracks
  */
 
+import type { Track as CoreTrack, Timeline } from "@timeline-studio/core/types/timeline"
 import { useMemo } from "react"
-
-import type { Timeline, Track as CoreTrack } from "@timeline-studio/core/types/timeline"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineTrack, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"

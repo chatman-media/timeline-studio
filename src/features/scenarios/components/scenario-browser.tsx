@@ -3,10 +3,6 @@
  * Браузер сценариев монтажа с фильтрами и поиском
  */
 
-import { Clock, Filter, Grid, List, Search, Sparkles, X, Zap } from "lucide-react"
-import type React from "react"
-import { useCallback, useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -17,6 +13,9 @@ import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tabs, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Clock, Filter, Grid, List, Search, Sparkles, X, Zap } from "lucide-react"
+import type React from "react"
+import { useCallback, useState } from "react"
 
 import { useScenario } from "../hooks/use-scenario"
 import type { Scenario } from "../types/scenario"

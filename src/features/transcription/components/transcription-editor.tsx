@@ -1,9 +1,9 @@
-import { Clock, Edit2, Plus, Save, X } from "lucide-react"
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { Button } from "@timeline-studio/ui/components/button"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Textarea } from "@timeline-studio/ui/components/textarea"
+import { Clock, Edit2, Plus, Save, X } from "lucide-react"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { TranscriptionResult, TranscriptionSegment, TranscriptionWord } from "../types"
 
 interface TranscriptionEditorProps {

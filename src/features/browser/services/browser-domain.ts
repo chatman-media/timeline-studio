@@ -1,9 +1,9 @@
 export {
   BROWSER_TABS,
-  BrowserProvider,
-  DEFAULT_TAB,
   type BrowserContext,
   type BrowserContextType,
+  BrowserProvider,
+  DEFAULT_TAB,
   type UseOptimisticSelectionReturn,
   useBrowser,
   useBrowserActiveTab,

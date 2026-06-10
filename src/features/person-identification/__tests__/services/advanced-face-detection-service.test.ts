@@ -3,8 +3,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedFaceDetectionService } from "@timeline-studio/domains/ai-services/services/person-identification"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 const mockInvoke = vi.hoisted(() => vi.fn())
 

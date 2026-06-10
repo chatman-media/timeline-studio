@@ -3,9 +3,13 @@
  * Компонент для мониторинга распознавания лиц в реальном времени
  */
 
-import { Activity, Camera, Cpu, Eye, Pause, Play, Users, Zap } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
-
+import {
+  type AdvancedDetectionConfig,
+  type AdvancedFaceDetection,
+  AdvancedFaceDetectionService,
+  PersonDatabaseService,
+  type RealtimeProcessingStatus,
+} from "@timeline-studio/core/services"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -14,13 +18,8 @@ import { Progress } from "@timeline-studio/ui/components/progress"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
-import {
-  type AdvancedDetectionConfig,
-  type AdvancedFaceDetection,
-  AdvancedFaceDetectionService,
-  PersonDatabaseService,
-  type RealtimeProcessingStatus,
-} from "@timeline-studio/core/services"
+import { Activity, Camera, Cpu, Eye, Pause, Play, Users, Zap } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 

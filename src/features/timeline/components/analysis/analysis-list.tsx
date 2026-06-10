@@ -1,9 +1,9 @@
 "use client"
 
-import { CheckCircle2, Circle, FileVideo, Loader2, XCircle } from "lucide-react"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { CheckCircle2, Circle, FileVideo, Loader2, XCircle } from "lucide-react"
 import type { FileAnalysisProgress } from "@/features/ai-director/types/analysis-progress"
 import { cn } from "@/lib/utils"
 

@@ -1,4 +1,8 @@
-import type { ProjectSettings, TimelineStudioProject, TimelineStudioProjectMetadata } from "@timeline-studio/core/types/project"
+import type {
+  ProjectSettings,
+  TimelineStudioProject,
+  TimelineStudioProjectMetadata,
+} from "@timeline-studio/core/types/project"
 
 export type ProjectMetadata = TimelineStudioProjectMetadata
 export type { TimelineStudioProject }
@@ -25,7 +29,10 @@ export interface ProjectBackup {
 }
 
 export interface ProjectOperations {
-  createProject(name: string, settings?: Partial<ProjectSettings>): TimelineStudioProject | Promise<TimelineStudioProject>
+  createProject(
+    name: string,
+    settings?: Partial<ProjectSettings>,
+  ): TimelineStudioProject | Promise<TimelineStudioProject>
   openProject(path: string): Promise<TimelineStudioProject>
   saveProject(project: TimelineStudioProject, path: string): Promise<void>
 }

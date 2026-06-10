@@ -2,10 +2,9 @@
  * @vitest-environment jsdom
  */
 import { render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-
 import type { MediaFile } from "@timeline-studio/domains/media-management"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { describe, expect, it, vi } from "vitest"
 
 import { MediaPreview } from "../../../components/preview/media-preview"
 

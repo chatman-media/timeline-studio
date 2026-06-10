@@ -2,9 +2,9 @@
  * Hook для работы со сценариями монтажа
  */
 
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 import { useMachine } from "@xstate/react"
 import { useCallback, useMemo, useState } from "react"
-import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 
 import { allScenarios, getScenariosByCategory, getScenariosByDifficulty } from "../lib/scenarios"

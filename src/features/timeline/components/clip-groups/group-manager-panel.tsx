@@ -1,9 +1,8 @@
-import { Edit2, FolderClosed, FolderOpen, Lock, Palette, Plus, Trash2, Unlock, Users } from "lucide-react"
-import { useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
+import { Edit2, FolderClosed, FolderOpen, Lock, Palette, Plus, Trash2, Unlock, Users } from "lucide-react"
+import { useState } from "react"
 import type { TimelineClip } from "@/features/timeline/types"
 import { cn } from "@/lib/utils"
 import { useClipGroups } from "../../hooks/clips/use-clip-groups"

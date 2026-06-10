@@ -1,9 +1,8 @@
-import { BookOpen, Code, FileText, Package, Save } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { BookOpen, Code, FileText, Package, Save } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { useShaderEditor } from "../../hooks/use-shader-editor"
 import { ShaderCompiler } from "../../services/shader-compiler"

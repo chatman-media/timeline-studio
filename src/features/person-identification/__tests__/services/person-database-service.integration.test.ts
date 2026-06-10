@@ -1,6 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-
 import { PersonDatabaseService } from "@timeline-studio/domains/ai-services/services/person-identification"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { PersonProfile } from "../../types/person"
 

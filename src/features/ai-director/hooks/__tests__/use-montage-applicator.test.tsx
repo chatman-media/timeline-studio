@@ -3,6 +3,7 @@
  */
 
 import { act, renderHook, waitFor } from "@testing-library/react"
+import { container } from "@timeline-studio/core/container"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { MontagePlan } from "../../types/montage-plan"
 import { useMontageApplicator } from "../use-montage-applicator"
@@ -259,9 +260,8 @@ describe("useMontageApplicator", () => {
 
     it("should check file existence", async () => {
       const { result } = renderHook(() => useMontageApplicator())
-      const { invoke } = await import("@tauri-apps/api/core")
 
-      vi.mocked(invoke).mockResolvedValue(false) // File doesn't exist
+      vi.mocked(container.getPlatform().exists).mockResolvedValue(false)
 
       await act(async () => {
         await result.current.validateFiles(mockPlan)

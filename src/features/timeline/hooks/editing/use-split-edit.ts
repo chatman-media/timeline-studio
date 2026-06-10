@@ -2,8 +2,8 @@
  * Хук для работы с Split Edit операциями
  */
 
-import { useCallback, useEffect, useState } from "react"
 import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
+import { useCallback, useEffect, useState } from "react"
 import type { TimelineClip } from "@/features/timeline/types"
 import { SplitEditServiceImpl } from "../../services/split-edit-service"
 import type {

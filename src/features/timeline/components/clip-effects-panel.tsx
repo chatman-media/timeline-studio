@@ -3,10 +3,7 @@
  * Позволяет просматривать, добавлять и настраивать эффекты для выбранного клипа
  */
 
-import { GripVertical, Plus, Trash2 } from "lucide-react"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
-
+import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import {
@@ -20,7 +17,9 @@ import {
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Switch } from "@timeline-studio/ui/components/switch"
-import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
+import { GripVertical, Plus, Trash2 } from "lucide-react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { EffectManagerPanel } from "@/features/effects/components/effect-manager-panel"
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"
 import { useEffects } from "@/features/effects/hooks/use-effects"

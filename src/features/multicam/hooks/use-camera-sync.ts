@@ -3,9 +3,8 @@
  * Предоставляет унифицированный интерфейс для всех методов синхронизации
  */
 
-import { useCallback, useRef, useState } from "react"
-
 import { useMediaFiles } from "@timeline-studio/core/hooks"
+import { useCallback, useRef, useState } from "react"
 import { useLinkedClips } from "@/features/timeline/hooks/clips/use-linked-clips"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { createLogger } from "@/lib/tauri-logger"

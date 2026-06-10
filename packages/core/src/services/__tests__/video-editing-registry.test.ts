@@ -25,6 +25,8 @@ describe("video-editing-registry", () => {
   })
 
   it("throws before video editing bindings are registered", () => {
+    clearVideoEditingBindings()
+
     expect(() => getVideoEditingBindings().getVideoEditingOrchestrator()).toThrow(
       'Video editing binding "getVideoEditingOrchestrator" is not registered',
     )

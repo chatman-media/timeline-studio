@@ -3,8 +3,8 @@
  * Проверяет управление размером контекста AI чатов
  */
 
-import { beforeEach, describe, expect, it } from "vitest"
 import type { ChatMessage } from "@timeline-studio/core/types/ai-chat"
+import { beforeEach, describe, expect, it } from "vitest"
 import {
   calculateMessagesTokens,
   compressContext,

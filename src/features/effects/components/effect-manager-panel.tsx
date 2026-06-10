@@ -3,16 +3,15 @@
  * Интегрирует новую унифицированную систему эффектов
  */
 
-import { Filter, Plus, Search, Settings2, Upload } from "lucide-react"
-import { useCallback, useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Input } from "@timeline-studio/ui/components/input"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
+import { Filter, Plus, Search, Settings2, Upload } from "lucide-react"
+import { useCallback, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { createLogger } from "@/lib/tauri-logger"
 import { useEffectCategories, useEffects } from "../hooks/use-effects"
 import { useEffectsImport } from "../hooks/use-effects-import"

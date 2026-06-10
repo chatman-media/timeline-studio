@@ -455,10 +455,9 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   // Собираем все клипы из всех треков (проверяем и sections, и globalTracks для совместимости)
   const clips = [
     ...(project?.globalTracks?.flatMap((track: any) => track.clips || []) || []),
-    ...(
-      project?.sections?.flatMap((section: any) => section.tracks?.flatMap((track: any) => track.clips || []) || []) ||
-      []
-    ),
+    ...(project?.sections?.flatMap(
+      (section: any) => section.tracks?.flatMap((track: any) => track.clips || []) || [],
+    ) || []),
   ]
 
   // Отладочная информация
@@ -469,7 +468,8 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
       globalTracksLength: project?.globalTracks?.length || 0,
       hasSections: !!project?.sections,
       sectionsLength: project?.sections?.length || 0,
-      sectionsTracksCount: project?.sections?.reduce((acc: number, section: any) => acc + section.tracks.length, 0) || 0,
+      sectionsTracksCount:
+        project?.sections?.reduce((acc: number, section: any) => acc + section.tracks.length, 0) || 0,
       totalClips: clips.length,
       projectType: project ? typeof project : "null/undefined",
     },

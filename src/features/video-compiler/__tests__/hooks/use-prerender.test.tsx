@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook } from "@testing-library/react"
+import { type PrerenderResult, prerenderSegment } from "@timeline-studio/core/services/video-compiler"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
-import { prerenderSegment, type PrerenderResult } from "@timeline-studio/core/services/video-compiler"
 import { usePrerender, usePrerenderCache } from "../../hooks/use-prerender"
 
 // Ensure console.error is mocked to see errors

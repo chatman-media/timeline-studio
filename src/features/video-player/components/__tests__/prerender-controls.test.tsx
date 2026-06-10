@@ -32,7 +32,9 @@ vi.mock("@timeline-studio/core/hooks", () => ({
 
 vi.mock("@/features/timeline/hooks/state/use-timeline")
 vi.mock("@/features/video-compiler/hooks/use-prerender")
-vi.mock("@timeline-studio/domains/video-editing")
+vi.mock("@/features/timeline/providers/player-provider", () => ({
+  usePlayer: vi.fn(),
+}))
 
 const mockUseTimeline = vi.mocked(useTimeline)
 const mockUsePrerender = vi.mocked(usePrerender)

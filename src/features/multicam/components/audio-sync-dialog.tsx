@@ -2,14 +2,19 @@
  * Диалог синхронизации по аудио с визуализацией процесса
  */
 
-import { CheckCircle2, Loader2, Music, XCircle } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-
 import { Alert, AlertDescription } from "@timeline-studio/ui/components/alert"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@timeline-studio/ui/components/dialog"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { CheckCircle2, Loader2, Music, XCircle } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import type { AudioSyncProgress } from "../services/audio-sync"

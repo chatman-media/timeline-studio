@@ -3,9 +3,6 @@
  * Кастомизация параметров шаблона перед применением
  */
 
-import type React from "react"
-import { useCallback, useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
 import { Input } from "@timeline-studio/ui/components/input"
@@ -14,6 +11,8 @@ import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import type React from "react"
+import { useCallback, useState } from "react"
 
 import type { ApplyTemplateOptions } from "../services"
 import type { ProjectTemplate } from "../types/project-template"

@@ -10,14 +10,18 @@
 
 "use client"
 
-import { type ReactNode } from "react"
 import { AppInitProvider } from "@timeline-studio/adapters/react"
-import { BrowserProvider as CoreBrowserProvider } from "@timeline-studio/core/services/browser-context"
 import { setAITools } from "@timeline-studio/core/services/ai-tools-registry"
+import { BrowserProvider as CoreBrowserProvider } from "@timeline-studio/core/services/browser-context"
 import { setMediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
 import { setMontagePlannerBindings } from "@timeline-studio/core/services/montage-planner-registry"
 import { setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
-import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@timeline-studio/domains/ai-services"
+import {
+  ChatProvider,
+  MCPProvider,
+  montagePlannerMachine,
+  unifiedOrchestrator,
+} from "@timeline-studio/domains/ai-services"
 import {
   applyPlanToTimeline,
   ContentAnalyzer,
@@ -27,12 +31,16 @@ import {
   RhythmCalculator,
 } from "@timeline-studio/domains/ai-services/services/montage-planning"
 import { allAITools } from "@timeline-studio/domains/ai-tools"
-import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@timeline-studio/domains/browser"
+import {
+  BrowserProvider as DomainBrowserProvider,
+  useBrowser as useDomainBrowser,
+} from "@timeline-studio/domains/browser"
 import * as mediaManagementBindings from "@timeline-studio/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@timeline-studio/domains/project-management/providers"
 import { DOMAIN_EVENTS, eventBus } from "@timeline-studio/domains/shared/events"
 import { getSystemIntegrationOrchestrator } from "@timeline-studio/domains/system-integration"
 import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@timeline-studio/domains/video-editing"
+import { type ReactNode } from "react"
 import { ColorSchemeProvider } from "@/features/color-scheme"
 import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 import { ResourcesProvider } from "@/features/timeline/providers/resources-provider"

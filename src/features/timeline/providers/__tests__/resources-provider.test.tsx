@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { renderHook, waitFor } from "@testing-library/react"
+import { MediaType as LocalMediaType, type MediaFile } from "@timeline-studio/core/types"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { type MediaFile, MediaType as LocalMediaType } from "@timeline-studio/core/types"
 import type { VideoEffect } from "@/features/effects/types"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import type { StyleTemplate } from "@/features/style-templates/types"

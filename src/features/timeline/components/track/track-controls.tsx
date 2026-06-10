@@ -1,8 +1,7 @@
+import type { MediaTrack } from "@timeline-studio/core/types"
+import { Slider } from "@timeline-studio/ui/components/slider"
 import { Eye, EyeOff, Lock, LockOpen, Volume2, VolumeX } from "lucide-react"
 import { useTranslation } from "react-i18next"
-
-import { Slider } from "@timeline-studio/ui/components/slider"
-import type { MediaTrack } from "@timeline-studio/core/types"
 
 interface TrackControlsProps {
   track: MediaTrack

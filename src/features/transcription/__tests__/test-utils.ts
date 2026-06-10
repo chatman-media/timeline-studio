@@ -1,4 +1,3 @@
-import { vi } from "vitest"
 import type {
   ModelInfo,
   TranscriptionOptions,
@@ -7,6 +6,7 @@ import type {
   TranscriptionSegment,
   TranscriptionWord,
 } from "@timeline-studio/core/types/transcription"
+import { vi } from "vitest"
 
 /**
  * Mock данные для тестирования транскрипции

@@ -1,8 +1,3 @@
-import { AlertCircle, Brain, CheckCircle2, Clock, Loader2, StopCircle, Trash2, XCircle } from "lucide-react"
-import type React from "react"
-import { useMemo } from "react"
-import { useTranslation } from "react-i18next"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
@@ -14,6 +9,10 @@ import {
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { AlertCircle, Brain, CheckCircle2, Clock, Loader2, StopCircle, Trash2, XCircle } from "lucide-react"
+import type React from "react"
+import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import { cn } from "@/lib/utils"
 

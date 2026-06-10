@@ -2,19 +2,16 @@
  * @vitest-environment jsdom
  */
 import { renderHook, waitFor } from "@testing-library/react"
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { container, resetContainer } from "@timeline-studio/core/container"
 import type { IEnhancedSubtitleAutomationService } from "@timeline-studio/core/ports"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useEnhancedSubtitleAutomation } from "../../hooks/use-enhanced-subtitle-automation"
 import { createMockEnhancedSubtitleResult } from "../test-utils"
 
 const mockProcessEnhancedSubtitles = vi.fn<IEnhancedSubtitleAutomationService["processEnhancedSubtitles"]>()
-const mockAutoGenerateSubtitlesFromVideo =
-  vi.fn<IEnhancedSubtitleAutomationService["autoGenerateSubtitlesFromVideo"]>()
-const mockExtractSubtitlesFromScreenText =
-  vi.fn<IEnhancedSubtitleAutomationService["extractSubtitlesFromScreenText"]>()
-const mockGenerateMultilingualSubtitles =
-  vi.fn<IEnhancedSubtitleAutomationService["generateMultilingualSubtitles"]>()
+const mockAutoGenerateSubtitlesFromVideo = vi.fn<IEnhancedSubtitleAutomationService["autoGenerateSubtitlesFromVideo"]>()
+const mockExtractSubtitlesFromScreenText = vi.fn<IEnhancedSubtitleAutomationService["extractSubtitlesFromScreenText"]>()
+const mockGenerateMultilingualSubtitles = vi.fn<IEnhancedSubtitleAutomationService["generateMultilingualSubtitles"]>()
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", async (importOriginal) => {

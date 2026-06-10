@@ -1,5 +1,8 @@
 import { indexedDBCacheService } from "@timeline-studio/core/services/media-cache-service"
-import { getMediaManagementBindings, type MediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
+import {
+  getMediaManagementBindings,
+  type MediaManagementBindings,
+} from "@timeline-studio/core/services/media-management-registry"
 import type { MediaFile, MediaInfo } from "@timeline-studio/core/types"
 
 export { indexedDBCacheService }
@@ -101,7 +104,9 @@ interface UseMediaPreviewResult {
     fileId: string,
     frames: Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>,
   ) => Promise<boolean>
-  getTimelineFrames: (fileId: string) => Promise<Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>>
+  getTimelineFrames: (
+    fileId: string,
+  ) => Promise<Array<{ timestamp: number; base64_data: string; is_keyframe: boolean }>>
   restorePreviewCache: () => Promise<number>
   hasCachedThumbnail: (fileId: string, width: number, height: number) => Promise<boolean>
   getCachedThumbnailPath: (fileId: string, width: number, height: number) => Promise<string>

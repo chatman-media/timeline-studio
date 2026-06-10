@@ -1,6 +1,3 @@
-import { ChevronDown, Gauge, Lock, Plus, RotateCcw, Trash2, Unlock } from "lucide-react"
-import React, { useCallback, useEffect, useRef, useState } from "react"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   DropdownMenu,
@@ -10,6 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { ChevronDown, Gauge, Lock, Plus, RotateCcw, Trash2, Unlock } from "lucide-react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
 import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"

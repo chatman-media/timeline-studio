@@ -27,6 +27,8 @@ describe("montage-planner-registry", () => {
   })
 
   it("throws before montage planner bindings are registered", () => {
+    clearMontagePlannerBindings()
+
     expect(() => getMontagePlannerBindings().applyPlanToTimeline()).toThrow(
       'Montage planner binding "applyPlanToTimeline" is not registered',
     )

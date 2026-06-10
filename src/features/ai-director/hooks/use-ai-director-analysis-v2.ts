@@ -10,11 +10,11 @@
  * for platform-independent event handling.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { container } from "@timeline-studio/core"
 import type { UnlistenFn } from "@timeline-studio/core/ports"
 import { aiDirectorAnalyzeBatch, analysisStorageService } from "@timeline-studio/core/services"
 import type { AIDirectorConfig, AnalysisError, AnalysisProgress } from "@timeline-studio/core/types/ai-director"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type {

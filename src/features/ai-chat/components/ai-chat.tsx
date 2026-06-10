@@ -1,16 +1,21 @@
+import { useModals } from "@timeline-studio/core/hooks"
+import { getAITools } from "@timeline-studio/core/services/ai-tools-registry"
+import type { Agent, AgentId, ChatMessage } from "@timeline-studio/core/types/ai-chat"
+
+import { Button } from "@timeline-studio/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
+import { TooltipProvider } from "@timeline-studio/ui/components/tooltip"
 import { Bot, ChevronDown, History, Plus, Send, Settings, StopCircle, User } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@timeline-studio/ui/components/dropdown-menu"
-import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
-import { TooltipProvider } from "@timeline-studio/ui/components/tooltip"
-import type { Agent, AgentId, ChatMessage } from "@timeline-studio/core/types/ai-chat"
-import { useModals } from "@timeline-studio/core/hooks"
-import { getAITools } from "@timeline-studio/core/services/ai-tools-registry"
-import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { backendAI } from "@/features/ai-chat/services/backend-ai"
+import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { useMediaImport } from "@/features/media/hooks/media-management"
 import { useTimeline } from "@/features/timeline/hooks"
 import { useApiKeys } from "@/features/user-settings/hooks/use-api-keys"

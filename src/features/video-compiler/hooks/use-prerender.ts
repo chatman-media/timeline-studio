@@ -2,9 +2,6 @@
  * Hook для использования системы пререндера
  */
 
-import { useCallback, useEffect, useState } from "react"
-
-import { useTranslation } from "react-i18next"
 import { useNotifications } from "@timeline-studio/core/hooks"
 import {
   clearPrerenderCache as clearCache,
@@ -13,6 +10,8 @@ import {
   type PrerenderResult,
   prerenderSegment,
 } from "@timeline-studio/core/services/video-compiler"
+import { useCallback, useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 

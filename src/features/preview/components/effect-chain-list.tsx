@@ -2,10 +2,6 @@
  * Effect Chain List - Manage effect chains and their order
  */
 
-import { ChevronDown, ChevronRight, Copy, GripVertical, MoreVertical, Plus, Trash2 } from "lucide-react"
-import type React from "react"
-import { useRef, useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card } from "@timeline-studio/ui/components/card"
@@ -19,6 +15,9 @@ import {
 } from "@timeline-studio/ui/components/dropdown-menu"
 import { Slider } from "@timeline-studio/ui/components/slider"
 import { Switch } from "@timeline-studio/ui/components/switch"
+import { ChevronDown, ChevronRight, Copy, GripVertical, MoreVertical, Plus, Trash2 } from "lucide-react"
+import type React from "react"
+import { useRef, useState } from "react"
 
 import { EffectPipelineManager } from "../services/effect-pipeline-manager"
 

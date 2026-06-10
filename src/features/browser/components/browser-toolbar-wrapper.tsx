@@ -1,5 +1,5 @@
-import { memo } from "react"
 import type { BrowserTab } from "@timeline-studio/core/types"
+import { memo } from "react"
 import { MediaToolbar } from "@/features/browser/components/media-toolbar"
 import { getToolbarConfigForContent } from "@/features/browser/components/media-toolbar-configs"
 import { PREVIEW_SIZES } from "@/features/media/utils/preview-sizes"

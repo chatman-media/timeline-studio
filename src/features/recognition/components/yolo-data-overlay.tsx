@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import { useNotifications } from "@timeline-studio/core/hooks"
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import type { YoloDetection } from "@/features/recognition/types/yolo"
 import { createLogger } from "@/lib/tauri-logger"
 import { useYoloData } from "../hooks/use-yolo-data"

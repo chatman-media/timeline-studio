@@ -2,17 +2,17 @@
  * Hook для интеграции Montage Planner с Timeline
  */
 
+import type { MediaFile } from "@timeline-studio/core/types"
 import { useCallback, useState } from "react"
+import { useTimelineMarkers } from "@/features/timeline/hooks/markers/use-timeline-markers"
+import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
+import { useTimelineActions } from "@/features/timeline/hooks/state/use-timeline-actions"
+import { createLogger } from "@/lib/tauri-logger"
 import {
   applyPlanToTimeline as applyPlanToTimelineService,
   createMarkersFromPlan as createMarkersFromPlanService,
   type TimelineIntegrationOptions,
 } from "../services/domain-adapters"
-import type { MediaFile } from "@timeline-studio/core/types"
-import { useTimelineMarkers } from "@/features/timeline/hooks/markers/use-timeline-markers"
-import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
-import { useTimelineActions } from "@/features/timeline/hooks/state/use-timeline-actions"
-import { createLogger } from "@/lib/tauri-logger"
 import type { MontagePlan, PlannedClip, Sequence } from "../types"
 
 const logger = createLogger({ module: "UseTimelineIntegration" })

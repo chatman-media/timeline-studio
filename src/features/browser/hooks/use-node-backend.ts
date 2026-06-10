@@ -4,10 +4,10 @@
  * Provides type-safe access to Node.js backend media processing
  */
 
-import { useCallback, useState } from "react"
 import { getNodeBackend } from "@timeline-studio/core/container"
 import type { NodeBackendHealth } from "@timeline-studio/core/ports"
 import type { ScannedMediaFile } from "@timeline-studio/core/ports/media.port"
+import { useCallback, useState } from "react"
 
 interface UseNodeBackendOptions {
   enabled?: boolean

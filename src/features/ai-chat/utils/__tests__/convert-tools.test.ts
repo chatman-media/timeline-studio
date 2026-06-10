@@ -2,8 +2,8 @@
  * Расширенные тесты для Function Calling интеграции
  */
 
-import { describe, expect, it } from "vitest"
 import type { AIToolResult, IAITool } from "@timeline-studio/core/types/ai-tools"
+import { describe, expect, it } from "vitest"
 import {
   convertToolsToUnifiedFormat,
   convertToUnifiedAITool,

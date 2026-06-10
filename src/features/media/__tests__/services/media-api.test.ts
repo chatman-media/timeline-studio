@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import {
   formatDuration,
   formatFileSize,
@@ -9,6 +7,7 @@ import {
   selectMediaDirectory,
   selectMediaFile,
 } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 // Mock media service
 const mockMediaService = vi.hoisted(() => ({

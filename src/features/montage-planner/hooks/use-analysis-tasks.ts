@@ -2,9 +2,8 @@
  * Hook для работы с задачами AI анализа видео
  */
 
-import { useCallback, useEffect, useRef, useState } from "react"
-
 import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 

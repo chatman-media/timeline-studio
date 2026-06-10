@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest"
 import { SceneContextService } from "@timeline-studio/domains/ai-services/services/recognition"
+import { beforeEach, describe, expect, it } from "vitest"
 import { createMockDetection, createMockVideo } from "../../__mocks__"
 
 describe("SceneContextService", () => {

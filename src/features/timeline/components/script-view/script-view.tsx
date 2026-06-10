@@ -3,9 +3,8 @@
  * 3-колоночный layout: Библиотека | Раскадровка | Настройки
  */
 
-import { useState } from "react"
-
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@timeline-studio/ui/components/resizable"
+import { useState } from "react"
 import type { ScriptFragment } from "@/features/timeline/types/script"
 import { FragmentLibrary } from "./fragment-library/fragment-library"
 import { useApplyPlanToTimeline } from "./hooks/use-apply-plan-to-timeline"

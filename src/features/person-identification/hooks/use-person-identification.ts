@@ -3,8 +3,8 @@
  * Предоставляет API для управления персонами и их обнаружения
  */
 
-import { useCallback, useEffect, useState } from "react"
 import { PersonDatabaseService } from "@timeline-studio/core/services"
+import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../types/person"
 

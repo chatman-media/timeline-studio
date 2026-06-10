@@ -1,15 +1,19 @@
+import { useFavorites } from "@timeline-studio/core/hooks"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { parseFileSize } from "@timeline-studio/core/utils/file"
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@timeline-studio/ui/components/context-menu"
 import { Trash2 } from "lucide-react"
 import type React from "react"
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
-
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@timeline-studio/ui/components/context-menu"
-import { useFavorites } from "@timeline-studio/core/hooks"
-import type { MediaFile } from "@timeline-studio/core/types"
-import { parseFileSize } from "@timeline-studio/core/utils/file"
 import { MediaPreview } from "@/features/browser/components/preview/media-preview"
-import { useMediaManagement } from "@/features/media/hooks/media-management"
 import { FileMetadata, getFileType } from "@/features/media"
+import { useMediaManagement } from "@/features/media/hooks/media-management"
 import i18n from "@/i18n"
 import { cn } from "@/lib/utils"
 import type { ListAdapter, ListItem, PreviewComponentProps } from "../types/list"

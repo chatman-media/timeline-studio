@@ -1,3 +1,14 @@
+import type { ViewMode } from "@timeline-studio/core/types"
+import { Button } from "@timeline-studio/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@timeline-studio/ui/components/dropdown-menu"
+import { Input } from "@timeline-studio/ui/components/input"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import {
   ArrowDownUp,
   ArrowUpDown,
@@ -15,18 +26,6 @@ import {
 } from "lucide-react"
 import type React from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@timeline-studio/ui/components/dropdown-menu"
-import { Input } from "@timeline-studio/ui/components/input"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
-import type { ViewMode } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 // Конфигурация режимов просмотра

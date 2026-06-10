@@ -17,6 +17,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { resetExecuteCommandMock, resetMockBrowserState } from "@/test/mocks/backend-sync"
 import { MOCK_FILE_IDS } from "../__mocks__"
 import { BrowserProvider, useBrowser } from "../providers/browser-provider"
+import { resetBrowserOrchestrator } from "../services/browser-orchestrator"
 
 function createWrapper() {
   return ({ children }: { children: ReactNode }) => <BrowserProvider data-oid="sszoap:">{children}</BrowserProvider>
@@ -24,6 +25,7 @@ function createWrapper() {
 
 describe("Browser Domain Integration Tests", () => {
   beforeEach(() => {
+    resetBrowserOrchestrator()
     resetMockBrowserState()
     resetExecuteCommandMock()
     vi.clearAllMocks()
@@ -31,6 +33,7 @@ describe("Browser Domain Integration Tests", () => {
 
   afterEach(() => {
     cleanup()
+    resetBrowserOrchestrator()
     resetMockBrowserState()
     resetExecuteCommandMock()
   })

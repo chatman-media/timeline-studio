@@ -2,8 +2,8 @@
  * Тесты для сервиса синхронизации по аудио
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
 import { type MediaFile, MediaType } from "@timeline-studio/domains/media-management"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { TimelineClip } from "@/features/timeline/types"
 import type { SyncResult } from "../../types/multicam"
 import {

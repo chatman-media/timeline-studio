@@ -2,9 +2,8 @@
  * @vitest-environment jsdom
  */
 import { renderHook } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
-
 import type { Track as TimelineTrack } from "@timeline-studio/domains/video-editing/types"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import type { AudioChannel } from "../../types"
 import { convertTrackToChannel, useTimelineMixerSync } from "../timeline-sync-service"
 

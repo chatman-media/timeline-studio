@@ -3,8 +3,9 @@
  * Displays the generated montage plan with sequences and timeline visualization
  */
 
-import { Check, Layers, Sparkles, TrendingUp, Wand2, X } from "lucide-react"
-
+import { useMediaFiles } from "@timeline-studio/core/hooks"
+import type { MediaFile } from "@timeline-studio/core/types"
+import { MediaType } from "@timeline-studio/core/types"
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -12,9 +13,7 @@ import { Progress } from "@timeline-studio/ui/components/progress"
 import { ScrollArea, ScrollBar } from "@timeline-studio/ui/components/scroll-area"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
-import { MediaType } from "@timeline-studio/core/types"
-import { useMediaFiles } from "@timeline-studio/core/hooks"
-import type { MediaFile } from "@timeline-studio/core/types"
+import { Check, Layers, Sparkles, TrendingUp, Wand2, X } from "lucide-react"
 import { formatTime } from "@/lib/date"
 
 import { usePlanGenerator } from "../../hooks/use-plan-generator"

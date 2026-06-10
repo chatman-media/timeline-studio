@@ -1,5 +1,5 @@
-import { Button } from "@timeline-studio/ui/components/button"
 import { useModals } from "@timeline-studio/core/hooks"
+import { Button } from "@timeline-studio/ui/components/button"
 
 import type { AppliedEffect } from "../types"
 

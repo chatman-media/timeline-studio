@@ -3,8 +3,6 @@
  * Компонент для создания crossfade между перекрывающимися видео клипами
  */
 
-import { Blend } from "lucide-react"
-import { memo, useCallback, useMemo, useState } from "react"
 import { Button } from "@timeline-studio/ui/components/button"
 import {
   Dialog,
@@ -17,6 +15,8 @@ import {
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { Blend } from "lucide-react"
+import { memo, useCallback, useMemo, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useClips } from "../../hooks/clips/use-clips"

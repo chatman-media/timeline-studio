@@ -2,9 +2,9 @@
  * Hook for working with Timeline clips
  */
 
-import { useMemo } from "react"
 import type { MediaFile } from "@timeline-studio/core/types/media"
-import type { Timeline, TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
+import type { TimelineClip as CoreTimelineClip, Timeline } from "@timeline-studio/core/types/timeline"
+import { useMemo } from "react"
 import type { TimelineClip, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"
 

@@ -1,7 +1,6 @@
+import { Button } from "@timeline-studio/ui/components/button"
 import { CopyPlus } from "lucide-react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { getRemainingMediaCounts, getTopDateWithRemainingFiles, type MediaFile } from "@/features/media"
 
 interface StatusBarProps {

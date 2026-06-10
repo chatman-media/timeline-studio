@@ -1,7 +1,7 @@
 "use client"
 
-import { AlertTriangle, CheckCircle, FileX, Search, Trash2 } from "lucide-react"
-import { useState } from "react"
+import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
+import type { SavedMediaFile } from "@timeline-studio/core/types"
 
 import {
   AlertDialog,
@@ -15,8 +15,8 @@ import {
 } from "@timeline-studio/ui/components/alert-dialog"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Separator } from "@timeline-studio/ui/components/separator"
-import { promptUserToFindFile } from "@timeline-studio/core/services/media-restoration-service"
-import type { SavedMediaFile } from "@timeline-studio/core/types"
+import { AlertTriangle, CheckCircle, FileX, Search, Trash2 } from "lucide-react"
+import { useState } from "react"
 
 import { createLogger } from "@/lib/tauri-logger"
 

@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import { render, screen } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
 import { MediaType } from "@timeline-studio/domains/media-management"
+import { describe, expect, it, vi } from "vitest"
 import { ImagePreview } from "../../../components/preview/image-preview"
 
 // PlayerProvider is already mocked globally in setup.ts
@@ -60,7 +60,17 @@ vi.mock("@/lib/utils", () => ({
   cn: (...classes: any[]) => classes.filter(Boolean).join(" "),
 }))
 
-// usePlayer is mocked globally in @/features/video-player
+vi.mock("@/features/video-player", () => ({
+  usePlayer: vi.fn(() => ({
+    playerSetSource: vi.fn().mockResolvedValue(undefined),
+    playerSetMedia: vi.fn().mockResolvedValue(undefined),
+    setCurrentVideo: vi.fn(),
+  })),
+  useVideoSelection: vi.fn(() => ({
+    selectedVideo: null,
+    setSelectedVideo: vi.fn(),
+  })),
+}))
 
 // Mock components
 vi.mock("@/features/browser/components/layout/add-media-button", () => ({

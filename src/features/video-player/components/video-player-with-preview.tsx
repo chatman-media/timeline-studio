@@ -3,10 +3,10 @@
  * Использует Timeline Preview для real-time эффектов
  */
 
-import { memo, useState } from "react"
+import { MediaType } from "@timeline-studio/core/types"
 import { AspectRatio } from "@timeline-studio/ui/components/aspect-ratio"
 import { Button } from "@timeline-studio/ui/components/button"
-import { MediaType } from "@timeline-studio/core/types"
+import { memo, useState } from "react"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
 import { TimelinePreview } from "@/features/timeline/components/preview/timeline-preview"

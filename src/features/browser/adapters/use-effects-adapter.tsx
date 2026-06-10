@@ -1,9 +1,8 @@
+import { useFavorites } from "@timeline-studio/core/hooks"
+import { calculateDimensionsWithAspectRatio } from "@timeline-studio/core/utils/preview-sizes"
 import { Sparkles } from "lucide-react"
 import type React from "react"
 import { useTranslation } from "react-i18next"
-
-import { useFavorites } from "@timeline-studio/core/hooks"
-import { calculateDimensionsWithAspectRatio } from "@timeline-studio/core/utils/preview-sizes"
 import { useEffectsAdapter as useUnifiedEffectsAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { EffectPreview } from "@/features/effects/components/effect-preview"

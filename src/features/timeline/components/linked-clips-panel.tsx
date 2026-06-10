@@ -2,9 +2,6 @@
  * Панель управления связанными клипами
  */
 
-import { AlertTriangle, Eye, EyeOff, Info, Link2, RefreshCw, Search, Target, Unlink } from "lucide-react"
-import { useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Button } from "@timeline-studio/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@timeline-studio/ui/components/card"
@@ -12,6 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "@timeline-studio/ui/components/scroll-area"
 import { Separator } from "@timeline-studio/ui/components/separator"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
+import { AlertTriangle, Eye, EyeOff, Info, Link2, RefreshCw, Search, Target, Unlink } from "lucide-react"
+import { useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 import { useLinkedClips } from "../hooks/clips/use-linked-clips"

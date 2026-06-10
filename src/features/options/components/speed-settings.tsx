@@ -1,8 +1,7 @@
+import { Button } from "@timeline-studio/ui/components/button"
 import { ChevronDown, Gauge, Play, Settings, Zap } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "SpeedSettings" })

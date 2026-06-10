@@ -1,3 +1,6 @@
+import { useCurrentProject, useModals, useNotifications } from "@timeline-studio/core/hooks"
+import { Button } from "@timeline-studio/ui/components/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
 import {
   FilePlus,
   FolderOpen,
@@ -15,10 +18,6 @@ import {
 } from "lucide-react"
 import { useCallback, useEffect, useId, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-
-import { Button } from "@timeline-studio/ui/components/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@timeline-studio/ui/components/popover"
-import { useCurrentProject, useModals, useNotifications } from "@timeline-studio/core/hooks"
 import { ColorSchemeDropdown } from "@/features/color-scheme"
 import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"

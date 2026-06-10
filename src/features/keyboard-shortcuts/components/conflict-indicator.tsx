@@ -1,6 +1,6 @@
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { AlertTriangle } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import type { ConflictInfo } from "../services/shortcuts-conflicts"
 
 interface ConflictIndicatorProps {

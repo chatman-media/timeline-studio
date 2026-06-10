@@ -3,11 +3,10 @@
  * Компонент для отображения real-time AI анализа поверх видео
  */
 
-import { Activity, AlertCircle, Eye, Sparkles } from "lucide-react"
-import { useEffect, useState } from "react"
-
 import { Badge } from "@timeline-studio/ui/components/badge"
 import { Progress } from "@timeline-studio/ui/components/progress"
+import { Activity, AlertCircle, Eye, Sparkles } from "lucide-react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 import { usePlayerAIAnalysis } from "../hooks/use-player-ai-analysis"

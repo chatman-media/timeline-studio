@@ -2,8 +2,6 @@
  * Hook для работы с пользовательскими пресетами эффектов
  */
 
-import { useCallback, useEffect, useState } from "react"
-import type { UserPreset } from "@timeline-studio/core/types"
 import {
   deleteUserPreset,
   getAllUserPresets,
@@ -12,6 +10,8 @@ import {
   saveUserPreset,
   updateUserPreset,
 } from "@timeline-studio/core/services/user-presets"
+import type { UserPreset } from "@timeline-studio/core/types"
+import { useCallback, useEffect, useState } from "react"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("useUserPresets")

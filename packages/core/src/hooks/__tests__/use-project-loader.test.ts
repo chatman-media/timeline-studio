@@ -2,18 +2,22 @@
  * @vitest-environment jsdom
  */
 import { renderHook } from "@testing-library/react"
+import { container } from "../../container"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { useProjectLoader } from "../use-project-loader"
 
-// Mock project-management service
-vi.mock("@timeline-studio/domains/project-management/services/project-file-service", () => ({
-  loadProject: vi.fn(),
-  saveProject: vi.fn(),
-}))
+function getPlatformMocks() {
+  const platform = container.getPlatform()
+  return {
+    readTextFile: vi.mocked(platform.readTextFile),
+    writeTextFile: vi.mocked(platform.writeTextFile),
+  }
+}
 
-const { loadProject: mockLoadProject, saveProject: mockSaveProject } = await import(
-  "@timeline-studio/domains/project-management/services/project-file-service"
-)
+function getWrittenProject(callIndex = 0) {
+  const { writeTextFile } = getPlatformMocks()
+  return JSON.parse(writeTextFile.mock.calls[callIndex][1] as string)
+}
 
 describe("useProjectLoader", () => {
   beforeEach(() => {
@@ -25,20 +29,22 @@ describe("useProjectLoader", () => {
       const mockProjectData = {
         settings: { fps: 30, resolution: { width: 1920, height: 1080 } },
       }
-      vi.mocked(mockLoadProject).mockResolvedValue(mockProjectData as any)
+      const { readTextFile } = getPlatformMocks()
+      readTextFile.mockResolvedValue(JSON.stringify(mockProjectData))
 
       const { result } = renderHook(() => useProjectLoader())
 
       const path = "/projects/test.tlsp"
       const project = await result.current.loadProject(path)
 
-      expect(mockLoadProject).toHaveBeenCalledWith(path)
+      expect(readTextFile).toHaveBeenCalledWith(path)
       expect(project).toEqual(mockProjectData)
     })
 
     it("should propagate errors from loadProject", async () => {
       const error = new Error("File not found")
-      vi.mocked(mockLoadProject).mockRejectedValue(error)
+      const { readTextFile } = getPlatformMocks()
+      readTextFile.mockRejectedValue(error)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -46,16 +52,17 @@ describe("useProjectLoader", () => {
     })
 
     it("should handle loading different project paths", async () => {
-      vi.mocked(mockLoadProject).mockResolvedValue({ settings: { fps: 30 } } as any)
+      const { readTextFile } = getPlatformMocks()
+      readTextFile.mockResolvedValue(JSON.stringify({ settings: { fps: 30 } }))
 
       const { result } = renderHook(() => useProjectLoader())
 
       await result.current.loadProject("/path/project1.tlsp")
       await result.current.loadProject("/path/project2.tlsp")
 
-      expect(mockLoadProject).toHaveBeenCalledTimes(2)
-      expect(mockLoadProject).toHaveBeenNthCalledWith(1, "/path/project1.tlsp")
-      expect(mockLoadProject).toHaveBeenNthCalledWith(2, "/path/project2.tlsp")
+      expect(readTextFile).toHaveBeenCalledTimes(2)
+      expect(readTextFile).toHaveBeenNthCalledWith(1, "/path/project1.tlsp")
+      expect(readTextFile).toHaveBeenNthCalledWith(2, "/path/project2.tlsp")
     })
 
     it("should be memoized and return same reference", () => {
@@ -71,7 +78,8 @@ describe("useProjectLoader", () => {
 
   describe("saveProject", () => {
     it("should call saveProject from service with path and data", async () => {
-      vi.mocked(mockSaveProject).mockResolvedValue(undefined)
+      const { writeTextFile } = getPlatformMocks()
+      writeTextFile.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -83,12 +91,15 @@ describe("useProjectLoader", () => {
 
       await result.current.saveProject(path, data)
 
-      expect(mockSaveProject).toHaveBeenCalledWith(path, data)
+      expect(writeTextFile).toHaveBeenCalledWith(path, expect.any(String))
+      expect(getWrittenProject()).toMatchObject(data)
+      expect(getWrittenProject().meta.lastModified).toEqual(expect.any(Number))
     })
 
     it("should propagate errors from saveProject", async () => {
       const error = new Error("Permission denied")
-      vi.mocked(mockSaveProject).mockRejectedValue(error)
+      const { writeTextFile } = getPlatformMocks()
+      writeTextFile.mockRejectedValue(error)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -96,7 +107,8 @@ describe("useProjectLoader", () => {
     })
 
     it("should handle saving different project data", async () => {
-      vi.mocked(mockSaveProject).mockResolvedValue(undefined)
+      const { writeTextFile } = getPlatformMocks()
+      writeTextFile.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -107,9 +119,11 @@ describe("useProjectLoader", () => {
       await result.current.saveProject(path, data1)
       await result.current.saveProject(path, data2)
 
-      expect(mockSaveProject).toHaveBeenCalledTimes(2)
-      expect(mockSaveProject).toHaveBeenNthCalledWith(1, path, data1)
-      expect(mockSaveProject).toHaveBeenNthCalledWith(2, path, data2)
+      expect(writeTextFile).toHaveBeenCalledTimes(2)
+      expect(writeTextFile).toHaveBeenNthCalledWith(1, path, expect.any(String))
+      expect(writeTextFile).toHaveBeenNthCalledWith(2, path, expect.any(String))
+      expect(getWrittenProject(0)).toMatchObject(data1)
+      expect(getWrittenProject(1)).toMatchObject(data2)
     })
 
     it("should be memoized and return same reference", () => {
@@ -149,8 +163,9 @@ describe("useProjectLoader", () => {
       const initialData = { settings: { fps: 30 } }
       const modifiedData = { settings: { fps: 60 } }
 
-      vi.mocked(mockLoadProject).mockResolvedValue(initialData as any)
-      vi.mocked(mockSaveProject).mockResolvedValue(undefined)
+      const { readTextFile, writeTextFile } = getPlatformMocks()
+      readTextFile.mockResolvedValue(JSON.stringify(initialData))
+      writeTextFile.mockResolvedValue(undefined)
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -163,15 +178,17 @@ describe("useProjectLoader", () => {
       // Save modified version
       await result.current.saveProject(path, modifiedData)
 
-      expect(mockLoadProject).toHaveBeenCalledWith(path)
-      expect(mockSaveProject).toHaveBeenCalledWith(path, modifiedData)
+      expect(readTextFile).toHaveBeenCalledWith(path)
+      expect(writeTextFile).toHaveBeenCalledWith(path, expect.any(String))
+      expect(getWrittenProject()).toMatchObject(modifiedData)
     })
 
     it("should handle concurrent load and save operations", async () => {
-      vi.mocked(mockLoadProject).mockImplementation(
-        () => new Promise((resolve) => setTimeout(() => resolve({ settings: { fps: 30 } } as any), 10)),
+      const { readTextFile, writeTextFile } = getPlatformMocks()
+      readTextFile.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve(JSON.stringify({ settings: { fps: 30 } })), 10)),
       )
-      vi.mocked(mockSaveProject).mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(), 10)))
+      writeTextFile.mockImplementation(() => new Promise((resolve) => setTimeout(() => resolve(), 10)))
 
       const { result } = renderHook(() => useProjectLoader())
 
@@ -180,8 +197,8 @@ describe("useProjectLoader", () => {
 
       await Promise.all([loadPromise, savePromise])
 
-      expect(mockLoadProject).toHaveBeenCalled()
-      expect(mockSaveProject).toHaveBeenCalled()
+      expect(readTextFile).toHaveBeenCalled()
+      expect(writeTextFile).toHaveBeenCalled()
     })
   })
 })

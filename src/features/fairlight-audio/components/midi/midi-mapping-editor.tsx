@@ -1,12 +1,10 @@
-import { useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import { Button } from "@timeline-studio/ui/components/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@timeline-studio/ui/components/dialog"
 import { Label } from "@timeline-studio/ui/components/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@timeline-studio/ui/components/select"
 import { Slider } from "@timeline-studio/ui/components/slider"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import type { MidiMapping } from "../../services/midi/midi-engine"
 

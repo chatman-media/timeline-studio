@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from "react"
-
-import { useTranslation } from "react-i18next"
-
 import type { MediaFile } from "@timeline-studio/core/types/media"
+import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { createLogger } from "@/lib/tauri-logger"
 
