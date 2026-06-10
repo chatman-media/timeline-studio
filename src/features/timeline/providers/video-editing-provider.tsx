@@ -8,7 +8,7 @@ import React, { createContext, useContext, useEffect, useState } from "react"
 import {
   getVideoEditingOrchestrator,
   type VideoEditingOrchestrator,
-} from "@/domains/video-editing/services/video-editing-orchestrator"
+} from "../services/video-editing-orchestrator"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("VideoEditingProvider")

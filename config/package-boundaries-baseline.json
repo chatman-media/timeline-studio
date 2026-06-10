@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local undo backend handlers",
-  "violations": 49,
+  "source": "Phase F7 central timeline orchestrator adapter",
+  "violations": 48,
   "bySeverity": {
-    "warn": 49
+    "warn": 48
   },
   "byEdge": {
-    "ui -> domains": 49
+    "ui -> domains": 48
   }
 }
