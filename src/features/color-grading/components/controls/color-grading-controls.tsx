@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/features/modals/services"
 
 import { useColorGradingContext } from "../../services/color-grading-provider"
 import { getAllPresetCategories } from "../../types/presets"

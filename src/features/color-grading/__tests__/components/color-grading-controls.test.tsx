@@ -25,7 +25,7 @@ const mockAutoCorrect = vi.fn()
 const mockUseModals = vi.fn()
 const mockUseColorGradingContext = vi.fn()
 
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => mockUseModals(),
 }))
 
