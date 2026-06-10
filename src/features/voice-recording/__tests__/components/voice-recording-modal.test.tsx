@@ -20,6 +20,11 @@ vi.mock("@/features/resources", () => ({
   ResourcesProvider: ({ children }: any) => children,
 }))
 
+vi.mock("@/features/timeline/providers/resources-provider", () => ({
+  useResources: vi.fn(() => mockUseResources),
+  ResourcesProvider: ({ children }: any) => children,
+}))
+
 vi.mock("../../types/tauri", () => ({
   saveVoiceRecording: mockSaveVoiceRecording,
   getSupportedAudioFormats: mockGetSupportedAudioFormats,
@@ -531,7 +536,7 @@ describe("VoiceRecordModal", () => {
       })
 
       const user = userEvent.setup()
-      renderWithModal(<VoiceRecordModal data-oid="wuq.sei" />)
+      renderWithModal(<VoiceRecordModal onClose={mockCloseModal} data-oid="wuq.sei" />)
 
       const closeButton = screen.getByText("Закрыть")
       await user.click(closeButton)

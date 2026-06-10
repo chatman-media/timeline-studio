@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 camera capture core imports",
-  "violations": 362,
+  "source": "Phase F7 voice recording modal core imports",
+  "violations": 359,
   "bySeverity": {
-    "warn": 362
+    "warn": 359
   },
   "byEdge": {
-    "ui -> domains": 362
+    "ui -> domains": 359
   }
 }

@@ -42,7 +42,7 @@ export function ModalContainer() {
       case "camera-capture":
         return <CameraCaptureModal isOpen={isModalOpen} onClose={closeModal} data-oid="f2i6s-a" />
       case "voice-recording":
-        return <VoiceRecordModal data-oid="f7i.sio" />
+        return <VoiceRecordModal isOpen={isModalOpen} onClose={closeModal} data-oid="f7i.sio" />
       case "export":
         return <ExportModal onClose={closeModal} data-oid="ass50fv" />
       case "cache-settings":
