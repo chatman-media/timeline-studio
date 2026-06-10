@@ -7,7 +7,7 @@ import React from "react"
 
 import { Button } from "@/components/ui/button"
 import { useModals } from "@/core/hooks"
-import type { AppliedEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect } from "@/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { convertToAssetUrl } from "@/lib/tauri-utils"
 import { cn } from "@/lib/utils"

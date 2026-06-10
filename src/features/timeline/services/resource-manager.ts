@@ -6,7 +6,7 @@
  */
 
 import type { MediaFile, TimelineTransition, Transition, VideoFilter } from "@/core/types"
-import type { BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { BaseEffect } from "@/core/types"
 import type { StyleTemplate } from "@/features/style-templates/types/style-template"
 import type { MediaTemplate } from "@/features/templates/lib/templates"
 import type {

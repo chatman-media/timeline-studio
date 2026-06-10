@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core transition hook types",
-  "violations": 154,
+  "source": "Phase F7 core effect types",
+  "violations": 143,
   "bySeverity": {
-    "warn": 154
+    "warn": 143
   },
   "byEdge": {
-    "ui -> domains": 154
+    "ui -> domains": 143
   }
 }

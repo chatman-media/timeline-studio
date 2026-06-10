@@ -1,10 +1,10 @@
 /**
  * Effects Types
  *
- * Re-export from canonical source in domains
+ * Re-export from core-facing effect contracts.
  */
 
-// All effect types now live in domains/video-editing
+// All feature-facing effect types now live in core/types.
 // Backward compatibility alias
 export type {
   AppliedEffect,
@@ -31,7 +31,7 @@ export type {
   FFmpegProcessor,
   ParameterType,
   WebGLProcessor,
-} from "@/domains/video-editing/types/unified-effects"
+} from "@/core/types"
 
 // Node compositing and shader system remain in features (UI-specific)
 export * from "./node-compositing"

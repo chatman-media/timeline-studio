@@ -20,7 +20,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
-import type { AppliedEffect, BaseEffect } from "@/domains/video-editing/types/unified-effects"
+import type { AppliedEffect, BaseEffect } from "@/core/types"
 import { EffectManagerPanel } from "@/features/effects/components/effect-manager-panel"
 import { EffectParameterControls } from "@/features/effects/components/effect-parameter-controls"
 import { useEffects } from "@/features/effects/hooks/use-effects"
