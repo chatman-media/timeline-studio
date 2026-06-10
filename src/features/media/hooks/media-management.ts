@@ -1,4 +1,5 @@
 export {
+  getMediaMetadataService,
   getMediaFiles,
   getMediaMetadata,
   selectAudioFile,

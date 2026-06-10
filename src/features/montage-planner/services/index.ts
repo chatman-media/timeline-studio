@@ -1,18 +1,16 @@
 /**
  * @deprecated
- * Services have been migrated to @/domains/ai-services/services/montage-planning/
+ * Domain-backed services are exposed through ./domain-adapters.
  *
  * This file re-exports from the new location for backward compatibility.
- * Please update imports to use:
- * import { ... } from '@/domains/ai-services/services/montage-planning'
  */
 
 // Re-export machine
 export type {
   MontagePlannerContext,
   MontagePlannerEvent,
-} from "@/domains/ai-services/machines/montage-planner-machine"
-export { montagePlannerMachine } from "@/domains/ai-services/machines/montage-planner-machine"
+} from "./domain-adapters"
+export { montagePlannerMachine } from "./domain-adapters"
 // Re-export services from domains
 export {
   applyPlanToTimeline,
@@ -21,9 +19,9 @@ export {
   MomentDetector,
   PlanGenerator,
   RhythmCalculator,
-} from "@/domains/ai-services/services/montage-planning"
+} from "./domain-adapters"
 // Re-export types
-export type { TimelineIntegrationOptions } from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
+export type { TimelineIntegrationOptions } from "./domain-adapters"
 // Analysis Task Bridge - connects frontend UI with backend UnifiedOrchestrator
 export { AnalysisTaskBridge, analysisTaskBridge } from "./analysis-task-bridge"
 // Provider stays in features (UI layer)

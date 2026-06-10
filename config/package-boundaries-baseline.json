@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local ai browser access contract",
-  "violations": 25,
+  "source": "Phase F7 central montage domain adapters",
+  "violations": 19,
   "bySeverity": {
-    "warn": 25
+    "warn": 19
   },
   "byEdge": {
-    "ui -> domains": 25
+    "ui -> domains": 19
   }
 }
