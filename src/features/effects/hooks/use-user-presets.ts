@@ -11,7 +11,7 @@ import {
   loadUserPreset,
   saveUserPreset,
   updateUserPreset,
-} from "@/domains/video-editing/services/effects/user-presets-service"
+} from "@/core/services/user-presets"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("useUserPresets")

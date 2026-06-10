@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core subtitle services",
-  "violations": 82,
+  "source": "Phase F7 core user presets service",
+  "violations": 81,
   "bySeverity": {
-    "warn": 82
+    "warn": 81
   },
   "byEdge": {
-    "ui -> domains": 82
+    "ui -> domains": 81
   }
 }
