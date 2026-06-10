@@ -11,13 +11,6 @@ vi.mock("@/features/video-compiler/hooks/use-frame-extraction", () => ({
   useSmartTimelinePreviews: vi.fn(),
 }))
 
-// Mock the frame extraction service
-vi.mock("@/domains/video-editing/services/compiler/frame-extraction-service", () => ({
-  frameExtractionService: {
-    createPreviewElement: vi.fn(),
-  },
-}))
-
 // Mock Skeleton component
 vi.mock("@/components/ui/skeleton", () => ({
   Skeleton: ({ className, style }: any) => (
@@ -47,16 +40,6 @@ describe("TimelinePreviewStrip", () => {
       progress: 0,
       frameWidth: 80,
     })
-
-    // Mock the frame extraction service
-    const { frameExtractionService } = await import(
-      "@/domains/video-editing/services/compiler/frame-extraction-service"
-    )
-    vi.mocked(frameExtractionService.createPreviewElement).mockReturnValue({
-      src: "data:image/jpeg;base64,test-frame-data",
-      onload: null,
-      className: "",
-    } as HTMLImageElement)
   })
 
   afterEach(() => {
@@ -286,11 +269,7 @@ describe("TimelinePreviewStrip", () => {
   })
 
   describe("PreviewFrame component", () => {
-    it("should create preview element on mount", async () => {
-      const { frameExtractionService } = await import(
-        "@/domains/video-editing/services/compiler/frame-extraction-service"
-      )
-
+    it("should create preview image on mount", async () => {
       mockUseSmartTimelinePreviews.mockReturnValue({
         frames: [{ timestamp: 1, frameData: "test-data", isKeyframe: false }],
         isLoading: false,
@@ -301,7 +280,9 @@ describe("TimelinePreviewStrip", () => {
 
       render(<TimelinePreviewStrip {...defaultProps} data-oid="x2doizw" />)
 
-      expect(frameExtractionService.createPreviewElement).toHaveBeenCalledWith("test-data", 1)
+      await waitFor(() => {
+        expect(screen.getByAltText("Frame at 1s")).toHaveAttribute("src", "data:image/jpeg;base64,test-data")
+      })
     })
 
     it("should show loading skeleton before image loads", () => {

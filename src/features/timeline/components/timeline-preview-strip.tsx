@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 
 import { Skeleton } from "@/components/ui/skeleton"
-import { frameExtractionService } from "@/domains/video-editing/services/compiler"
 import { useSmartTimelinePreviews } from "@/features/video-compiler/hooks/use-frame-extraction"
 import { cn } from "@/lib/utils"
 
@@ -166,7 +165,7 @@ function PreviewFrame({ frame, scale, height, showTimestamp, isKeyframe, onClick
 
   useEffect(() => {
     if (imgRef.current) {
-      const img = frameExtractionService.createPreviewElement(frame.frameData, frame.timestamp)
+      const img = createPreviewElement(frame.frameData, frame.timestamp)
       img.onload = () => setIsLoaded(true)
       img.className = "w-full h-full object-cover"
 
@@ -231,6 +230,16 @@ function PreviewFrame({ frame, scale, height, showTimestamp, isKeyframe, onClick
       )}
     </div>
   )
+}
+
+function createPreviewElement(frameData: string, timestamp: number): HTMLImageElement {
+  const img = new Image()
+  img.src = `data:image/jpeg;base64,${frameData}`
+  img.alt = `Frame at ${timestamp.toFixed(2)}s`
+  if (img.dataset) {
+    img.dataset.timestamp = timestamp.toString()
+  }
+  return img
 }
 
 /**
