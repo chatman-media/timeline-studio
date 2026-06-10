@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { videoCompilerRenderService } from "@/domains/video-editing/services/video-compiler-render-service"
+import { videoCompilerRenderService } from "@/core/services/video-compiler"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 

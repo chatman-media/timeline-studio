@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { videoCompilerCacheService } from "@/domains/video-editing/services/video-compiler-cache-service"
+import { videoCompilerCacheService } from "@/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { VideoCompilerCacheStats } from "../types/cache"
@@ -36,8 +36,8 @@ export function useCacheStats(): UseCacheStatsReturn {
       setIsLoading(true)
       setError(null)
       // Теперь бэкенд возвращает CacheStatsWithRatios с уже вычисленными значениями
-      const cacheStats = await videoCompilerCacheService.getCacheStats()
-      setStats(cacheStats as unknown as CacheStatsWithRatios)
+      const cacheStats = (await videoCompilerCacheService.getCacheStats()) as unknown as CacheStatsWithRatios
+      setStats(cacheStats)
       void logger.info("Статистика кеша получена успешно", {
         totalEntries: cacheStats.total_entries,
         cacheHits: cacheStats.cache_hits,

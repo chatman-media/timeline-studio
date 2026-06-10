@@ -9,7 +9,7 @@ import {
   type GpuInfo,
   type SystemInfo,
 } from "@/core/types/video-editing"
-import { videoCompilerSystemService } from "@/domains/video-editing/services/video-compiler-system-service"
+import { videoCompilerSystemService } from "@/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseGpuCapabilities")

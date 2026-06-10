@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core video player ai services",
-  "violations": 75,
+  "source": "Phase F7 core video compiler services",
+  "violations": 68,
   "bySeverity": {
-    "warn": 75
+    "warn": 68
   },
   "byEdge": {
-    "ui -> domains": 75
+    "ui -> domains": 68
   }
 }

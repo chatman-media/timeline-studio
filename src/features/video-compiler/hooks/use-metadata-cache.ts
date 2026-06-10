@@ -9,7 +9,7 @@ import {
   checkCachedFiles,
   getCachedMetadata,
   getCacheMemoryUsage,
-} from "@/domains/video-editing/services/compiler"
+} from "@/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import type { CacheMemoryUsage } from "../types/cache"
 
