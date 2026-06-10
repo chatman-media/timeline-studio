@@ -17,7 +17,7 @@
  * ```
  */
 
-import { MockLanguageService, MockPlatformService, MockStorageService } from "@/adapters/mock"
+import { MockLanguageService, MockPlatformService, MockStorageService, MockUserSettingsService } from "@/adapters/mock"
 import { container } from "@/core/container"
 import { NodeBackendBridgeService } from "../node/node-backend-bridge"
 import { type HttpBackendOptions, HttpBackendService } from "./backend"
@@ -44,6 +44,7 @@ export interface HttpAppServices {
   media: HttpMediaService
   nodeBackend: NodeBackendBridgeService
   language: MockLanguageService
+  userSettings: MockUserSettingsService
   client: HttpClient
 }
 
@@ -59,11 +60,13 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
   const media = new HttpMediaService()
   const nodeBackend = new NodeBackendBridgeService({ serverUrl })
   const language = new MockLanguageService()
+  const userSettings = new MockUserSettingsService()
 
   container.registerBackend(backend)
   container.registerMedia(media)
   container.registerNodeBackend(nodeBackend)
   container.registerLanguage(language)
+  container.registerUserSettings(userSettings)
   // src-node doesn't provide storage/platform — use in-memory mocks so the container is complete
   if (!container.hasStorage()) container.registerStorage(new MockStorageService(true))
   if (!container.hasPlatform()) container.registerPlatform(new MockPlatformService())
@@ -77,7 +80,7 @@ export async function initHttpApp(options: HttpAppOptions = {}): Promise<HttpApp
     }
   }
 
-  return { backend, media, nodeBackend, language, client }
+  return { backend, media, nodeBackend, language, userSettings, client }
 }
 
 /**
@@ -91,6 +94,7 @@ export function createHttpServices(options: HttpAppOptions = {}): HttpAppService
     media: new HttpMediaService(),
     nodeBackend: new NodeBackendBridgeService({ serverUrl }),
     language: new MockLanguageService(),
+    userSettings: new MockUserSettingsService(),
     client: new HttpClient({ baseUrl: serverUrl }),
   }
 }

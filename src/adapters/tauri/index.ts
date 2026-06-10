@@ -18,6 +18,7 @@ import { TauriPlatformService } from "./platform"
 import { TauriStorageService } from "./storage"
 import { TauriTranscriptionService } from "./transcription"
 import { TauriUpdateService } from "./update-service"
+import { TauriUserSettingsService } from "./user-settings"
 import { TauriVideoService } from "./video"
 
 export { TauriAIService } from "./ai"
@@ -34,6 +35,7 @@ export { TauriPlatformService } from "./platform"
 export { TauriStorageService } from "./storage"
 export { TauriTranscriptionService } from "./transcription"
 export { TauriUpdateService } from "./update-service"
+export { TauriUserSettingsService } from "./user-settings"
 export { TauriVideoService } from "./video"
 
 /**
@@ -60,6 +62,7 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   const transcription = new TauriTranscriptionService()
   const enhancedSubtitleAutomation = new TauriEnhancedSubtitleAutomationService()
   const update = new TauriUpdateService()
+  const userSettings = new TauriUserSettingsService()
 
   container.registerBackend(backend)
   container.registerPlatform(platform)
@@ -73,6 +76,7 @@ export async function initTauriApp(options: { storeName?: string; autoConnect?: 
   container.registerTranscription(transcription)
   container.registerEnhancedSubtitleAutomation(enhancedSubtitleAutomation)
   container.registerUpdate(update)
+  container.registerUserSettings(userSettings)
 
   // Auto-connect to backend if requested
   if (autoConnect) {

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 AI Director core services",
-  "violations": 300,
+  "source": "Phase F7 user settings core hooks",
+  "violations": 290,
   "bySeverity": {
-    "warn": 300
+    "warn": 290
   },
   "byEdge": {
-    "ui -> domains": 300
+    "ui -> domains": 290
   }
 }

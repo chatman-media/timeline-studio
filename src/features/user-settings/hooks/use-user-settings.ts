@@ -1,6 +1,6 @@
-import { type BrowserTab } from "@/domains/browser"
-import { useUserSettings as useDomainUserSettings } from "@/domains/project-management"
-import { type LayoutMode } from "@/domains/project-management/machines/user-settings-machine"
+import { useUserSettings as useCoreUserSettings } from "@/core/hooks/use-user-settings"
+import type { BrowserTab } from "@/core/types"
+import type { LayoutMode } from "@/core/types/user-settings"
 import { type UserSettingsContextValue } from "../services/user-settings-provider"
 
 /**
@@ -9,7 +9,7 @@ import { type UserSettingsContextValue } from "../services/user-settings-provide
  * Провайдер контекста больше не обязателен.
  */
 export function useUserSettings(): UserSettingsContextValue {
-  const d = useDomainUserSettings()
+  const d = useCoreUserSettings()
 
   // Совместимый API обработчиков (handle*) из legacy-версии
   const handleTabChange = (value: string) => {

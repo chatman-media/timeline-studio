@@ -24,7 +24,6 @@ vi.mock("@/core", () => ({
 vi.mock("../../../hooks/use-user-settings")
 vi.mock("@/features/language")
 
-// Mock System Integration Orchestrator
 const mockOrchestrator = {
   openModal: vi.fn().mockResolvedValue(undefined),
   closeModal: vi.fn().mockResolvedValue(undefined),
@@ -34,8 +33,15 @@ const mockOrchestrator = {
   subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
 }
 
-vi.mock("@/domains/system-integration/services/system-integration-orchestrator", () => ({
-  getSystemIntegrationOrchestrator: vi.fn(() => mockOrchestrator),
+vi.mock("@/core/hooks", () => ({
+  useModals: () => ({
+    activeModal: "none",
+    modalData: null,
+    isModalOpen: false,
+    openModal: mockOrchestrator.openModal,
+    closeModal: mockOrchestrator.closeModal,
+    submitModal: mockOrchestrator.submitModal,
+  }),
 }))
 vi.mock("@/lib/tauri-logger", () => ({
   createLogger: () => ({

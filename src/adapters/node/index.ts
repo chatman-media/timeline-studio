@@ -8,6 +8,7 @@
 import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@/core"
 import { container } from "@/core/container"
 
+import { MockUserSettingsService } from "../mock/user-settings"
 import { type NodeAIOptions, NodeAIService } from "./ai"
 import { NodeAIProjectEditor, type NodeAIProjectEditorOptions } from "./ai-project-editor"
 import { type NodeBackendOptions, NodeBackendService } from "./backend"
@@ -240,6 +241,7 @@ export interface NodeAppServices {
   video: NodeVideoService
   ai: NodeAIService
   language: NodeLanguageService
+  userSettings: MockUserSettingsService
   publish: NodePublishService | NodeRustPublishService
   renderJob: NodeRenderJobService
   botWorkflow: NodeBotWorkflowService
@@ -285,6 +287,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const video = createNodeVideoService(options.video, options.rustRender)
   const ai = new NodeAIService(options.ai)
   const language = new NodeLanguageService(options.language)
+  const userSettings = new MockUserSettingsService()
   const publish = createNodePublishService(options.publish, options.rustPublish)
   const renderJob = new NodeRenderJobService(video, {
     ...options.renderJob,
@@ -314,6 +317,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   container.registerVideo(video)
   container.registerAI(ai)
   container.registerLanguage(language)
+  container.registerUserSettings(userSettings)
 
   // Auto-connect if requested
   if (autoConnect) {
@@ -330,6 +334,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     video,
     ai,
     language,
+    userSettings,
     publish,
     renderJob,
     botWorkflow,
@@ -353,6 +358,8 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
 export function createNodeServices(options: NodeAppOptions = {}): NodeAppServices {
   const video = createNodeVideoService(options.video, options.rustRender)
   const ai = new NodeAIService(options.ai)
+  const language = new NodeLanguageService(options.language)
+  const userSettings = new MockUserSettingsService()
   const publish = createNodePublishService(options.publish, options.rustPublish)
   const renderJob = new NodeRenderJobService(video, {
     ...options.renderJob,
@@ -381,7 +388,8 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     nodeBackend: new NodeBackendBridgeService(),
     video,
     ai,
-    language: new NodeLanguageService(options.language),
+    language,
+    userSettings,
     publish,
     renderJob,
     botWorkflow,

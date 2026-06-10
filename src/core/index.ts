@@ -20,6 +20,7 @@ export {
   getStorage,
   getTranscription,
   getUpdate,
+  getUserSettings,
   resetContainer,
 } from "./container"
 // Ports (Interfaces)
@@ -56,6 +57,7 @@ export type {
   IStorageService,
   ITranscriptionService,
   IUpdateService,
+  IUserSettingsService,
   NodeBackendHealth,
   NotificationOptions,
   OpenDialogOptions,

@@ -18,6 +18,7 @@ import type {
   IStorageService,
   ITranscriptionService,
   IUpdateService,
+  IUserSettingsService,
   IVideoService,
 } from "./ports"
 
@@ -37,6 +38,7 @@ class ServiceContainer {
   private _transcription: ITranscriptionService | null = null
   private _enhancedSubtitleAutomation: IEnhancedSubtitleAutomationService | null = null
   private _update: IUpdateService | null = null
+  private _userSettings: IUserSettingsService | null = null
 
   private constructor() {}
 
@@ -65,6 +67,7 @@ class ServiceContainer {
       ServiceContainer.instance._transcription = null
       ServiceContainer.instance._enhancedSubtitleAutomation = null
       ServiceContainer.instance._update = null
+      ServiceContainer.instance._userSettings = null
     }
   }
 
@@ -306,13 +309,34 @@ class ServiceContainer {
 
   getUpdate(): IUpdateService {
     if (!this._update) {
-      throw new Error("[ServiceContainer] Update service not registered. Call registerUpdate() first or use initTauriApp()/initMockApp().")
+      throw new Error(
+        "[ServiceContainer] Update service not registered. Call registerUpdate() first or use initTauriApp()/initMockApp().",
+      )
     }
     return this._update
   }
 
   hasUpdate(): boolean {
     return this._update !== null
+  }
+
+  // === User Settings Service ===
+
+  registerUserSettings(userSettings: IUserSettingsService): void {
+    this._userSettings = userSettings
+  }
+
+  getUserSettings(): IUserSettingsService {
+    if (!this._userSettings) {
+      throw new Error(
+        "[ServiceContainer] User settings service not registered. Call registerUserSettings() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._userSettings
+  }
+
+  hasUserSettings(): boolean {
+    return this._userSettings !== null
   }
 }
 
@@ -334,6 +358,7 @@ export const getTranscription = (): ITranscriptionService => container.getTransc
 export const getEnhancedSubtitleAutomation = (): IEnhancedSubtitleAutomationService =>
   container.getEnhancedSubtitleAutomation()
 export const getUpdate = (): IUpdateService => container.getUpdate()
+export const getUserSettings = (): IUserSettingsService => container.getUserSettings()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

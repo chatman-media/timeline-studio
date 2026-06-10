@@ -1,7 +1,7 @@
 /**
  * API Keys Hook
  *
- * Re-export from canonical source in project-management domain
+ * Legacy re-export until API keys get their own core port.
  */
 
 export { useApiKeys } from "@/domains/project-management/hooks"
