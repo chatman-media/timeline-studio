@@ -136,7 +136,8 @@ adapters -> core
 - [x] `keyboard-shortcuts`: перевести modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
 - [x] `color-scheme`: расширить feature-facing `user-settings` adapter и убрать прямые imports из `project-management`/`system-integration`.
 - [x] `color-grading`: перевести modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
-- [ ] Следующие маленькие кандидаты: `resources`, `style-templates`, `fairlight-audio`, `updates`.
+- [x] `fairlight-audio`: перевести MIDI modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
+- [ ] Следующие маленькие кандидаты: `resources`, `style-templates`, `updates`.
 
 ## Проверка каждого PR
 
@@ -161,10 +162,10 @@ CI использует `bun run check:boundaries:baseline`, который ср
 Baseline на 2026-06-10:
 
 - Scanned files: 1628
-- Violations: 410
+- Violations: 406
 - `error`: 0
-- `warn`: 410
-- Edges: `ui -> domains` 410
+- `warn`: 406
+- Edges: `ui -> domains` 406
 
 Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
 

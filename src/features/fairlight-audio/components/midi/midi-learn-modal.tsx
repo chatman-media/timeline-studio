@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useModals } from "@/domains/system-integration"
+import { useModals } from "@/features/modals/services"
 
 import { useMidi } from "../../hooks/use-midi"
 import type { MidiDevice, MidiMessage } from "../../services/midi/midi-engine"

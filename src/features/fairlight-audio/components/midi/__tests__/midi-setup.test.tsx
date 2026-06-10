@@ -86,7 +86,7 @@ vi.mock("@/components/ui/select", () => ({
 
 // Mock useModals hook
 const mockOpenModal = vi.fn()
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/features/modals/services", () => ({
   useModals: () => ({
     activeModal: "none",
     modalData: null,
