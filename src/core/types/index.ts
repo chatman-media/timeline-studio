@@ -33,4 +33,5 @@ export type {
 export * from "./bot-workflow"
 export * from "./media"
 export * from "./render-job"
+export * from "./style-template"
 export * from "./video-editing"

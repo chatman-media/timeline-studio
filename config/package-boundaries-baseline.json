@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 fairlight modal bridge",
-  "violations": 406,
+  "source": "Phase F7 style-template core types",
+  "violations": 405,
   "bySeverity": {
-    "warn": 406
+    "warn": 405
   },
   "byEdge": {
-    "ui -> domains": 406
+    "ui -> domains": 405
   }
 }
