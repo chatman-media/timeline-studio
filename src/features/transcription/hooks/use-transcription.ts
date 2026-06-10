@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react"
-import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
+import { container } from "@/core/container"
+import type { ITranscriptionService } from "@/core/ports"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type {
   ModelInfo,
@@ -18,11 +19,11 @@ export function useTranscription() {
   const [result, setResult] = useState<TranscriptionResult | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const serviceRef = useRef<TranscriptionService | null>(null)
+  const serviceRef = useRef<ITranscriptionService | null>(null)
 
   // Инициализация сервиса
   if (!serviceRef.current) {
-    serviceRef.current = TranscriptionService.getInstance()
+    serviceRef.current = container.getTranscription()
   }
 
   /**
@@ -126,10 +127,10 @@ export function useWhisperModels() {
   const [isLoading, setIsLoading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState<Record<string, number>>({})
 
-  const serviceRef = useRef<TranscriptionService | null>(null)
+  const serviceRef = useRef<ITranscriptionService | null>(null)
 
   if (!serviceRef.current) {
-    serviceRef.current = TranscriptionService.getInstance()
+    serviceRef.current = container.getTranscription()
   }
 
   /**

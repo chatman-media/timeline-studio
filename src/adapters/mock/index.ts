@@ -15,6 +15,7 @@ import { MockMediaService } from "./media"
 import { MockNodeBackendService } from "./node-backend"
 import { MockPlatformService } from "./platform"
 import { MockStorageService } from "./storage"
+import { MockTranscriptionAdapter } from "./transcription"
 import { MockVideoService } from "./video"
 
 export { MockAIService } from "./ai"
@@ -26,6 +27,7 @@ export { MockMediaService } from "./media"
 export { MockNodeBackendService } from "./node-backend"
 export { MockPlatformService } from "./platform"
 export { MockStorageService } from "./storage"
+export { MockTranscriptionAdapter } from "./transcription"
 export { MockVideoService } from "./video"
 
 /**
@@ -47,6 +49,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   ai: MockAIService
   aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
+  transcription: MockTranscriptionAdapter
 } {
   const { useLocalStorage = false } = options
 
@@ -61,6 +64,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const ai = new MockAIService()
   const aiProjectEditor = new MockAIProjectEditor()
   const language = new MockLanguageService()
+  const transcription = new MockTranscriptionAdapter()
 
   // Register in container
   container.registerBackend(backend)
@@ -72,9 +76,10 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerVideo(video)
   container.registerAI(ai)
   container.registerLanguage(language)
+  container.registerTranscription(transcription)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media, nodeBackend, video, ai, aiProjectEditor, language }
+  return { backend, platform, storage, event, media, nodeBackend, video, ai, aiProjectEditor, language, transcription }
 }
 
 /**
@@ -92,6 +97,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   ai: MockAIService
   aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
+  transcription: MockTranscriptionAdapter
 } {
   const { useLocalStorage = false } = options
 
@@ -106,5 +112,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     ai: new MockAIService(),
     aiProjectEditor: new MockAIProjectEditor(),
     language: new MockLanguageService(),
+    transcription: new MockTranscriptionAdapter(),
   }
 }

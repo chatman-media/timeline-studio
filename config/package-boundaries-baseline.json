@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 transcription local types",
-  "violations": 398,
+  "source": "Phase F7 transcription service port",
+  "violations": 397,
   "bySeverity": {
-    "warn": 398
+    "warn": 397
   },
   "byEdge": {
-    "ui -> domains": 398
+    "ui -> domains": 397
   }
 }

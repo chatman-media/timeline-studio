@@ -14,6 +14,7 @@ import type {
   INodeBackendService,
   IPlatformService,
   IStorageService,
+  ITranscriptionService,
   IVideoService,
 } from "./ports"
 
@@ -29,6 +30,7 @@ class ServiceContainer {
   private _video: IVideoService | null = null
   private _ai: IAIService | null = null
   private _language: ILanguageService | null = null
+  private _transcription: ITranscriptionService | null = null
 
   private constructor() {}
 
@@ -53,6 +55,7 @@ class ServiceContainer {
       ServiceContainer.instance._video = null
       ServiceContainer.instance._ai = null
       ServiceContainer.instance._language = null
+      ServiceContainer.instance._transcription = null
     }
   }
 
@@ -226,6 +229,25 @@ class ServiceContainer {
   hasLanguage(): boolean {
     return this._language !== null
   }
+
+  // === Transcription Service ===
+
+  registerTranscription(transcription: ITranscriptionService): void {
+    this._transcription = transcription
+  }
+
+  getTranscription(): ITranscriptionService {
+    if (!this._transcription) {
+      throw new Error(
+        "[ServiceContainer] Transcription service not registered. Call registerTranscription() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._transcription
+  }
+
+  hasTranscription(): boolean {
+    return this._transcription !== null
+  }
 }
 
 // Singleton instance
@@ -241,6 +263,7 @@ export const getNodeBackend = (): INodeBackendService => container.getNodeBacken
 export const getVideo = (): IVideoService => container.getVideo()
 export const getAI = (): IAIService => container.getAI()
 export const getLanguage = (): ILanguageService => container.getLanguage()
+export const getTranscription = (): ITranscriptionService => container.getTranscription()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()
