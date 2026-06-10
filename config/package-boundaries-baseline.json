@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core ai analysis types",
-  "violations": 105,
+  "source": "Phase F7 core timeline sequence types",
+  "violations": 104,
   "bySeverity": {
-    "warn": 105
+    "warn": 104
   },
   "byEdge": {
-    "ui -> domains": 105
+    "ui -> domains": 104
   }
 }
