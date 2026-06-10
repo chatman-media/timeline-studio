@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core project hooks",
-  "violations": 171,
+  "source": "Phase F7 core transition types",
+  "violations": 166,
   "bySeverity": {
-    "warn": 171
+    "warn": 166
   },
   "byEdge": {
-    "ui -> domains": 171
+    "ui -> domains": 166
   }
 }
