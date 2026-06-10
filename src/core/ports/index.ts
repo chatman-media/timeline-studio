@@ -23,6 +23,8 @@ export type {
   MomentScore,
   MontagePlan,
   PersonData,
+  PersonDatabaseStats,
+  PersonIdentificationPayload,
   PlanGenerationOptions,
   PlanStatistics,
   PlanValidation,

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 person identification core types and modals",
-  "violations": 314,
+  "source": "Phase F7 person identification core services",
+  "violations": 309,
   "bySeverity": {
-    "warn": 314
+    "warn": 309
   },
   "byEdge": {
-    "ui -> domains": 314
+    "ui -> domains": 309
   }
 }

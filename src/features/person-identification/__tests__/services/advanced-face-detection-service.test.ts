@@ -6,8 +6,29 @@ import { invoke } from "@tauri-apps/api/core"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedFaceDetectionService } from "@/domains/ai-services/services/person-identification"
 
+const mockInvoke = vi.hoisted(() => vi.fn())
+
 vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+  invoke: mockInvoke,
+}))
+
+vi.mock("@/core/container", () => ({
+  getAI: () => ({
+    initRecognitionYoloProcessor: (options: Record<string, unknown>) => mockInvoke("init_yolo_processor", options),
+    initPersonFacenetProcessor: (options: Record<string, unknown>) => mockInvoke("init_facenet_processor", options),
+    checkGPUAvailability: () => mockInvoke("check_gpu_availability"),
+    detectFacesAdvanced: (options: Record<string, unknown>) => mockInvoke("detect_faces_advanced", options),
+    generateFaceEmbeddingFromBase64: (imageData: string) =>
+      mockInvoke("generate_face_embedding_from_base64", { imageData }),
+    analyzeFaceQuality: (faceImage: string) => mockInvoke("analyze_face_quality", { faceImage }),
+    startRealtimeFaceDetection: (options: Record<string, unknown>) =>
+      mockInvoke("start_realtime_face_detection", options),
+    stopRealtimeFaceDetection: () => mockInvoke("stop_realtime_face_detection"),
+    updateFaceDetectionConfig: (config: Record<string, unknown>) =>
+      mockInvoke("update_face_detection_config", { config }),
+    blurFacesInImageAdvanced: (options: Record<string, unknown>) => mockInvoke("blur_faces_in_image", options),
+    cleanupFaceDetection: () => mockInvoke("cleanup_face_detection"),
+  }),
 }))
 
 describe("AdvancedFaceDetectionService", () => {

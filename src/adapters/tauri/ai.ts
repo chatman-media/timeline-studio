@@ -275,8 +275,144 @@ export class TauriAIService implements IAIService {
     totalPersons: number
     totalEmbeddings: number
     totalAppearances: number
+    averageEmbeddingsPerPerson?: number
+    storageSize?: number
+    lastUpdated?: string
   }> {
     return invoke("get_person_database_stats")
+  }
+
+  async initPersonDatabase(): Promise<void> {
+    logger.infoSync("Initializing person database")
+    return invoke("init_person_database")
+  }
+
+  async createPersonProfile(options: Record<string, any>): Promise<any> {
+    logger.infoSync("Creating person profile", { name: options.name })
+    return invoke("create_person", options)
+  }
+
+  async getPersonProfile(personId: string): Promise<any | null> {
+    return invoke("get_person", { personId })
+  }
+
+  async deletePersonProfile(personId: string): Promise<void> {
+    logger.infoSync("Deleting person profile", { personId })
+    return invoke("delete_person", { personId })
+  }
+
+  async searchSimilarPersonProfiles(options: Record<string, any>): Promise<any[]> {
+    logger.debugSync("Searching similar person profiles")
+    return invoke("search_similar_persons", options)
+  }
+
+  async addPersonFaceEmbedding(options: Record<string, any>): Promise<void> {
+    logger.debugSync("Adding person face embedding", { personId: options.personId })
+    return invoke("add_face_embedding", options)
+  }
+
+  async addPersonAppearanceRecord(options: Record<string, any>): Promise<void> {
+    logger.debugSync("Adding person appearance record", { personId: options.personId, clipId: options.clipId })
+    return invoke("add_person_appearance", options)
+  }
+
+  async setPersonSimilarityThreshold(threshold: number): Promise<void> {
+    return invoke("set_similarity_threshold", { threshold })
+  }
+
+  async addPersonThumbnailRecord(options: Record<string, any>): Promise<void> {
+    logger.debugSync("Adding person thumbnail", { personId: options.personId })
+    return invoke("add_person_thumbnail", options)
+  }
+
+  async initPersonFacenetProcessor(options: Record<string, any>): Promise<void> {
+    logger.infoSync("Initializing person FaceNet processor", options)
+    return invoke("init_facenet_processor", options)
+  }
+
+  async detectFacesAdvanced(options: Record<string, any>): Promise<any[]> {
+    logger.debugSync("Detecting faces with advanced analysis")
+    return invoke("detect_faces_advanced", options)
+  }
+
+  async generateFaceEmbeddingFromBase64(
+    imageData: string,
+  ): Promise<{ vector: number[]; quality: number; dimension: number }> {
+    logger.debugSync("Generating face embedding from base64")
+    return invoke("generate_face_embedding_from_base64", { imageData })
+  }
+
+  async analyzeFaceQuality(faceImage: string): Promise<any> {
+    logger.debugSync("Analyzing face quality")
+    return invoke("analyze_face_quality", { faceImage })
+  }
+
+  async startRealtimeFaceDetection(options: Record<string, any>): Promise<void> {
+    logger.infoSync("Starting realtime face detection", { streamId: options.streamId })
+    return invoke("start_realtime_face_detection", options)
+  }
+
+  async stopRealtimeFaceDetection(): Promise<void> {
+    logger.infoSync("Stopping realtime face detection")
+    return invoke("stop_realtime_face_detection")
+  }
+
+  async updateFaceDetectionConfig(config: Record<string, any>): Promise<void> {
+    return invoke("update_face_detection_config", { config })
+  }
+
+  async blurFacesInImageAdvanced(options: Record<string, any>): Promise<string> {
+    logger.debugSync("Blurring faces in image")
+    return invoke("blur_faces_in_image", options)
+  }
+
+  async cleanupFaceDetection(): Promise<void> {
+    return invoke("cleanup_face_detection")
+  }
+
+  async initAdvancedTracking(config: Record<string, any>): Promise<void> {
+    logger.infoSync("Initializing advanced tracking", { algorithm: config.algorithm })
+    return invoke("init_advanced_tracking", { config })
+  }
+
+  async startPersonTracking(options: Record<string, any>): Promise<void> {
+    logger.infoSync("Starting person tracking", { videoId: options.videoId })
+    return invoke("start_person_tracking", options)
+  }
+
+  async processTrackingFrame(options: Record<string, any>): Promise<any> {
+    return invoke("process_tracking_frame", options)
+  }
+
+  async predictTrackPositions(trackIds: string[]): Promise<any[]> {
+    return invoke("predict_track_positions", { trackIds })
+  }
+
+  async assignPersonToTrack(trackId: string, personId: string): Promise<void> {
+    logger.infoSync("Assigning person to track", { trackId, personId })
+    return invoke("assign_person_to_track", { trackId, personId })
+  }
+
+  async mergeTracks(sourceTrackId: string, targetTrackId: string): Promise<void> {
+    logger.infoSync("Merging tracks", { sourceTrackId, targetTrackId })
+    return invoke("merge_tracks", { sourceTrackId, targetTrackId })
+  }
+
+  async interpolateTrackPositions(options: Record<string, any>): Promise<any[]> {
+    return invoke("interpolate_track_positions", options)
+  }
+
+  async stopPersonTracking(): Promise<void> {
+    logger.infoSync("Stopping person tracking")
+    return invoke("stop_person_tracking")
+  }
+
+  async updateTrackingConfig(config: Record<string, any>): Promise<void> {
+    return invoke("update_tracking_config", { config })
+  }
+
+  async cleanupTracking(): Promise<void> {
+    return invoke("cleanup_tracking")
   }
 
   // ============================================================================

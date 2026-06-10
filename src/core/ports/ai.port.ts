@@ -57,6 +57,17 @@ export interface RecognitionYoloFrameResult {
   }>
 }
 
+export type PersonIdentificationPayload = Record<string, any>
+
+export interface PersonDatabaseStats {
+  totalPersons: number
+  totalEmbeddings: number
+  totalAppearances: number
+  averageEmbeddingsPerPerson?: number
+  storageSize?: number
+  lastUpdated?: string
+}
+
 export interface FaceDetectionResult {
   faces: Array<{
     bbox: { x: number; y: number; width: number; height: number }
@@ -441,7 +452,41 @@ export interface IAIService {
     confidence: number,
   ): Promise<void>
   deletePerson(personId: string): Promise<void>
-  getPersonDatabaseStats(): Promise<{ totalPersons: number; totalEmbeddings: number; totalAppearances: number }>
+  getPersonDatabaseStats(): Promise<PersonDatabaseStats>
+
+  // === Person Identification Database ===
+  initPersonDatabase(): Promise<void>
+  createPersonProfile(options: PersonIdentificationPayload): Promise<any>
+  getPersonProfile(personId: string): Promise<any | null>
+  deletePersonProfile(personId: string): Promise<void>
+  searchSimilarPersonProfiles(options: PersonIdentificationPayload): Promise<any[]>
+  addPersonFaceEmbedding(options: PersonIdentificationPayload): Promise<void>
+  addPersonAppearanceRecord(options: PersonIdentificationPayload): Promise<void>
+  setPersonSimilarityThreshold(threshold: number): Promise<void>
+  addPersonThumbnailRecord(options: PersonIdentificationPayload): Promise<void>
+
+  // === Advanced Face Detection ===
+  initPersonFacenetProcessor(options: PersonIdentificationPayload): Promise<void>
+  detectFacesAdvanced(options: PersonIdentificationPayload): Promise<any[]>
+  generateFaceEmbeddingFromBase64(imageData: string): Promise<{ vector: number[]; quality: number; dimension: number }>
+  analyzeFaceQuality(faceImage: string): Promise<any>
+  startRealtimeFaceDetection(options: PersonIdentificationPayload): Promise<void>
+  stopRealtimeFaceDetection(): Promise<void>
+  updateFaceDetectionConfig(config: PersonIdentificationPayload): Promise<void>
+  blurFacesInImageAdvanced(options: PersonIdentificationPayload): Promise<string>
+  cleanupFaceDetection(): Promise<void>
+
+  // === Advanced Tracking ===
+  initAdvancedTracking(config: PersonIdentificationPayload): Promise<void>
+  startPersonTracking(options: PersonIdentificationPayload): Promise<void>
+  processTrackingFrame(options: PersonIdentificationPayload): Promise<any>
+  predictTrackPositions(trackIds: string[]): Promise<any[]>
+  assignPersonToTrack(trackId: string, personId: string): Promise<void>
+  mergeTracks(sourceTrackId: string, targetTrackId: string): Promise<void>
+  interpolateTrackPositions(options: PersonIdentificationPayload): Promise<any[]>
+  stopPersonTracking(): Promise<void>
+  updateTrackingConfig(config: PersonIdentificationPayload): Promise<void>
+  cleanupTracking(): Promise<void>
 
   // === Privacy ===
   initPrivacyProcessor(): Promise<string>

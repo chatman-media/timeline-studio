@@ -20,7 +20,7 @@ import {
   AdvancedFaceDetectionService,
   PersonDatabaseService,
   type RealtimeProcessingStatus,
-} from "@/domains/ai-services/services/person-identification"
+} from "@/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 

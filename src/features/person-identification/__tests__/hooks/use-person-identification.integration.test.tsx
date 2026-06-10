@@ -7,12 +7,12 @@
 
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
+import { PersonDatabaseService } from "@/core/services"
 import { usePersonIdentification } from "@/features/person-identification/hooks/use-person-identification"
 import type { PersonProfile } from "@/features/person-identification/types/person"
 
 // Mock PersonDatabaseService
-vi.mock("@/domains/ai-services/services/person-identification", () => {
+vi.mock("@/core/services", () => {
   const mockService = {
     getInstance: vi.fn(),
     getAllPersons: vi.fn(),

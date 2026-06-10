@@ -7,8 +7,27 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AdvancedTrackingService } from "@/domains/ai-services/services/person-identification"
 import type { DetectedFace } from "@/features/person-identification/types/person"
 
+const mockInvoke = vi.hoisted(() => vi.fn())
+
 vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+  invoke: mockInvoke,
+}))
+
+vi.mock("@/core/container", () => ({
+  getAI: () => ({
+    initAdvancedTracking: (config: Record<string, unknown>) => mockInvoke("init_advanced_tracking", { config }),
+    startPersonTracking: (options: Record<string, unknown>) => mockInvoke("start_person_tracking", options),
+    processTrackingFrame: (options: Record<string, unknown>) => mockInvoke("process_tracking_frame", options),
+    predictTrackPositions: (trackIds: string[]) => mockInvoke("predict_track_positions", { trackIds }),
+    assignPersonToTrack: (trackId: string, personId: string) =>
+      mockInvoke("assign_person_to_track", { trackId, personId }),
+    mergeTracks: (sourceTrackId: string, targetTrackId: string) =>
+      mockInvoke("merge_tracks", { sourceTrackId, targetTrackId }),
+    interpolateTrackPositions: (options: Record<string, unknown>) => mockInvoke("interpolate_track_positions", options),
+    stopPersonTracking: () => mockInvoke("stop_person_tracking"),
+    updateTrackingConfig: (config: Record<string, unknown>) => mockInvoke("update_tracking_config", { config }),
+    cleanupTracking: () => mockInvoke("cleanup_tracking"),
+  }),
 }))
 
 describe("AdvancedTrackingService", () => {

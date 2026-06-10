@@ -11,7 +11,7 @@ import {
   AdvancedTrackingService,
   PersonDatabaseService,
   type TrackedPerson,
-} from "@/domains/ai-services/services/person-identification"
+} from "@/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import type { DetectedFace, PersonProfile, PersonSearchResult } from "../types/person"
 

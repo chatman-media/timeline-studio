@@ -293,15 +293,144 @@ export class NodeAIService implements IAIService {
     this.persons.delete(personId)
   }
 
-  async getPersonDatabaseStats(): Promise<{ totalPersons: number; totalEmbeddings: number; totalAppearances: number }> {
+  async getPersonDatabaseStats(): Promise<{
+    totalPersons: number
+    totalEmbeddings: number
+    totalAppearances: number
+    averageEmbeddingsPerPerson?: number
+    storageSize?: number
+    lastUpdated?: string
+  }> {
     let totalEmbeddings = 0
     let totalAppearances = 0
     for (const person of this.persons.values()) {
       totalEmbeddings += person.embeddings.length
       totalAppearances += person.appearances.length
     }
-    return { totalPersons: this.persons.size, totalEmbeddings, totalAppearances }
+    return {
+      totalPersons: this.persons.size,
+      totalEmbeddings,
+      totalAppearances,
+      averageEmbeddingsPerPerson: this.persons.size > 0 ? totalEmbeddings / this.persons.size : 0,
+      storageSize: 0,
+      lastUpdated: new Date().toISOString(),
+    }
   }
+
+  async initPersonDatabase(): Promise<void> {}
+
+  async createPersonProfile(options: Record<string, any>): Promise<any> {
+    return {
+      id: `node-person-${Date.now()}`,
+      name: options.name,
+      notes: options.notes,
+      tags: options.tags ?? [],
+      isVerified: false,
+      faceEmbeddings: [],
+      appearances: [],
+      totalScreenTime: 0,
+      firstSeen: { seconds: 0 },
+      lastSeen: { seconds: 0 },
+      thumbnails: [],
+      privacy: {
+        blurFace: false,
+        hideFromSearch: false,
+        anonymize: false,
+        blurIntensity: 5,
+        blurTracking: true,
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+  }
+
+  async getPersonProfile(_personId: string): Promise<any | null> {
+    return null
+  }
+
+  async deletePersonProfile(_personId: string): Promise<void> {}
+
+  async searchSimilarPersonProfiles(_options: Record<string, any>): Promise<any[]> {
+    return []
+  }
+
+  async addPersonFaceEmbedding(_options: Record<string, any>): Promise<void> {}
+
+  async addPersonAppearanceRecord(_options: Record<string, any>): Promise<void> {}
+
+  async setPersonSimilarityThreshold(_threshold: number): Promise<void> {}
+
+  async addPersonThumbnailRecord(_options: Record<string, any>): Promise<void> {}
+
+  async initPersonFacenetProcessor(_options: Record<string, any>): Promise<void> {
+    console.warn("NodeAIService: FaceNet requires onnxruntime-node")
+  }
+
+  async detectFacesAdvanced(_options: Record<string, any>): Promise<any[]> {
+    return []
+  }
+
+  async generateFaceEmbeddingFromBase64(
+    _imageData: string,
+  ): Promise<{ vector: number[]; quality: number; dimension: number }> {
+    return { vector: [], quality: 0, dimension: 0 }
+  }
+
+  async analyzeFaceQuality(_faceImage: string): Promise<any> {
+    return null
+  }
+
+  async startRealtimeFaceDetection(_options: Record<string, any>): Promise<void> {}
+
+  async stopRealtimeFaceDetection(): Promise<void> {}
+
+  async updateFaceDetectionConfig(_config: Record<string, any>): Promise<void> {}
+
+  async blurFacesInImageAdvanced(options: Record<string, any>): Promise<string> {
+    return String(options.imageData ?? "")
+  }
+
+  async cleanupFaceDetection(): Promise<void> {}
+
+  async initAdvancedTracking(_config: Record<string, any>): Promise<void> {}
+
+  async startPersonTracking(_options: Record<string, any>): Promise<void> {}
+
+  async processTrackingFrame(_options: Record<string, any>): Promise<any> {
+    return {
+      tracks: [],
+      newTracks: [],
+      deletedTracks: [],
+      statistics: {
+        totalTracks: 0,
+        activeTracks: 0,
+        confirmedTracks: 0,
+        tentativeTracks: 0,
+        deletedTracks: 0,
+        averageTrackAge: 0,
+        averageConfidence: 0,
+        processingTime: 0,
+      },
+    }
+  }
+
+  async predictTrackPositions(_trackIds: string[]): Promise<any[]> {
+    return []
+  }
+
+  async assignPersonToTrack(_trackId: string, _personId: string): Promise<void> {}
+
+  async mergeTracks(_sourceTrackId: string, _targetTrackId: string): Promise<void> {}
+
+  async interpolateTrackPositions(_options: Record<string, any>): Promise<any[]> {
+    return []
+  }
+
+  async stopPersonTracking(): Promise<void> {}
+
+  async updateTrackingConfig(_config: Record<string, any>): Promise<void> {}
+
+  async cleanupTracking(): Promise<void> {}
 
   // ============================================================================
   // Privacy (Stub)

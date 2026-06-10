@@ -3,9 +3,25 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { type DatabaseStats, PersonDatabaseService } from "@/domains/ai-services/services/person-identification"
 import type { DetectedFace, PersonAppearance, PersonProfile } from "../../types/person"
 
-// Mock Tauri invoke
+const mockInvoke = vi.hoisted(() => vi.fn())
+
 vi.mock("@tauri-apps/api/core", () => ({
-  invoke: vi.fn(),
+  invoke: mockInvoke,
+}))
+
+vi.mock("@/core/container", () => ({
+  getAI: () => ({
+    initPersonDatabase: () => mockInvoke("init_person_database"),
+    createPersonProfile: (options: Record<string, unknown>) => mockInvoke("create_person", options),
+    getPersonProfile: (personId: string) => mockInvoke("get_person", { personId }),
+    deletePersonProfile: (personId: string) => mockInvoke("delete_person", { personId }),
+    searchSimilarPersonProfiles: (options: Record<string, unknown>) => mockInvoke("search_similar_persons", options),
+    addPersonFaceEmbedding: (options: Record<string, unknown>) => mockInvoke("add_face_embedding", options),
+    addPersonAppearanceRecord: (options: Record<string, unknown>) => mockInvoke("add_person_appearance", options),
+    getPersonDatabaseStats: () => mockInvoke("get_person_database_stats"),
+    setPersonSimilarityThreshold: (threshold: number) => mockInvoke("set_similarity_threshold", { threshold }),
+    addPersonThumbnailRecord: (options: Record<string, unknown>) => mockInvoke("add_person_thumbnail", options),
+  }),
 }))
 
 describe("PersonDatabaseService Tauri Integration", () => {
