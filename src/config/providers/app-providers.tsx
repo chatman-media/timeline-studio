@@ -15,12 +15,14 @@ import { AppInitProvider } from "@/adapters/react"
 import { BrowserProvider as CoreBrowserProvider } from "@/core/services/browser-context"
 import { setAITools } from "@/core/services/ai-tools-registry"
 import { setMediaManagementBindings } from "@/core/services/media-management-registry"
+import { setVideoEditingBindings } from "@/core/services/video-editing-registry"
 import { ChatProvider, MCPProvider } from "@/domains/ai-services"
 import { allAITools } from "@/domains/ai-tools"
 import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@/domains/browser"
 import * as mediaManagementBindings from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
 import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
+import { getVideoEditingOrchestrator, UndoRedoHelpers, useUndoRedo } from "@/domains/video-editing"
 import { ColorSchemeProvider } from "@/features/color-scheme"
 import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 import { ResourcesProvider } from "@/features/timeline/providers/resources-provider"
@@ -52,6 +54,15 @@ function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
 
 function MediaManagementBindingsBootstrapProvider({ children }: { children: ReactNode }) {
   setMediaManagementBindings(mediaManagementBindings)
+  return <>{children}</>
+}
+
+function VideoEditingBindingsBootstrapProvider({ children }: { children: ReactNode }) {
+  setVideoEditingBindings({
+    getVideoEditingOrchestrator,
+    UndoRedoHelpers,
+    useUndoRedo,
+  })
   return <>{children}</>
 }
 
@@ -114,6 +125,7 @@ const AppProviderComposite = composeProviders(
   DomainBrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
   BrowserCoreBridgeProvider, // Публикует browser state в core context для features
 
+  VideoEditingBindingsBootstrapProvider, // Регистрирует domain video editing API через core registry
   TimelineProvider, // VideoEditingOrchestrator - timeline редактор
 
   PlayerProvider, // Видеоплеер с backend синхронизацией

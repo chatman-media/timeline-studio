@@ -54,9 +54,9 @@ export function TimelineProjectProvider({ children }: { children: ReactNode }) {
   const timelineActor = orchestrator.getActors().timeline
   const backendSync = container.getBackend()
 
-  const project = useSelector(timelineActor, (state) => state.context.project)
-  const isLoading = useSelector(timelineActor, (state) => state.context.isLoading)
-  const hasUnsavedChanges = useSelector(timelineActor, (state) => state.context.hasUnsavedChanges)
+  const project = useSelector(timelineActor, (state: any) => state.context.project)
+  const isLoading = useSelector(timelineActor, (state: any) => state.context.isLoading)
+  const hasUnsavedChanges = useSelector(timelineActor, (state: any) => state.context.hasUnsavedChanges)
 
   // Подписка на изменения backend состояния
   const [backendProject, setBackendProject] = useState<BackendProjectState | null>(null)
@@ -227,10 +227,10 @@ export function TimelinePlaybackProvider({ children }: { children: ReactNode }) 
   const playerActor = orchestrator.getActors().player
   const backendSync = container.getBackend()
 
-  const isPlaying = useSelector(playerActor, (state) => state.matches({ ready: "playing" }))
-  const currentTime = useSelector(playerActor, (state) => state.context.currentTime)
-  const duration = useSelector(playerActor, (state) => state.context.duration)
-  const playbackRate = useSelector(playerActor, (state) => state.context.basePlaybackRate || 1)
+  const isPlaying = useSelector(playerActor, (state: any) => state.matches({ ready: "playing" }))
+  const currentTime = useSelector(playerActor, (state: any) => state.context.currentTime)
+  const duration = useSelector(playerActor, (state: any) => state.context.duration)
+  const playbackRate = useSelector(playerActor, (state: any) => state.context.basePlaybackRate || 1)
 
   const contextValue: TimelinePlaybackContext = {
     isPlaying,
@@ -341,13 +341,13 @@ export function TimelineTracksProvider({ children }: { children: ReactNode }) {
   const timelineActor = orchestrator.getActors().timeline
   const backendSync = container.getBackend()
 
-  const project = useSelector(timelineActor, (state) => state.context.project)
-  const activeTrackId = useSelector(timelineActor, (state) => state.context.activeTrackId)
+  const project = useSelector(timelineActor, (state: any) => state.context.project)
+  const activeTrackId = useSelector(timelineActor, (state: any) => state.context.activeTrackId)
 
   // Собираем все треки из sections и globalTracks для совместимости
   const tracks = [
     ...(project?.globalTracks || []),
-    ...(project?.sections?.flatMap((section) => section.tracks || []) || []),
+    ...(project?.sections?.flatMap((section: any) => section.tracks || []) || []),
   ]
 
   const contextValue: TimelineTracksContext = {
@@ -450,12 +450,15 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
   const timelineActor = orchestrator.getActors().timeline
   const backendSync = container.getBackend()
 
-  const project = useSelector(timelineActor, (state) => state.context.project)
+  const project = useSelector(timelineActor, (state: any) => state.context.project)
 
   // Собираем все клипы из всех треков (проверяем и sections, и globalTracks для совместимости)
   const clips = [
-    ...(project?.globalTracks?.flatMap((track) => track.clips || []) || []),
-    ...(project?.sections?.flatMap((section) => section.tracks?.flatMap((track) => track.clips || []) || []) || []),
+    ...(project?.globalTracks?.flatMap((track: any) => track.clips || []) || []),
+    ...(
+      project?.sections?.flatMap((section: any) => section.tracks?.flatMap((track: any) => track.clips || []) || []) ||
+      []
+    ),
   ]
 
   // Отладочная информация
@@ -466,7 +469,7 @@ export function TimelineClipsProvider({ children }: { children: ReactNode }) {
       globalTracksLength: project?.globalTracks?.length || 0,
       hasSections: !!project?.sections,
       sectionsLength: project?.sections?.length || 0,
-      sectionsTracksCount: project?.sections?.reduce((acc, section) => acc + section.tracks.length, 0) || 0,
+      sectionsTracksCount: project?.sections?.reduce((acc: number, section: any) => acc + section.tracks.length, 0) || 0,
       totalClips: clips.length,
       projectType: project ? typeof project : "null/undefined",
     },
@@ -610,9 +613,9 @@ export function TimelineSelectionProvider({ children }: { children: ReactNode })
   const timelineActor = orchestrator.getActors().timeline
   const backendSync = container.getBackend()
 
-  const selectedClipIds = useSelector(timelineActor, (state) => state.context.selectedClipIds)
-  const selectedTrackIds = useSelector(timelineActor, (state) => state.context.selectedTrackIds)
-  const selectedSectionIds = useSelector(timelineActor, (state) => state.context.selectedSectionIds)
+  const selectedClipIds = useSelector(timelineActor, (state: any) => state.context.selectedClipIds)
+  const selectedTrackIds = useSelector(timelineActor, (state: any) => state.context.selectedTrackIds)
+  const selectedSectionIds = useSelector(timelineActor, (state: any) => state.context.selectedSectionIds)
 
   const contextValue: TimelineSelectionContext = {
     selectedClipIds,
@@ -923,7 +926,7 @@ export function TimelineMarkersProvider({ children }: { children: ReactNode }) {
   const timelineActor = orchestrator.getActors().timeline
   const backendSync = container.getBackend()
 
-  const project = useSelector(timelineActor, (state) => state.context.project)
+  const project = useSelector(timelineActor, (state: any) => state.context.project)
 
   // Получаем маркеры из проекта, мемоизируем для предотвращения лишних ререндеров
   const markers = useMemo(() => {
@@ -1043,7 +1046,7 @@ export function TimelineKeyframesProvider({ children }: { children: ReactNode })
   const backendSync = container.getBackend()
   const orchestrator = getVideoEditingOrchestrator()
   const timelineActor = orchestrator.getActors().timeline
-  const project = useSelector(timelineActor, (state) => state.context.project)
+  const project = useSelector(timelineActor, (state: any) => state.context.project)
 
   // Получение всех клипов из проекта
   const clips = useMemo(() => {

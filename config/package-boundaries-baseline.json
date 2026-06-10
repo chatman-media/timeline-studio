@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 register media management through core",
-  "violations": 7,
+  "source": "Phase F7 register video editing through core",
+  "violations": 5,
   "bySeverity": {
-    "warn": 7
+    "warn": 5
   },
   "byEdge": {
-    "ui -> domains": 7
+    "ui -> domains": 5
   }
 }

@@ -4,6 +4,7 @@
 import { act, renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@/core/services/video-editing-registry"
 import {
   TimelineProvider,
   useTimelineClips,
@@ -66,6 +67,7 @@ const {
       player: {
         send: vi.fn(),
         getSnapshot: vi.fn(() => ({
+          matches: vi.fn(() => false),
           context: {
             isPlaying: false,
             currentTime: 0,
@@ -150,6 +152,17 @@ vi.mock("../services/video-editing-orchestrator", () => ({
 
 describe("TimelineProvider", () => {
   beforeEach(() => {
+    clearVideoEditingBindings()
+    setVideoEditingBindings({
+      getVideoEditingOrchestrator: () => mockOrchestrator,
+      UndoRedoHelpers: {
+        createAddClipAction: vi.fn(),
+        createBatchOperationAction: vi.fn(),
+        createMoveClipAction: vi.fn(),
+        createRemoveClipAction: vi.fn(),
+      },
+      useUndoRedo: vi.fn(),
+    })
     vi.clearAllMocks()
     mockExecuteCommand.mockResolvedValue({ success: true, data: null })
     mockOrchestrator.executeCommand.mockResolvedValue({ success: true })

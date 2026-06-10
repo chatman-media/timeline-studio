@@ -1,4 +1,7 @@
-export {
-  getVideoEditingOrchestrator,
-  type VideoEditingOrchestrator,
-} from "@/domains/video-editing/services/video-editing-orchestrator"
+import { getVideoEditingBindings } from "@/core/services/video-editing-registry"
+
+export type VideoEditingOrchestrator = ReturnType<typeof getVideoEditingOrchestrator>
+
+export function getVideoEditingOrchestrator() {
+  return getVideoEditingBindings().getVideoEditingOrchestrator()
+}

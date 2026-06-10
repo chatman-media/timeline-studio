@@ -10,6 +10,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@/core/services/video-editing-registry"
 import {
   UndoRedoProvider,
   useClipUndoRedo,
@@ -19,7 +20,7 @@ import {
 } from "../undo-redo-provider"
 
 // Hoisted mocks
-const { mockBackend, mockUndoRedo, mockEventHandlers } = vi.hoisted(() => {
+const { mockBackend, mockUndoRedo, mockEventHandlers, mockUndoRedoHelpers } = vi.hoisted(() => {
   const mockBackend = {
     connect: vi.fn(async () => undefined),
     executeCommand: vi.fn(async () => ({ success: true, data: null })),
@@ -58,7 +59,34 @@ const { mockBackend, mockUndoRedo, mockEventHandlers } = vi.hoisted(() => {
     handleUndoBackendEvent: vi.fn(() => ({})),
   }
 
-  return { mockBackend, mockUndoRedo, mockEventHandlers }
+  const mockUndoRedoHelpers = {
+    createAddClipAction: vi.fn((clipId, trackId, mediaFile, time) => ({
+      type: "ADD_CLIP",
+      description: `Add clip ${clipId}`,
+      undoData: { clipId },
+      redoData: { clipId, trackId, mediaFile, time },
+    })),
+    createRemoveClipAction: vi.fn((clip) => ({
+      type: "REMOVE_CLIP",
+      description: "Remove clip",
+      undoData: clip,
+      redoData: { clipId: clip.id },
+    })),
+    createMoveClipAction: vi.fn((clipId, oldTrackId, oldTime, newTrackId, newTime) => ({
+      type: "MOVE_CLIP",
+      description: "Move clip",
+      undoData: { clipId, oldTrackId, oldTime },
+      redoData: { clipId, newTrackId, newTime },
+    })),
+    createBatchOperationAction: vi.fn((description, originalClips, updatedClips) => ({
+      type: "BATCH_OPERATION",
+      description,
+      undoData: { originalClips },
+      redoData: { updatedClips },
+    })),
+  }
+
+  return { mockBackend, mockUndoRedo, mockEventHandlers, mockUndoRedoHelpers }
 })
 
 // Mock logger
@@ -85,32 +113,7 @@ vi.mock("@/core/container", () => ({
 // Mock useUndoRedo hook
 vi.mock("../hooks/use-undo-redo", () => ({
   useUndoRedo: () => mockUndoRedo,
-  UndoRedoHelpers: {
-    createAddClipAction: vi.fn((clipId, trackId, mediaFile, time) => ({
-      type: "ADD_CLIP",
-      description: `Add clip ${clipId}`,
-      undoData: { clipId },
-      redoData: { clipId, trackId, mediaFile, time },
-    })),
-    createRemoveClipAction: vi.fn((clip) => ({
-      type: "REMOVE_CLIP",
-      description: "Remove clip",
-      undoData: clip,
-      redoData: { clipId: clip.id },
-    })),
-    createMoveClipAction: vi.fn((clipId, oldTrackId, oldTime, newTrackId, newTime) => ({
-      type: "MOVE_CLIP",
-      description: "Move clip",
-      undoData: { clipId, oldTrackId, oldTime },
-      redoData: { clipId, newTrackId, newTime },
-    })),
-    createBatchOperationAction: vi.fn((description, originalClips, updatedClips) => ({
-      type: "BATCH_OPERATION",
-      description,
-      undoData: { originalClips },
-      redoData: { updatedClips },
-    })),
-  },
+  UndoRedoHelpers: mockUndoRedoHelpers,
 }))
 
 // Mock event handlers
@@ -118,6 +121,12 @@ vi.mock("../machines/undo-backend-event-handlers", () => mockEventHandlers)
 
 describe("UndoRedoProvider", () => {
   beforeEach(() => {
+    clearVideoEditingBindings()
+    setVideoEditingBindings({
+      getVideoEditingOrchestrator: vi.fn(),
+      UndoRedoHelpers: mockUndoRedoHelpers,
+      useUndoRedo: () => mockUndoRedo,
+    })
     vi.clearAllMocks()
 
     // Reset mock returns
