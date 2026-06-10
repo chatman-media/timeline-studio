@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 central browser domain adapter",
-  "violations": 39,
+  "source": "Phase F7 central media browser adapters",
+  "violations": 31,
   "bySeverity": {
-    "warn": 39
+    "warn": 31
   },
   "byEdge": {
-    "ui -> domains": 39
+    "ui -> domains": 31
   }
 }

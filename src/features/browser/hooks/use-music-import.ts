@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useCurrentProject } from "@/core/hooks/use-current-project"
-import type { MediaFile } from "@/core/types"
+import { type MediaFile, MediaType } from "@/core/types"
 import {
   getMediaFiles,
   getMediaMetadata,
-  MediaType,
   selectAudioFile,
   selectMediaDirectory,
-} from "@/domains/media-management"
-import { useMusicFiles } from "@/domains/project-management/hooks"
+} from "@/features/media/hooks/media-management"
+import { useMusicFiles } from "@/features/browser/services/project-music"
 import { convertToSavedMusicFile } from "@/features/media"
 
 import { createLogger } from "@/lib/tauri-logger"
