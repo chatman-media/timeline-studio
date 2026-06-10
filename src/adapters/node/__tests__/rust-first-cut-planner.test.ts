@@ -3,6 +3,7 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createBotProjectSchemaFromRenderJob } from "@/core"
+import { FIRST_CUT_PLANNER_VALID_FIXTURES } from "@/core/services/__tests__/fixtures/first-cut-planner-fixtures"
 import { NodeRustFirstCutPlanner } from "../rust-first-cut-planner"
 
 describe("NodeRustFirstCutPlanner", () => {
@@ -115,6 +116,38 @@ describe("NodeRustFirstCutPlanner", () => {
     const metadataArgs = result.metadata?.args as string[]
     expect(metadataArgs).toContain("[redacted]")
     expect(metadataArgs).not.toContain("sk-secret")
+  })
+
+  it.each(FIRST_CUT_PLANNER_VALID_FIXTURES)("reads valid ProjectSchema fixture output for $id", async (fixture) => {
+    const runCommand = vi.fn(async (_command: string, args: string[]) => {
+      const outputPath = args[args.indexOf("--output") + 1]
+      if (!outputPath) throw new Error("Expected output path")
+      await fs.writeFile(outputPath, JSON.stringify(fixture.projectSchema))
+      return { stdout: "", stderr: fixture.diagnostics?.join("\n") ?? "" }
+    })
+    const planner = new NodeRustFirstCutPlanner({
+      command: "timeline",
+      tempDir,
+      idFactory: () => fixture.id,
+      plannerKind: fixture.provider,
+      apiKey: fixture.provider === "llm-plan" ? "sk-secret" : undefined,
+      runCommand,
+    })
+
+    const result = await planner.generatePlan({
+      sourceMedia: [{ type: "file", value: "/tmp/input.mp4" }],
+      goal: "make a fixture promo",
+      publishDestination: "telegram",
+    })
+
+    expect(result).toMatchObject({
+      provider: fixture.provider,
+      projectSchema: fixture.projectSchema,
+      diagnostics: fixture.diagnostics ?? [],
+      metadata: {
+        outputPath: path.join(tempDir, `${fixture.id}.project.json`),
+      },
+    })
   })
 })
 
