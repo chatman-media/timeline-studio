@@ -64,8 +64,8 @@ vi.mock("@/lib/tauri-logger", async (importOriginal) => {
 const mockAddStyleTemplate = vi.fn()
 
 // Мокаем useResources для возврата mockAddStyleTemplate
-vi.mock("@/domains/video-editing", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/video-editing")>()
+vi.mock("@/features/timeline/providers/resources-provider", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/features/timeline/providers/resources-provider")>()
   return {
     ...actual,
     useResources: () => ({

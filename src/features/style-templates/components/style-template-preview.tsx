@@ -1,12 +1,16 @@
 import { Play } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { MediaType } from "@/domains/media-management"
-import type { StyleTemplateResource } from "@/domains/shared/types/resources"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import type { StyleTemplate } from "../types"
+
+type FavoriteButtonFile = React.ComponentProps<typeof FavoriteButton>["file"]
+type StyleTemplateTimelineResource = Extract<
+  React.ComponentProps<typeof AddMediaButton>["resource"],
+  { type: "styleTemplate" }
+>
 
 interface StyleTemplatePreviewProps {
   template: StyleTemplate
@@ -36,6 +40,28 @@ export function StyleTemplatePreview({
 
   // Проверяем, добавлен ли шаблон в ресурсы
   const isAdded = useMemo(() => isStyleTemplateAdded(template), [isStyleTemplateAdded, template])
+  const templateName = template.name[currentLanguage]
+  const favoriteFile = useMemo<FavoriteButtonFile>(
+    () => ({
+      id: template.id,
+      path: "",
+      name: templateName,
+      type: "graphics" as FavoriteButtonFile["type"],
+    }),
+    [template.id, templateName],
+  )
+  const styleTemplateResource = useMemo<StyleTemplateTimelineResource>(
+    () => ({
+      id: template.id,
+      type: "styleTemplate",
+      name: templateName,
+      resourceId: template.id,
+      addedAt: 0,
+      template,
+      params: {},
+    }),
+    [template, templateName],
+  )
 
   // Делаем превью квадратными, как в Effects
   const width = previewWidth ?? size
@@ -160,12 +186,7 @@ export function StyleTemplatePreview({
 
         {/* Кнопка избранного */}
         <FavoriteButton
-          file={{
-            id: template.id,
-            path: "",
-            name: template.name[currentLanguage],
-            type: MediaType.Graphics,
-          }}
+          file={favoriteFile}
           size={size}
           type="styleTemplate"
           data-oid="igl6i04"
@@ -177,13 +198,7 @@ export function StyleTemplatePreview({
           data-oid="nfarhzu"
         >
           <AddMediaButton
-            resource={
-              {
-                id: template.id,
-                type: "styleTemplate",
-                name: template.name[currentLanguage],
-              } as StyleTemplateResource
-            }
+            resource={styleTemplateResource}
             size={size}
             type="styleTemplate"
             data-oid="b8fv3fd"
