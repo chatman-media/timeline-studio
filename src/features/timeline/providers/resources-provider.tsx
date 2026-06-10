@@ -8,7 +8,15 @@ import { createContext, type ReactNode, useCallback, useContext, useEffect, useR
 
 import { container } from "@/core/container"
 import { useApp } from "@/core/hooks/use-app"
-import type { FfprobeData, MediaFile } from "@/core/types"
+import type {
+  FfprobeData,
+  MediaFile,
+  MediaTemplate,
+  StyleTemplate,
+  SubtitleStyleTemplate,
+  Transition,
+  VideoFilter,
+} from "@/core/types"
 import { MediaType as LocalMediaType } from "@/core/types"
 // Backend event handlers removed - simplified architecture
 import {
@@ -22,9 +30,6 @@ import {
   type TimelineResource,
   type TransitionResource,
 } from "@/domains/shared/types/resources"
-import type { VideoFilter } from "@/domains/video-editing/types/filters"
-import type { MediaTemplate, StyleTemplate, SubtitleStyleTemplate } from "@/domains/video-editing/types/templates"
-import type { Transition } from "@/domains/video-editing/types/transitions"
 import type { BaseEffect as VideoEffect } from "@/domains/video-editing/types/unified-effects"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
