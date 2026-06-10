@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 browser app directory service",
-  "violations": 224,
+  "source": "Phase F7 video player core media types",
+  "violations": 213,
   "bySeverity": {
-    "warn": 224
+    "warn": 213
   },
   "byEdge": {
-    "ui -> domains": 224
+    "ui -> domains": 213
   }
 }

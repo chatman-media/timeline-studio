@@ -3,7 +3,7 @@
  */
 import { fireEvent, render, screen } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { type MediaFile, MediaType } from "@/domains/media-management"
+import { type MediaFile, MediaType } from "@/core/types"
 import { usePlayer } from "@/features/timeline/providers/player-provider"
 import { TimelineProjectProvider, TimelineProvider } from "@/features/timeline/providers/timeline-providers"
 import { useFullscreen } from "@/features/video-player/hooks/use-fullscreen"
@@ -311,7 +311,7 @@ const createMockPlayerContext = (overrides = {}) => ({
 })
 
 // Мокаем хуки
-vi.mock("@/domains/video-editing", () => ({
+vi.mock("@/features/timeline/providers/player-provider", () => ({
   usePlayer: vi.fn(() => createMockPlayerContext()),
 }))
 

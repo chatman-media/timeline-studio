@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { MediaType } from "@/domains/media-management"
+import { MediaType } from "@/core/types"
 import { usePlayerAIIntegration } from "@/features/ai-chat"
 import { useProjectSettings } from "@/features/project-settings"
 import { ResizableTemplate } from "@/features/templates"
