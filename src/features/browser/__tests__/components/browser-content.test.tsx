@@ -58,8 +58,8 @@ const mockBrowserState = {
   selectedFiles: new Set<string>(),
 }
 
-vi.mock("@/domains/browser", async () => {
-  const actual = await vi.importActual<typeof import("@/domains/browser")>("@/domains/browser")
+vi.mock("@/features/browser/services", async () => {
+  const actual = await vi.importActual<typeof import("@/features/browser/services")>("@/features/browser/services")
   return {
     ...actual,
     useBrowserState: () => mockBrowserState,
@@ -195,6 +195,10 @@ vi.mock("../../components/browser-loading-indicator", () => ({
       Loading
     </div>
   ),
+}))
+
+vi.mock("../../components/layout/media-status-bar-wrapper", () => ({
+  MediaStatusBarWrapper: () => <div data-testid="media-status-bar" data-oid="media-status-bar" />,
 }))
 
 // Мок для UniversalList с поддержкой onItemSelect - теперь не используется напрямую

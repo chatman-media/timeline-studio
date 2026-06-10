@@ -1,5 +1,5 @@
-import { type BrowserTab, useBrowserState } from "@/domains/browser"
 import { useBrowserAIIntegration } from "@/features/ai-chat"
+import { type BrowserTab, useBrowserState } from "@/features/browser/services"
 import { EffectsProvider } from "../providers/browser-resources-provider"
 import { BrowserContent } from "./browser-content"
 import { BrowserTabs } from "./browser-tabs"

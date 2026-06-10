@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useBrowserState } from "@/domains/browser"
 import { useMediaImport, useMediaManagement } from "@/domains/media-management"
 import { useMusicImport } from "@/features/browser/hooks/use-music-import"
+import { useBrowserState } from "@/features/browser/services"
 import { DeveloperToolsButton, DeveloperToolsModal } from "@/features/developer-tools"
 
 import { BrowserLoadingIndicator } from "./browser-loading-indicator"

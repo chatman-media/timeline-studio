@@ -26,7 +26,7 @@ const mockBrowserState = {
   setSort: vi.fn(),
 }
 
-vi.mock("@/domains/browser", () => ({
+vi.mock("@/features/browser/services", () => ({
   useBrowserState: () => mockBrowserState,
 }))
 

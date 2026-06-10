@@ -1,9 +1,8 @@
-// Re-export browser types from domain
-export type { BrowserState, BrowserTab } from "@/domains/browser"
+// Re-export browser domain access through the feature boundary.
+export type { BrowserState, BrowserTab } from "./browser-domain"
 
-// Primary exports (recommended) - use @/domains/browser directly
-export { BrowserProvider, useBrowser } from "@/domains/browser"
+export { BrowserProvider, useBrowser } from "./browser-domain"
 // Deprecated exports (for backward compatibility only)
-/** @deprecated Use BrowserProvider from @/domains/browser instead */
-/** @deprecated Use useBrowser from @/domains/browser instead */
+/** @deprecated Use BrowserProvider from @/features/browser/services instead */
+/** @deprecated Use useBrowser from @/features/browser/services instead */
 export { BrowserStateProvider, useBrowserState } from "./browser-state-provider"

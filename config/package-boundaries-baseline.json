@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 remove unused timeline import export adapter",
-  "violations": 46,
+  "source": "Phase F7 central browser domain adapter",
+  "violations": 39,
   "bySeverity": {
-    "warn": 46
+    "warn": 39
   },
   "byEdge": {
-    "ui -> domains": 46
+    "ui -> domains": 39
   }
 }
