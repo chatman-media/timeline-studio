@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 video player core media types",
-  "violations": 213,
+  "source": "Phase F7 montage planner core media types",
+  "violations": 202,
   "bySeverity": {
-    "warn": 213
+    "warn": 202
   },
   "byEdge": {
-    "ui -> domains": 213
+    "ui -> domains": 202
   }
 }

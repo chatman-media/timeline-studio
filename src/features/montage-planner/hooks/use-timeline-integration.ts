@@ -8,7 +8,7 @@ import {
   createMarkersFromPlan as createMarkersFromPlanService,
   type TimelineIntegrationOptions,
 } from "@/domains/ai-services/services/montage-planning/timeline-integration-service"
-import type { MediaFile } from "@/domains/video-editing/types/media"
+import type { MediaFile } from "@/core/types"
 import { useTimelineMarkers } from "@/features/timeline/hooks/markers/use-timeline-markers"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { useTimelineActions } from "@/features/timeline/hooks/state/use-timeline-actions"

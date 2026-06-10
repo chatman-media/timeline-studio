@@ -6,7 +6,7 @@
 import { useCallback, useMemo } from "react"
 
 import type { MediaFile as AIMediaFile } from "@/domains/ai-services/types/montage-planner"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { formatTime } from "@/lib/date"
 import { useMontagePlanner as useMontagePlannerContext } from "../services/montage-planner-provider"
 import type { AnalysisOptions, ExportFormat, Fragment, PlanGenerationOptions } from "../types"

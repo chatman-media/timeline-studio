@@ -3,8 +3,8 @@
  */
 
 import { useCallback, useState } from "react"
-import type { MediaFile } from "@/domains/media-management"
-import { MediaType } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
+import { MediaType } from "@/core/types"
 import { getMediaMetadataService } from "@/domains/media-management/services/media-metadata-service"
 import { createLogger } from "@/lib/tauri-logger"
 import type { Fragment, MontagePlan } from "../types"
