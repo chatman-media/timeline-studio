@@ -67,6 +67,7 @@ export type {
 export type { IEnhancedSubtitleAutomationService } from "./enhanced-subtitle-automation.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type { ILanguageService, LanguageResponse } from "./language.port"
+export type { IModalService, ModalStateSnapshot, ModalSubscription } from "./modal.port"
 export type {
   IMediaService,
   MediaImportOptions,

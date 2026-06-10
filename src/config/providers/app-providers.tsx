@@ -16,6 +16,7 @@ import { ChatProvider, MCPProvider } from "@/domains/ai-services"
 import { BrowserProvider } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
+import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
 import { ColorSchemeProvider } from "@/features/color-scheme"
 import { PlayerProvider } from "@/features/timeline/providers/player-provider"
 import { ResourcesProvider } from "@/features/timeline/providers/resources-provider"
@@ -33,6 +34,11 @@ const composeProviders = (...providers: React.ComponentType<{ children: ReactNod
   return ({ children }: { children: ReactNode }) => {
     return providers.reduceRight((child, Provider) => <Provider data-oid="m4b5f48">{child}</Provider>, children)
   }
+}
+
+function SystemIntegrationBootstrapProvider({ children }: { children: ReactNode }) {
+  getSystemIntegrationOrchestrator()
+  return <>{children}</>
 }
 
 /**
@@ -77,6 +83,7 @@ const AppProviderComposite = composeProviders(
   I18nProvider, // Локализация
   ThemeProvider, // Тема (light/dark/system через next-themes)
   ColorSchemeProvider, // Применение цветовых схем + синхронизация режима темы со стором
+  SystemIntegrationBootstrapProvider, // Регистрирует backend-aware modal service в core container
 
   // [3] ДОМЕННЫЕ С ORCHESTRATORS
   AppProvider, // ProjectManagementOrchestrator - управление проектами/настройками

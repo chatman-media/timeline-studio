@@ -6,8 +6,9 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { container } from "@/core"
-import type { IBackendService } from "@/core/ports"
+import { container } from "@/core/container"
+import type { IBackendService, IModalService } from "@/core/ports"
+import { resetMemoryModalService } from "@/core/services/modal-service"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
 import { type ModalData, type ModalType, modalMachine } from "../machines/modal-machine"
@@ -25,7 +26,7 @@ const BACKEND_SYNCED_MODALS: ModalType[] = [
   "missing-files",
 ]
 
-export class SystemIntegrationOrchestrator {
+export class SystemIntegrationOrchestrator implements IModalService {
   private modalActor: ActorRefFrom<typeof modalMachine>
   private updateActor: ActorRefFrom<typeof updateMachine>
   private notifications: SystemNotification[] = []
@@ -369,6 +370,7 @@ export function getSystemIntegrationOrchestrator(): SystemIntegrationOrchestrato
   if (!orchestratorInstance) {
     orchestratorInstance = new SystemIntegrationOrchestrator()
   }
+  container.registerModal(orchestratorInstance)
   return orchestratorInstance
 }
 
@@ -380,4 +382,6 @@ export function resetSystemIntegrationOrchestrator() {
     orchestratorInstance.dispose()
     orchestratorInstance = null
   }
+  container.clearModal()
+  resetMemoryModalService()
 }

@@ -11,6 +11,7 @@ import type {
   IEnhancedSubtitleAutomationService,
   IEventService,
   ILanguageService,
+  IModalService,
   IMediaService,
   INodeBackendService,
   IPlatformService,
@@ -32,6 +33,7 @@ class ServiceContainer {
   private _video: IVideoService | null = null
   private _ai: IAIService | null = null
   private _language: ILanguageService | null = null
+  private _modal: IModalService | null = null
   private _transcription: ITranscriptionService | null = null
   private _enhancedSubtitleAutomation: IEnhancedSubtitleAutomationService | null = null
   private _update: IUpdateService | null = null
@@ -59,6 +61,7 @@ class ServiceContainer {
       ServiceContainer.instance._video = null
       ServiceContainer.instance._ai = null
       ServiceContainer.instance._language = null
+      ServiceContainer.instance._modal = null
       ServiceContainer.instance._transcription = null
       ServiceContainer.instance._enhancedSubtitleAutomation = null
       ServiceContainer.instance._update = null
@@ -236,6 +239,27 @@ class ServiceContainer {
     return this._language !== null
   }
 
+  // === Modal Service ===
+
+  registerModal(modal: IModalService): void {
+    this._modal = modal
+  }
+
+  clearModal(): void {
+    this._modal = null
+  }
+
+  getModal(): IModalService {
+    if (!this._modal) {
+      throw new Error("[ServiceContainer] Modal service not registered.")
+    }
+    return this._modal
+  }
+
+  hasModal(): boolean {
+    return this._modal !== null
+  }
+
   // === Transcription Service ===
 
   registerTranscription(transcription: ITranscriptionService): void {
@@ -305,6 +329,7 @@ export const getNodeBackend = (): INodeBackendService => container.getNodeBacken
 export const getVideo = (): IVideoService => container.getVideo()
 export const getAI = (): IAIService => container.getAI()
 export const getLanguage = (): ILanguageService => container.getLanguage()
+export const getModal = (): IModalService => container.getModal()
 export const getTranscription = (): ITranscriptionService => container.getTranscription()
 export const getEnhancedSubtitleAutomation = (): IEnhancedSubtitleAutomationService =>
   container.getEnhancedSubtitleAutomation()

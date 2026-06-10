@@ -5,30 +5,19 @@
  * Использует event-driven архитектуру для синхронизации
  */
 
-import React, { createContext, useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { container } from "@/core/container"
+import {
+  ProjectSettingsContext,
+  type ProjectSettingsContextType,
+} from "@/core/types/project-settings-context"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
 import { convertFrontendSettingsToBackend, handleProjectSettingsEvent } from "./project-settings-backend-handlers"
 
 const logger = createLogger({ module: "ProjectSettingsProvider" })
-
-interface ProjectSettingsContextType {
-  // Настройки проекта (синхронизированы с backend)
-  settings: ProjectSettings
-
-  // Состояние
-  isLoading: boolean
-  error: string | null
-
-  // Действия (backend команды)
-  updateSettings: (settings: Partial<ProjectSettings>) => Promise<void>
-  resetSettings: () => Promise<void>
-}
-
-const ProjectSettingsContext = createContext<ProjectSettingsContextType | undefined>(undefined)
 
 interface ProjectSettingsProviderProps {
   children: React.ReactNode
@@ -303,7 +292,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
 }
 
 // Экспорт типов
-export type { ProjectSettingsContextType, ProjectSettingsContextType as ProjectSettingsProviderType }
+export type { ProjectSettingsContextType, ProjectSettingsProviderType } from "@/core/types/project-settings-context"
 
 // Экспорт контекста для использования в хуках
-export { ProjectSettingsContext }
+export { ProjectSettingsContext } from "@/core/types/project-settings-context"

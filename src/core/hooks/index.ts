@@ -6,6 +6,7 @@
  */
 
 export { useFavorites } from "./use-favorites"
+export { useModals } from "./use-modals"
 export { useNotifications } from "./use-notifications"
 export { useProjectLoader } from "./use-project-loader"
 export { useRenderQueue } from "./use-render-queue"

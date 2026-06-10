@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 template core types",
-  "violations": 340,
+  "source": "Phase F7 modal project settings core ports",
+  "violations": 337,
   "bySeverity": {
-    "warn": 340
+    "warn": 337
   },
   "byEdge": {
-    "ui -> domains": 340
+    "ui -> domains": 337
   }
 }
