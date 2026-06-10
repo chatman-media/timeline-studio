@@ -164,6 +164,69 @@ export interface AppliedEffect {
   modifiedAt: Date
 }
 
+export interface AppliedFilter {
+  id: string
+  filterId: string
+  name?: string
+  enabled?: boolean
+  isEnabled: boolean
+  order: number
+  startTime?: number
+  duration?: number
+  customParams?: Record<string, any>
+  parameters?: Record<string, any>
+  keyframes?: Array<{
+    id: string
+    time: number
+    property: string
+    value: any
+    interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
+  }>
+}
+
+export interface AppliedTransition {
+  id: string
+  transitionId: string
+  name?: string
+  type: "in" | "out" | "cross"
+  duration: number
+  parameters?: Record<string, any>
+  customParams?: Record<string, any>
+  isEnabled: boolean
+}
+
+export interface AppliedStyleTemplate {
+  id: string
+  styleTemplateId: string
+  customizations?: {
+    text?: Record<string, any>
+    colors?: Record<string, any>
+    [key: string]: any
+  }
+  isEnabled: boolean
+}
+
+export interface VideoEffectParameter {
+  id: string
+  name: string
+  type: "number" | "string" | "boolean" | "color" | "select"
+  value: any
+  defaultValue: any
+  min?: number
+  max?: number
+  step?: number
+  options?: { label: string; value: any }[]
+}
+
+export interface VideoEffect {
+  id: string
+  name: string
+  category: string
+  type: "filter" | "generator" | "transition"
+  parameters: VideoEffectParameter[]
+  enabled: boolean
+}
+
 export interface EffectMask {
   id: string
   name: string

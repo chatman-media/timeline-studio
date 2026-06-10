@@ -2,13 +2,13 @@
  * Timeline Feature Types
  *
  * АРХИТЕКТУРА ИМПОРТОВ (FEOD/DDD):
- * 1. Domain types - импортируем ТОЛЬКО из @/domains/video-editing/types
+ * 1. Core contracts - импортируем из @/core/types/*
  * 2. UI-only types - локальные типы для UI компонентов
- * 3. NO DUPLICATION - не дублируем domain типы здесь!
+ * 3. NO DOMAIN IMPORTS - UI слой не зависит напрямую от domains
  */
 
 // ============================================================================
-// DOMAIN TYPES - Реэкспорт из domain layer (CANONICAL SOURCE)
+// CORE CONTRACT TYPES
 // ============================================================================
 
 // Aliases for backward compatibility (deprecated - use domain names directly)
@@ -18,8 +18,14 @@ export type {
   AppliedFilter,
   AppliedStyleTemplate,
   AppliedTransition,
+} from "@/core/types/effects"
+
+export type {
   // Media types
   MediaFile,
+} from "@/core/types/media"
+
+export type {
   Section,
   Section as TimelineSection,
   // Core timeline types
@@ -36,7 +42,7 @@ export type {
   TrackType,
   // Supporting types
   VideoFadeKeyframe,
-} from "@/domains/video-editing/types"
+} from "@/core/types/timeline"
 
 // ============================================================================
 // UI-ONLY TYPES - Локальные типы для UI слоя

@@ -1,5 +1,5 @@
 import { vi } from "vitest"
-import type { Section, Timeline } from "@/domains/video-editing/types"
+import type { Section, Timeline } from "@/core/types/timeline"
 import {
   createTimelineClip,
   createTimelineProject,

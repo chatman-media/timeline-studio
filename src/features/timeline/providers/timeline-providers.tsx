@@ -18,8 +18,8 @@ import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TimelineProviders")
 
-// Используем типы из доменов
-import type { MediaFile, Section, Timeline, TimelineClip, Track } from "@/domains/video-editing/types"
+import type { MediaFile } from "@/core/types/media"
+import type { Section, Timeline, TimelineClip, Track } from "@/core/types/timeline"
 
 // Временный alias для совместимости
 type TimelineProject = Timeline

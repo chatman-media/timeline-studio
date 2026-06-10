@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core effect types",
-  "violations": 143,
+  "source": "Phase F7 core timeline types",
+  "violations": 129,
   "bySeverity": {
-    "warn": 143
+    "warn": 129
   },
   "byEdge": {
-    "ui -> domains": 143
+    "ui -> domains": 129
   }
 }

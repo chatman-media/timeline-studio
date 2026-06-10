@@ -5,7 +5,7 @@
  * Эти типы НЕ должны дублироваться в domain layer
  */
 
-import type { TimelineClip, Track, TrackType } from "@/domains/video-editing/types"
+import type { TimelineClip, Track, TrackType } from "@/core/types/timeline"
 
 /**
  * UI состояние таймлайна

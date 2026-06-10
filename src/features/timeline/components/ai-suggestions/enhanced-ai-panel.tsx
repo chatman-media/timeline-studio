@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 // REMOVED: executeContentIntelligenceTool - legacy code deleted, will be replaced by AI Director v2
 // import { executeContentIntelligenceTool } from "@/domains/ai-tools/tools/analysis/content-intelligence"
 import { MediaInfo } from "@/core/types"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
+import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 // MIGRATION NOTE: UnifiedDashboard removed - use AI Director integration instead
 // import { UnifiedDashboard } from "@/features/ai-content-intelligence"
 import { useTimeline } from "@/features/timeline"
@@ -65,8 +65,8 @@ export function EnhancedAIPanel({ className }: EnhancedAIPanelProps) {
         trackId: clip.trackId,
         startTime: clip.startTime,
         endTime: clip.startTime + clip.duration,
-        trimStart: (clip as DomainTimelineClip).sourceIn || 0,
-        trimEnd: (clip as DomainTimelineClip).sourceOut || clip.duration,
+        trimStart: (clip as CoreTimelineClip).sourceIn || 0,
+        trimEnd: (clip as CoreTimelineClip).sourceOut || clip.duration,
         mediaFile: clip.mediaFile,
       },
     })) as unknown as MediaInfo[]

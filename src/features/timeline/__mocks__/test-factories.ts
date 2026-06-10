@@ -10,7 +10,7 @@ import type {
   TimelineResources,
   TimelineSettings,
   Track,
-} from "@/domains/video-editing/types"
+} from "@/core/types/timeline"
 
 /**
  * Создает mock-объект трека со всеми обязательными полями

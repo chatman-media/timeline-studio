@@ -3,7 +3,7 @@
  * TODO: Consider migrating to @/domains/video-editing/types
  */
 
-import type { TimelineClip } from "@/domains/video-editing/types"
+import type { TimelineClip } from "@/core/types/timeline"
 
 /**
  * Музыкальный клип - расширение для музыкальных треков

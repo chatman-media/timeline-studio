@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import type { TimelineClip as DomainTimelineClip, Timeline } from "@/domains/video-editing/types"
+import type { Timeline, TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import {
   calculateNewDuration,
@@ -48,7 +48,7 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
   const [configs, setConfigs] = useState(() => new Map<string, SpeedRampingConfig>())
 
   // Адаптер для преобразования domain клипа в feature клип
-  const adaptDomainClipToFeatureClip = (domainClip: DomainTimelineClip): TimelineClip => {
+  const adaptDomainClipToFeatureClip = (domainClip: CoreTimelineClip): TimelineClip => {
     return {
       ...domainClip,
       mediaFile: undefined,
@@ -527,8 +527,8 @@ export function useSpeedRamping(): UseSpeedRampingReturn {
   }
 }
 
-// Локальная утилита для поиска клипа в Timeline (domain типы)
-function findClip(timeline: Timeline | null, clipId: string): DomainTimelineClip | null {
+// Локальная утилита для поиска клипа в Timeline
+function findClip(timeline: Timeline | null, clipId: string): CoreTimelineClip | null {
   if (!timeline) return null
 
   // Ищем в глобальных треках

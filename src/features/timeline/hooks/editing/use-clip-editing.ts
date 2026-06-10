@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
+import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 import { useTimelineUI } from "../../context/timeline-ui-context"
 import { EDIT_MODES } from "../../types/edit-modes"
 import { getClipTrimBounds, getSlideBounds, getSlipBounds } from "../../utils/edit-operations"
@@ -60,7 +60,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
       editStartRef.current = {
         startTime: clip.startTime,
         duration: clip.duration,
-        offset: (clip as DomainTimelineClip).sourceIn || 0, // domain клипы используют sourceIn
+        offset: (clip as CoreTimelineClip).sourceIn || 0, // timeline клипы используют sourceIn
         mouseX,
       }
 
@@ -207,7 +207,7 @@ export function useClipEditing(clipId: string, options: UseClipEditingOptions = 
             send({
               type: "SLIP_EDIT",
               clipId,
-              delta: preview.offset! - ((clip as DomainTimelineClip).sourceIn || 0),
+              delta: preview.offset! - ((clip as CoreTimelineClip).sourceIn || 0),
             })
             break
 

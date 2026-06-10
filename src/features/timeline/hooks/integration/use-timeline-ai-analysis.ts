@@ -11,7 +11,7 @@ import {
 } from "@/domains/ai-services/tauri/content-intelligence-commands"
 import type { ContentInsights, KeyMoment, UnifiedContentAnalysis } from "@/domains/ai-services/types"
 import { KeyMomentType } from "@/domains/ai-services/types"
-import type { TimelineClip as DomainTimelineClip } from "@/domains/video-editing/types"
+import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../state/use-timeline"
@@ -72,7 +72,7 @@ export function useTimelineAIAnalysis(): TimelineAIAnalysisHook {
   const { project, send } = useTimeline()
 
   // Адаптер для преобразования domain клипа в feature клип
-  const adaptDomainClipToFeatureClip = useCallback((domainClip: DomainTimelineClip): TimelineClip => {
+  const adaptDomainClipToFeatureClip = useCallback((domainClip: CoreTimelineClip): TimelineClip => {
     return {
       ...domainClip,
       mediaFile: undefined,
