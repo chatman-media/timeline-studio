@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 resources local types",
-  "violations": 400,
+  "source": "Phase F7 transcription local types",
+  "violations": 398,
   "bySeverity": {
-    "warn": 400
+    "warn": 398
   },
   "byEdge": {
-    "ui -> domains": 400
+    "ui -> domains": 398
   }
 }

@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from "react"
 import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
+import { logError, logInfo } from "@/lib/tauri-logger"
 import type {
   ModelInfo,
   SubtitleFormat,
   TranscriptionOptions,
   TranscriptionProgress,
   TranscriptionResult,
-} from "@/domains/ai-services/types/transcription"
-import { logError, logInfo } from "@/lib/tauri-logger"
+} from "../types"
 
 export function useTranscription() {
   const [isTranscribing, setIsTranscribing] = useState(false)
