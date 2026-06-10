@@ -32,7 +32,7 @@ export function ModalContainer() {
   const renderAllModals = () => {
     switch (activeModal) {
       case "project-settings":
-        return <ProjectSettingsModal data-oid="57:eax3" />
+        return <ProjectSettingsModal onClose={closeModal} data-oid="57:eax3" />
       // Temporarily disabled - keyboard-shortcuts feature needs review
       // case "keyboard-shortcuts":
       //   return <KeyboardShortcutsModal />

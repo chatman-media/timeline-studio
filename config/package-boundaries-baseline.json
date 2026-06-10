@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 modal core types and backend handlers",
-  "violations": 352,
+  "source": "Phase F7 project settings core types",
+  "violations": 347,
   "bySeverity": {
-    "warn": 352
+    "warn": 347
   },
   "byEdge": {
-    "ui -> domains": 352
+    "ui -> domains": 347
   }
 }
