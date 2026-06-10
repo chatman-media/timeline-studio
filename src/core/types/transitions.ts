@@ -156,3 +156,47 @@ export interface Transition {
   gpuAccelerated?: boolean
   webglShader?: string
 }
+
+export interface TimelineKeyframe {
+  id: string
+  time: number
+  property: string
+  value: any
+  interpolation: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "bezier" | "step"
+}
+
+export interface TimelineTransitionBase<TParams = Record<string, any>> {
+  id: string
+  transitionId: string
+  type: "between" | "in" | "out" | "adjustment"
+  position: number
+  duration: number
+  startClipId?: string
+  endClipId?: string
+  trackId: string
+  parameters: TParams
+  keyframes: TimelineKeyframe[]
+  curve?: {
+    type: "linear" | "ease" | "ease-in" | "ease-out" | "ease-in-out" | "custom" | "bounce"
+    points: Array<{
+      id: string
+      x: number
+      y: number
+      handleIn?: { x: number; y: number }
+      handleOut?: { x: number; y: number }
+    }>
+    presets?: {
+      name: string
+      description?: string
+    }
+  }
+  isEnabled: boolean
+  isLocked: boolean
+  renderCache?: any
+  name?: string
+  createdAt?: Date
+  updatedAt?: Date
+  startTime?: number
+}
+
+export type TimelineTransition = TimelineTransitionBase<Record<string, any>>

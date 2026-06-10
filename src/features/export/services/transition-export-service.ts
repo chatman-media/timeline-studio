@@ -3,7 +3,7 @@
  * Конвертирует Timeline переходы в FFmpeg команды
  */
 
-import type { TimelineTransition } from "@/domains/video-editing/types"
+import type { TimelineTransition } from "@/core/types/transitions"
 import type { TimelineProject } from "@/features/timeline/types"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { createLogger } from "@/lib/tauri-logger"
