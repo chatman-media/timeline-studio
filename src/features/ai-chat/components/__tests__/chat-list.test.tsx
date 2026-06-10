@@ -3,7 +3,7 @@
  */
 import { fireEvent } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import type { ChatListItem } from "@/domains/ai-services/types/chat"
+import type { ChatListItem } from "@/core/types/ai-chat"
 import { render } from "@/test/test-utils"
 import { ChatList } from "../chat-list"
 

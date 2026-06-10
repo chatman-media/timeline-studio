@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { backendAI } from "@/domains/ai-services/services/backend-ai-service"
-import type { Agent, AgentId, ChatMessage } from "@/domains/ai-services/types/chat"
+import type { Agent, AgentId, ChatMessage } from "@/core/types/ai-chat"
 import { useMediaImport } from "@/domains/media-management"
 import { useModals } from "@/core/hooks"
 import { useTimeline } from "@/domains/video-editing/hooks"

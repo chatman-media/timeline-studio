@@ -32,6 +32,7 @@ export type {
 // Re-export core-facing compatibility types for features
 export * from "./app-context"
 export * from "./ai-director"
+export * from "./ai-chat"
 export * from "./bot-workflow"
 export * from "./enhanced-subtitle"
 export * from "./effects"

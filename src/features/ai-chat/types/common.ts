@@ -3,7 +3,7 @@
  * Стандартизированные типы результатов и интерфейсы
  */
 
-import type { AIProvider } from "@/domains/shared/types/ai-tools/ai-config"
+import type { AIProvider } from "@/core/types/ai-chat"
 
 // Базовый результат выполнения операции
 export interface BaseResult<T = any> {

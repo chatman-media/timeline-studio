@@ -4,7 +4,7 @@
  */
 
 import { beforeEach, describe, expect, it } from "vitest"
-import type { ChatMessage } from "@/domains/ai-services/types/chat"
+import type { ChatMessage } from "@/core/types/ai-chat"
 import {
   calculateMessagesTokens,
   compressContext,

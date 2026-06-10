@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core resource types",
-  "violations": 119,
+  "source": "Phase F7 core ai chat types",
+  "violations": 115,
   "bySeverity": {
-    "warn": 119
+    "warn": 115
   },
   "byEdge": {
-    "ui -> domains": 119
+    "ui -> domains": 115
   }
 }

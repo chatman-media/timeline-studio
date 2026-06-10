@@ -3,7 +3,7 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { ChatListItem } from "@/domains/ai-services/types/chat"
+import type { ChatListItem } from "@/core/types/ai-chat"
 import { cn } from "@/lib/utils"
 
 interface ChatListProps {
