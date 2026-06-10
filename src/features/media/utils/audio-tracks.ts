@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { calculateTimeRanges } from "@/features/media/utils/video"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"

@@ -1,4 +1,4 @@
-import type { MediaFile, MediaTrack, TimeRange } from "@/domains/media-management"
+import type { MediaFile, MediaTimeRange, MediaTrack } from "@/core/types"
 
 /**
  * Интерфейс для видеопотока
@@ -34,7 +34,7 @@ export interface Sector {
   id: string
   name: string
   tracks: MediaTrack[]
-  timeRanges: TimeRange[]
+  timeRanges: MediaTimeRange[]
   zoomLevel?: number
   scrollPosition?: number
   startTime: number
@@ -46,4 +46,4 @@ export interface Sector {
 // Экспорт Track как алиаса для MediaTrack (для обратной совместимости)
 export type Track = MediaTrack
 
-export type { TimeRange }
+export type { MediaTimeRange as TimeRange }

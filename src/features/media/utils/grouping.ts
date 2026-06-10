@@ -1,4 +1,4 @@
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import i18n from "@/i18n"
 import { formatDateByLanguage } from "@/i18n/constants"
 import type { DateGroup } from "../types/types"

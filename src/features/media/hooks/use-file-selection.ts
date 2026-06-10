@@ -1,7 +1,7 @@
 import { useCallback } from "react"
 
 import { useBrowserState } from "@/domains/browser"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 
 /**
  * Хук для работы с выбором файлов в браузере

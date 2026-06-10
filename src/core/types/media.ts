@@ -212,3 +212,98 @@ export interface MediaFile {
     format: "SMPTE" | "DF" | "NDF"
   }
 }
+
+export interface MediaTimeRange {
+  start: number
+  end: number
+  duration?: number
+}
+
+export interface MediaTrack {
+  id: string
+  name?: string
+  type: "video" | "audio" | "subtitle"
+  codec?: string
+  bitrate?: number
+  duration?: number
+  width?: number
+  height?: number
+  fps?: number
+  pixelFormat?: string
+  sampleRate?: number
+  channels?: number
+  channelLayout?: string
+  language?: string
+  index?: number
+  isActive?: boolean
+  videos?: MediaFile[]
+  startTime?: number
+  endTime?: number
+  combinedDuration?: number
+  timeRanges?: MediaTimeRange[]
+  volume?: number
+  isMuted?: boolean
+  isLocked?: boolean
+  isVisible?: boolean
+  cameraId?: string
+  cameraName?: string
+}
+
+export interface VideoSegment {
+  id: string
+  path: string
+  startTime: number
+  endTime: number
+  duration: number
+  sourceFileId?: string
+}
+
+export interface FileGroup {
+  id: string
+  name: string
+  files: string[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type FileStatus = "available" | "missing" | "moved" | "unknown"
+
+export interface SavedMediaFile {
+  id: string
+  originalPath: string
+  relativePath?: string
+  name: string
+  size: number
+  lastModified: number
+  isVideo: boolean
+  isAudio: boolean
+  isImage: boolean
+  metadata: SavedFileMetadata
+  status: FileStatus
+  alternativePaths?: string[]
+  lastChecked: number
+}
+
+export interface SavedMusicFile extends SavedMediaFile {
+  musicMetadata?: MusicMetadata
+}
+
+export interface SavedFileMetadata {
+  duration?: number
+  startTime?: number
+  createdAt?: string
+  probeData?: {
+    streams: any[]
+    format: any
+  }
+}
+
+export interface MusicMetadata {
+  artist?: string
+  album?: string
+  genre?: string
+  year?: number
+  track?: number
+  title?: string
+  albumDuration?: number
+}

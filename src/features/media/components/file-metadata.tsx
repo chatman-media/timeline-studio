@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { getAspectRatio, getFps } from "@/features/media/utils/video"
 import { formatDuration, formatTimeWithMilliseconds } from "@/lib/date"
 import { formatBitrate, formatFileSize } from "@/lib/utils"

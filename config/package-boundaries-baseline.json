@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 browser toolbar type bridges",
-  "violations": 250,
+  "source": "Phase F7 media core type bridges",
+  "violations": 235,
   "bySeverity": {
-    "warn": 250
+    "warn": 235
   },
   "byEdge": {
-    "ui -> domains": 250
+    "ui -> domains": 235
   }
 }

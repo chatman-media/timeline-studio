@@ -1,5 +1,5 @@
 import { container } from "@/core"
-import type { FileStatus, MediaFile, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
+import type { FileStatus, MediaFile, MusicMetadata, SavedMediaFile, SavedMusicFile } from "@/core/types"
 import { fileSystemService } from "@/domains/media-management/services/file-system-service"
 import { createLogger } from "@/lib/tauri-logger"
 
