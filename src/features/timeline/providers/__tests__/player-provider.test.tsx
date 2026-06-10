@@ -56,7 +56,7 @@ vi.mock("@/core/hooks/use-user-settings", () => ({
 
 // Mock playback time sync hook
 const mockUsePlaybackTimeSync = vi.fn()
-vi.mock("@/domains/video-editing/hooks", () => ({
+vi.mock("@/core/hooks/use-playback-time-sync", () => ({
   usePlaybackTimeSync: (config: any) => {
     mockUsePlaybackTimeSync(config)
     return config.initialTime
