@@ -74,7 +74,7 @@ Acceptance:
 
 ### P1: Telegram AI review workflow
 
-- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish. Implementation slice merged; production runtime stabilization now continues in [#238](https://github.com/chatman-media/timeline-studio/issues/238).
+- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish. Implementation slice merged; production runtime stabilization completed in [#238](https://github.com/chatman-media/timeline-studio/issues/238).
 - [#225](https://github.com/chatman-media/timeline-studio/issues/225) остается владельцем production topology, deployment foundation, generic media retention and cleanup jobs.
 
 Готово в текущем implementation slice:
@@ -91,11 +91,11 @@ Acceptance:
 
 ### P1: AI module stabilization and Node/Rust orchestration
 
-- [#238](https://github.com/chatman-media/timeline-studio/issues/238) - стабилизировать production AI path для Telegram review workflow и закрепить границу ответственности Node/Rust.
+- [#238](https://github.com/chatman-media/timeline-studio/issues/238) - production AI path для Telegram review workflow стабилизирован; граница ответственности Node/Rust закреплена.
 - [#239](https://github.com/chatman-media/timeline-studio/issues/239) - аудит текущих AI модулей, headless flows and broken wiring.
 - [#240](https://github.com/chatman-media/timeline-studio/issues/240) - Node/Rust ownership boundary.
 
-Текущие выводы:
+Итог:
 
 - `bot-worker` CLI прокидывает production `editSessionStore`, `feedbackTranscriber`, `aiProjectEditor`, Rust first-cut planner/generator fallback, preview renderer and publish services.
 - `IAIProjectEditor` имеет production OpenAI-compatible adapter; Rust `llm-edit` command остается medium-term направлением.
@@ -104,10 +104,10 @@ Acceptance:
 
 Acceptance:
 
-- Bot review loop runs from CLI with production wiring, not only mocked unit smoke.
-- First-cut and edit outputs validate as canonical `ProjectSchema` or fail/fallback with explicit diagnostics.
-- Text and voice feedback share one AI editor path.
-- Dedicated headless bot/AI smoke catches regressions separately from the large frontend suite.
+- [x] Bot review loop runs from CLI with production wiring, not only mocked unit smoke.
+- [x] First-cut and edit outputs validate as canonical `ProjectSchema` or fail/fallback with explicit diagnostics.
+- [x] Text and voice feedback share one AI editor path.
+- [x] Dedicated headless bot/AI smoke catches regressions separately from the large frontend suite.
 
 ### P1: Phase F TypeScript packages
 
