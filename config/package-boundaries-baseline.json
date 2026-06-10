@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 register ai tools through core",
-  "violations": 9,
+  "source": "Phase F7 bridge browser state through core",
+  "violations": 8,
   "bySeverity": {
-    "warn": 9
+    "warn": 8
   },
   "byEdge": {
-    "ui -> domains": 9
+    "ui -> domains": 8
   }
 }

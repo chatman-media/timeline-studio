@@ -3,10 +3,8 @@ export {
   BrowserProvider,
   DEFAULT_TAB,
   type BrowserContext,
-  type BrowserState,
-  type BrowserTab,
-  handleBrowserBackendEvent,
-  type TabSettings,
+  type BrowserContextType,
+  type UseOptimisticSelectionReturn,
   useBrowser,
   useBrowserActiveTab,
   useBrowserPreviewSize,
@@ -16,5 +14,5 @@ export {
   useBrowserTabSettings,
   useBrowserViewMode,
   useOptimisticSelection,
-  type ViewMode,
-} from "@/domains/browser"
+} from "@/core/services/browser-context"
+export type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@/core/types"

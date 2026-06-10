@@ -4,7 +4,7 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { BrowserProvider } from "@/domains/browser"
+import { BrowserProvider } from "@/features/browser/services"
 import { Browser } from "../../components/browser"
 
 // Мокаем зависимости

@@ -12,10 +12,11 @@
 
 import { type ReactNode } from "react"
 import { AppInitProvider } from "@/adapters/react"
+import { BrowserProvider as CoreBrowserProvider } from "@/core/services/browser-context"
 import { setAITools } from "@/core/services/ai-tools-registry"
 import { ChatProvider, MCPProvider } from "@/domains/ai-services"
 import { allAITools } from "@/domains/ai-tools"
-import { BrowserProvider } from "@/domains/browser"
+import { BrowserProvider as DomainBrowserProvider, useBrowser as useDomainBrowser } from "@/domains/browser"
 import { MediaManagementProvider } from "@/domains/media-management"
 import { AppProvider, ProjectSettingsProvider } from "@/domains/project-management/providers"
 import { getSystemIntegrationOrchestrator } from "@/domains/system-integration"
@@ -46,6 +47,11 @@ function SystemIntegrationBootstrapProvider({ children }: { children: ReactNode 
 function AIToolsBootstrapProvider({ children }: { children: ReactNode }) {
   setAITools(allAITools)
   return <>{children}</>
+}
+
+function BrowserCoreBridgeProvider({ children }: { children: ReactNode }) {
+  const browser = useDomainBrowser()
+  return <CoreBrowserProvider value={browser}>{children}</CoreBrowserProvider>
 }
 
 /**
@@ -98,7 +104,8 @@ const AppProviderComposite = composeProviders(
   ProjectSettingsProvider, // Настройки проекта с backend синхронизацией
   MediaManagementProvider, // MediaManagementOrchestrator - управление медиа файлами
   ResourcesProvider, // Ресурсы (effects/filters/transitions) с backend интеграцией
-  BrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
+  DomainBrowserProvider, // BrowserOrchestrator - медиа браузер с backend state
+  BrowserCoreBridgeProvider, // Публикует browser state в core context для features
 
   TimelineProvider, // VideoEditingOrchestrator - timeline редактор
 
