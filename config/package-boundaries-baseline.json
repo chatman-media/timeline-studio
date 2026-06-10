@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core video compiler types",
-  "violations": 121,
+  "source": "Phase F7 core resource types",
+  "violations": 119,
   "bySeverity": {
-    "warn": 121
+    "warn": 119
   },
   "byEdge": {
-    "ui -> domains": 121
+    "ui -> domains": 119
   }
 }

@@ -29,7 +29,7 @@ import {
   type TemplateResource,
   type TimelineResource,
   type TransitionResource,
-} from "@/domains/shared/types/resources"
+} from "@/core/types/resources"
 import type { BaseEffect as VideoEffect } from "@/core/types"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import type { MediaItem, MediaType, ProjectEvent } from "@/types/generated/tauri-bindings"
