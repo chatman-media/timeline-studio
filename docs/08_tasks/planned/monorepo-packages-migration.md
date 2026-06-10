@@ -145,7 +145,7 @@ adapters -> core
 
 - [x] Создать follow-up задачи [#272](https://github.com/chatman-media/timeline-studio/issues/272)-[#278](https://github.com/chatman-media/timeline-studio/issues/278) для F8-F14.
 - [x] Обновить `config/package-boundaries-baseline.json` до `0` violations.
-- [ ] Обновить GitHub issue [#165](https://github.com/chatman-media/timeline-studio/issues/165) финальным статусом после PR.
+- [x] Обновить GitHub issue [#165](https://github.com/chatman-media/timeline-studio/issues/165) финальным статусом после PR [#279](https://github.com/chatman-media/timeline-studio/pull/279).
 - [x] Решить, включать ли `check:boundaries:strict` в default CI после физического переноса или оставить отдельным gate до удаления compatibility shims.
 
 ### F9: Physically extract core into `packages/core`
