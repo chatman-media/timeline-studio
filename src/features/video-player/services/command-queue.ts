@@ -8,5 +8,5 @@ export type {
   CommandPriority,
   CommandQueueOptions,
   QueuedCommand,
-} from "@/core/services/video-player-command-queue"
-export { CommandQueue } from "@/core/services/video-player-command-queue"
+} from "@timeline-studio/core/services/video-player-command-queue"
+export { CommandQueue } from "@timeline-studio/core/services/video-player-command-queue"

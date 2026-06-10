@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react"
 
-import { container } from "@/core"
-import { loadEffectsCollection, loadUserEffect } from "@/core/services/user-effects"
+import { container } from "@timeline-studio/core"
+import { loadEffectsCollection, loadUserEffect } from "@timeline-studio/core/services/user-effects"
 import type { BaseEffect } from "@/features/effects/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { EffectManager } from "../services/effect-manager"

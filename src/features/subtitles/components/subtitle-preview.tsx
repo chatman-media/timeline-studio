@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 
 import { useTranslation } from "react-i18next"
-import { MediaType, type SubtitleResource } from "@/core/types"
-import { calculateDimensionsWithAspectRatio } from "@/core/utils/preview-sizes"
+import { MediaType, type SubtitleResource } from "@timeline-studio/core/types"
+import { calculateDimensionsWithAspectRatio } from "@timeline-studio/core/utils/preview-sizes"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 

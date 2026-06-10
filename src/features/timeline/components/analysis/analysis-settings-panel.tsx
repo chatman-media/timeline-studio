@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useMediaFiles } from "@/core/hooks/use-media-files"
+import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import {
   ANALYZER_METADATA,

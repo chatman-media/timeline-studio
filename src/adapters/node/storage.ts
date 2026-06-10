@@ -8,7 +8,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import type { IStorageService } from "@/core/ports"
+import type { IStorageService } from "@timeline-studio/core/ports"
 
 export interface NodeStorageOptions {
   /** Путь к файлу хранилища */

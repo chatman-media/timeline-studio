@@ -17,7 +17,7 @@ const mockMediaService = {
   generateWaveformPreview: vi.fn(),
 }
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getMedia: vi.fn(() => mockMediaService),
 }))
 

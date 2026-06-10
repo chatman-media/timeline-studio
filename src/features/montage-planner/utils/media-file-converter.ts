@@ -4,8 +4,8 @@
  * Конвертирует MediaFile из features в формат для AI Services domain
  */
 
-import type { MediaFile as FeatureMediaFile } from "@/core/types"
-import type { UnifiedFragment } from "@/core/types/unified-montage"
+import type { MediaFile as FeatureMediaFile } from "@timeline-studio/core/types"
+import type { UnifiedFragment } from "@timeline-studio/core/types/unified-montage"
 
 type AIServicesMediaFile = Pick<FeatureMediaFile, "id" | "path" | "name" | "duration"> & {
   size: number

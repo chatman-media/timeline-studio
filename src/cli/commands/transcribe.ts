@@ -7,7 +7,7 @@ import path from "node:path"
 import { Command } from "commander"
 
 import { initNodeApp } from "@/adapters/node"
-import type { TranscriptionResult } from "@/core/ports"
+import type { TranscriptionResult } from "@timeline-studio/core/ports"
 
 export const transcribeCommand = new Command("transcribe")
   .description("Транскрибировать аудио или видео файл")

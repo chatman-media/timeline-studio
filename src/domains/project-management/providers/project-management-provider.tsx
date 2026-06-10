@@ -7,7 +7,7 @@
 
 import { useSelector } from "@xstate/react"
 import { createContext, type ReactNode, useContext, useState } from "react"
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"
 import type { UserSettingsContextType } from "../machines/user-settings-machine"

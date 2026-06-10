@@ -1,4 +1,4 @@
-import type { IAITool } from "@/core/types/ai-tools"
+import type { IAITool } from "@timeline-studio/core/types/ai-tools"
 
 let registeredAITools: IAITool[] = []
 

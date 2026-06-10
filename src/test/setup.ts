@@ -483,8 +483,8 @@ vi.mock("@/domains/project-management/services/app-directories-service", async (
   }
 })
 
-vi.mock("@/core/services/app-directories-service", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/core/services/app-directories-service")>()
+vi.mock("@timeline-studio/core/services/app-directories-service", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@timeline-studio/core/services/app-directories-service")>()
   const mockBaseDir = "/Users/test/Movies/Timeline Studio"
   const mockResourcesDir = `${mockBaseDir}/Resources`
   return {

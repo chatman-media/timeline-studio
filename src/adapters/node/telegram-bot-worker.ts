@@ -1,6 +1,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
-import type { AIProjectEditorResult, IAIProjectEditor, IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
+import type { AIProjectEditorResult, IAIProjectEditor, IBotFeedbackTranscriber, IPublishService } from "@timeline-studio/core/ports"
 import {
   createBotDestinationCapabilityRegistry,
   createBotEditRevisionId,
@@ -11,7 +11,7 @@ import {
   mergeBotWorkflowDraft,
   runAIProjectEdit,
   validateBotDestinationCapability,
-} from "@/core/services"
+} from "@timeline-studio/core/services"
 import type {
   BotEditRevision,
   BotEditSession,
@@ -27,7 +27,7 @@ import type {
   BotWorkflowRunResult,
   TelegramLikeBotFile,
   TelegramLikeBotPayload,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 import { NodeBotStatusNotifier, type NodeTelegramStatusClient, type NodeTelegramVideoClient } from "./bot-status"

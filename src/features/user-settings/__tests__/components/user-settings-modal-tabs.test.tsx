@@ -26,7 +26,7 @@ const mockOrchestrator = {
   subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
 }
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "none",
     modalData: null,

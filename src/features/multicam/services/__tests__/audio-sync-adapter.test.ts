@@ -7,7 +7,7 @@ import { syncByAudio } from "../audio-sync-adapter"
 
 const mockCorrelateAudioFiles = vi.hoisted(() => vi.fn())
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getAI: () => ({
       correlateAudioFiles: mockCorrelateAudioFiles,

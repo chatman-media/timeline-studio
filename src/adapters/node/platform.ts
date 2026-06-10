@@ -17,7 +17,7 @@ import type {
   NotificationOptions,
   OpenDialogOptions,
   SaveDialogOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 const execAsync = promisify(exec)
 

@@ -4,7 +4,7 @@
 import { act } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 
-import type { MediaFile } from "@/core/types/media"
+import type { MediaFile } from "@timeline-studio/core/types/media"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { renderWithBase, screen } from "@/test/test-utils"
 

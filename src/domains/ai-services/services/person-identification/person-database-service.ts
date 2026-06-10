@@ -1,2 +1,2 @@
-export type { DatabaseConfig, DatabaseStats, SimilaritySearchResult } from "@/core/services/person-identification"
-export { PersonDatabaseService } from "@/core/services/person-identification"
+export type { DatabaseConfig, DatabaseStats, SimilaritySearchResult } from "@timeline-studio/core/services/person-identification"
+export { PersonDatabaseService } from "@timeline-studio/core/services/person-identification"

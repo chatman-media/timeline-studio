@@ -33,7 +33,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 const mockReadTextFile = vi.fn()
 const mockWriteTextFile = vi.fn()
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -363,7 +363,7 @@ describe("ProjectFileService", () => {
 
   describe("Edge Cases", () => {
     it("should handle platform service not available", async () => {
-      const { container } = await import("@/core")
+      const { container } = await import("@timeline-studio/core")
       const mockContainer = vi.mocked(container)
       mockContainer.hasPlatform.mockReturnValueOnce(false)
 

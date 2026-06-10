@@ -40,7 +40,7 @@ vi.mock("@/features/timeline/providers/player-provider", () => ({
   usePlayer: () => mockPlayerContext,
 }))
 
-vi.mock("@/core/services/ai-director-service", () => ({
+vi.mock("@timeline-studio/core/services/ai-director-service", () => ({
   aiDirectorAnalyzeQuick: vi.fn(),
 }))
 

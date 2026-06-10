@@ -7,7 +7,7 @@ export {
   AdvancedFaceDetectionService,
   AdvancedTrackingService,
   PersonDatabaseService,
-} from "@/core/services"
+} from "@timeline-studio/core/services"
 // Компоненты
 export * from "./components"
 // Hooks

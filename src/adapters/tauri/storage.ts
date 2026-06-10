@@ -5,7 +5,7 @@
  * Использует Tauri Store плагин для персистентного хранилища.
  */
 
-import type { IStorageService } from "@/core/ports"
+import type { IStorageService } from "@timeline-studio/core/ports"
 
 type TauriStore = {
   get<T>(key: string): Promise<T | null | undefined>

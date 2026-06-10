@@ -29,7 +29,7 @@ const mockUnifiedAdapterReturn: any = {
 }
 
 // Mock модулей
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),
@@ -449,7 +449,7 @@ describe("useTransitionsAdapter", () => {
         complexity: "basic",
       }
 
-      const { useFavorites } = await vi.importMock<typeof import("@/core/hooks")>("@/core/hooks")
+      const { useFavorites } = await vi.importMock<typeof import("@timeline-studio/core/hooks")>("@timeline-studio/core/hooks")
       const mockIsItemFavorite = vi.fn(() => true)
 
       vi.mocked(useFavorites).mockReturnValue({

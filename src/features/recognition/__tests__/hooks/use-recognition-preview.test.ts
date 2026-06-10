@@ -9,7 +9,7 @@ import { useRecognitionPreview } from "../../hooks/use-recognition-preview"
 const mockInvoke = vi.fn()
 const mockGetPreviewData = vi.fn()
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getAI: () => ({
     processVideoRecognition: (videoPath: string, modelPath?: string, targetClasses?: string[]) =>
       mockInvoke("process_video_recognition", { videoPath, modelPath, targetClasses }),

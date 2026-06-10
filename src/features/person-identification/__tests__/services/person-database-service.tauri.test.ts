@@ -9,7 +9,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: mockInvoke,
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getAI: () => ({
     initPersonDatabase: () => mockInvoke("init_person_database"),
     createPersonProfile: (options: Record<string, unknown>) => mockInvoke("create_person", options),

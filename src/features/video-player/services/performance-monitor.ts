@@ -5,5 +5,5 @@
  * Реэкспортируются здесь для обратной совместимости
  */
 
-export type { PerformanceMetrics, SyncRecord } from "@/core/services/video-player-performance-monitor"
-export { globalPerformanceMonitor, PerformanceMonitor } from "@/core/services/video-player-performance-monitor"
+export type { PerformanceMetrics, SyncRecord } from "@timeline-studio/core/services/video-player-performance-monitor"
+export { globalPerformanceMonitor, PerformanceMonitor } from "@timeline-studio/core/services/video-player-performance-monitor"

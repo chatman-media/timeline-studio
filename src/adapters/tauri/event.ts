@@ -5,7 +5,7 @@
  * Использует @tauri-apps/api/event для подписки на события.
  */
 
-import type { EventCallback, IEventService, UnlistenFn } from "@/core/ports"
+import type { EventCallback, IEventService, UnlistenFn } from "@timeline-studio/core/ports"
 
 export class TauriEventService implements IEventService {
   async listen<T>(eventName: string, callback: EventCallback<T>): Promise<UnlistenFn> {

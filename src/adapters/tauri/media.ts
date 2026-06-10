@@ -21,7 +21,7 @@ import type {
   SceneDetectionResult,
   ThumbnailOptions,
   WaveformOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 import type { MediaFile } from "@/domains/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 

@@ -42,7 +42,7 @@ vi.mock("@/features/timeline/providers/resources-provider", () => ({
   }),
 }))
 
-vi.mock("@/core/services", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   appDirectoriesService: {
     createAppDirectories: vi.fn().mockResolvedValue(undefined),
     getMediaSubdirectory: vi.fn((subdir: string) => `/app/media/${subdir}`),

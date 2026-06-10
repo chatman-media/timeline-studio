@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Label } from "@/components/ui/label"
-import type { MediaFile } from "@/core/types"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { useTimeline } from "@/features/timeline"
 
 interface InfoSettingsState {

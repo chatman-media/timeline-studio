@@ -1,1 +1,1 @@
-export { useCurrentProject } from "@/core/hooks/use-current-project"
+export { useCurrentProject } from "@timeline-studio/core/hooks/use-current-project"

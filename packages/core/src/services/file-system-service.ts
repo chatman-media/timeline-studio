@@ -1,10 +1,10 @@
-import { getPlatform as getPlatformService } from "@/core/container"
-import type { FileStats } from "@/core/ports"
+import { getPlatform as getPlatformService } from "@timeline-studio/core/container"
+import type { FileStats } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("FileSystemService")
 
-export type { FileStats } from "@/core/ports"
+export type { FileStats } from "@timeline-studio/core/ports"
 
 export class FileSystemService {
   async fileExists(path: string): Promise<boolean> {

@@ -1,10 +1,10 @@
-import { InMemoryBotRenderJobEventStream, runBotWorkflow, runTelegramLikeBotWorkflow } from "@/core/services"
+import { InMemoryBotRenderJobEventStream, runBotWorkflow, runTelegramLikeBotWorkflow } from "@timeline-studio/core/services"
 import type {
   BotWorkflowRequest,
   BotWorkflowRunOptions,
   BotWorkflowRunResult,
   TelegramLikeBotPayload,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 import type { NodeRenderJobService } from "./render-job"
 

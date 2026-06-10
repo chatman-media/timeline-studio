@@ -10,4 +10,4 @@ export type {
   MetadataCacheEntry,
   PreviewCacheEntry,
   VideoCompilerCacheStats,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"

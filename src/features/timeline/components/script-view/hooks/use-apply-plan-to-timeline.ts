@@ -3,7 +3,7 @@
  */
 
 import { useCallback, useState } from "react"
-import { useMediaFiles } from "@/core/hooks/use-media-files"
+import { useMediaFiles } from "@timeline-studio/core/hooks/use-media-files"
 import { mediaItemToMediaFile } from "@/features/multicam/utils/media-mapper"
 import { useClips } from "@/features/timeline/hooks/clips/use-clips"
 import { useTracks } from "@/features/timeline/hooks/state/use-tracks"

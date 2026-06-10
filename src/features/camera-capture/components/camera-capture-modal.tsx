@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   useCameraPermissions,

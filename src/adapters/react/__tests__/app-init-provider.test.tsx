@@ -17,7 +17,7 @@ vi.mock("@/lib/environment", () => ({
   isDesktop: vi.fn(),
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     hasBackend: vi.fn(),
     getBackend: vi.fn(),
@@ -38,7 +38,7 @@ vi.mock("@/adapters/mock", () => ({
 
 import { initMockApp } from "@/adapters/mock"
 import { initTauriApp } from "@/adapters/tauri"
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { isDesktop } from "@/lib/environment"
 
 describe("AppInitProvider", () => {

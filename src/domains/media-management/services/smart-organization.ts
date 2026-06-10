@@ -7,7 +7,7 @@
  * ✅ ОБНОВЛЕНО (2025-11-28): Использует IPlatformService через container
  */
 
-import { getPlatform } from "@/core/container"
+import { getPlatform } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 import { getMediaMetadataService } from "./media-metadata-service"

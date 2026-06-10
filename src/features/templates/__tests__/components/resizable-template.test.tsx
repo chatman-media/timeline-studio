@@ -2,7 +2,7 @@ import { fireEvent, screen } from "@testing-library/react"
 import React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { MediaType } from "@/core/types/media"
+import { MediaType } from "@timeline-studio/core/types/media"
 import { renderWithTemplates } from "@/test/test-utils"
 
 import { ResizableTemplate } from "../../components/resizable-template"

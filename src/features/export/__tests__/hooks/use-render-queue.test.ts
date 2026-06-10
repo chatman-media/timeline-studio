@@ -15,8 +15,8 @@ const mockCancelRender = vi.fn()
 const mockRenderProject = vi.fn()
 const mockShowOpenDialog = vi.fn()
 
-// Mock @/core container
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core container
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -26,7 +26,7 @@ vi.mock("@/core", () => ({
 }))
 
 // Mock core hook bridge used by the export feature.
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useProjectLoader: () => ({
     loadProject: vi.fn().mockResolvedValue({
       id: "test-project",

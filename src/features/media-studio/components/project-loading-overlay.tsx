@@ -1,6 +1,6 @@
 "use client"
 
-import { useApp } from "@/core/hooks"
+import { useApp } from "@timeline-studio/core/hooks"
 
 export function ProjectLoadingOverlay() {
   const { isConnecting, connectionError } = useApp()

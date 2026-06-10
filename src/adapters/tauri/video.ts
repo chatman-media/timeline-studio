@@ -23,7 +23,7 @@ import type {
   RenderJob,
   RenderProgress,
   SystemInfo,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TauriVideoService")

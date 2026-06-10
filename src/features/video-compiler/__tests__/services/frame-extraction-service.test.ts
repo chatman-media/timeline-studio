@@ -3,12 +3,12 @@ import type {
   CompilerSubtitle as Subtitle,
   CompilerSubtitlePosition as SubtitlePosition,
   CompilerSubtitleStyle as SubtitleStyle,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"
 import {
   CompilerSubtitleAlignX as SubtitleAlignX,
   CompilerSubtitleAlignY as SubtitleAlignY,
   CompilerSubtitleFontWeight as SubtitleFontWeight,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"
 import type { RecognitionFrame, TimelineFrame } from "../../services/frame-extraction-service"
 import { ExtractionPurpose, frameExtractionService } from "../../services/frame-extraction-service"
 

@@ -14,7 +14,7 @@ import type {
   ScanFolderOptions,
   ScannedMediaFile,
   ThumbnailOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class MockNodeBackendService implements INodeBackendService {
   async checkHealth(): Promise<NodeBackendHealth> {

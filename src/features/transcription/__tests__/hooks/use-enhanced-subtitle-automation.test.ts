@@ -3,8 +3,8 @@
  */
 import { renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { container, resetContainer } from "@/core/container"
-import type { IEnhancedSubtitleAutomationService } from "@/core/ports"
+import { container, resetContainer } from "@timeline-studio/core/container"
+import type { IEnhancedSubtitleAutomationService } from "@timeline-studio/core/ports"
 import { useEnhancedSubtitleAutomation } from "../../hooks/use-enhanced-subtitle-automation"
 import { createMockEnhancedSubtitleResult } from "../test-utils"
 
@@ -34,7 +34,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock useNotifications
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),

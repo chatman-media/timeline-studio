@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectCommand, ProjectState } from "@/core/types"
+import type { ProjectCommand, ProjectState } from "@timeline-studio/core/types"
 import { TauriBackendService } from "../backend"
 
 // Mock BackendSync

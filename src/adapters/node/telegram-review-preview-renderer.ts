@@ -1,8 +1,8 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { IRenderJobService } from "@/core/ports"
-import type { BotRenderJobArtifact, BotRenderJobRunOptions } from "@/core/types"
+import type { IRenderJobService } from "@timeline-studio/core/ports"
+import type { BotRenderJobArtifact, BotRenderJobRunOptions } from "@timeline-studio/core/types"
 
 import type {
   NodeTelegramBotReviewPreviewRenderer,

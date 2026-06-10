@@ -1,1 +1,1 @@
-export * from "@/core/types/person-identification"
+export * from "@timeline-studio/core/types/person-identification"

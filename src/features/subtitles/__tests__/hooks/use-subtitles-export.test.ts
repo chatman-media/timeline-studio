@@ -11,16 +11,16 @@ import { useSubtitlesExport } from "../../hooks/use-subtitles-export"
 // Mock core subtitle service
 const mockSaveSubtitleFile = vi.fn()
 
-vi.mock("@/core/services/subtitles", () => ({
+vi.mock("@timeline-studio/core/services/subtitles", () => ({
   subtitleService: {
     exportSubtitleFile: (...args: any[]) => mockSaveSubtitleFile(...args),
   },
 }))
 
-// Mock @/core container
+// Mock @timeline-studio/core container
 const mockShowSaveDialog = vi.fn()
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({

@@ -1,4 +1,4 @@
-import type { ProjectSettings, TimelineStudioProject, TimelineStudioProjectMetadata } from "@/core/types/project"
+import type { ProjectSettings, TimelineStudioProject, TimelineStudioProjectMetadata } from "@timeline-studio/core/types/project"
 
 export type ProjectMetadata = TimelineStudioProjectMetadata
 export type { TimelineStudioProject }

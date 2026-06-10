@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react"
-import type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@/core/types"
+import type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@timeline-studio/core/types"
 
 export type BrowserContext = BrowserState
 

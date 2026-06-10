@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { container } from "@/core"
-import { useNotifications } from "@/core/hooks"
-import { OutputFormat } from "@/core/types"
+import { container } from "@timeline-studio/core"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import { OutputFormat } from "@timeline-studio/core/types"
 import { logError, logInfo } from "@/lib/tauri-logger"
 import { QUALITY_PRESETS, RESOLUTION_PRESETS } from "../constants/export-constants"
 import type { ExportSettings } from "../types/export-types"

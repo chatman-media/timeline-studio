@@ -12,8 +12,8 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { container } from "@/core/container"
-import type { IBackendService, IPlatformService, IStorageService } from "@/core/ports"
+import { container } from "@timeline-studio/core/container"
+import type { IBackendService, IPlatformService, IStorageService } from "@timeline-studio/core/ports"
 import { isDesktop } from "@/lib/environment"
 
 async function isNodeBackendAvailable(url: string): Promise<boolean> {

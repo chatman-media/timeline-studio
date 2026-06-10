@@ -23,7 +23,7 @@
  * const { media } = initNodeApp()
  *
  * // Далее используйте container для доступа к сервисам
- * import { getBackend, getPlatform, getStorage, getMedia } from "@/core"
+ * import { getBackend, getPlatform, getStorage, getMedia } from "@timeline-studio/core"
  * const state = await getBackend().getProjectState()
  * const metadata = await getMedia().getMetadata(filePath)
  * ```

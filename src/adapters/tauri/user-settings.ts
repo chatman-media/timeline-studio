@@ -1,5 +1,5 @@
-import type { IUserSettingsService, UserSettingsSubscription } from "@/core/ports"
-import type { UserSettingsContextType } from "@/core/types/user-settings"
+import type { IUserSettingsService, UserSettingsSubscription } from "@timeline-studio/core/ports"
+import type { UserSettingsContextType } from "@timeline-studio/core/types/user-settings"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
 
 export class TauriUserSettingsService implements IUserSettingsService {

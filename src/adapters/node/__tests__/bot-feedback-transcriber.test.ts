@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import type { BotMediaResolver, BotRenderJobMediaInput, TranscriptionResult } from "@/core"
+import type { BotMediaResolver, BotRenderJobMediaInput, TranscriptionResult } from "@timeline-studio/core"
 import { NodeBotFeedbackTranscriber, type NodeBotFeedbackTranscriberAI } from "../bot-feedback-transcriber"
 
 const transcription: TranscriptionResult = {

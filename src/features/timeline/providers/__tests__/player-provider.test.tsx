@@ -4,7 +4,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/core/types"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { PlayerProvider, usePlayer } from "../player-provider"
 
 // Mock dependencies
@@ -36,7 +36,7 @@ const mockBackend = {
   onEvent: mockOnEvent,
 }
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getBackend: () => mockBackend,
   },
@@ -50,13 +50,13 @@ const mockUserSettings = {
   updatePlayerVideoSource: vi.fn(),
 }
 
-vi.mock("@/core/hooks/use-user-settings", () => ({
+vi.mock("@timeline-studio/core/hooks/use-user-settings", () => ({
   useUserSettings: () => mockUserSettings,
 }))
 
 // Mock playback time sync hook
 const mockUsePlaybackTimeSync = vi.fn()
-vi.mock("@/core/hooks/use-playback-time-sync", () => ({
+vi.mock("@timeline-studio/core/hooks/use-playback-time-sync", () => ({
   usePlaybackTimeSync: (config: any) => {
     mockUsePlaybackTimeSync(config)
     return config.initialTime
@@ -64,7 +64,7 @@ vi.mock("@/core/hooks/use-playback-time-sync", () => ({
 }))
 
 // Mock CommandQueue - define inside vi.mock to avoid hoisting issues
-vi.mock("@/core/services/video-player-command-queue", () => {
+vi.mock("@timeline-studio/core/services/video-player-command-queue", () => {
   class MockCommandQueue {
     enqueue = vi.fn(async (fn: () => Promise<any>) => await fn())
   }
@@ -75,13 +75,13 @@ vi.mock("@/core/services/video-player-command-queue", () => {
 })
 
 // Mock retry helper
-vi.mock("@/core/utils/retry-helper", () => ({
+vi.mock("@timeline-studio/core/utils/retry-helper", () => ({
   retryWithBackoff: vi.fn(async (fn: () => Promise<any>) => await fn()),
   defaultShouldRetry: vi.fn(() => true),
 }))
 
 // Mock PlayerCommands - define inside vi.mock to avoid hoisting issues
-vi.mock("@/core/services/player-commands", () => ({
+vi.mock("@timeline-studio/core/services/player-commands", () => ({
   PlayerCommands: {
     playerSetMedia: vi.fn((mediaId, startTime) => ({
       type: "PlayerSetMedia",
@@ -131,7 +131,7 @@ vi.mock("@/core/services/player-commands", () => ({
 }))
 
 // Import after mocks
-import { PlayerCommands } from "@/core/services/player-commands"
+import { PlayerCommands } from "@timeline-studio/core/services/player-commands"
 
 describe("PlayerProvider", () => {
   let mockBackendState: any

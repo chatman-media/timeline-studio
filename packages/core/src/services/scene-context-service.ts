@@ -1,4 +1,4 @@
-import type { YoloDetection } from "@/core/types/yolo"
+import type { YoloDetection } from "@timeline-studio/core/types/yolo"
 
 /**
  * Интерфейс для контекста сцены, понятного для ИИ

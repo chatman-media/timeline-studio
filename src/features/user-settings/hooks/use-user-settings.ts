@@ -1,6 +1,6 @@
-import { useUserSettings as useCoreUserSettings } from "@/core/hooks/use-user-settings"
-import type { BrowserTab } from "@/core/types"
-import type { LayoutMode } from "@/core/types/user-settings"
+import { useUserSettings as useCoreUserSettings } from "@timeline-studio/core/hooks/use-user-settings"
+import type { BrowserTab } from "@timeline-studio/core/types"
+import type { LayoutMode } from "@timeline-studio/core/types/user-settings"
 import { type UserSettingsContextValue } from "../services/user-settings-provider"
 
 /**

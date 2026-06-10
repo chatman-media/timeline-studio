@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { MediaType, type EffectResource, type MediaFile } from "@/core/types"
+import { MediaType, type EffectResource, type MediaFile } from "@timeline-studio/core/types"
 import { AddMediaButton } from "@/features/browser/components/layout/add-media-button"
 import { FavoriteButton } from "@/features/browser/components/layout/favorite-button"
 import type { BaseEffect, VideoEffect } from "@/features/effects/types"

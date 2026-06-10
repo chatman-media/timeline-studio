@@ -5,7 +5,7 @@
  * Handles all backend calls related to previews, thumbnails, and timeline frames.
  */
 
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaPreviewData, ThumbnailData, TimelineFrame } from "../types/preview"
 

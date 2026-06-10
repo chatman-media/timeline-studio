@@ -7,7 +7,7 @@ import {
   cloneProjectSchema,
   type IAIProjectEditor,
   validateAIProjectEditResult,
-} from "@/core"
+} from "@timeline-studio/core"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 import { redactSensitiveMetadata } from "./sensitive-metadata"
 

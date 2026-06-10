@@ -5,10 +5,10 @@
  * Этот файл оставлен для обратной совместимости и будет удален в будущих версиях
  */
 
-import { container } from "@/core/container"
-import type { IUpdateService } from "@/core/ports"
+import { container } from "@timeline-studio/core/container"
+import type { IUpdateService } from "@timeline-studio/core/ports"
 
-export type { IUpdateService as UpdateService } from "@/core/ports"
+export type { IUpdateService as UpdateService } from "@timeline-studio/core/ports"
 
 export const updateService: IUpdateService = {
   checkForUpdates: (...args) => container.getUpdate().checkForUpdates(...args),

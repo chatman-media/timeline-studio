@@ -14,5 +14,5 @@ export {
   useBrowserTabSettings,
   useBrowserViewMode,
   useOptimisticSelection,
-} from "@/core/services/browser-context"
-export type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@/core/types"
+} from "@timeline-studio/core/services/browser-context"
+export type { BrowserState, BrowserTab, TabSettings, ViewMode } from "@timeline-studio/core/types"

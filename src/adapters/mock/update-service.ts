@@ -1,5 +1,5 @@
-import type { IUpdateService } from "@/core/ports"
-import type { AutoCheckSettings, UpdateCheckResult, UpdateEventPayload, UpdateStatus } from "@/core/types/updates"
+import type { IUpdateService } from "@timeline-studio/core/ports"
+import type { AutoCheckSettings, UpdateCheckResult, UpdateEventPayload, UpdateStatus } from "@timeline-studio/core/types/updates"
 
 export class MockUpdateService implements IUpdateService {
   private status: UpdateStatus = "idle"

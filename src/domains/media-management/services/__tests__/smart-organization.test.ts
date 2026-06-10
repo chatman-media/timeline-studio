@@ -23,7 +23,7 @@ const mockMetadataService = {
   extractMetadata: mockExtractMetadata,
 }
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getPlatform: vi.fn(() => mockPlatformService),
 }))
 

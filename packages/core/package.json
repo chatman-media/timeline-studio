@@ -18,17 +18,45 @@
       "types": "./src/hooks/index.ts",
       "default": "./src/hooks/index.ts"
     },
+    "./hooks/*": {
+      "types": "./src/hooks/*.ts",
+      "default": "./src/hooks/*.ts"
+    },
     "./ports": {
       "types": "./src/ports/index.ts",
       "default": "./src/ports/index.ts"
+    },
+    "./ports/*": {
+      "types": "./src/ports/*.ts",
+      "default": "./src/ports/*.ts"
     },
     "./services": {
       "types": "./src/services/index.ts",
       "default": "./src/services/index.ts"
     },
+    "./services/person-identification": {
+      "types": "./src/services/person-identification/index.ts",
+      "default": "./src/services/person-identification/index.ts"
+    },
+    "./services/person-identification/*": {
+      "types": "./src/services/person-identification/*.ts",
+      "default": "./src/services/person-identification/*.ts"
+    },
+    "./services/*": {
+      "types": "./src/services/*.ts",
+      "default": "./src/services/*.ts"
+    },
     "./types": {
       "types": "./src/types/index.ts",
       "default": "./src/types/index.ts"
+    },
+    "./types/*": {
+      "types": "./src/types/*.ts",
+      "default": "./src/types/*.ts"
+    },
+    "./utils/*": {
+      "types": "./src/utils/*.ts",
+      "default": "./src/utils/*.ts"
     }
   },
   "files": [

@@ -1,11 +1,11 @@
-import type { IEnhancedSubtitleAutomationService } from "@/core/ports"
+import type { IEnhancedSubtitleAutomationService } from "@timeline-studio/core/ports"
 import type {
   EnhancedSubtitleExecutionOptions,
   EnhancedSubtitleInput,
   EnhancedSubtitleResult,
   EnhancedSubtitleToolResult,
   SubtitleItem,
-} from "@/core/types/enhanced-subtitle"
+} from "@timeline-studio/core/types/enhanced-subtitle"
 
 export class MockEnhancedSubtitleAutomationAdapter implements IEnhancedSubtitleAutomationService {
   async processEnhancedSubtitles(

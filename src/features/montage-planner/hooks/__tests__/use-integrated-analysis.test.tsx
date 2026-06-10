@@ -5,7 +5,7 @@
 
 import { act, renderHook } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType, type MediaFile } from "@/core/types"
+import { MediaType, type MediaFile } from "@timeline-studio/core/types"
 import { MomentCategory } from "../../types"
 import { useContentAnalysis } from "../use-content-analysis"
 import { useIntegratedAnalysis } from "../use-integrated-analysis"

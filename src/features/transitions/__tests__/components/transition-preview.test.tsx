@@ -3,7 +3,7 @@
  */
 import { fireEvent, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { type MediaFile, MediaType } from "@/core/types/media"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types/media"
 import { renderWithBrowser as render } from "@/test/test-utils"
 
 import { TransitionPreview } from "../../components/transition-preview"

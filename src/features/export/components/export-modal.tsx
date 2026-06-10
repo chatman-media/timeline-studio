@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 import { useVideoCompiler } from "@/features/video-compiler/hooks/use-video-compiler"
 import { createLogger } from "@/lib/tauri-logger"

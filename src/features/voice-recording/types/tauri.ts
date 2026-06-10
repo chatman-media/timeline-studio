@@ -2,13 +2,13 @@
  * Типы для взаимодействия с Tauri командами voice recording
  */
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import type {
   AudioFormat as AudioFormatType,
   AudioFormatInfo,
   SaveAudioParams,
   SaveAudioResult,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 // Re-export types for backward compatibility.
 export type {
@@ -16,7 +16,7 @@ export type {
   AudioFormatInfo,
   SaveAudioParams,
   SaveAudioResult,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 // Local type alias for use in this file
 type AudioFormat = AudioFormatType

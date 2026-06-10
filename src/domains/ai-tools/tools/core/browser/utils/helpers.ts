@@ -8,7 +8,7 @@ import {
   requireBrowserStateAccess,
   setBrowserStateAccess as setCoreBrowserStateAccess,
   type BrowserStateAccess,
-} from "@/core/services/browser-state-access"
+} from "@timeline-studio/core/services/browser-state-access"
 import type { BrowserFileInfo, FileGroup } from "../types"
 
 /**

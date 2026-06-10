@@ -1,4 +1,4 @@
-import type { ITranscriptionService } from "@/core/ports"
+import type { ITranscriptionService } from "@timeline-studio/core/ports"
 import type {
   ModelInfo,
   SubtitleFormat,
@@ -7,7 +7,7 @@ import type {
   TranscriptionProgress,
   TranscriptionResult,
   WhisperIntegrationOptions,
-} from "@/core/types/transcription"
+} from "@timeline-studio/core/types/transcription"
 import { TranscriptionService } from "@/domains/ai-services/services/transcription-service"
 
 export class TauriTranscriptionService implements ITranscriptionService {

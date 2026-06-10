@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react"
-import type { Timeline, TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
+import type { Timeline, TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import {
   calculateNewDuration,

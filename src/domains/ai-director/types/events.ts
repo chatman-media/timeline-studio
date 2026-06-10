@@ -6,4 +6,4 @@ export type {
   ConfigValidationResult,
   HealthCheckResult,
   SystemCapabilities,
-} from "@/core/types/ai-director"
+} from "@timeline-studio/core/types/ai-director"

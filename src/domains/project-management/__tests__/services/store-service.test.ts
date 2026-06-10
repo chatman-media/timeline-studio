@@ -12,9 +12,9 @@ const createMockStorage = () => ({
   clear: vi.fn(),
 })
 
-// Мокаем @/core
+// Мокаем @timeline-studio/core
 const mockStorage = createMockStorage()
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasStorage: vi.fn(() => true),
     getStorage: vi.fn(() => mockStorage),
@@ -22,7 +22,7 @@ vi.mock("@/core", () => ({
 }))
 
 // Импорт для доступа к контейнеру в тестах
-import { container } from "@/core"
+import { container } from "@timeline-studio/core"
 
 describe("StoreService", () => {
   const mockSettings: AppSettings = {

@@ -5,7 +5,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import type { AIDirectorConfig } from "@/core/ports/ai.port"
+import type { AIDirectorConfig } from "@timeline-studio/core/ports/ai.port"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AiDirectorCommands")

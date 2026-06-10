@@ -5,7 +5,7 @@
  * Экспортирует функцию инициализации для регистрации всех адаптеров в контейнере.
  */
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 
 import { TauriAIService } from "./ai"
 import { TauriBackendService } from "./backend"

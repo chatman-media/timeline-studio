@@ -9,7 +9,7 @@ import { useSimpleMediaProcessor } from "../../hooks/use-simple-media-processor"
 
 import type { MediaFile } from "../../types/media"
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({

@@ -1,14 +1,14 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { IPublishService } from "@/core/ports"
+import type { IPublishService } from "@timeline-studio/core/ports"
 import type {
   BotPublishMetadata,
   BotPublishRequest,
   BotPublishResult,
   BotRenderJobArtifact,
   BotRenderJobDestination,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 export interface NodeTelegramPublishPayload {
   path: string

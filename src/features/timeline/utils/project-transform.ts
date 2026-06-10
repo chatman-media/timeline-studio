@@ -1,5 +1,5 @@
-import type { MediaFile } from "@/core/types/media"
-import type { Timeline, Track } from "@/core/types/timeline"
+import type { MediaFile } from "@timeline-studio/core/types/media"
+import type { Timeline, Track } from "@timeline-studio/core/types/timeline"
 import type { Project, ProjectState, Track as BackendTrack } from "@/types/generated/tauri-bindings"
 
 export function transformProjectStateToTimeline(projectState: ProjectState | null): Timeline | null {

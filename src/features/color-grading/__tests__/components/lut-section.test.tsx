@@ -19,8 +19,8 @@ const mockLogger = vi.hoisted(() => ({
 // Mock showOpenDialog
 const mockShowOpenDialog = vi.fn()
 
-// Mock @/core container
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core container
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({

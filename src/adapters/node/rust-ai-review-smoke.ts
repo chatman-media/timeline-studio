@@ -4,8 +4,8 @@ import os from "node:os"
 import path from "node:path"
 import type { Readable } from "node:stream"
 
-import { createBotProjectSchemaFromRenderJob, createTelegramLikeBotWorkflow } from "@/core"
-import type { BotEditRevision, BotEditSession, BotRenderJobArtifact, BotRenderJobMediaInput } from "@/core/types"
+import { createBotProjectSchemaFromRenderJob, createTelegramLikeBotWorkflow } from "@timeline-studio/core"
+import type { BotEditRevision, BotEditSession, BotRenderJobArtifact, BotRenderJobMediaInput } from "@timeline-studio/core/types"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 import { NodeRenderJobService } from "./render-job"

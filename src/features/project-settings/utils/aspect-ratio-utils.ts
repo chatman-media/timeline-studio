@@ -2,7 +2,7 @@
  * Утилиты для работы с соотношениями сторон
  */
 
-import { AspectRatio } from "@/core/types/video-editing"
+import { AspectRatio } from "@timeline-studio/core/types/video-editing"
 
 /**
  * Функция для преобразования ширины и высоты в строку формата X:Y

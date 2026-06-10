@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 const mockSaveVoiceRecording = vi.fn()
 const mockGetSupportedAudioFormats = vi.fn()
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getAI: () => ({
       saveVoiceRecording: mockSaveVoiceRecording,

@@ -1,7 +1,7 @@
 /**
  * Media Management Tauri Commands
  *
- * @deprecated Используйте container.getMedia() из @/core/container вместо этих функций.
+ * @deprecated Используйте container.getMedia() из @timeline-studio/core/container вместо этих функций.
  * Этот файл сохранён для обратной совместимости, но все новые сервисы должны использовать
  * IMediaService через DI контейнер.
  *
@@ -11,7 +11,7 @@
  * const metadata = await getMediaMetadata(filePath)
  *
  * // Новый способ:
- * import { getMedia } from "@/core/container"
+ * import { getMedia } from "@timeline-studio/core/container"
  * const metadata = await getMedia().getMetadata(filePath)
  */
 

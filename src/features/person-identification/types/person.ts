@@ -28,4 +28,4 @@ export type {
   Point2D,
   Timecode,
   TimeRange,
-} from "@/core/types/person-identification"
+} from "@timeline-studio/core/types/person-identification"

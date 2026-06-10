@@ -14,7 +14,7 @@ import type {
   ScanFolderOptions,
   ScannedMediaFile,
   ThumbnailOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 import { createNodeBackendClient, type NodeBackendClient, nodeBackendClient } from "./node-backend-client"
 

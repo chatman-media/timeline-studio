@@ -5,7 +5,7 @@
  */
 
 import { assign, fromPromise, setup } from "xstate"
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFileOperation, MediaImportContext, MediaImportEvent, MediaImportOptions } from "../types"
 

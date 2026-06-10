@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Progress } from "@/components/ui/progress"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { RenderStatus } from "@/core/types"
+import type { RenderStatus } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 import { useRenderQueue } from "../hooks/use-render-queue"

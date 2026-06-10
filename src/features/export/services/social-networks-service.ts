@@ -1,6 +1,6 @@
 // Объединяющий сервис для всех социальных сетей
 
-import { showSystemNotification } from "@/core/services/notifications"
+import { showSystemNotification } from "@timeline-studio/core/services/notifications"
 import { createLogger } from "@/lib/tauri-logger"
 import type { SocialExportSettings } from "../types/export-types"
 import { OAuthService } from "./oauth-service"

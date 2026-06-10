@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { createBotProjectSchemaFromRenderJob, runAIProjectEdit, validateAIProjectEditResult } from "@/core"
+import { createBotProjectSchemaFromRenderJob, runAIProjectEdit, validateAIProjectEditResult } from "@timeline-studio/core"
 import { createNodeServices, NodeAIProjectEditor, type NodeAIProjectEditorFetch } from "../index"
 import {
   AI_PROJECT_EDITOR_INVALID_RESPONSE_FIXTURE,

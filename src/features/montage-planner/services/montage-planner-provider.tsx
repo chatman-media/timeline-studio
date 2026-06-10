@@ -5,8 +5,8 @@
 
 import { useActor } from "@xstate/react"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
-import { container } from "@/core"
-import { useApp } from "@/core/hooks/use-app"
+import { container } from "@timeline-studio/core"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
 import { createLogger } from "@/lib/tauri-logger"
 import { type MontagePlannerEvent, montagePlannerMachine } from "./domain-adapters"
 

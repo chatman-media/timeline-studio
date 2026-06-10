@@ -2,11 +2,11 @@
  * Преобразование Timeline в ProjectSchema для Video Compiler
  */
 
-import type { VideoFilter } from "@/core/types/filters"
-import type { StyleTemplate } from "@/core/types/style-template"
-import type { MediaTemplate } from "@/core/types/templates"
-import type { Transition } from "@/core/types/transitions"
-import { AspectRatio, OutputFormat } from "@/core/types/video-editing"
+import type { VideoFilter } from "@timeline-studio/core/types/filters"
+import type { StyleTemplate } from "@timeline-studio/core/types/style-template"
+import type { MediaTemplate } from "@timeline-studio/core/types/templates"
+import type { Transition } from "@timeline-studio/core/types/transitions"
+import { AspectRatio, OutputFormat } from "@timeline-studio/core/types/video-editing"
 import type { SubtitleClip } from "@/features/subtitles/types"
 
 const CompilerTrackType = {

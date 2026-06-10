@@ -31,7 +31,7 @@ export type {
   FFmpegProcessor,
   ParameterType,
   WebGLProcessor,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 // Node compositing and shader system remain in features (UI-specific)
 export * from "./node-compositing"

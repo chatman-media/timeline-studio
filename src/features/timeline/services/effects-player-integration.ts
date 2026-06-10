@@ -3,7 +3,7 @@
  * Интеграция WebGL эффектов с video player для real-time preview
  */
 
-import type { AppliedEffect, BaseEffect } from "@/core/types"
+import type { AppliedEffect, BaseEffect } from "@timeline-studio/core/types"
 import { WebGL2UnifiedRenderer } from "@/features/effects/services/webgl2-unified-renderer"
 import { createLogger } from "@/lib/tauri-logger"
 import type { TimelineClip } from "../types"

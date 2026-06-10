@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import { type MediaFile, MediaType } from "@/core/types/media"
-import type { TemplateResource } from "@/core/types/resources"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types/media"
+import type { TemplateResource } from "@timeline-studio/core/types/resources"
 import { calculateDimensionsWithAspectRatio } from "@/features/media/utils/preview-sizes"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { usePlayer, useVideoSelection } from "@/features/video-player"

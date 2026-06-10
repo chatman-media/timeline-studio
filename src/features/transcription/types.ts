@@ -7,4 +7,4 @@ export type {
   TranscriptionSegment,
   TranscriptionWord,
   WhisperIntegrationOptions,
-} from "@/core/types/transcription"
+} from "@timeline-studio/core/types/transcription"

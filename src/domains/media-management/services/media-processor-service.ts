@@ -6,7 +6,7 @@
  * keeping features layer independent from backend implementation.
  */
 
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaFile } from "../types/media"
 

@@ -12,11 +12,11 @@
 
 import { type ReactNode } from "react"
 import { AppInitProvider } from "@/adapters/react"
-import { BrowserProvider as CoreBrowserProvider } from "@/core/services/browser-context"
-import { setAITools } from "@/core/services/ai-tools-registry"
-import { setMediaManagementBindings } from "@/core/services/media-management-registry"
-import { setMontagePlannerBindings } from "@/core/services/montage-planner-registry"
-import { setVideoEditingBindings } from "@/core/services/video-editing-registry"
+import { BrowserProvider as CoreBrowserProvider } from "@timeline-studio/core/services/browser-context"
+import { setAITools } from "@timeline-studio/core/services/ai-tools-registry"
+import { setMediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
+import { setMontagePlannerBindings } from "@timeline-studio/core/services/montage-planner-registry"
+import { setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import { ChatProvider, MCPProvider, montagePlannerMachine, unifiedOrchestrator } from "@/domains/ai-services"
 import {
   applyPlanToTimeline,

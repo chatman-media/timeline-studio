@@ -1,4 +1,4 @@
-import type { ModalMachineContext } from "@/core/types/modals"
+import type { ModalMachineContext } from "@timeline-studio/core/types/modals"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ModalEventHandlers")

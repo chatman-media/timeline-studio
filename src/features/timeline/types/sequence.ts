@@ -18,4 +18,4 @@ export type {
   SequenceSettings,
   SequenceType,
   Title,
-} from "@/core/types/timeline-sequence"
+} from "@timeline-studio/core/types/timeline-sequence"

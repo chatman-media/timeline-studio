@@ -21,7 +21,7 @@ import type {
   SceneDetectionResult,
   ThumbnailOptions,
   WaveformOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class HttpMediaService implements IMediaService {
   // ============================================================================

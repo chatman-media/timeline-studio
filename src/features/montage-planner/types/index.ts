@@ -3,7 +3,7 @@
  * Defines structures for montage plans, fragments, and analysis results
  */
 
-import type { MediaFile } from "@/core/types/media"
+import type { MediaFile } from "@timeline-studio/core/types/media"
 import type { BaseEffect as VideoEffect } from "../../../features/effects/types/unified-effects"
 import type { Transition } from "../../../features/transitions/types/transitions"
 

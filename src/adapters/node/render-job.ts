@@ -2,8 +2,8 @@ import crypto from "node:crypto"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { IPublishService, IRenderJobService, IVideoService, RenderJob as VideoRenderJob } from "@/core/ports"
-import { createBotRenderJobSnapshot } from "@/core/services"
+import type { IPublishService, IRenderJobService, IVideoService, RenderJob as VideoRenderJob } from "@timeline-studio/core/ports"
+import { createBotRenderJobSnapshot } from "@timeline-studio/core/services"
 import type {
   BotPublishMetadata,
   BotRenderJob,
@@ -14,7 +14,7 @@ import type {
   BotRenderJobResult,
   BotRenderJobRunOptions,
   BotRenderJobStatus,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 export interface NodeRenderJobServiceOptions {
   outputDir?: string

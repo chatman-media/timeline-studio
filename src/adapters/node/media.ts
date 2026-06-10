@@ -28,7 +28,7 @@ import type {
   SceneDetectionResult,
   ThumbnailOptions,
   WaveformOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 const execAsync = promisify(exec)
 

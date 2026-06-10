@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { useCurrentProject } from "@/core/hooks/use-current-project"
-import { type MediaFile, MediaType } from "@/core/types"
+import { useCurrentProject } from "@timeline-studio/core/hooks/use-current-project"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 import {
   getMediaFiles,
   getMediaMetadata,

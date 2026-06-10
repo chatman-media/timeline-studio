@@ -1,4 +1,4 @@
-import type { ILanguageService, LanguageResponse } from "@/core/ports"
+import type { ILanguageService, LanguageResponse } from "@timeline-studio/core/ports"
 
 export class MockLanguageService implements ILanguageService {
   private languageResponse: LanguageResponse

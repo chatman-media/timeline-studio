@@ -1,1 +1,1 @@
-export { YoloDataService } from "@/core/services/yolo-data-service"
+export { YoloDataService } from "@timeline-studio/core/services/yolo-data-service"

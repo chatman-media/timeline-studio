@@ -6,7 +6,7 @@ import { render } from "@/test/test-utils"
 import { MediaScanner } from "../../components/media-scanner"
 
 // Мокаем container с платформенным сервисом
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn().mockReturnValue(true),
     getPlatform: vi.fn().mockReturnValue({
@@ -37,7 +37,7 @@ describe("MediaScanner", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const { container } = await import("@/core")
+    const { container } = await import("@timeline-studio/core")
     mockShowOpenDialog = container.getPlatform().showOpenDialog as any
   })
 

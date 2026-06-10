@@ -7,7 +7,7 @@ import {
   type BotEditSessionStore,
   compareBotEditSessionsByUpdatedAtDesc,
   matchesBotEditSessionQuery,
-} from "@/core"
+} from "@timeline-studio/core"
 
 export interface NodeBotEditSessionFileStoreOptions {
   directory: string

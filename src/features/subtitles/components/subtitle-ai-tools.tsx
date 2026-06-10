@@ -2,7 +2,7 @@ import { Mic } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
-import { useModals } from "@/core/hooks"
+import { useModals } from "@timeline-studio/core/hooks"
 
 /**
  * Инструменты AI для работы с субтитрами

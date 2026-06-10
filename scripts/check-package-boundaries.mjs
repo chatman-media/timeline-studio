@@ -88,31 +88,47 @@ function resolveInternalSpecifier(sourceFile, specifier) {
   }
 
   if (cleanSpecifier === "@timeline-studio/core") {
-    return "src/core"
+    return "packages/core/src"
   }
 
   if (cleanSpecifier.startsWith("@timeline-studio/core/")) {
-    return `src/core/${cleanSpecifier.slice("@timeline-studio/core/".length)}`
+    return `packages/core/src/${cleanSpecifier.slice("@timeline-studio/core/".length)}`
+  }
+
+  if (cleanSpecifier === "@timeline-studio/domains") {
+    return "packages/domains/src"
   }
 
   if (cleanSpecifier.startsWith("@timeline-studio/domains/")) {
-    return `src/domains/${cleanSpecifier.slice("@timeline-studio/domains/".length)}`
+    return `packages/domains/src/${cleanSpecifier.slice("@timeline-studio/domains/".length)}`
   }
 
   if (cleanSpecifier === "@timeline-studio/adapters") {
-    return "src/adapters"
+    return "packages/adapters/src"
   }
 
   if (cleanSpecifier.startsWith("@timeline-studio/adapters/")) {
-    return `src/adapters/${cleanSpecifier.slice("@timeline-studio/adapters/".length)}`
+    return `packages/adapters/src/${cleanSpecifier.slice("@timeline-studio/adapters/".length)}`
+  }
+
+  if (cleanSpecifier === "@timeline-studio/ui") {
+    return "packages/ui/src"
+  }
+
+  if (cleanSpecifier === "@timeline-studio/ui/features") {
+    return "packages/ui/src/features"
+  }
+
+  if (cleanSpecifier === "@timeline-studio/ui/components") {
+    return "packages/ui/src/components"
   }
 
   if (cleanSpecifier.startsWith("@timeline-studio/ui/features/")) {
-    return `src/features/${cleanSpecifier.slice("@timeline-studio/ui/features/".length)}`
+    return `packages/ui/src/features/${cleanSpecifier.slice("@timeline-studio/ui/features/".length)}`
   }
 
   if (cleanSpecifier.startsWith("@timeline-studio/ui/components/")) {
-    return `src/components/ui/${cleanSpecifier.slice("@timeline-studio/ui/components/".length)}`
+    return `packages/ui/src/components/${cleanSpecifier.slice("@timeline-studio/ui/components/".length)}`
   }
 
   if (cleanSpecifier.startsWith(".")) {
@@ -288,8 +304,16 @@ function printBaselineReport(comparison) {
 async function main() {
   const config = await readConfig()
   const baseline = await readBaseline()
-  const sourceRoot = path.join(repoRoot, config.sourceRoot)
-  const files = await collectFiles(sourceRoot, config)
+  const sourceRoots = config.sourceRoots ?? [config.sourceRoot]
+  const files = [
+    ...new Set(
+      (
+        await Promise.all(
+          sourceRoots.map((sourceRoot) => collectFiles(path.join(repoRoot, sourceRoot), config)),
+        )
+      ).flat(),
+    ),
+  ].sort()
   const violations = []
 
   for (const file of files) {

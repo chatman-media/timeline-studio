@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react"
-import type { MediaFile } from "@/core/types"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("video-player:use-video-element")

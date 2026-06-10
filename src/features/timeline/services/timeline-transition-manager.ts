@@ -3,7 +3,7 @@
  * Управление переходами на треках таймлайна
  */
 
-import type { TimelineTransition, Transition } from "@/core/types"
+import type { TimelineTransition, Transition } from "@timeline-studio/core/types"
 import type { TimelineProject, TimelineTrack } from "@/features/timeline/types"
 import {
   addTimelineTransitionToResources,

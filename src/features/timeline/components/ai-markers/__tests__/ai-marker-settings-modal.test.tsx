@@ -13,7 +13,7 @@ const mockModalData = {
   onSave: vi.fn(),
 }
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "ai-marker-settings",
     isModalOpen: true,

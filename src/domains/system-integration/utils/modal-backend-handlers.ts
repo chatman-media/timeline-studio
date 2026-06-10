@@ -1,2 +1,2 @@
-export type { ModalBackendEvent } from "@/core/services/modal-backend-handlers"
-export { handleModalBackendEvent } from "@/core/services/modal-backend-handlers"
+export type { ModalBackendEvent } from "@timeline-studio/core/services/modal-backend-handlers"
+export { handleModalBackendEvent } from "@timeline-studio/core/services/modal-backend-handlers"

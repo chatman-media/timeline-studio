@@ -12,7 +12,7 @@ import os from "node:os"
 import path from "node:path"
 import { promisify } from "node:util"
 
-import type { IBackendService, Unsubscribe } from "@/core/ports"
+import type { IBackendService, Unsubscribe } from "@timeline-studio/core/ports"
 import type {
   CommandResult,
   EventEnvelope,

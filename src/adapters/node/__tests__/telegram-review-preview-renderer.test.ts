@@ -3,8 +3,8 @@ import os from "node:os"
 import path from "node:path"
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { IRenderJobService } from "@/core/ports"
-import type { BotEditRevision, BotEditSession, BotRenderJobRequest, BotRenderJobRunOptions } from "@/core/types"
+import type { IRenderJobService } from "@timeline-studio/core/ports"
+import type { BotEditRevision, BotEditSession, BotRenderJobRequest, BotRenderJobRunOptions } from "@timeline-studio/core/types"
 import { NodeTelegramRenderJobReviewPreviewRenderer } from "../telegram-review-preview-renderer"
 
 describe("NodeTelegramRenderJobReviewPreviewRenderer", () => {

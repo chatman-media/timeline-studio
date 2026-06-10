@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { BotWorkflowStatusMessage, BotWorkflowStatusSink } from "@/core/types"
+import type { BotWorkflowStatusMessage, BotWorkflowStatusSink } from "@timeline-studio/core/types"
 
 export interface NodeTelegramStatusPayload {
   chatId: string

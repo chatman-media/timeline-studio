@@ -3,8 +3,8 @@
  * Сервис для продвинутого трекинга персон с использованием DeepSORT и Kalman фильтров
  */
 
-import { getAI } from "@/core/container"
-import type { DetectedFace, PersonAppearance } from "@/core/types/person-identification"
+import { getAI } from "@timeline-studio/core/container"
+import type { DetectedFace, PersonAppearance } from "@timeline-studio/core/types/person-identification"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AdvancedTrackingService")

@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core"
-import type { ILanguageService, LanguageResponse } from "@/core/ports"
+import type { ILanguageService, LanguageResponse } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("TauriLanguageService")

@@ -7,7 +7,7 @@
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from "react"
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { UndoRedoHelpers, useUndoRedo } from "@/features/timeline/hooks/state/use-undo-redo"
 import {
   createInitialUndoState,

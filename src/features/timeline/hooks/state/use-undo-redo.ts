@@ -1,4 +1,4 @@
-import { getVideoEditingBindings } from "@/core/services/video-editing-registry"
+import { getVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import type { ActionType, UndoRedoAction } from "../../services/undo-redo-service"
 
 interface Clip {

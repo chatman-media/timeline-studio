@@ -1,4 +1,4 @@
-import type { ILanguageService, LanguageResponse } from "@/core/ports"
+import type { ILanguageService, LanguageResponse } from "@timeline-studio/core/ports"
 
 export interface NodeLanguageOptions {
   language?: string

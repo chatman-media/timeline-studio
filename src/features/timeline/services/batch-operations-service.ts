@@ -3,7 +3,7 @@
  * Provides batch operations for multiple clips in timeline
  */
 
-import type { AppliedEffect } from "@/core/types"
+import type { AppliedEffect } from "@timeline-studio/core/types"
 import type { TimelineClip, TimelineTrack } from "../types"
 import { type VideoFadeOptions, VideoFadeService } from "./video-fade-service"
 

@@ -5,9 +5,9 @@
 
 import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { container } from "@/core/container"
-import { useNotifications } from "@/core/hooks"
-import type { EnhancedSubtitleInput, EnhancedSubtitleResult } from "@/core/types/enhanced-subtitle"
+import { container } from "@timeline-studio/core/container"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import type { EnhancedSubtitleInput, EnhancedSubtitleResult } from "@timeline-studio/core/types/enhanced-subtitle"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции

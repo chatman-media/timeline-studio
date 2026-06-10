@@ -7,7 +7,7 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import type { TimelineTransition } from "@/core/types"
+import type { TimelineTransition } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 interface TransitionPlayerOverlayProps {

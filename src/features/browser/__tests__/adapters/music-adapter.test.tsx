@@ -9,7 +9,7 @@ import { MediaType } from "@/domains/media-management"
 import { useMusicAdapter } from "@/features/browser/adapters/use-music-adapter"
 
 // Mock модулей
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useFavorites: vi.fn(() => ({
     isItemFavorite: vi.fn(() => false),
     addFavorite: vi.fn(),

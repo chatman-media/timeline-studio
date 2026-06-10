@@ -1,5 +1,5 @@
-import { useApp } from "@/core/hooks/use-app"
-import type { MediaFile } from "@/core/types"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
+import type { MediaFile } from "@timeline-studio/core/types"
 import type { MediaItem } from "@/types/generated/tauri-bindings"
 
 export function useMusicFiles() {

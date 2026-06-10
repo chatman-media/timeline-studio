@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useState } from "react"
-import type { TimelineStudioProject } from "@/core/types/project"
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { Scenario, ScenarioStep } from "../types/scenario"

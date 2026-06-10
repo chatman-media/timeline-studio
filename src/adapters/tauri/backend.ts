@@ -5,8 +5,8 @@
  * Обёртка над существующим BackendSync для совместимости с новой архитектурой.
  */
 
-import type { IBackendService, Unsubscribe } from "@/core/ports"
-import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@/core/types"
+import type { IBackendService, Unsubscribe } from "@timeline-studio/core/ports"
+import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@timeline-studio/core/types"
 import { getBackendSync } from "./backend-sync"
 
 export class TauriBackendService implements IBackendService {

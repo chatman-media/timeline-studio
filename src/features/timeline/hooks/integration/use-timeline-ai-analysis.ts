@@ -5,9 +5,9 @@
  */
 
 import { useCallback, useEffect, useState } from "react"
-import { analyzeScenesByPath, type SceneAnalysisResult } from "@/core/services/content-intelligence"
-import { KeyMomentType, type ContentInsights, type KeyMoment, type UnifiedContentAnalysis } from "@/core/types/ai-analysis"
-import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
+import { analyzeScenesByPath, type SceneAnalysisResult } from "@timeline-studio/core/services/content-intelligence"
+import { KeyMomentType, type ContentInsights, type KeyMoment, type UnifiedContentAnalysis } from "@timeline-studio/core/types/ai-analysis"
+import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip } from "@/features/timeline/types"
 import { createLogger } from "@/lib/tauri-logger"
 import { useTimeline } from "../state/use-timeline"

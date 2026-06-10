@@ -3,7 +3,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { IPlatformService, IVideoService } from "@/core/ports"
+import type { IPlatformService, IVideoService } from "@timeline-studio/core/ports"
 
 // Mock adapters/node
 const mockPlatform: IPlatformService = {

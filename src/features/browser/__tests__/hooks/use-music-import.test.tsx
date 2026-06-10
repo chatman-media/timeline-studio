@@ -3,7 +3,7 @@
  */
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { MediaType } from "@/core/types"
+import { MediaType } from "@timeline-studio/core/types"
 import {
   getMediaFiles,
   getMediaMetadata,
@@ -17,7 +17,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
-vi.mock("@/core/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/core/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
     currentProject: {
       path: "/test/project",

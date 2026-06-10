@@ -6,8 +6,8 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { container } from "@/core"
-import type { IBackendService } from "@/core/ports"
+import { container } from "@timeline-studio/core"
+import type { IBackendService } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   BrowserEvent,

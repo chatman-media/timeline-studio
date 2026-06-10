@@ -15,7 +15,7 @@ import { ChatProvider, useChat } from "../chat-provider"
 const mockExecuteCommand = vi.fn()
 const mockOnStateChange = vi.fn()
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getBackend: vi.fn(() => ({
       executeCommand: mockExecuteCommand,

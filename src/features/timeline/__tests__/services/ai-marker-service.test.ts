@@ -4,7 +4,7 @@
 
 import { beforeEach, describe, expect, it } from "vitest"
 
-import { KeyMomentType, type ContentInsights, type KeyMoment, type SceneInfo } from "@/core/types/ai-analysis"
+import { KeyMomentType, type ContentInsights, type KeyMoment, type SceneInfo } from "@timeline-studio/core/types/ai-analysis"
 import type { TimelineMarker } from "@/features/timeline/types"
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 import { AIMarkerService } from "../../services/ai-marker-service"

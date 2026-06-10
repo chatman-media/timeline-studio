@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
-import { useApp } from "@/core/hooks/use-app"
-import { setBrowserStateAccess, type BrowserStateAccess } from "@/core/services/browser-state-access"
-import type { BrowserTab, MediaFile } from "@/core/types"
+import { useApp } from "@timeline-studio/core/hooks/use-app"
+import { setBrowserStateAccess, type BrowserStateAccess } from "@timeline-studio/core/services/browser-state-access"
+import type { BrowserTab, MediaFile } from "@timeline-studio/core/types"
 import { useBrowserState } from "@/features/browser/services"
 import { logInfo } from "@/lib/tauri-logger"
 

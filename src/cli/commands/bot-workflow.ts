@@ -17,7 +17,7 @@ import type {
   BotWorkflowStatusPolicy,
   BotWorkflowStatusSink,
   TelegramLikeBotPayload,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 export interface BotWorkflowCommandOptions {
   statusFile?: string

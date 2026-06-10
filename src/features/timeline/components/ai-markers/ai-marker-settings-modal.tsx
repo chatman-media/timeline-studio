@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import { useModals } from "@/core/hooks"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import type { AIMarkerConfig } from "../../services/ai-marker-service"
 

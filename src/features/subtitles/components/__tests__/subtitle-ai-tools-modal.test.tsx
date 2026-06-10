@@ -18,7 +18,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock dependencies
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: vi.fn(() => ({
     activeModal: "none",
     modalData: null,
@@ -67,7 +67,7 @@ vi.mock("sonner", () => ({
   },
 }))
 
-import { useModals } from "@/core/hooks"
+import { useModals } from "@timeline-studio/core/hooks"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 
 import { SubtitleAIToolsModal } from "../subtitle-ai-tools-modal"

@@ -5,7 +5,7 @@ import fsPromises from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 
-import type { RenderJob, RenderProgress } from "@/core/ports"
+import type { RenderJob, RenderProgress } from "@timeline-studio/core/ports"
 
 import { type NodeVideoOptions, NodeVideoService } from "./video"
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import type { BotRenderJob, BotRenderJobEvent } from "@/core/types"
+import type { BotRenderJob, BotRenderJobEvent } from "@timeline-studio/core/types"
 import {
   createBotRenderJobRetryRequest,
   createBotRenderJobSnapshot,

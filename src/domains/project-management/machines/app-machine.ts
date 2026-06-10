@@ -6,8 +6,8 @@
  */
 
 import { assign, fromCallback, fromPromise, setup } from "xstate"
-import { getBackend } from "@/core"
-import type { IBackendService } from "@/core/ports"
+import { getBackend } from "@timeline-studio/core"
+import type { IBackendService } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   JsonValue,

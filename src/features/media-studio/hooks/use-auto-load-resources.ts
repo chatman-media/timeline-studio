@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { appDirectoriesService } from "@/core/services"
+import { appDirectoriesService } from "@timeline-studio/core/services"
 import { useResources } from "@/features/timeline/providers/resources-provider"
 import { createLogger } from "@/lib/tauri-logger"
 import {

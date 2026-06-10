@@ -6,8 +6,8 @@
 import { useEffect, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useModals } from "@/core/hooks"
-import { PersonDatabaseService } from "@/core/services"
+import { useModals } from "@timeline-studio/core/hooks"
+import { PersonDatabaseService } from "@timeline-studio/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import type { PersonAppearance, PersonProfile } from "../types/person"
 import { PersonDetail } from "./person-detail"

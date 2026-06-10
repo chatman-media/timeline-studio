@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { container } from "@/core/container"
-import type { UnlistenFn } from "@/core/ports"
-import { analysisNotificationService } from "@/core/services/analysis-notification-service"
+import { container } from "@timeline-studio/core/container"
+import type { UnlistenFn } from "@timeline-studio/core/ports"
+import { analysisNotificationService } from "@timeline-studio/core/services/analysis-notification-service"
 import type {
   AnalysisCompleted,
   AnalysisError,
   AnalysisProgress,
   AnalysisStageCompleted,
-} from "@/core/types/ai-director"
+} from "@timeline-studio/core/types/ai-director"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseAIDirectorEvents")

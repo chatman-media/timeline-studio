@@ -1,4 +1,4 @@
-import type { FfprobeStream, MediaFile, MediaTimeRange } from "@/core/types"
+import type { FfprobeStream, MediaFile, MediaTimeRange } from "@timeline-studio/core/types"
 
 import { createLogger } from "@/lib/tauri-logger"
 

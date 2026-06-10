@@ -10,12 +10,12 @@ import { useSubtitlesImport } from "../../hooks/use-subtitles-import"
 const mockReadSubtitleFile = vi.fn()
 const mockShowOpenDialog = vi.fn()
 
-vi.mock("@/core/services/subtitles", () => ({
+vi.mock("@timeline-studio/core/services/subtitles", () => ({
   readSubtitleFile: (...args: any[]) => mockReadSubtitleFile(...args),
 }))
 
 // Mock core container
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({

@@ -3,7 +3,7 @@
 **Статус:** Active, tracked in [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Приоритет:** High
 **Создано:** 2025-11-29
-**Актуализировано:** 2026-06-07
+**Актуализировано:** 2026-06-11
 **Ответственный:** Architecture Team
 
 ## Контекст
@@ -36,13 +36,13 @@ timeline-studio/
 └── bun.lock
 ```
 
-После F5 пакеты имеют физические workspace shells (`packages/*`, `apps/*`), а runtime-код пока остается в текущих `src/*` деревьях и подключается через bridge wrappers:
+После F5 пакеты получили физические workspace shells (`packages/*`, `apps/*`). После F7 package-boundary baseline снижен до нуля, поэтому следующие фазы переводят shell-пакеты в реальные владельцы кода:
 
-- `@timeline-studio/core` -> `packages/core/src/*` -> `src/core`
-- `@timeline-studio/domains` / `@timeline-studio/domains/*` -> `packages/domains/src/*` -> `src/domains`
-- `@timeline-studio/adapters` / `@timeline-studio/adapters/*` -> `packages/adapters/src/*` -> `src/adapters`
-- `@timeline-studio/ui/features/*` -> `packages/ui/src/features/*` -> `src/features/*`
-- `@timeline-studio/ui/components/*` -> `packages/ui/src/components/*` -> `src/components/ui/*`
+- F9: `packages/core/src` становится владельцем core-контрактов, сервисов, hooks и типов.
+- F10: `packages/domains/src` становится владельцем domain-модулей.
+- F11: `packages/adapters/src` становится владельцем Node/Tauri/HTTP/Mock/React adapters.
+- F12: `packages/ui/src` становится владельцем package-safe UI primitives и reusable feature surfaces.
+- F13: `apps/desktop` и `apps/cli` становятся владельцами app-level entrypoints, насколько это допускают Next/Tauri constraints.
 
 Границы и правила описаны в [package-boundaries.md](../../engineering/package-boundaries.md) и `config/package-boundaries.json`.
 
@@ -137,7 +137,70 @@ adapters -> core
 - [x] `color-scheme`: расширить feature-facing `user-settings` adapter и убрать прямые imports из `project-management`/`system-integration`.
 - [x] `color-grading`: перевести modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
 - [x] `fairlight-audio`: перевести MIDI modal hook imports на feature-facing compatibility layer `@/features/modals/services`.
-- [ ] Следующие маленькие кандидаты: `resources`, `style-templates`, `updates`.
+- [x] Довести оставшиеся `ui -> domains` предупреждения до нуля через core registries/facades для browser state, media management, video editing и montage planner.
+
+### F8: Close F7 zero-boundary baseline and extraction prep
+
+**Цель:** сделать нулевой baseline официальной стартовой точкой для физического переноса пакетов.
+
+- [x] Создать follow-up задачи [#272](https://github.com/chatman-media/timeline-studio/issues/272)-[#278](https://github.com/chatman-media/timeline-studio/issues/278) для F8-F14.
+- [x] Обновить `config/package-boundaries-baseline.json` до `0` violations.
+- [ ] Обновить GitHub issue [#165](https://github.com/chatman-media/timeline-studio/issues/165) финальным статусом после PR.
+- [x] Решить, включать ли `check:boundaries:strict` в default CI после физического переноса или оставить отдельным gate до удаления compatibility shims.
+
+### F9: Physically extract core into `packages/core`
+
+**Цель:** `packages/core/src` владеет реальной core-реализацией, а не bridge re-exports в `src/core`.
+
+- [x] Перенести core container, ports, services, hooks, types и core utils в `packages/core/src`.
+- [x] Оставить `src/core` как временный compatibility layer только для старых imports: не потребовалось, imports переведены на `@timeline-studio/core`.
+- [x] Обновить package exports, TS paths и tests на moved source.
+- [x] Проверить, что core не импортирует domains, adapters, app-shell или feature UI.
+
+### F10: Physically extract domains into `packages/domains`
+
+**Цель:** `packages/domains/src` владеет domain-модулями за стабильными package exports.
+
+- [ ] Перенести domain modules из `src/domains` в `packages/domains/src` небольшими subdomain slices.
+- [ ] Сохранить app-shell как место композиции domains/adapters/UI.
+- [ ] Оставить `src/domains` compatibility shims только на время миграции imports.
+- [ ] Не допустить domain dependencies на UI или platform adapters.
+
+### F11: Physically extract adapters into `packages/adapters`
+
+**Цель:** adapter implementations живут в `packages/adapters/src`.
+
+- [ ] Перенести mock/node/tauri/http/react adapters по runtime families.
+- [ ] Оставить adapters зависимыми от core contracts и shared runtime utilities.
+- [ ] Сохранить `src/adapters` compatibility entrypoints для root/app imports на время миграции.
+- [ ] Проверить bot/headless Node adapter paths и desktop app init.
+
+### F12: Physically extract reusable UI into `packages/ui`
+
+**Цель:** package-safe UI primitives и reusable feature surfaces живут в `packages/ui/src`.
+
+- [ ] Перенести shared UI primitives из `src/components/ui`.
+- [ ] Перенести только те feature surfaces, которые не тащат domains/adapters напрямую.
+- [ ] Мигрировать imports на `@timeline-studio/ui/*` для moved public surfaces.
+- [ ] Проверить, что `packages/ui` зависит только от UI/core-safe контрактов.
+
+### F13: Move desktop and CLI entrypoints into `apps`
+
+**Цель:** `apps/desktop` и `apps/cli` перестают быть только package-manager shells.
+
+- [ ] Перенести или явно зафиксировать compatibility ownership для Next/Tauri entrypoints.
+- [ ] Перенести CLI command ownership в `apps/cli` или app-owned wrappers.
+- [ ] Сохранить root scripts для developer compatibility.
+- [ ] Документировать root files, которые пока нельзя перенести из-за Next/Tauri constraints.
+
+### F14: Finalize workspace CI, build, and docs
+
+**Цель:** закрепить итоговую workspace ownership model в scripts, CI и docs.
+
+- [ ] Обновить workspace scripts, package exports, TS paths, test configs и CI cache keys.
+- [ ] Удалить устаревшие bridge wrappers или документировать оставшиеся shims с owners.
+- [ ] Решить судьбу `check:boundaries:strict` как default CI gate.
+- [ ] Проверить lockfiles и package metadata.
 
 ## Проверка каждого PR
 
@@ -155,19 +218,18 @@ bun run check:type
 
 ## Текущий baseline
 
-`bun run check:boundaries` сейчас работает в report-only режиме. Это намеренно: текущий код содержит известные нарушения, которые нужно снимать отдельными PR.
+`bun run check:boundaries` сейчас работает в report-only режиме. После F7 отчет должен оставаться на нуле; любые новые нарушения считаются регрессией.
 
-CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает только при росте total/severity/edge counts. Strict mode останется выключенным до burn-down `domains -> ui`, `domains -> app-shell` и `ui -> domains`.
+CI использует `bun run check:boundaries:baseline`, который сравнивает отчет с `config/package-boundaries-baseline.json` и падает при росте total/severity/edge counts. `check:boundaries:strict` остается отдельным gate до завершения F14, потому что physical extraction временно сохраняет compatibility shims.
 
-Baseline на 2026-06-10:
+Baseline на 2026-06-11:
 
-- Scanned files: 1628
-- Violations: 406
+- Scanned files: 1777
+- Violations: 0
 - `error`: 0
-- `warn`: 406
-- Edges: `ui -> domains` 406
+- `warn`: 0
 
-Следующие PR должны уменьшать этот отчет и не добавлять новые нарушения без явного follow-up.
+Следующие PR должны сохранять этот отчет на нуле. Если compatibility shim временно требует нового правила, это должно быть явно отражено в F8-F14 issue и PR description.
 
 ## Риски и митигация
 
@@ -177,9 +239,12 @@ Baseline на 2026-06-10:
 | Циклические зависимости остаются незаметными | Высокое | Запускать `bun run check:boundaries` в каждом PR |
 | UI продолжает импортировать Tauri adapters | Высокое | F3 закрывает `ui -> adapters`; после burn-down включить strict gate |
 | Lockfile drift между npm и bun | Среднее | После workspace/package changes запускать frozen install и держать `package-lock.json` metadata синхронной |
+| Compatibility shims маскируют незавершенный перенос | Среднее | В F9-F14 каждый shim должен быть временным и иметь owner/follow-up |
 
 ## Связанные задачи
 
 - [#150](https://github.com/chatman-media/timeline-studio/issues/150) - Epic: Phase F
+- [#165](https://github.com/chatman-media/timeline-studio/issues/165) - Phase F7: ui-to-domains warning burn-down
+- [#272](https://github.com/chatman-media/timeline-studio/issues/272)-[#278](https://github.com/chatman-media/timeline-studio/issues/278) - F8-F14 physical extraction follow-ups
 - [#91](https://github.com/chatman-media/timeline-studio/issues/91) - Rust decomposition
 - [#104](https://github.com/chatman-media/timeline-studio/issues/104), [#120](https://github.com/chatman-media/timeline-studio/issues/120) - shared types extraction

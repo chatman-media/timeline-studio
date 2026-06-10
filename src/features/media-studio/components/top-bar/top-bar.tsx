@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { useCurrentProject, useModals, useNotifications } from "@/core/hooks"
+import { useCurrentProject, useModals, useNotifications } from "@timeline-studio/core/hooks"
 import { ColorSchemeDropdown } from "@/features/color-scheme"
 import { RenderQueueDropdown } from "@/features/export"
 import { LayoutPreviews } from "@/features/media-studio"

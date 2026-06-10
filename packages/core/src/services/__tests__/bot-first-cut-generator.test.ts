@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import type { IBotFirstCutPlanner } from "@/core"
+import type { IBotFirstCutPlanner } from "@timeline-studio/core"
 import { createBotProjectSchemaFromRenderJob, DefaultBotFirstCutGenerator } from "../index"
 import {
   FIRST_CUT_PLANNER_INVALID_FIXTURES,

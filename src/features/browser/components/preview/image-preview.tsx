@@ -2,7 +2,7 @@ import { useDraggable } from "@dnd-kit/core"
 import { Image } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
-import type { MediaFile, TimelineResource } from "@/core/types"
+import type { MediaFile, TimelineResource } from "@timeline-studio/core/types"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { usePlayer } from "@/features/video-player"
 import { createImageUrl } from "@/lib/media-url-utils"

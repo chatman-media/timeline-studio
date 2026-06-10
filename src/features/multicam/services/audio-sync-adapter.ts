@@ -3,7 +3,7 @@
  * Использует Tauri команду correlate_audio_files для cross-correlation анализа
  */
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { AudioCorrelationResult } from "./audio-sync"
 

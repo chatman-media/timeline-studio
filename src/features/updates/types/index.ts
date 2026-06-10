@@ -15,4 +15,4 @@ export type {
   UpdateProgress,
   UpdateProgressWithPercentage,
   UpdateStatus,
-} from "@/core/types/updates"
+} from "@timeline-studio/core/types/updates"

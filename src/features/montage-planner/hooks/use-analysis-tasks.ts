@@ -4,7 +4,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { analysisStorageService } from "@/core/services/analysis-storage-service"
+import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
 import { formatDurationSeconds } from "@/lib/duration-formatter"
 import { createLogger } from "@/lib/tauri-logger"
 

@@ -13,7 +13,7 @@ vi.mock("@/lib/environment", () => ({
   }),
 }))
 
-vi.mock("@/core/services/notifications", () => ({
+vi.mock("@timeline-studio/core/services/notifications", () => ({
   showSystemNotification: mockShowNotification,
 }))
 

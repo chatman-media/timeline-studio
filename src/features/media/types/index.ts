@@ -37,9 +37,9 @@ export type {
   SavedMediaFile,
   SavedMusicFile,
   VideoSegment,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
-export { MediaType } from "@/core/types"
+export { MediaType } from "@timeline-studio/core/types"
 
 // Local UI-specific types (not moved to domain)
 export type { Sector, Track } from "./types"

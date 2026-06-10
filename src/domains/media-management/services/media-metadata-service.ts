@@ -6,7 +6,7 @@
  * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
  */
 
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type {
   MediaAnalysisResult,

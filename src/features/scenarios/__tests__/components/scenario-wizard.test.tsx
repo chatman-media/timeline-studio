@@ -5,7 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/core/types/project"
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 
 import { ScenarioWizard } from "../../components/scenario-wizard"
 import type { Scenario } from "../../types/scenario"

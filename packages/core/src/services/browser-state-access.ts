@@ -1,4 +1,4 @@
-import type { BrowserTab } from "@/core/types"
+import type { BrowserTab } from "@timeline-studio/core/types"
 
 export interface BrowserStateAccess {
   getCurrentTab: () => BrowserTab

@@ -4,7 +4,7 @@
 // @ts-nocheck - TODO: Update to use new unified effects types
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { UserPreset } from "@/core/types"
+import type { UserPreset } from "@timeline-studio/core/types"
 import { useUserPresets } from "../../hooks/use-user-presets"
 
 // Mock logger
@@ -25,7 +25,7 @@ const mockDeleteUserPreset = vi.fn()
 const mockGetAllUserPresets = vi.fn()
 const mockLoadPresetsForEffect = vi.fn()
 
-vi.mock("@/core/services/user-presets", () => ({
+vi.mock("@timeline-studio/core/services/user-presets", () => ({
   saveUserPreset: (...args: any[]) => mockSaveUserPreset(...args),
   loadUserPreset: (...args: any[]) => mockLoadUserPreset(...args),
   updateUserPreset: (...args: any[]) => mockUpdateUserPreset(...args),

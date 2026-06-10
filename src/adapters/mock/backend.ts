@@ -5,8 +5,8 @@
  * Эмулирует поведение бэкенда с in-memory состоянием.
  */
 
-import type { IBackendService, Unsubscribe } from "@/core/ports"
-import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@/core/types"
+import type { IBackendService, Unsubscribe } from "@timeline-studio/core/ports"
+import type { CommandResult, EventEnvelope, ProjectCommand, ProjectEvent, ProjectState } from "@timeline-studio/core/types"
 
 export class MockBackendService implements IBackendService {
   private _connected = false

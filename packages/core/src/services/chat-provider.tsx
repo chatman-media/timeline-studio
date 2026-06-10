@@ -7,7 +7,7 @@
 import type React from "react"
 import { createContext, useCallback, useContext, useEffect, useState } from "react"
 // REMOVED: import { UnifiedAIService } from "@/domains/ai-core/services" // ai-core module deleted - use backend AI proxy instead
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type * as TauriTypes from "@/types/generated/tauri-bindings"
 

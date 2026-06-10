@@ -66,7 +66,7 @@ const mockDomain = {
   toggleOptionsVisibility: vi.fn(),
 }
 
-vi.mock("@/core/hooks/use-user-settings", () => ({
+vi.mock("@timeline-studio/core/hooks/use-user-settings", () => ({
   useUserSettings: () => mockDomain,
 }))
 

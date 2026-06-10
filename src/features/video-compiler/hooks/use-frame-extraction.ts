@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
-import type { CompilerSubtitle } from "@/core/types/video-editing"
+import { useNotifications } from "@timeline-studio/core/hooks"
+import type { CompilerSubtitle } from "@timeline-studio/core/types/video-editing"
 import { useFramePreview } from "@/features/media/hooks/media-management"
 import {
   type ExtractionPurpose,

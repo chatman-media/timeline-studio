@@ -5,7 +5,7 @@
  * Экспортирует функцию инициализации для регистрации всех адаптеров в контейнере.
  */
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { MockAIService } from "./ai"
 import { MockAIProjectEditor } from "./ai-project-editor"
 import { MockBackendService } from "./backend"

@@ -3,7 +3,7 @@ import { Music } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { LiveAudioVisualizer } from "react-audio-visualize"
 
-import type { MediaFile, TimelineResource } from "@/core/types"
+import type { MediaFile, TimelineResource } from "@timeline-studio/core/types"
 import type { DragData } from "@/features/timeline/types/drag-drop"
 import { createAudioUrl } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"

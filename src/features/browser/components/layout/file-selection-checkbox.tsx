@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui/checkbox"
-import type { MediaFile } from "@/core/types"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { useFileSelection } from "@/features/media/hooks"
 import { cn } from "@/lib/utils"
 

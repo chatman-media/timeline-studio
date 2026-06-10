@@ -10,7 +10,7 @@
 import { renderHook } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { clearVideoEditingBindings, setVideoEditingBindings } from "@/core/services/video-editing-registry"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import { useVideoEditingContext, VideoEditingProvider } from "../video-editing-provider"
 
 // Mock orchestrator

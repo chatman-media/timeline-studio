@@ -1,5 +1,5 @@
-import type { AIProjectEditorResult } from "@/core"
-import type { BotRenderJobDestination } from "@/core/types"
+import type { AIProjectEditorResult } from "@timeline-studio/core"
+import type { BotRenderJobDestination } from "@timeline-studio/core/types"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 export interface AIProjectEditorFixture {

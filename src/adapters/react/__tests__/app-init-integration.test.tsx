@@ -17,7 +17,7 @@ vi.mock("@/lib/environment", () => ({
   isDesktop: vi.fn(),
 }))
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { isDesktop } from "@/lib/environment"
 
 describe("AppInitProvider Integration", () => {

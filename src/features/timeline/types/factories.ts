@@ -6,7 +6,7 @@ import type {
   TimelineSettings,
   Track,
   TrackType,
-} from "@/core/types/timeline"
+} from "@timeline-studio/core/types/timeline"
 import type { SubtitleClip } from "@/features/subtitles/types"
 
 import type { MusicClip, MusicFile } from "./music"

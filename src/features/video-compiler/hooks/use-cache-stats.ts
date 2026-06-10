@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { videoCompilerCacheService } from "@/core/services/video-compiler"
+import { videoCompilerCacheService } from "@timeline-studio/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { VideoCompilerCacheStats } from "../types/cache"

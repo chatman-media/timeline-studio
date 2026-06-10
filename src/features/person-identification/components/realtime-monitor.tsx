@@ -20,7 +20,7 @@ import {
   AdvancedFaceDetectionService,
   PersonDatabaseService,
   type RealtimeProcessingStatus,
-} from "@/core/services"
+} from "@timeline-studio/core/services"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn } from "@/lib/utils"
 

@@ -5,8 +5,8 @@
  * Использует нативные Node.js модули и CLI инструменты (ffmpeg, whisper).
  */
 
-import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@/core"
-import { container } from "@/core/container"
+import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@timeline-studio/core"
+import { container } from "@timeline-studio/core/container"
 
 import { MockUserSettingsService } from "../mock/user-settings"
 import { type NodeAIOptions, NodeAIService } from "./ai"

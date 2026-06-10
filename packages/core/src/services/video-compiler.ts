@@ -13,7 +13,7 @@ import {
   type SystemInfo,
   type VideoCompilerCacheStats,
   type VideoRenderJob,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("CoreVideoCompilerService")

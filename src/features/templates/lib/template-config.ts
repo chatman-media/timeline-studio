@@ -14,7 +14,7 @@ export type {
   MediaTemplateConfig,
   SplitPoint,
   TemplateAspectRatio,
-} from "@/core/types/templates"
+} from "@timeline-studio/core/types/templates"
 
 // Предустановленные стили для быстрого создания шаблонов
 export const PRESET_STYLES = {
@@ -111,7 +111,7 @@ export const PRESET_STYLES = {
 }
 
 // Import type for use in function signature
-import type { CellConfiguration, DividerConfig } from "@/core/types/templates"
+import type { CellConfiguration, DividerConfig } from "@timeline-studio/core/types/templates"
 
 // Утилиты для работы с конфигурациями
 export function createCellConfig(index: number, customConfig?: Partial<CellConfiguration>): CellConfiguration {

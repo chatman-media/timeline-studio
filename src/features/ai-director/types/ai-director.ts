@@ -22,4 +22,4 @@ export type {
   SystemCapabilities,
   UnifiedAudioAnalysisResult,
   VideoAnalysisResult,
-} from "@/core/types/ai-director"
+} from "@timeline-studio/core/types/ai-director"

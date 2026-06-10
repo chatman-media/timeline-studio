@@ -6,9 +6,9 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { container } from "@/core/container"
-import type { IBackendService, IModalService } from "@/core/ports"
-import { resetMemoryModalService } from "@/core/services/modal-service"
+import { container } from "@timeline-studio/core/container"
+import type { IBackendService, IModalService } from "@timeline-studio/core/ports"
+import { resetMemoryModalService } from "@timeline-studio/core/services/modal-service"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectEvent } from "@/types/generated/tauri-bindings"
 import { type ModalData, type ModalType, modalMachine } from "../machines/modal-machine"

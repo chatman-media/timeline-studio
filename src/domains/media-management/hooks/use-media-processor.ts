@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { container } from "@/core"
-import type { UnlistenFn } from "@/core/ports"
+import { container } from "@timeline-studio/core"
+import type { UnlistenFn } from "@timeline-studio/core/ports"
 import { mediaProcessorService } from "@/domains/media-management/services/media-processor-service"
 import { cacheMediaMetadata, getCachedMetadata } from "@/domains/video-editing/services/compiler"
 import { createLogger } from "@/lib/tauri-logger"

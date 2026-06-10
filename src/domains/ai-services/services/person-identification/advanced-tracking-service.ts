@@ -1,2 +1,2 @@
-export type { TrackedPerson } from "@/core/services/person-identification"
-export { AdvancedTrackingService } from "@/core/services/person-identification"
+export type { TrackedPerson } from "@timeline-studio/core/services/person-identification"
+export { AdvancedTrackingService } from "@timeline-studio/core/services/person-identification"

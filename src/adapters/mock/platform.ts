@@ -11,7 +11,7 @@ import type {
   NotificationOptions,
   OpenDialogOptions,
   SaveDialogOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class MockPlatformService implements IPlatformService {
   // Mock storage for file system simulation

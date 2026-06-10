@@ -5,7 +5,7 @@
  * Использует in-memory Map или localStorage.
  */
 
-import type { IStorageService } from "@/core/ports"
+import type { IStorageService } from "@timeline-studio/core/ports"
 
 export class MockStorageService implements IStorageService {
   private _data = new Map<string, unknown>()

@@ -5,8 +5,8 @@
 
 import { useMachine } from "@xstate/react"
 import { useEffect, useMemo } from "react"
-import { container } from "@/core/container"
-import { createUpdateMachine } from "@/core/services/update-machine"
+import { container } from "@timeline-studio/core/container"
+import { createUpdateMachine } from "@timeline-studio/core/services/update-machine"
 import type { AutoCheckSettings, UpdateAvailability, UpdateEventPayload, UpdateMachineContext } from "../types"
 
 export interface UseUpdateManagerReturn {

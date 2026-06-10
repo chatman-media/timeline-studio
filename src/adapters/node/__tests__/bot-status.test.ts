@@ -2,7 +2,7 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { describe, expect, it, vi } from "vitest"
-import type { BotWorkflowStatusMessage } from "@/core/types"
+import type { BotWorkflowStatusMessage } from "@timeline-studio/core/types"
 import { NodeBotStatusNotifier } from "../bot-status"
 
 const message: BotWorkflowStatusMessage = {

@@ -10,7 +10,7 @@ import { memo, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { BaseEffect, Transition, VideoFilter } from "@/core/types"
+import type { BaseEffect, Transition, VideoFilter } from "@timeline-studio/core/types"
 import { cn } from "@/lib/utils"
 
 // Временные моковые данные - потом заменить на реальные из контекста

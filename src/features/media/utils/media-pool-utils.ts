@@ -12,7 +12,7 @@ import type {
   MediaPoolItem,
   SavedMediaFile,
   SavedMusicFile,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 /**
  * Конвертация MediaFile в MediaPoolItem

@@ -4,7 +4,7 @@
  * Обеспечивает CRUD операции, поиск по эмбеддингам, кластеризацию и синхронизацию.
  */
 
-import { getAI } from "@/core/container"
+import { getAI } from "@timeline-studio/core/container"
 import type {
   DetectedFace,
   FaceEmbedding,
@@ -15,7 +15,7 @@ import type {
   PersonSearchResult,
   PersonStats,
   PersonThumbnail,
-} from "@/core/types/person-identification"
+} from "@timeline-studio/core/types/person-identification"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("PersonDatabaseService")

@@ -1,9 +1,9 @@
-import type { IUserSettingsService, UserSettingsSubscription } from "@/core/ports"
+import type { IUserSettingsService, UserSettingsSubscription } from "@timeline-studio/core/ports"
 import {
   DEFAULT_USER_SETTINGS,
   type UserSettingsColorScheme,
   type UserSettingsContextType,
-} from "@/core/types/user-settings"
+} from "@timeline-studio/core/types/user-settings"
 
 export class MockUserSettingsService implements IUserSettingsService {
   private settings: UserSettingsContextType

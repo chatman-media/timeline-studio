@@ -2,7 +2,7 @@
  * Типы для основного компилятора видео
  */
 
-import type { ProjectSchema } from "@/core/types/video-editing"
+import type { ProjectSchema } from "@timeline-studio/core/types/video-editing"
 import type { RenderSettings } from "./render"
 
 export interface VideoCompilerConfig {

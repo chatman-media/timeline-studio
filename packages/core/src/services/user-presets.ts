@@ -3,7 +3,7 @@
  * Управление пользовательскими пресетами эффектов.
  */
 
-import type { UserPreset } from "@/core/types"
+import type { UserPreset } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("CoreUserPresetsService")

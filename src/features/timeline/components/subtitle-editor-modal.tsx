@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { useModals } from "@/core/hooks"
+import { useModals } from "@timeline-studio/core/hooks"
 
 import type { SubtitleClip } from "@/features/subtitles/types"
 

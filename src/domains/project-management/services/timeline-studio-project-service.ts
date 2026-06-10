@@ -4,7 +4,7 @@
 
 import { nanoid } from "nanoid"
 
-import { container, type IPlatformService } from "@/core"
+import { container, type IPlatformService } from "@timeline-studio/core"
 import { createEmptyMediaPool } from "@/domains/media-management"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
 import type { Sequence } from "@/domains/video-editing/types"

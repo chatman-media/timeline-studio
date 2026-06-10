@@ -9,4 +9,4 @@ export type {
   FilterComplexity,
   FilterTag,
   VideoFilter,
-} from "@/core/types/filters"
+} from "@timeline-studio/core/types/filters"

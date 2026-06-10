@@ -21,17 +21,17 @@ export type {
   SystemCapabilities,
   UnifiedAudioAnalysisResult,
   VideoAnalysisResult,
-} from "@/core/types/ai-director"
-export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "@/core/hooks"
-export type { AIDirectorVideoAnalysisOptions, UnifiedAudioConfig } from "@/core/services/ai-director-service"
+} from "@timeline-studio/core/types/ai-director"
+export type { AIDirectorEventCallbacks, UseAIDirectorEventsReturn } from "@timeline-studio/core/hooks"
+export type { AIDirectorVideoAnalysisOptions, UnifiedAudioConfig } from "@timeline-studio/core/services/ai-director-service"
 export {
   AI_DIRECTOR_EVENTS,
   useAIDirectorEvents,
-} from "@/core/hooks"
+} from "@timeline-studio/core/hooks"
 export {
   AIDirectorService,
   aiDirectorService,
-} from "@/core/services"
+} from "@timeline-studio/core/services"
 
 // Components (UI components removed - now using Timeline Analysis tab)
 

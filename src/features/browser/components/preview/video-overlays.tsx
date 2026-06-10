@@ -1,6 +1,6 @@
 import { Film } from "lucide-react"
 import { memo, useEffect } from "react"
-import type { MediaFile, TimelineResource } from "@/core/types"
+import type { MediaFile, TimelineResource } from "@timeline-studio/core/types"
 import { formatDuration } from "@/lib/date"
 import { createLogger } from "@/lib/tauri-logger"
 import { cn, formatResolution } from "@/lib/utils"

@@ -18,7 +18,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 
 // Mock container
 const mockExecuteCommand = vi.fn()
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasBackend: () => true,
     getBackend: () => ({

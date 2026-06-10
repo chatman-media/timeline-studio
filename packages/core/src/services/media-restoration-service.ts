@@ -1,5 +1,5 @@
-import { container } from "@/core/container"
-import type { MediaFile, SavedMediaFile } from "@/core/types"
+import { container } from "@timeline-studio/core/container"
+import type { MediaFile, SavedMediaFile } from "@timeline-studio/core/types"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("MediaRestorationService")

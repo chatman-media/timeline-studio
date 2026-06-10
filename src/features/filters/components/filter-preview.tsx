@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { MediaType } from "@/core/types/media"
-import type { FilterResource } from "@/core/types/resources"
-import { calculateDimensionsWithAspectRatio } from "@/core/utils/preview-sizes"
+import { MediaType } from "@timeline-studio/core/types/media"
+import type { FilterResource } from "@timeline-studio/core/types/resources"
+import { calculateDimensionsWithAspectRatio } from "@timeline-studio/core/utils/preview-sizes"
 import type { VideoFilter } from "@/features/filters/types/filters"
 import { useProjectSettings } from "@/features/project-settings/hooks/use-project-settings"
 import { useResources } from "@/features/timeline/providers/resources-provider"

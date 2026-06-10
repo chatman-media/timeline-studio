@@ -21,8 +21,8 @@ const mockBackend = {
   onStateChange: vi.fn(() => vi.fn()),
 }
 
-// Mock @/core to provide getBackend
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core to provide getBackend
+vi.mock("@timeline-studio/core", () => ({
   getBackend: vi.fn(() => mockBackend),
   container: {
     hasBackend: vi.fn(() => true),

@@ -7,7 +7,7 @@ import path from "node:path"
 import { Command } from "commander"
 
 import { initNodeApp } from "@/adapters/node"
-import type { MediaMetadata } from "@/core/ports"
+import type { MediaMetadata } from "@timeline-studio/core/ports"
 
 export const infoCommand = new Command("info")
   .description("Получить информацию о медиафайле")

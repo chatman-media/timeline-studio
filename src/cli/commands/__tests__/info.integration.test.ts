@@ -4,7 +4,7 @@
 
 import path from "node:path"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { IMediaService, IPlatformService, MediaMetadata } from "@/core/ports"
+import type { IMediaService, IPlatformService, MediaMetadata } from "@timeline-studio/core/ports"
 
 // Mock adapters/node
 const mockPlatform: IPlatformService = {

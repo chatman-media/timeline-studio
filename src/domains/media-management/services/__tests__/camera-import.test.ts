@@ -18,7 +18,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: (...args: any[]) => mockInvoke(...args),
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getMedia: vi.fn(() => mockMediaService),
 }))
 

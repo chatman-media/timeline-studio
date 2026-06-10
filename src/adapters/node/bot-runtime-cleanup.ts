@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { type BotEditSession, type BotEditSessionStatus, type BotWorkflowDraft, isBotEditSessionActive } from "@/core"
+import { type BotEditSession, type BotEditSessionStatus, type BotWorkflowDraft, isBotEditSessionActive } from "@timeline-studio/core"
 
 export type NodeBotRuntimeCleanupCategory =
   | "media"

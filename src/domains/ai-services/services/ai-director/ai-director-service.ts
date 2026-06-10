@@ -5,7 +5,7 @@
  * @module ai-services/services/ai-director
  */
 
-import type { AIDirectorConfig } from "@/core/ports/ai.port"
+import type { AIDirectorConfig } from "@timeline-studio/core/ports/ai.port"
 import { createLogger } from "@/lib/tauri-logger"
 import {
   type AIDirectorHealthCheckResult,

@@ -3,8 +3,8 @@
  * Расширенный сервис для продвинутой детекции и анализа лиц
  */
 
-import { getAI } from "@/core/container"
-import type { DetectedFace, FaceAttributes } from "@/core/types/person-identification"
+import { getAI } from "@timeline-studio/core/container"
+import type { DetectedFace, FaceAttributes } from "@timeline-studio/core/types/person-identification"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("AdvancedFaceDetectionService")

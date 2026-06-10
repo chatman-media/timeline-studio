@@ -1,6 +1,6 @@
-import { getAI } from "@/core/container"
-import type { RecognitionYoloFrameResult } from "@/core/ports"
-import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@/core/types/yolo"
+import { getAI } from "@timeline-studio/core/container"
+import type { RecognitionYoloFrameResult } from "@timeline-studio/core/ports"
+import type { YoloDetection, YoloFrameData, YoloVideoData, YoloVideoSummary } from "@timeline-studio/core/types/yolo"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("YoloDataService")

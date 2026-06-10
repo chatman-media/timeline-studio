@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { createBotProjectSchemaFromRenderJob, runAIProjectEdit } from "@/core"
+import { createBotProjectSchemaFromRenderJob, runAIProjectEdit } from "@timeline-studio/core"
 import { MockAIProjectEditor } from "../ai-project-editor"
 
 describe("MockAIProjectEditor", () => {

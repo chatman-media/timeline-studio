@@ -13,14 +13,14 @@ export type {
   TransitionType,
   UnifiedMontagePlan as MontagePlan,
   UnifiedMontageStyle as MontageStyle,
-} from "@/core/types/unified-montage"
+} from "@timeline-studio/core/types/unified-montage"
 
 // Import types for local use
 import type {
   UnifiedMontagePlan as MontagePlan,
   UnifiedMontageStyle as MontageStyle,
   TransitionType,
-} from "@/core/types/unified-montage"
+} from "@timeline-studio/core/types/unified-montage"
 
 // Legacy clip type - kept for backward compatibility
 export interface MontageClip {
@@ -41,7 +41,7 @@ export interface MontageClip {
 }
 
 // Helper functions to convert between legacy and unified types
-import type { UnifiedFragment } from "@/core/types/unified-montage"
+import type { UnifiedFragment } from "@timeline-studio/core/types/unified-montage"
 
 /**
  * Converts UnifiedFragment to legacy MontageClip
@@ -83,7 +83,7 @@ export function clipToFragment(clip: MontageClip): UnifiedFragment {
 // Use UnifiedMontageStyle from unified types instead
 
 /**
- * @deprecated Use UnifiedMontageStyle from @/core/types/unified-montage
+ * @deprecated Use UnifiedMontageStyle from @timeline-studio/core/types/unified-montage
  */
 export type _LegacyMontageStyle =
   | "dynamic" // Быстрый, энергичный

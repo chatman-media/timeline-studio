@@ -6,7 +6,7 @@ import type {
   BotRenderJobMediaInput,
   IBotFeedbackTranscriber,
   TranscriptionResult,
-} from "@/core"
+} from "@timeline-studio/core"
 
 export interface NodeBotFeedbackTranscriberAI {
   whisperTranscribeOpenAI(

@@ -3,7 +3,7 @@ import { OutputFormat } from "@/features/video-compiler/types/render"
 
 const mockShowNotification = vi.fn()
 
-vi.mock("@/core/services/notifications", () => ({
+vi.mock("@timeline-studio/core/services/notifications", () => ({
   showSystemNotification: mockShowNotification,
 }))
 

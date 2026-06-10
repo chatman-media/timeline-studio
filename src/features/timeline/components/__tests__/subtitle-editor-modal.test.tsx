@@ -19,7 +19,7 @@ const mockModalData = {
   ],
 }
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "subtitle-editor",
     isModalOpen: true,

@@ -3,7 +3,7 @@
  * Продвинутая система переходов как отдельных объектов на таймлайне
  */
 
-import type { TimelineTransitionBase } from "@/core/types"
+import type { TimelineTransitionBase } from "@timeline-studio/core/types"
 import type { EasingFunction } from "../../video-player/services/transitions-preview"
 
 /**

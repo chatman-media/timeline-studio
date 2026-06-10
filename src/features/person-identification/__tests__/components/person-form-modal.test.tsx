@@ -16,7 +16,7 @@ const mockCloseModal = vi.fn()
 const mockModalData = vi.fn()
 const mockOnSave = vi.fn()
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "person-form",
     isModalOpen: true,

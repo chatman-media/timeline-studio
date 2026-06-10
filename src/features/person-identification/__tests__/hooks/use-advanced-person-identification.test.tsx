@@ -41,7 +41,7 @@ const mockTrackingService = {
   assignPersonToTrack: vi.fn(),
 }
 
-vi.mock("@/core/services", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   PersonDatabaseService: {
     getInstance: () => mockPersonService,
   },

@@ -12,7 +12,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: mockInvoke,
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getAI: () => ({
     initRecognitionYoloProcessor: (options: Record<string, unknown>) => mockInvoke("init_yolo_processor", options),
     initPersonFacenetProcessor: (options: Record<string, unknown>) => mockInvoke("init_facenet_processor", options),

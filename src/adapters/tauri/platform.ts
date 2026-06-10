@@ -13,7 +13,7 @@ import type {
   NotificationOptions,
   OpenDialogOptions,
   SaveDialogOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class TauriPlatformService implements IPlatformService {
   // === File Dialogs ===

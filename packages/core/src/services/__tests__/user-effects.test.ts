@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { ProjectSchema } from "@/core/types/video-editing"
+import type { ProjectSchema } from "@timeline-studio/core/types/video-editing"
 
 import { addEffectToClip, addFilterToClip, removeEffectFromClip, removeFilterFromClip } from "../user-effects"
 

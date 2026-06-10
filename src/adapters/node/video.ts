@@ -29,7 +29,7 @@ import type {
   RenderJob,
   RenderProgress,
   SystemInfo,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 const execAsync = promisify(exec)
 

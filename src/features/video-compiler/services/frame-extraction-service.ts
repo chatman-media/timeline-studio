@@ -1,4 +1,4 @@
-import type { CompilerSubtitle } from "@/core/types/video-editing"
+import type { CompilerSubtitle } from "@timeline-studio/core/types/video-editing"
 import { indexedDBCacheService } from "@/features/media/hooks/media-management"
 import { createLogger } from "@/lib/tauri-logger"
 import {

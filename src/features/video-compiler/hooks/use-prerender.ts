@@ -5,14 +5,14 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import {
   clearPrerenderCache as clearCache,
   getPrerenderCacheInfo,
   type PrerenderCacheFile,
   type PrerenderResult,
   prerenderSegment,
-} from "@/core/services/video-compiler"
+} from "@timeline-studio/core/services/video-compiler"
 import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 

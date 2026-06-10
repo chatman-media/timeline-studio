@@ -3,7 +3,7 @@
  * Синхронизация переходов при операциях с клипами
  */
 
-import type { TimelineTransition as CoreTimelineTransition } from "@/core/types"
+import type { TimelineTransition as CoreTimelineTransition } from "@timeline-studio/core/types"
 import type { TimelineProject } from "@/features/timeline/types"
 
 // Используем базовый core тип для совместимости с resources

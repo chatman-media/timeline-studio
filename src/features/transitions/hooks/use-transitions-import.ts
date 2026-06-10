@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 
-import { container } from "@/core"
+import { container } from "@timeline-studio/core"
 import type { Transition } from "@/features/transitions/types/transitions"
 import { logError, logInfo } from "@/lib/tauri-logger"
 

@@ -3,10 +3,10 @@
  */
 
 import { useCallback } from "react"
-import type { VideoEffect } from "@/core/types/effects"
-import type { VideoFilter } from "@/core/types/filters"
-import type { TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
-import type { Transition } from "@/core/types/transitions"
+import type { VideoEffect } from "@timeline-studio/core/types/effects"
+import type { VideoFilter } from "@timeline-studio/core/types/filters"
+import type { TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
+import type { Transition } from "@timeline-studio/core/types/transitions"
 import type { TimelineClip } from "../../types"
 import { useTimeline } from "../state/use-timeline"
 

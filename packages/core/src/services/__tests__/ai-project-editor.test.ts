@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import type { AIProjectEditorResult, IAIProjectEditor } from "@/core"
+import type { AIProjectEditorResult, IAIProjectEditor } from "@timeline-studio/core"
 import {
   createBotProjectSchemaFromRenderJob,
   runAIProjectEdit,

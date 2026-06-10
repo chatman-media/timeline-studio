@@ -1,6 +1,6 @@
-import { indexedDBCacheService } from "@/core/services/media-cache-service"
-import { getMediaManagementBindings, type MediaManagementBindings } from "@/core/services/media-management-registry"
-import type { MediaFile, MediaInfo } from "@/core/types"
+import { indexedDBCacheService } from "@timeline-studio/core/services/media-cache-service"
+import { getMediaManagementBindings, type MediaManagementBindings } from "@timeline-studio/core/services/media-management-registry"
+import type { MediaFile, MediaInfo } from "@timeline-studio/core/types"
 
 export { indexedDBCacheService }
 

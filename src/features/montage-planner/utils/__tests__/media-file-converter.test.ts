@@ -3,7 +3,7 @@
  */
 
 import { describe, expect, it } from "vitest"
-import { MediaType, type MediaFile } from "@/core/types"
+import { MediaType, type MediaFile } from "@timeline-studio/core/types"
 import type { Fragment } from "../../types"
 import { MomentCategory } from "../../types"
 import { convertFragmentForAIServices, convertToAIServicesMediaFile } from "../media-file-converter"

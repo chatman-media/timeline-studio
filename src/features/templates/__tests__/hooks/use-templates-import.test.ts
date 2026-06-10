@@ -27,7 +27,7 @@ const mockPlatform = {
   convertFileSrc: vi.fn((path: string) => path),
 }
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => mockPlatform),

@@ -5,7 +5,7 @@
  */
 
 import { type ActorRefFrom, createActor } from "xstate"
-import { getBackend } from "@/core"
+import { getBackend } from "@timeline-studio/core"
 import { isServiceEnabled } from "@/domains/shared/utils/service-config"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectCommand, ProjectSettings, ProjectState } from "@/types/generated/tauri-bindings"

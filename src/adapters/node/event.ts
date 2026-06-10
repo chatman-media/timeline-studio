@@ -7,7 +7,7 @@
 
 import { EventEmitter } from "node:events"
 
-import type { IEventService } from "@/core/ports"
+import type { IEventService } from "@timeline-studio/core/ports"
 
 export class NodeEventService implements IEventService {
   private emitter = new EventEmitter()

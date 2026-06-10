@@ -18,7 +18,7 @@
  */
 
 import { MockLanguageService, MockPlatformService, MockStorageService, MockUserSettingsService } from "@/adapters/mock"
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import { NodeBackendBridgeService } from "../node/node-backend-bridge"
 import { type HttpBackendOptions, HttpBackendService } from "./backend"
 import { HttpClient } from "./client"

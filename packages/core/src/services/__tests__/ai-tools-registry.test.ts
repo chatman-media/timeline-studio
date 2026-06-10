@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest"
-import type { IAITool } from "@/core/types/ai-tools"
+import type { IAITool } from "@timeline-studio/core/types/ai-tools"
 import { clearAITools, getAITools, setAITools } from "../ai-tools-registry"
 
 const createTool = (name: string): IAITool => ({

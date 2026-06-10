@@ -6,7 +6,7 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaImportOptions, MediaInfo } from "../types"
 

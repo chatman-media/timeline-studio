@@ -2,7 +2,7 @@
  * Сервис обнаружения коллизий переходов
  */
 
-import type { TimelineTransition as CoreTimelineTransition } from "@/core/types"
+import type { TimelineTransition as CoreTimelineTransition } from "@timeline-studio/core/types"
 import type { TimelineClip, TimelineProject, TimelineTrack } from "@/features/timeline/types"
 
 // Используем базовый core тип для совместимости с resources

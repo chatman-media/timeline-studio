@@ -58,7 +58,7 @@ vi.mock("react-i18next", () => ({
   }),
 }))
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "none",
     modalData: null,

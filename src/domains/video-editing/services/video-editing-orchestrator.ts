@@ -79,8 +79,8 @@ const mockEventBus: EventBus = {
 const eventBus = mockEventBus
 
 // Import core services
-import { container } from "@/core"
-import type { IBackendService } from "@/core/ports"
+import { container } from "@timeline-studio/core"
+import type { IBackendService } from "@timeline-studio/core/ports"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
 // Import machines
@@ -246,7 +246,7 @@ export class VideoEditingOrchestrator {
 
     try {
       // Получаем результат напрямую из backend чтобы иметь доступ к данным
-      const { container } = await import("@/core/container")
+      const { container } = await import("@timeline-studio/core/container")
       const backend = container.getBackend()
       const result = await backend.executeCommand(command as any)
 

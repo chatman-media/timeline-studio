@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest"
-import { createBotProjectSchemaFromRenderJob } from "@/core"
-import type { IBotFirstCutGenerator } from "@/core/ports"
-import { InMemoryBotRenderJobEventStream } from "@/core/services"
+import { createBotProjectSchemaFromRenderJob } from "@timeline-studio/core"
+import type { IBotFirstCutGenerator } from "@timeline-studio/core/ports"
+import { InMemoryBotRenderJobEventStream } from "@timeline-studio/core/services"
 import type {
   BotRenderJob,
   BotRenderJobEvent,
@@ -10,7 +10,7 @@ import type {
   BotRenderJobResult,
   BotRenderJobRunOptions,
   BotRenderJobSnapshot,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 import { NodeBotWorkflowService } from "../bot-workflow"
 import type { NodeRenderJobService } from "../render-job"
 

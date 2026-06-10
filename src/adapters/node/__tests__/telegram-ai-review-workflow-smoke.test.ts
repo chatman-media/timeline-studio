@@ -10,8 +10,8 @@ import {
   createBotEditSessionFromWorkflow,
   createTelegramLikeBotWorkflow,
   DefaultBotFirstCutGenerator,
-} from "@/core"
-import type { IBotFeedbackTranscriber, IPublishService } from "@/core/ports"
+} from "@timeline-studio/core"
+import type { IBotFeedbackTranscriber, IPublishService } from "@timeline-studio/core/ports"
 import approveUpdateFixture from "../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-approve-update.json"
 import mediaUploadUpdateFixture from "../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-media-upload-update.json"
 import textFeedbackUpdateFixture from "../../../../docs/08_tasks/planned/fixtures/telegram-ai-review-text-feedback-update.json"

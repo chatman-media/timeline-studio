@@ -7,11 +7,11 @@
 
 import React, { useCallback, useEffect, useState } from "react"
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import {
   ProjectSettingsContext,
   type ProjectSettingsContextType,
-} from "@/core/types/project-settings-context"
+} from "@timeline-studio/core/types/project-settings-context"
 import { DEFAULT_PROJECT_SETTINGS, type ProjectSettings } from "@/domains/shared/types/project"
 import { createLogger } from "@/lib/tauri-logger"
 import type { ProjectEvent, ProjectState } from "@/types/generated/tauri-bindings"
@@ -292,7 +292,7 @@ export function ProjectSettingsProvider({ children }: ProjectSettingsProviderPro
 }
 
 // Экспорт типов
-export type { ProjectSettingsContextType, ProjectSettingsProviderType } from "@/core/types/project-settings-context"
+export type { ProjectSettingsContextType, ProjectSettingsProviderType } from "@timeline-studio/core/types/project-settings-context"
 
 // Экспорт контекста для использования в хуках
-export { ProjectSettingsContext } from "@/core/types/project-settings-context"
+export { ProjectSettingsContext } from "@timeline-studio/core/types/project-settings-context"

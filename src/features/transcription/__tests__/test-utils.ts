@@ -6,7 +6,7 @@ import type {
   TranscriptionResult,
   TranscriptionSegment,
   TranscriptionWord,
-} from "@/core/types/transcription"
+} from "@timeline-studio/core/types/transcription"
 
 /**
  * Mock данные для тестирования транскрипции

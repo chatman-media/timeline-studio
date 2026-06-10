@@ -4,7 +4,7 @@
  * Re-export from core-facing compiler contracts
  */
 
-import { OutputFormat as CoreOutputFormat, RenderStatus as CoreRenderStatus } from "@/core/types/video-editing"
+import { OutputFormat as CoreOutputFormat, RenderStatus as CoreRenderStatus } from "@timeline-studio/core/types/video-editing"
 
 export type {
   RenderJob,
@@ -12,10 +12,10 @@ export type {
   RenderSettings,
   RenderStatistics,
   VideoRenderJob,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"
 
-export type OutputFormat = import("@/core/types/video-editing").OutputFormat
-export type RenderStatus = import("@/core/types/video-editing").RenderStatus
+export type OutputFormat = import("@timeline-studio/core/types/video-editing").OutputFormat
+export type RenderStatus = import("@timeline-studio/core/types/video-editing").RenderStatus
 
 export const OutputFormat = CoreOutputFormat
 export const RenderStatus = CoreRenderStatus

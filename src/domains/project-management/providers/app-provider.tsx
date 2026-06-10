@@ -7,7 +7,7 @@
 
 import { useSelector } from "@xstate/react"
 import React, { type ReactNode, useCallback, useMemo } from "react"
-import { AppContextInternal, type AppContext } from "@/core/types/app-context"
+import { AppContextInternal, type AppContext } from "@timeline-studio/core/types/app-context"
 import { getProjectManagementOrchestrator } from "@/domains/project-management/services/project-management-orchestrator"
 import type { ProjectCommand } from "@/types/generated/tauri-bindings"
 
@@ -110,5 +110,5 @@ export function AppProvider({ children }: AppProviderProps) {
   )
 }
 
-export { useApp } from "@/core/hooks/use-app"
-export type { AppContext } from "@/core/types/app-context"
+export { useApp } from "@timeline-studio/core/hooks/use-app"
+export type { AppContext } from "@timeline-studio/core/types/app-context"

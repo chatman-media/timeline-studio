@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { BotRenderJobArtifact, BotRenderJobStatus, BotWorkflowRequest, TelegramLikeBotPayload } from "@/core/types"
+import type { BotRenderJobArtifact, BotRenderJobStatus, BotWorkflowRequest, TelegramLikeBotPayload } from "@timeline-studio/core/types"
 
 export type NodeTelegramBotWorkflowJobStatus = "queued" | "running" | "done" | "failed" | "rejected" | "cancelled"
 

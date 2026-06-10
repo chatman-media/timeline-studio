@@ -12,7 +12,7 @@ import { createMockUserSettings } from "../../test-utils"
 
 // Mock container with platform service
 const mockShowOpenDialog = vi.fn()
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -33,7 +33,7 @@ const mockOrchestrator = {
   subscribeToModals: vi.fn().mockReturnValue({ unsubscribe: vi.fn() }),
 }
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: () => ({
     activeModal: "none",
     modalData: null,

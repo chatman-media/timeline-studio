@@ -1,7 +1,7 @@
 import { Palette } from "lucide-react"
 import type React from "react"
 
-import { useFavorites } from "@/core/hooks"
+import { useFavorites } from "@timeline-studio/core/hooks"
 import { useFiltersAdapter as useUnifiedFiltersAdapter } from "@/features/browser/hooks/use-resources"
 import { useDraggable } from "@/features/drag-drop"
 import { FilterPreview } from "@/features/filters/components/filter-preview"

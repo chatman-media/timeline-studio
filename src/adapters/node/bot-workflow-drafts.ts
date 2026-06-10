@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import type { BotWorkflowDraft, BotWorkflowDraftStore } from "@/core/types"
+import type { BotWorkflowDraft, BotWorkflowDraftStore } from "@timeline-studio/core/types"
 
 export class NodeBotWorkflowFileDraftStore implements BotWorkflowDraftStore {
   constructor(private readonly directory: string) {}

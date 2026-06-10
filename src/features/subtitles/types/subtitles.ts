@@ -17,10 +17,10 @@ export type {
   SubtitlePosition,
   SubtitleStyleTemplate,
   SubtitleTag,
-} from "@/core/types/subtitles"
+} from "@timeline-studio/core/types/subtitles"
 
 // Import types for use in interfaces below
-import type { SubtitleAnimation, SubtitleInlineStyle, SubtitlePosition } from "@/core/types/subtitles"
+import type { SubtitleAnimation, SubtitleInlineStyle, SubtitlePosition } from "@timeline-studio/core/types/subtitles"
 
 /**
  * Интерфейс для субтитра с временными метками

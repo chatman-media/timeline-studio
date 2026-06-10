@@ -34,7 +34,7 @@ const MockYoloDataService = vi.hoisted(() => {
   }
 })
 
-vi.mock("@/core/services", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   YoloDataService: MockYoloDataService,
 }))
 

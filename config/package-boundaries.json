@@ -1,29 +1,29 @@
 {
-  "sourceRoot": "src",
+  "sourceRoots": ["src", "packages", "apps"],
   "packages": [
     {
       "name": "core",
-      "paths": ["src/core/**"],
+      "paths": ["src/core/**", "packages/core/src/**"],
       "description": "Platform-neutral ports, container and shared runtime types."
     },
     {
       "name": "domains",
-      "paths": ["src/domains/**"],
+      "paths": ["src/domains/**", "packages/domains/src/**"],
       "description": "Business domains and domain services."
     },
     {
       "name": "adapters",
-      "paths": ["src/adapters/**"],
+      "paths": ["src/adapters/**", "packages/adapters/src/**"],
       "description": "Platform and infrastructure implementations for core ports."
     },
     {
       "name": "ui",
-      "paths": ["src/features/**", "src/components/ui/**"],
+      "paths": ["src/features/**", "src/components/ui/**", "packages/ui/src/**"],
       "description": "Reusable feature UI and shared UI components."
     },
     {
       "name": "app-shell",
-      "paths": ["src/app/**", "src/cli/**", "src/config/**"],
+      "paths": ["src/app/**", "src/cli/**", "src/config/**", "apps/desktop/**", "apps/cli/**"],
       "description": "Application wiring shells that compose UI, domains and adapters."
     }
   ],

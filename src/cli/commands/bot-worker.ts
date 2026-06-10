@@ -28,14 +28,14 @@ import {
   NodeTelegramRenderJobReviewPreviewRenderer,
   recoverStaleTelegramWorkflowJobs,
 } from "@/adapters/node"
-import type { BotFeedbackTranscriptionProvider } from "@/core/ports"
+import type { BotFeedbackTranscriptionProvider } from "@timeline-studio/core/ports"
 import type {
   BotRenderJobDestination,
   BotWorkflowRunResult,
   BotWorkflowStatusOptions,
   BotWorkflowStatusPolicy,
   BotWorkflowStatusSink,
-} from "@/core/types"
+} from "@timeline-studio/core/types"
 
 export interface BotWorkerCommandOptions {
   updateFile?: string

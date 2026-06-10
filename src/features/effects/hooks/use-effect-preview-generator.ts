@@ -4,7 +4,7 @@
 
 import { useCallback, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import type { BaseEffect } from "../types"
 import {
   type EffectPreviewConfig,

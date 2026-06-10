@@ -48,8 +48,8 @@ import type {
   TranslationResult,
   VideoRecognitionResult,
   YOLODetectionResult,
-} from "@/core/ports"
-import type { YoloVideoData } from "@/core/types/yolo"
+} from "@timeline-studio/core/ports"
+import type { YoloVideoData } from "@timeline-studio/core/types/yolo"
 
 const execAsync = promisify(exec)
 

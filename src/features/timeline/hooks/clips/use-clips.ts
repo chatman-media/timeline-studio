@@ -3,8 +3,8 @@
  */
 
 import { useMemo } from "react"
-import type { MediaFile } from "@/core/types/media"
-import type { Timeline, TimelineClip as CoreTimelineClip } from "@/core/types/timeline"
+import type { MediaFile } from "@timeline-studio/core/types/media"
+import type { Timeline, TimelineClip as CoreTimelineClip } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip, TrackType } from "../../types"
 import { useTimeline } from "../state/use-timeline"
 

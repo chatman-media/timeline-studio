@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import type { ViewMode } from "@/core/types"
+import type { ViewMode } from "@timeline-studio/core/types"
 import type { PreviewConfig } from "@/features/browser/components/preview/types"
 
 /**

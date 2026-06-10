@@ -11,7 +11,7 @@
  * - Отмена задач анализа
  */
 
-import { analysisStorageService } from "@/core/services/analysis-storage-service"
+import { analysisStorageService } from "@timeline-studio/core/services/analysis-storage-service"
 import {
   AIDirectorAnalysisProgressEvent,
   AIDirectorStageCompletedEvent,

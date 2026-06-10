@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo, useRef } from "react"
-import type { Transition } from "@/core/types"
+import type { Transition } from "@timeline-studio/core/types"
 import type { TimelineTransition } from "@/features/timeline/types/timeline-transition"
 import { cn } from "@/lib/utils"
 

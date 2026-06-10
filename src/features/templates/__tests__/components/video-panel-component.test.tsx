@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { MediaType } from "@/core/types/media"
+import { MediaType } from "@timeline-studio/core/types/media"
 import { renderWithTemplates, screen } from "@/test/test-utils"
 
 import { VideoPanelComponent } from "../../components/video-panel-component"

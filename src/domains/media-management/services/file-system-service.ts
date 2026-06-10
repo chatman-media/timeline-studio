@@ -7,14 +7,14 @@
  * ✅ ОБНОВЛЕНО (2025-11-28): Использует IPlatformService через container
  */
 
-import { getPlatform as getPlatformService } from "@/core/container"
-import type { FileStats } from "@/core/ports"
+import { getPlatform as getPlatformService } from "@timeline-studio/core/container"
+import type { FileStats } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("FileSystemService")
 
 // Re-export FileStats for backwards compatibility
-export type { FileStats } from "@/core/ports"
+export type { FileStats } from "@timeline-studio/core/ports"
 
 /**
  * File System Service

@@ -6,7 +6,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { getBackend } from "@/core"
+import { getBackend } from "@timeline-studio/core"
 import { getProxyGenerator } from "@/domains/media-management/services/proxy-generator"
 import { needsProxyGeneration } from "@/lib/media-url-utils"
 import { createLogger } from "@/lib/tauri-logger"

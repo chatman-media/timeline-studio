@@ -3,12 +3,12 @@
  */
 import { act, renderHook } from "@testing-library/react"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
-import type { CompilerSubtitle as Subtitle } from "@/core/types/video-editing"
+import type { CompilerSubtitle as Subtitle } from "@timeline-studio/core/types/video-editing"
 import {
   CompilerSubtitleAlignX as SubtitleAlignX,
   CompilerSubtitleAlignY as SubtitleAlignY,
   CompilerSubtitleFontWeight as SubtitleFontWeight,
-} from "@/core/types/video-editing"
+} from "@timeline-studio/core/types/video-editing"
 import * as frameExtractionServiceModule from "../../services/frame-extraction-service"
 import { useFrameExtraction } from "../../hooks/use-frame-extraction"
 

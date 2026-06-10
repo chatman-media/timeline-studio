@@ -2,8 +2,8 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { createBotProjectSchemaFromRenderJob } from "@/core"
-import { FIRST_CUT_PLANNER_VALID_FIXTURES } from "@/core/services/__tests__/fixtures/first-cut-planner-fixtures"
+import { createBotProjectSchemaFromRenderJob } from "@timeline-studio/core"
+import { FIRST_CUT_PLANNER_VALID_FIXTURES } from "@timeline-studio/core/services/__tests__/fixtures/first-cut-planner-fixtures"
 import { NodeRustFirstCutPlanner } from "../rust-first-cut-planner"
 
 describe("NodeRustFirstCutPlanner", () => {

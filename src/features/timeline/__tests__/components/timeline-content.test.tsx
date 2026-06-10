@@ -109,7 +109,7 @@ const mockDragState = vi.hoisted(() => ({
 }))
 
 // Mock все внешние зависимости
-vi.mock("@/core/hooks/use-user-settings", () => ({
+vi.mock("@timeline-studio/core/hooks/use-user-settings", () => ({
   useUserSettings: () => ({
     playerVolume: 50,
     playerVideoSource: "browser",
@@ -159,7 +159,7 @@ vi.mock("@/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: any) => <div data-oid="-d0s3vl">{children}</div>,
 }))
 
-vi.mock("@/core/hooks/use-current-project", () => ({
+vi.mock("@timeline-studio/core/hooks/use-current-project", () => ({
   useCurrentProject: () => ({
     currentProject: {
       id: "test-project",

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { type MediaFile, MediaType } from "@/core/types"
+import { type MediaFile, MediaType } from "@timeline-studio/core/types"
 
 import {
   calculateRelativePath,
@@ -16,11 +16,11 @@ import {
   validateFileIntegrity,
 } from "../../utils/saved-media-utils"
 
-// Мокаем @/core container с hoisted функциями
+// Мокаем @timeline-studio/core container с hoisted функциями
 const mockDirname = vi.hoisted(() => vi.fn())
 const mockBasename = vi.hoisted(() => vi.fn())
 
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -37,7 +37,7 @@ const mockGetPlatform = vi.hoisted(() => vi.fn())
 const mockSearchFilesByName = vi.hoisted(() => vi.fn())
 const mockGetAbsolutePath = vi.hoisted(() => vi.fn())
 
-vi.mock("@/core/services", () => ({
+vi.mock("@timeline-studio/core/services", () => ({
   fileSystemService: {
     fileExists: mockFileExists,
     getFileStats: mockGetFileStats,

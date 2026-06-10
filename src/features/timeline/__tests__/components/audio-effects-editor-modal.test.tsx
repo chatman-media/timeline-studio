@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { AudioEffectsEditorModal } from "@/features/timeline/components/audio-effects-editor-modal"
 
 // Mock the modal service
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useModals: vi.fn(),
 }))
 
@@ -115,7 +115,7 @@ describe("AudioEffectsEditorModal", () => {
     vi.clearAllMocks()
     activeTab = "basic" // Reset tab state
 
-    const { useModals } = await import("@/core/hooks")
+    const { useModals } = await import("@timeline-studio/core/hooks")
     vi.mocked(useModals).mockImplementation(mockUseModals)
 
     mockUseModals.mockReturnValue({

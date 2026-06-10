@@ -1,10 +1,10 @@
-import type { IEnhancedSubtitleAutomationService } from "@/core/ports"
+import type { IEnhancedSubtitleAutomationService } from "@timeline-studio/core/ports"
 import type {
   EnhancedSubtitleExecutionOptions,
   EnhancedSubtitleInput,
   EnhancedSubtitleResult,
   EnhancedSubtitleToolResult,
-} from "@/core/types/enhanced-subtitle"
+} from "@timeline-studio/core/types/enhanced-subtitle"
 import {
   autoGenerateSubtitlesFromVideo,
   enhancedSubtitleAutomation,

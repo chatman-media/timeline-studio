@@ -6,7 +6,7 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
-import type { BotWorkflowRunResult } from "@/core/types"
+import type { BotWorkflowRunResult } from "@timeline-studio/core/types"
 import { botWorkflowCommand, readTelegramLikeBotPayload, serializeBotWorkflowRunResult } from "../bot-workflow"
 
 describe("bot-workflow command", () => {

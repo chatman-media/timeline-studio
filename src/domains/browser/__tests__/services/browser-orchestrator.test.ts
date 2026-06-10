@@ -39,7 +39,7 @@ vi.mock("@/types/generated/tauri-bindings", () => ({
 }))
 
 // Mock container
-vi.mock("@/core", () => ({
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasBackend: () => false,
     getBackend: () => null,

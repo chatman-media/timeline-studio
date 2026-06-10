@@ -11,7 +11,7 @@ export type {
   ProjectSettings,
   Resolution,
   ResolutionOption,
-} from "@/core/types/project"
+} from "@timeline-studio/core/types/project"
 
 export {
   ASPECT_RATIOS,
@@ -28,4 +28,4 @@ export {
   RESOLUTIONS_9_16,
   RESOLUTIONS_16_9,
   RESOLUTIONS_21_9,
-} from "@/core/types/project"
+} from "@timeline-studio/core/types/project"

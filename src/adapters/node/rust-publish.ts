@@ -3,8 +3,8 @@ import fs from "node:fs"
 import path from "node:path"
 import type { Readable } from "node:stream"
 
-import type { IPublishService } from "@/core/ports"
-import type { BotPublishRequest, BotPublishResult, BotRenderJobDestination } from "@/core/types"
+import type { IPublishService } from "@timeline-studio/core/ports"
+import type { BotPublishRequest, BotPublishResult, BotRenderJobDestination } from "@timeline-studio/core/types"
 
 export interface NodeRustPublishCommandResult {
   stdout: string

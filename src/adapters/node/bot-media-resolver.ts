@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 
-import type { BotMediaResolveContext, BotMediaResolver, BotRenderJobMediaInput } from "@/core/types"
+import type { BotMediaResolveContext, BotMediaResolver, BotRenderJobMediaInput } from "@timeline-studio/core/types"
 
 export interface TelegramFileInfo {
   file_id?: string

@@ -1,1 +1,1 @@
-export { ChatProvider, useChat, type ChatContextType } from "@/core/services/chat-provider"
+export { ChatProvider, useChat, type ChatContextType } from "@timeline-studio/core/services/chat-provider"

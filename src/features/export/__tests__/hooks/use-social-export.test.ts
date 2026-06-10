@@ -15,8 +15,8 @@ const mockShowError = vi.fn()
 const mockShowSuccess = vi.fn()
 const mockReadFile = vi.fn()
 
-// Mock @/core container
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core container
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasPlatform: vi.fn(() => true),
     getPlatform: vi.fn(() => ({
@@ -25,7 +25,7 @@ vi.mock("@/core", () => ({
   },
 }))
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useNotifications: () => ({
     showError: mockShowError,
     showSuccess: mockShowSuccess,

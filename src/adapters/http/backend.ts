@@ -5,7 +5,7 @@
  * Использует HTTP API вместо Tauri IPC или локальных вызовов.
  */
 
-import type { IBackendService, Unsubscribe } from "@/core/ports"
+import type { IBackendService, Unsubscribe } from "@timeline-studio/core/ports"
 import type {
   CommandResult,
   EventEnvelope,

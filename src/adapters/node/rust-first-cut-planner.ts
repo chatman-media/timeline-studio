@@ -10,7 +10,7 @@ import type {
   BotFirstCutPlannerResult,
   BotFirstCutProvider,
   IBotFirstCutPlanner,
-} from "@/core"
+} from "@timeline-studio/core"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 export type NodeRustFirstCutPlannerKind = "auto" | "montage-plan" | "llm-plan"

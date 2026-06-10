@@ -3,7 +3,7 @@
  * Provides video fade in/out operations for timeline clips
  */
 
-import type { VideoFadeKeyframe } from "@/core/types/timeline"
+import type { VideoFadeKeyframe } from "@timeline-studio/core/types/timeline"
 import type { TimelineClip } from "../types"
 
 export interface VideoFadeOptions {

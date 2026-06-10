@@ -1,4 +1,4 @@
-import type { MediaFile, MediaTimeRange, MediaTrack } from "@/core/types"
+import type { MediaFile, MediaTimeRange, MediaTrack } from "@timeline-studio/core/types"
 
 /**
  * Интерфейс для видеопотока

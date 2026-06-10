@@ -3,7 +3,7 @@
  */
 import { act, renderHook } from "@testing-library/react"
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
-import { prerenderSegment, type PrerenderResult } from "@/core/services/video-compiler"
+import { prerenderSegment, type PrerenderResult } from "@timeline-studio/core/services/video-compiler"
 import { usePrerender, usePrerenderCache } from "../../hooks/use-prerender"
 
 // Ensure console.error is mocked to see errors
@@ -40,7 +40,7 @@ vi.mock("@/features/export/utils/project-schema-builder", () => ({
 }))
 
 // Mock video compiler service
-vi.mock("@/core/services/video-compiler", () => ({
+vi.mock("@timeline-studio/core/services/video-compiler", () => ({
   prerenderSegment: vi.fn(),
   getPrerenderCacheInfo: vi.fn(),
   clearPrerenderCache: vi.fn(),

@@ -21,7 +21,7 @@ import type {
   RenderJob,
   RenderProgress,
   SystemInfo,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class MockVideoService implements IVideoService {
   private renderJobs: Map<string, RenderJob> = new Map()

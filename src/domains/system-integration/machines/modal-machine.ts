@@ -7,14 +7,14 @@
  */
 
 import { assign, setup } from "xstate"
-import type { ModalData, ModalMachineContext, ModalType } from "@/core/types/modals"
-import type { ModalBackendEvent } from "@/core/services/modal-backend-handlers"
-import { handleModalBackendEvent } from "@/core/services/modal-backend-handlers"
+import type { ModalData, ModalMachineContext, ModalType } from "@timeline-studio/core/types/modals"
+import type { ModalBackendEvent } from "@timeline-studio/core/services/modal-backend-handlers"
+import { handleModalBackendEvent } from "@timeline-studio/core/services/modal-backend-handlers"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("ModalMachine")
 
-export type { ModalData, ModalMachineContext, ModalType } from "@/core/types/modals"
+export type { ModalData, ModalMachineContext, ModalType } from "@timeline-studio/core/types/modals"
 
 /**
  * Создание машины состояний для модальных окон

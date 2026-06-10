@@ -13,7 +13,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: mockInvoke,
 }))
 
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getAI: () => ({
     initAdvancedTracking: (config: Record<string, unknown>) => mockInvoke("init_advanced_tracking", { config }),
     startPersonTracking: (options: Record<string, unknown>) => mockInvoke("start_person_tracking", options),

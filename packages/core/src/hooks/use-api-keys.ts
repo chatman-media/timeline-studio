@@ -4,7 +4,7 @@ import {
   type ApiKeyInfo,
   type ApiKeyStatus,
   type SupportedService,
-} from "@/core/services/api-keys"
+} from "@timeline-studio/core/services/api-keys"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger({ module: "CoreUseApiKeys" })

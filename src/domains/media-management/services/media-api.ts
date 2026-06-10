@@ -1,6 +1,6 @@
 import { open } from "@tauri-apps/plugin-dialog"
 
-import { getMedia } from "@/core/container"
+import { getMedia } from "@timeline-studio/core/container"
 import { formatDurationSeconds as formatDurationSecondsUtil } from "@/lib/duration-formatter"
 import { isBrowser } from "@/lib/environment"
 import { createLogger } from "@/lib/tauri-logger"

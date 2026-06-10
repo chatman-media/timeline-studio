@@ -2,7 +2,7 @@
  * Утилиты для экспорта и импорта планов монтажа
  */
 
-import { container } from "@/core"
+import { container } from "@timeline-studio/core"
 import { createLogger } from "@/lib/tauri-logger"
 
 import type { MontagePlan } from "../types/montage-plan"

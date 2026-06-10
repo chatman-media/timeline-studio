@@ -1,6 +1,6 @@
 // OAuth service для авторизации в социальных сетях
 
-import { showSystemNotification } from "@/core/services/notifications"
+import { showSystemNotification } from "@timeline-studio/core/services/notifications"
 import { createLogger } from "@/lib/tauri-logger"
 import { OAuthToken } from "../types/export-types"
 import { SecureTokenStorage } from "./secure-token-storage"

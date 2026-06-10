@@ -10,7 +10,7 @@ import path from "node:path"
 import { Command } from "commander"
 
 import { initNodeApp } from "@/adapters/node"
-import type { BotRenderJobRequest, BotRenderJobResult } from "@/core/types"
+import type { BotRenderJobRequest, BotRenderJobResult } from "@timeline-studio/core/types"
 
 export interface RenderJobCommandOptions {
   statusFile?: string

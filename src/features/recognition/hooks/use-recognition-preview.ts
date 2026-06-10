@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 
-import { getAI, getMedia } from "@/core/container"
-import type { RecognitionResults } from "@/core/types/media-preview"
+import { getAI, getMedia } from "@timeline-studio/core/container"
+import type { RecognitionResults } from "@timeline-studio/core/types/media-preview"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 import type { YoloDetection, YoloVideoData } from "../types/yolo"

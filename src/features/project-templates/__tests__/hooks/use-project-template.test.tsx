@@ -4,7 +4,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { TimelineStudioProject } from "@/core/types/project"
+import type { TimelineStudioProject } from "@timeline-studio/core/types/project"
 
 import { useProjectTemplate } from "../../hooks/use-project-template"
 import { projectTemplateManager, templateApplier, templateValidator } from "../../services"

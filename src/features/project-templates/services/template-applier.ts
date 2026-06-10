@@ -3,7 +3,7 @@
  * Применение шаблона проекта к Timeline Studio Project
  */
 
-import type { FrameRate, Resolution, TimelineStudioProject } from "@/core/types/project"
+import type { FrameRate, Resolution, TimelineStudioProject } from "@timeline-studio/core/types/project"
 import type { TimelineTrack } from "@/features/timeline/types"
 import type { Sequence, SequenceSettings } from "@/features/timeline/types/sequence"
 import { createLogger } from "@/lib/tauri-logger"

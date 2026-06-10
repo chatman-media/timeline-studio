@@ -1,1 +1,1 @@
-export { backendAI } from "@/core/services/backend-ai"
+export { backendAI } from "@timeline-studio/core/services/backend-ai"

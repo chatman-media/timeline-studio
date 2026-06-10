@@ -15,7 +15,7 @@ import type {
   ScanFolderOptions,
   ScannedMediaFile,
   ThumbnailOptions,
-} from "@/core/ports"
+} from "@timeline-studio/core/ports"
 
 export class TauriNodeBackendService implements INodeBackendService {
   async checkHealth(): Promise<NodeBackendHealth> {

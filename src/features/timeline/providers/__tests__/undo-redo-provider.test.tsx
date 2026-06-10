@@ -10,7 +10,7 @@
 import { renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { clearVideoEditingBindings, setVideoEditingBindings } from "@/core/services/video-editing-registry"
+import { clearVideoEditingBindings, setVideoEditingBindings } from "@timeline-studio/core/services/video-editing-registry"
 import {
   UndoRedoProvider,
   useClipUndoRedo,
@@ -104,7 +104,7 @@ vi.mock("@/lib/tauri-logger", () => ({
 }))
 
 // Mock container
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   container: {
     getBackend: () => mockBackend,
   },

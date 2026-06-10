@@ -3,7 +3,7 @@
  * Сценарий монтажа между Analysis и Timeline
  */
 
-import type { MediaFile } from "@/core/types"
+import type { MediaFile } from "@timeline-studio/core/types"
 
 /**
  * План монтажа (сценарий/раскадровка)

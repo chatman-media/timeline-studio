@@ -11,8 +11,8 @@ import { type DiscoveredFile, useMediaProcessor } from "@/domains/media-manageme
 const mockUnlisten = vi.fn()
 const mockEventListen = vi.fn()
 
-// Mock @/core container
-vi.mock("@/core", () => ({
+// Mock @timeline-studio/core container
+vi.mock("@timeline-studio/core", () => ({
   container: {
     hasEvent: vi.fn(() => true),
     getEvent: vi.fn(() => ({

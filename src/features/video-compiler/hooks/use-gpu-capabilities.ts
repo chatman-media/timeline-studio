@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNotifications } from "@/core/hooks"
+import { useNotifications } from "@timeline-studio/core/hooks"
 import {
   GpuEncoder,
   type CompilerSettings,
@@ -8,8 +8,8 @@ import {
   type GpuCapabilities,
   type GpuInfo,
   type SystemInfo,
-} from "@/core/types/video-editing"
-import { videoCompilerSystemService } from "@/core/services/video-compiler"
+} from "@timeline-studio/core/types/video-editing"
+import { videoCompilerSystemService } from "@timeline-studio/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("UseGpuCapabilities")

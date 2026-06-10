@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { ProjectEvent, ProjectState } from "@/core/types"
+import type { ProjectEvent, ProjectState } from "@timeline-studio/core/types"
 import { MockBackendService } from "../backend"
 
 describe("MockBackendService", () => {

@@ -12,7 +12,7 @@ const mockShowSuccess = vi.fn()
 const mockShowError = vi.fn()
 const mockShowInfo = vi.fn()
 
-vi.mock("@/core/hooks", () => ({
+vi.mock("@timeline-studio/core/hooks", () => ({
   useNotifications: () => ({
     showSuccess: mockShowSuccess,
     showError: mockShowError,
@@ -21,7 +21,7 @@ vi.mock("@/core/hooks", () => ({
 }))
 
 // Мокаем video compiler service
-vi.mock("@/core/services/video-compiler", () => ({
+vi.mock("@timeline-studio/core/services/video-compiler", () => ({
   renderProject: vi.fn(),
   trackRenderProgress: vi.fn(),
   videoCompilerRenderService: {
@@ -83,7 +83,7 @@ describe("useVideoCompiler", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks()
-    const compilerService = await import("@/core/services/video-compiler")
+    const compilerService = await import("@timeline-studio/core/services/video-compiler")
     mockRenderProject = vi.mocked(compilerService.renderProject)
     mockTrackRenderProgress = vi.mocked(compilerService.trackRenderProgress)
     mockCancelRender = vi.mocked(compilerService.videoCompilerRenderService.cancelRender)

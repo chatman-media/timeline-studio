@@ -28,4 +28,4 @@ export type {
   FFmpegProcessor,
   ParameterType,
   WebGLProcessor,
-} from "@/core/types"
+} from "@timeline-studio/core/types"

@@ -1,4 +1,4 @@
-import { container } from "@/core"
+import { container } from "@timeline-studio/core"
 import type { SavedMediaFile, SavedMusicFile } from "@/domains/media-management"
 import type { ProjectFile } from "@/domains/shared/types/project"
 

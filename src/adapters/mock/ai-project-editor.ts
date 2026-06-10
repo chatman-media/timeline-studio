@@ -4,7 +4,7 @@ import {
   type AIProjectEditorResult,
   cloneProjectSchema,
   type IAIProjectEditor,
-} from "@/core"
+} from "@timeline-studio/core"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 export interface MockAIProjectEditorOptions {

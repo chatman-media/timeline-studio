@@ -2,8 +2,8 @@ import { Star, StarOff } from "lucide-react"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
-import { useFavorites } from "@/core/hooks"
-import type { MediaFile } from "@/core/types"
+import { useFavorites } from "@timeline-studio/core/hooks"
+import type { MediaFile } from "@timeline-studio/core/types"
 import { shortcutsRegistry } from "@/features/keyboard-shortcuts"
 import { cn } from "@/lib/utils"
 

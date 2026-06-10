@@ -14,4 +14,4 @@ export type {
   TransitionPreset,
   TransitionTag,
   TransitionType,
-} from "@/core/types/transitions"
+} from "@timeline-studio/core/types/transitions"

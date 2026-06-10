@@ -5,8 +5,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
-import { getBackend } from "@/core/container"
-import type { CommandResult, ProjectCommand, ProjectEvent } from "@/core/types"
+import { getBackend } from "@timeline-studio/core/container"
+import type { CommandResult, ProjectCommand, ProjectEvent } from "@timeline-studio/core/types"
 import { useToast } from "@/hooks/use-toast"
 import { createLogger } from "@/lib/tauri-logger"
 import type { VersionInfo } from "../types"

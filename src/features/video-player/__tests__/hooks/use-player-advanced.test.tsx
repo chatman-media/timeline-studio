@@ -21,7 +21,7 @@ import { act, renderHook, waitFor } from "@testing-library/react"
 import type React from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 import type { MediaFile } from "@/domains/media-management"
 import { MediaType } from "@/domains/media-management"
 import { PlayerProvider, usePlayer } from "@/features/timeline/providers/player-provider"

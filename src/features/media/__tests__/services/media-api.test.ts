@@ -17,7 +17,7 @@ const mockMediaService = vi.hoisted(() => ({
 }))
 
 // Mock container
-vi.mock("@/core/container", () => ({
+vi.mock("@timeline-studio/core/container", () => ({
   getMedia: vi.fn(() => mockMediaService),
 }))
 

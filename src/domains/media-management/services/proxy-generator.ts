@@ -7,8 +7,8 @@
  * ✅ ОБНОВЛЕНО (2025-11-28): Использует IMediaService через container
  */
 
-import { getMedia } from "@/core/container"
-import type { ProxyGenerationResult } from "@/core/ports"
+import { getMedia } from "@timeline-studio/core/container"
+import type { ProxyGenerationResult } from "@timeline-studio/core/ports"
 import { createLogger } from "@/lib/tauri-logger"
 import type { MediaInfo } from "../types"
 
@@ -45,7 +45,7 @@ export interface ProxyGenerationOptions {
 }
 
 // Re-export ProxyGenerationResult from ports for backwards compatibility
-export type { ProxyGenerationResult } from "@/core/ports"
+export type { ProxyGenerationResult } from "@timeline-studio/core/ports"
 
 /**
  * Сервис для генерации прокси-файлов

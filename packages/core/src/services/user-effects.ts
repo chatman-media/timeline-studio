@@ -4,8 +4,8 @@
  */
 
 import { invoke } from "@tauri-apps/api/core"
-import type { BaseEffect } from "@/core/types"
-import type { ProjectSchema } from "@/core/types/video-editing"
+import type { BaseEffect } from "@timeline-studio/core/types"
+import type { ProjectSchema } from "@timeline-studio/core/types/video-editing"
 import { createLogger } from "@/lib/tauri-logger"
 
 const logger = createLogger("CoreUserEffectsService")

@@ -5,7 +5,7 @@
  * Использует in-memory event emitter.
  */
 
-import type { EventCallback, IEventService, UnlistenFn } from "@/core/ports"
+import type { EventCallback, IEventService, UnlistenFn } from "@timeline-studio/core/ports"
 
 export class MockEventService implements IEventService {
   private _listeners = new Map<string, Set<EventCallback<unknown>>>()

@@ -1,4 +1,4 @@
-import { container } from "@/core/container"
+import { container } from "@timeline-studio/core/container"
 
 export type CoreNotificationType = "info" | "success" | "warning" | "error"
 
