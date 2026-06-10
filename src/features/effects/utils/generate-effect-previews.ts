@@ -5,7 +5,7 @@
  * с применённым эффектом для каждого эффекта в библиотеке
  */
 
-import { prerenderSegment } from "@/domains/video-editing/services/compiler"
+import { prerenderSegment } from "@/core/services/video-compiler"
 import { createLogger } from "@/lib/tauri-logger"
 import type { BaseEffect } from "../types"
 

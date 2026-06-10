@@ -12,7 +12,7 @@ import {
   type PrerenderCacheFile,
   type PrerenderResult,
   prerenderSegment,
-} from "@/domains/video-editing/services/compiler"
+} from "@/core/services/video-compiler"
 import { ProjectSchemaBuilder } from "@/features/export/utils/project-schema-builder"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
 

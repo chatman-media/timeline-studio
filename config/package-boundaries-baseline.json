@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core user presets service",
-  "violations": 81,
+  "source": "Phase F7 core effects services",
+  "violations": 77,
   "bySeverity": {
-    "warn": 81
+    "warn": 77
   },
   "byEdge": {
-    "ui -> domains": 81
+    "ui -> domains": 77
   }
 }
