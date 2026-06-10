@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 local undo redo contract",
-  "violations": 59,
+  "source": "Phase F7 local timeline project schema",
+  "violations": 56,
   "bySeverity": {
-    "warn": 59
+    "warn": 56
   },
   "byEdge": {
-    "ui -> domains": 59
+    "ui -> domains": 56
   }
 }

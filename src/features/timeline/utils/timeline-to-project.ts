@@ -2,48 +2,326 @@
  * Преобразование Timeline в ProjectSchema для Video Compiler
  */
 
-// Import actual types
-import type { MediaTemplate, StyleTemplate, Transition, VideoFilter } from "@/domains/video-editing/types"
-import {
-  AlignX,
-  AlignY,
-  AnimationDirection,
-  AnimationEasing,
-  AnimationType,
-  AspectRatio,
-  type BackendClip,
-  type BackendStyleTemplate,
-  type BackendSubtitle,
-  type BackendSubtitleAnimation,
-  type BackendSubtitlePosition,
-  type BackendSubtitleStyle,
-  CompilerFilterType,
-  CompilerTemplateType,
-  type ElementAnimation,
-  FitMode,
-  FontWeight,
-  ObjectFit,
-  OutputFormat,
-  type ProjectSchema,
-  StyleElementType,
-  StyleTemplateCategory,
-  type StyleTemplateElement,
-  StyleTemplateStyle,
-  SubtitleAlignX,
-  SubtitleAlignY,
-  SubtitleAnimationType,
-  SubtitleDirection,
-  SubtitleEasing,
-  SubtitleFontWeight,
-  TextAlign,
-  toRustEnumCase,
-} from "@/domains/video-editing/types"
-import { CompilerTrackType } from "@/domains/video-editing/types/video-compiler"
+import type { VideoFilter } from "@/core/types/filters"
+import type { StyleTemplate } from "@/core/types/style-template"
+import type { MediaTemplate } from "@/core/types/templates"
+import type { Transition } from "@/core/types/transitions"
+import { AspectRatio, OutputFormat } from "@/core/types/video-editing"
 import type { SubtitleClip } from "@/features/subtitles/types"
 
+const CompilerTrackType = {
+  Video: "Video",
+  Audio: "Audio",
+  Subtitle: "Subtitle",
+} as const
+type CompilerTrackType = (typeof CompilerTrackType)[keyof typeof CompilerTrackType]
+
+const CompilerFilterType = {
+  Brightness: "Brightness",
+  Contrast: "Contrast",
+  Saturation: "Saturation",
+  Gamma: "Gamma",
+  Temperature: "Temperature",
+  Tint: "Tint",
+  Hue: "Hue",
+  Vibrance: "Vibrance",
+  Shadows: "Shadows",
+  Highlights: "Highlights",
+  Blacks: "Blacks",
+  Whites: "Whites",
+  Clarity: "Clarity",
+  Dehaze: "Dehaze",
+  Vignette: "Vignette",
+  Grain: "Grain",
+  Blur: "Blur",
+  Sharpen: "Sharpen",
+  Custom: "Custom",
+} as const
+type CompilerFilterType = (typeof CompilerFilterType)[keyof typeof CompilerFilterType]
+
+const CompilerTemplateType = {
+  Vertical: "Vertical",
+  Horizontal: "Horizontal",
+  Diagonal: "Diagonal",
+  Grid: "Grid",
+  Custom: "Custom",
+} as const
+type CompilerTemplateType = (typeof CompilerTemplateType)[keyof typeof CompilerTemplateType]
+
+const FitMode = {
+  Contain: "Contain",
+  Cover: "Cover",
+  Fill: "Fill",
+} as const
+
+const AlignX = {
+  Left: "Left",
+  Center: "Center",
+  Right: "Right",
+} as const
+
+const AlignY = {
+  Top: "Top",
+  Center: "Center",
+  Bottom: "Bottom",
+} as const
+
+const StyleTemplateCategory = {
+  Intro: "Intro",
+  Outro: "Outro",
+  LowerThird: "LowerThird",
+  Title: "Title",
+  Transition: "Transition",
+  Overlay: "Overlay",
+} as const
+type StyleTemplateCategory = (typeof StyleTemplateCategory)[keyof typeof StyleTemplateCategory]
+
+const StyleTemplateStyle = {
+  Modern: "Modern",
+  Vintage: "Vintage",
+  Minimal: "Minimal",
+  Corporate: "Corporate",
+  Creative: "Creative",
+  Cinematic: "Cinematic",
+} as const
+type StyleTemplateStyle = (typeof StyleTemplateStyle)[keyof typeof StyleTemplateStyle]
+
+const StyleElementType = {
+  Text: "Text",
+  Shape: "Shape",
+  Image: "Image",
+  Video: "Video",
+  Animation: "Animation",
+  Particle: "Particle",
+} as const
+type StyleElementType = (typeof StyleElementType)[keyof typeof StyleElementType]
+
+const TextAlign = {
+  Left: "Left",
+  Center: "Center",
+  Right: "Right",
+} as const
+type TextAlign = (typeof TextAlign)[keyof typeof TextAlign]
+
+const FontWeight = {
+  Normal: "Normal",
+  Bold: "Bold",
+  Light: "Light",
+} as const
+type FontWeight = (typeof FontWeight)[keyof typeof FontWeight]
+
+const ObjectFit = {
+  Contain: "Contain",
+  Cover: "Cover",
+  Fill: "Fill",
+} as const
+type ObjectFit = (typeof ObjectFit)[keyof typeof ObjectFit]
+
+const AnimationType = {
+  FadeIn: "FadeIn",
+  FadeOut: "FadeOut",
+  SlideIn: "SlideIn",
+  SlideOut: "SlideOut",
+  ScaleIn: "ScaleIn",
+  ScaleOut: "ScaleOut",
+  Bounce: "Bounce",
+  Shake: "Shake",
+} as const
+type AnimationType = (typeof AnimationType)[keyof typeof AnimationType]
+
+const AnimationEasing = {
+  Linear: "Linear",
+  Ease: "Ease",
+  EaseIn: "EaseIn",
+  EaseOut: "EaseOut",
+  EaseInOut: "EaseInOut",
+} as const
+type AnimationEasing = (typeof AnimationEasing)[keyof typeof AnimationEasing]
+
+const AnimationDirection = {
+  Left: "Left",
+  Right: "Right",
+  Up: "Up",
+  Down: "Down",
+} as const
+type AnimationDirection = (typeof AnimationDirection)[keyof typeof AnimationDirection]
+
+const SubtitleAlignX = {
+  Left: "Left",
+  Center: "Center",
+  Right: "Right",
+} as const
+type SubtitleAlignX = (typeof SubtitleAlignX)[keyof typeof SubtitleAlignX]
+
+const SubtitleAlignY = {
+  Top: "Top",
+  Center: "Center",
+  Bottom: "Bottom",
+} as const
+type SubtitleAlignY = (typeof SubtitleAlignY)[keyof typeof SubtitleAlignY]
+
+const SubtitleFontWeight = {
+  Normal: "Normal",
+  Bold: "Bold",
+  Light: "Light",
+} as const
+type SubtitleFontWeight = (typeof SubtitleFontWeight)[keyof typeof SubtitleFontWeight]
+
+const SubtitleAnimationType = {
+  FadeIn: "FadeIn",
+  FadeOut: "FadeOut",
+  SlideIn: "SlideIn",
+  SlideOut: "SlideOut",
+  TypeWriter: "TypeWriter",
+  Bounce: "Bounce",
+} as const
+type SubtitleAnimationType = (typeof SubtitleAnimationType)[keyof typeof SubtitleAnimationType]
+
+const SubtitleEasing = {
+  Linear: "Linear",
+  Ease: "Ease",
+  EaseIn: "EaseIn",
+  EaseOut: "EaseOut",
+  EaseInOut: "EaseInOut",
+} as const
+type SubtitleEasing = (typeof SubtitleEasing)[keyof typeof SubtitleEasing]
+
+const SubtitleDirection = {
+  Left: "Left",
+  Right: "Right",
+  Up: "Up",
+  Down: "Down",
+} as const
+type SubtitleDirection = (typeof SubtitleDirection)[keyof typeof SubtitleDirection]
+
+type BackendClip = {
+  id: string
+  source_path: string
+  start_time: number
+  end_time: number
+  source_start: number
+  source_end: number
+  speed: number
+  volume: number
+  effects: string[]
+  filters: string[]
+  template_id?: string
+  template_cell?: number
+  style_template_id?: string
+}
+
+type BackendStyleTemplate = {
+  id: string
+  name: string
+  category: StyleTemplateCategory
+  style: StyleTemplateStyle
+  duration: number
+  elements: StyleTemplateElement[]
+}
+
+type StyleTemplateElement = {
+  id: string
+  element_type: StyleElementType
+  name: string
+  position: { x: number; y: number }
+  size: { width: number; height: number }
+  timing: { start: number; end: number }
+  properties: Record<string, any>
+  animations: ElementAnimation[]
+}
+
+type ElementAnimation = {
+  id: string
+  animation_type: AnimationType
+  duration: number
+  delay?: number
+  easing?: AnimationEasing
+  direction?: AnimationDirection
+  properties?: Record<string, any>
+}
+
+type BackendSubtitle = {
+  id: string
+  text: string
+  start_time: number
+  end_time: number
+  position: BackendSubtitlePosition
+  style: BackendSubtitleStyle
+  enabled: boolean
+  animations?: BackendSubtitleAnimation[]
+}
+
+type BackendSubtitlePosition = {
+  x: number
+  y: number
+  align_x: SubtitleAlignX
+  align_y: SubtitleAlignY
+  margin?: {
+    top: number
+    right: number
+    bottom: number
+    left: number
+  }
+}
+
+type BackendSubtitleStyle = {
+  font_family: string
+  font_size: number
+  font_weight: SubtitleFontWeight
+  color: string
+  stroke_color?: string
+  stroke_width?: number
+  shadow_color?: string
+  shadow_x?: number
+  shadow_y?: number
+  shadow_blur?: number
+  background_color?: string
+  background_opacity?: number
+  padding?: {
+    top: number
+    right: number
+    bottom: number
+    left: number
+  }
+  border_radius?: number
+  line_height?: number
+  letter_spacing?: number
+  max_width?: number
+}
+
+type BackendSubtitleAnimation = {
+  id: string
+  animation_type: SubtitleAnimationType
+  duration: number
+  delay?: number
+  easing?: SubtitleEasing
+  direction?: SubtitleDirection
+  properties?: Record<string, any>
+}
+
+function toRustEnumCase(str: string): string {
+  return str
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join("")
+}
+
 // Aliases for compatibility
-type BackendFilter = CompilerFilterType
-type BackendTemplate = CompilerTemplateType
+type BackendFilter = {
+  id: string
+  filter_type: string
+  name: string
+  enabled: boolean
+  parameters: Record<string, number>
+  ffmpeg_command?: string
+}
+type BackendTemplate = {
+  id: string
+  template_type: CompilerTemplateType
+  name: string
+  screens: number
+  cells: TemplateCell[]
+}
 type BackendTrack = {
   id: string
   track_type: CompilerTrackType
@@ -61,7 +339,36 @@ type TemplateCell = {
   y: number
   width: number
   height: number
+  fit_mode?: string
+  align_x?: string
+  align_y?: string
   clip_id?: string
+}
+
+type ProjectSchema = {
+  version: string
+  metadata: {
+    name: string
+    description?: string
+    created_at: string
+    modified_at: string
+    author?: string
+  }
+  timeline: {
+    duration: number
+    fps: number
+    resolution: [number, number]
+    sample_rate: number
+    aspect_ratio: AspectRatio
+  }
+  tracks: BackendTrack[]
+  effects: any[]
+  transitions: any[]
+  filters: BackendFilter[]
+  templates: BackendTemplate[]
+  style_templates: BackendStyleTemplate[]
+  subtitles: BackendSubtitle[]
+  settings: Record<string, any>
 }
 
 import {
