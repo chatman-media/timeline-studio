@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core resource provider types",
-  "violations": 157,
+  "source": "Phase F7 core transition hook types",
+  "violations": 154,
   "bySeverity": {
-    "warn": 157
+    "warn": 154
   },
   "byEdge": {
-    "ui -> domains": 157
+    "ui -> domains": 154
   }
 }
