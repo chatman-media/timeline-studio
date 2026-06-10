@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 route frame preview through media adapter",
-  "violations": 18,
+  "source": "Phase F7 route montage app settings through core",
+  "violations": 17,
   "bySeverity": {
-    "warn": 18
+    "warn": 17
   },
   "byEdge": {
-    "ui -> domains": 18
+    "ui -> domains": 17
   }
 }
