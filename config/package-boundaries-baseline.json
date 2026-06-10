@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 transcription service port",
-  "violations": 397,
+  "source": "Phase F7 enhanced subtitle automation port",
+  "violations": 396,
   "bySeverity": {
-    "warn": 397
+    "warn": 396
   },
   "byEdge": {
-    "ui -> domains": 397
+    "ui -> domains": 396
   }
 }

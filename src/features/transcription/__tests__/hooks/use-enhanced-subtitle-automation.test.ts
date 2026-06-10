@@ -3,19 +3,18 @@
  */
 import { renderHook, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import * as enhancedAutomation from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+import { container, resetContainer } from "@/core/container"
+import type { IEnhancedSubtitleAutomationService } from "@/core/ports"
 import { useEnhancedSubtitleAutomation } from "../../hooks/use-enhanced-subtitle-automation"
 import { createMockEnhancedSubtitleResult } from "../test-utils"
 
-// Mock enhanced subtitle automation tool
-vi.mock("@/domains/ai-tools/tools/automation/enhanced-subtitle-automation", () => ({
-  enhancedSubtitleAutomation: {
-    processEnhancedSubtitles: vi.fn(),
-  },
-  autoGenerateSubtitlesFromVideo: vi.fn(),
-  extractSubtitlesFromScreenText: vi.fn(),
-  generateMultilingualSubtitles: vi.fn(),
-}))
+const mockProcessEnhancedSubtitles = vi.fn<IEnhancedSubtitleAutomationService["processEnhancedSubtitles"]>()
+const mockAutoGenerateSubtitlesFromVideo =
+  vi.fn<IEnhancedSubtitleAutomationService["autoGenerateSubtitlesFromVideo"]>()
+const mockExtractSubtitlesFromScreenText =
+  vi.fn<IEnhancedSubtitleAutomationService["extractSubtitlesFromScreenText"]>()
+const mockGenerateMultilingualSubtitles =
+  vi.fn<IEnhancedSubtitleAutomationService["generateMultilingualSubtitles"]>()
 
 // Mock logger
 vi.mock("@/lib/tauri-logger", async (importOriginal) => {
@@ -35,7 +34,7 @@ vi.mock("react-i18next", () => ({
 }))
 
 // Mock useNotifications
-vi.mock("@/domains/system-integration", () => ({
+vi.mock("@/core/hooks", () => ({
   useNotifications: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),
@@ -46,11 +45,18 @@ vi.mock("@/domains/system-integration", () => ({
 
 describe("useEnhancedSubtitleAutomation", () => {
   beforeEach(() => {
+    resetContainer()
     vi.clearAllMocks()
+    container.registerEnhancedSubtitleAutomation({
+      processEnhancedSubtitles: mockProcessEnhancedSubtitles,
+      autoGenerateSubtitlesFromVideo: mockAutoGenerateSubtitlesFromVideo,
+      extractSubtitlesFromScreenText: mockExtractSubtitlesFromScreenText,
+      generateMultilingualSubtitles: mockGenerateMultilingualSubtitles,
+    })
   })
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    resetContainer()
   })
 
   describe("Initial state", () => {
@@ -72,7 +78,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
+      mockProcessEnhancedSubtitles.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 2500,
@@ -95,7 +101,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const errorMessage = "Processing failed"
 
-      vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
+      mockProcessEnhancedSubtitles.mockResolvedValue({
         success: false,
         errors: [errorMessage],
         executionTime: 0,
@@ -117,7 +123,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.enhancedSubtitleAutomation.processEnhancedSubtitles).mockResolvedValue({
+      mockProcessEnhancedSubtitles.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 2500,
@@ -144,7 +150,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
+      mockAutoGenerateSubtitlesFromVideo.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 2000,
@@ -166,7 +172,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const errorMessage = "Quick generation failed"
 
-      vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
+      mockAutoGenerateSubtitlesFromVideo.mockResolvedValue({
         success: false,
         errors: [errorMessage],
         executionTime: 0,
@@ -190,7 +196,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.extractSubtitlesFromScreenText).mockResolvedValue({
+      mockExtractSubtitlesFromScreenText.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 1500,
@@ -212,7 +218,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const errorMessage = "OCR extraction failed"
 
-      vi.mocked(enhancedAutomation.extractSubtitlesFromScreenText).mockResolvedValue({
+      mockExtractSubtitlesFromScreenText.mockResolvedValue({
         success: false,
         errors: [errorMessage],
         executionTime: 0,
@@ -236,7 +242,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.generateMultilingualSubtitles).mockResolvedValue({
+      mockGenerateMultilingualSubtitles.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 3000,
@@ -258,7 +264,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const errorMessage = "Multilingual generation failed"
 
-      vi.mocked(enhancedAutomation.generateMultilingualSubtitles).mockResolvedValue({
+      mockGenerateMultilingualSubtitles.mockResolvedValue({
         success: false,
         errors: [errorMessage],
         executionTime: 0,
@@ -306,7 +312,7 @@ describe("useEnhancedSubtitleAutomation", () => {
       const { result } = renderHook(() => useEnhancedSubtitleAutomation())
       const mockResult = createMockEnhancedSubtitleResult()
 
-      vi.mocked(enhancedAutomation.autoGenerateSubtitlesFromVideo).mockResolvedValue({
+      mockAutoGenerateSubtitlesFromVideo.mockResolvedValue({
         success: true,
         data: mockResult,
         executionTime: 2000,

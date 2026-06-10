@@ -12,6 +12,7 @@
 export {
   container,
   getBackend,
+  getEnhancedSubtitleAutomation,
   getLanguage,
   getNodeBackend,
   getPlatform,
@@ -43,6 +44,7 @@ export type {
   IBotFeedbackTranscriber,
   IBotFirstCutGenerator,
   IBotFirstCutPlanner,
+  IEnhancedSubtitleAutomationService,
   ILanguageService,
   INodeBackendService,
   IPlatformService,

@@ -9,6 +9,7 @@ import { container } from "@/core/container"
 import { MockAIService } from "./ai"
 import { MockAIProjectEditor } from "./ai-project-editor"
 import { MockBackendService } from "./backend"
+import { MockEnhancedSubtitleAutomationAdapter } from "./enhanced-subtitle-automation"
 import { MockEventService } from "./event"
 import { MockLanguageService } from "./language"
 import { MockMediaService } from "./media"
@@ -21,6 +22,7 @@ import { MockVideoService } from "./video"
 export { MockAIService } from "./ai"
 export { MockAIProjectEditor, type MockAIProjectEditorOptions } from "./ai-project-editor"
 export { MockBackendService } from "./backend"
+export { MockEnhancedSubtitleAutomationAdapter } from "./enhanced-subtitle-automation"
 export { MockEventService } from "./event"
 export { MockLanguageService } from "./language"
 export { MockMediaService } from "./media"
@@ -50,6 +52,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
   transcription: MockTranscriptionAdapter
+  enhancedSubtitleAutomation: MockEnhancedSubtitleAutomationAdapter
 } {
   const { useLocalStorage = false } = options
 
@@ -65,6 +68,7 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   const aiProjectEditor = new MockAIProjectEditor()
   const language = new MockLanguageService()
   const transcription = new MockTranscriptionAdapter()
+  const enhancedSubtitleAutomation = new MockEnhancedSubtitleAutomationAdapter()
 
   // Register in container
   container.registerBackend(backend)
@@ -77,9 +81,23 @@ export function initMockApp(options: { useLocalStorage?: boolean } = {}): {
   container.registerAI(ai)
   container.registerLanguage(language)
   container.registerTranscription(transcription)
+  container.registerEnhancedSubtitleAutomation(enhancedSubtitleAutomation)
 
   // Return services for test manipulation
-  return { backend, platform, storage, event, media, nodeBackend, video, ai, aiProjectEditor, language, transcription }
+  return {
+    backend,
+    platform,
+    storage,
+    event,
+    media,
+    nodeBackend,
+    video,
+    ai,
+    aiProjectEditor,
+    language,
+    transcription,
+    enhancedSubtitleAutomation,
+  }
 }
 
 /**
@@ -98,6 +116,7 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
   aiProjectEditor: MockAIProjectEditor
   language: MockLanguageService
   transcription: MockTranscriptionAdapter
+  enhancedSubtitleAutomation: MockEnhancedSubtitleAutomationAdapter
 } {
   const { useLocalStorage = false } = options
 
@@ -113,5 +132,6 @@ export function createMockServices(options: { useLocalStorage?: boolean } = {}):
     aiProjectEditor: new MockAIProjectEditor(),
     language: new MockLanguageService(),
     transcription: new MockTranscriptionAdapter(),
+    enhancedSubtitleAutomation: new MockEnhancedSubtitleAutomationAdapter(),
   }
 }

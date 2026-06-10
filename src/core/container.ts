@@ -8,6 +8,7 @@
 import type {
   IAIService,
   IBackendService,
+  IEnhancedSubtitleAutomationService,
   IEventService,
   ILanguageService,
   IMediaService,
@@ -31,6 +32,7 @@ class ServiceContainer {
   private _ai: IAIService | null = null
   private _language: ILanguageService | null = null
   private _transcription: ITranscriptionService | null = null
+  private _enhancedSubtitleAutomation: IEnhancedSubtitleAutomationService | null = null
 
   private constructor() {}
 
@@ -56,6 +58,7 @@ class ServiceContainer {
       ServiceContainer.instance._ai = null
       ServiceContainer.instance._language = null
       ServiceContainer.instance._transcription = null
+      ServiceContainer.instance._enhancedSubtitleAutomation = null
     }
   }
 
@@ -248,6 +251,25 @@ class ServiceContainer {
   hasTranscription(): boolean {
     return this._transcription !== null
   }
+
+  // === Enhanced Subtitle Automation Service ===
+
+  registerEnhancedSubtitleAutomation(enhancedSubtitleAutomation: IEnhancedSubtitleAutomationService): void {
+    this._enhancedSubtitleAutomation = enhancedSubtitleAutomation
+  }
+
+  getEnhancedSubtitleAutomation(): IEnhancedSubtitleAutomationService {
+    if (!this._enhancedSubtitleAutomation) {
+      throw new Error(
+        "[ServiceContainer] Enhanced subtitle automation service not registered. Call registerEnhancedSubtitleAutomation() first or use initTauriApp()/initMockApp().",
+      )
+    }
+    return this._enhancedSubtitleAutomation
+  }
+
+  hasEnhancedSubtitleAutomation(): boolean {
+    return this._enhancedSubtitleAutomation !== null
+  }
 }
 
 // Singleton instance
@@ -264,6 +286,8 @@ export const getVideo = (): IVideoService => container.getVideo()
 export const getAI = (): IAIService => container.getAI()
 export const getLanguage = (): ILanguageService => container.getLanguage()
 export const getTranscription = (): ITranscriptionService => container.getTranscription()
+export const getEnhancedSubtitleAutomation = (): IEnhancedSubtitleAutomationService =>
+  container.getEnhancedSubtitleAutomation()
 
 // For testing
 export const resetContainer = (): void => ServiceContainer.reset()

@@ -12,7 +12,7 @@
 
 - ✅ **Компоненты**: 4 компонента для интерфейса транскрипции
 - ✅ **Хуки**: 2 хука для транскрипции и управления моделями
-- ✅ **Сервисы**: Унифицированный сервис для всех провайдеров (в `/src/domains/ai-services/`)
+- ✅ **Сервисы**: Core ports с Tauri и mock адаптерами
 - ✅ **Тесты**: Полное покрытие unit тестами
 - ✅ **Провайдеры**: OpenAI Whisper, локальный Whisper, Faster Whisper
 
@@ -32,8 +32,8 @@ transcription/
 │   ├── hooks/                      # Тесты хуков
 │   └── components/                 # Тесты компонентов
 ├── __mocks__/                      # Моки для тестов
-│   └── transcription-service.ts    # Mock TranscriptionService
-└── types.ts                        # TypeScript типы (реэкспорт из domains)
+│   └── transcription-service.ts    # Mock сервис транскрипции
+└── types.ts                        # TypeScript типы (реэкспорт из core)
 ```
 
 ## Возможности
@@ -114,7 +114,7 @@ function MyComponent() {
 
 ## Интеграция
 
-- **Зависит от**: `@/domains/ai-services` (TranscriptionService)
+- **Зависит от**: `@/core` ports транскрипции и расширенных субтитров
 - **Используется в**: `@/features/subtitles`, `@/features/timeline`, `@/features/ai-chat`
 - **Интеграция**: Автоматическое создание субтитров, добавление на таймлайн, контекст для AI
 

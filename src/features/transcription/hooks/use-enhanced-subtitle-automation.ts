@@ -5,16 +5,9 @@
 
 import { useCallback, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { container } from "@/core/container"
 import { useNotifications } from "@/core/hooks"
-// Импортируем новый enhanced инструмент
-import {
-  autoGenerateSubtitlesFromVideo,
-  type EnhancedSubtitleInput,
-  type EnhancedSubtitleResult,
-  enhancedSubtitleAutomation,
-  extractSubtitlesFromScreenText,
-  generateMultilingualSubtitles,
-} from "@/domains/ai-tools/tools/automation/enhanced-subtitle-automation"
+import type { EnhancedSubtitleInput, EnhancedSubtitleResult } from "@/core/types/enhanced-subtitle"
 import { logError, logInfo } from "@/lib/tauri-logger"
 
 // Базовые типы из транскрипции
@@ -83,6 +76,7 @@ export interface EnhancedSubtitleProgress {
 export function useEnhancedSubtitleAutomation() {
   const { t } = useTranslation()
   const { showSuccess, showError, showInfo } = useNotifications()
+  const enhancedSubtitleAutomation = container.getEnhancedSubtitleAutomation()
   const [isProcessing, setIsProcessing] = useState(false)
   const [progress, setProgress] = useState<EnhancedSubtitleProgress>({
     stage: "initializing",
@@ -234,7 +228,7 @@ export function useEnhancedSubtitleAutomation() {
         logInfo("[useEnhancedSubtitleAutomation] Обработка завершена")
       }
     },
-    [t, showSuccess, showError],
+    [enhancedSubtitleAutomation, t, showSuccess, showError],
   )
 
   /**
@@ -244,7 +238,7 @@ export function useEnhancedSubtitleAutomation() {
     async (clipId: string, language?: string): Promise<EnhancedSubtitleResult | null> => {
       logInfo("[useEnhancedSubtitleAutomation] Быстрая генерация субтитров из видео", { clipId, language })
       try {
-        const toolResult = await autoGenerateSubtitlesFromVideo(clipId, {
+        const toolResult = await enhancedSubtitleAutomation.autoGenerateSubtitlesFromVideo(clipId, {
           language,
         })
 
@@ -264,7 +258,7 @@ export function useEnhancedSubtitleAutomation() {
         throw err
       }
     },
-    [],
+    [enhancedSubtitleAutomation],
   )
 
   /**
@@ -274,7 +268,7 @@ export function useEnhancedSubtitleAutomation() {
     async (clipId: string, language?: string): Promise<EnhancedSubtitleResult | null> => {
       logInfo("[useEnhancedSubtitleAutomation] Извлечение субтитров из текста на экране", { clipId, language })
       try {
-        const toolResult = await extractSubtitlesFromScreenText(clipId, language)
+        const toolResult = await enhancedSubtitleAutomation.extractSubtitlesFromScreenText(clipId, language)
 
         if (toolResult.success) {
           setResult(toolResult.data!)
@@ -294,7 +288,7 @@ export function useEnhancedSubtitleAutomation() {
         throw err
       }
     },
-    [],
+    [enhancedSubtitleAutomation],
   )
 
   /**
@@ -304,7 +298,7 @@ export function useEnhancedSubtitleAutomation() {
     async (clipId: string, languages: string[]): Promise<EnhancedSubtitleResult | null> => {
       logInfo("[useEnhancedSubtitleAutomation] Генерация мультиязычных субтитров", { clipId, languages })
       try {
-        const toolResult = await generateMultilingualSubtitles(clipId, languages)
+        const toolResult = await enhancedSubtitleAutomation.generateMultilingualSubtitles(clipId, languages)
 
         if (toolResult.success) {
           setResult(toolResult.data!)
@@ -322,7 +316,7 @@ export function useEnhancedSubtitleAutomation() {
         throw err
       }
     },
-    [],
+    [enhancedSubtitleAutomation],
   )
 
   /**

@@ -31,6 +31,7 @@ export type {
 
 // Re-export core-facing compatibility types for features
 export * from "./bot-workflow"
+export * from "./enhanced-subtitle"
 export * from "./media"
 export * from "./render-job"
 export * from "./style-template"

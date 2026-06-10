@@ -64,6 +64,7 @@ export type {
   IBotFirstCutGenerator,
   IBotFirstCutPlanner,
 } from "./bot-first-cut-generator.port"
+export type { IEnhancedSubtitleAutomationService } from "./enhanced-subtitle-automation.port"
 export type { EventCallback, IEventService, UnlistenFn } from "./event.port"
 export type { ILanguageService, LanguageResponse } from "./language.port"
 export type {

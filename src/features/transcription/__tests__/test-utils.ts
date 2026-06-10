@@ -6,7 +6,7 @@ import type {
   TranscriptionResult,
   TranscriptionSegment,
   TranscriptionWord,
-} from "@/domains/ai-services/types/transcription"
+} from "@/core/types/transcription"
 
 /**
  * Mock данные для тестирования транскрипции
