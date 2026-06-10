@@ -1,10 +1,27 @@
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { useApp } from "@/core/hooks/use-app"
-import type { MediaFile } from "@/core/types"
-import type { BrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/types"
+import type { BrowserTab, MediaFile } from "@/core/types"
 import { setBrowserStateAccess } from "@/domains/ai-tools/tools/core/browser/utils/helpers"
 import { useBrowserState } from "@/features/browser/services"
 import { logInfo } from "@/lib/tauri-logger"
+
+interface BrowserStateAccess {
+  getCurrentTab: () => BrowserTab
+  getFiles: (tab?: BrowserTab) => MediaFile[]
+  getSelectedFiles: () => MediaFile[]
+  getFilters: () => unknown
+  setFilters: (filters: Record<string, unknown>) => void
+  selectFiles: (fileIds: string[]) => void
+  deselectFiles: (fileIds: string[]) => void
+  searchFiles: (query: string, options?: unknown) => MediaFile[]
+  getFileGroups: (groupBy: string) => any[]
+  getBrowserStats: () => {
+    totalFiles: number
+    selectedFiles: number
+    filesByType: Record<string, number>
+    totalSize: number
+  }
+}
 
 /**
  * Хук для интеграции Browser с AI функциональностью

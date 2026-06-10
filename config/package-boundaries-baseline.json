@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 central ai chat service adapters",
-  "violations": 26,
+  "source": "Phase F7 local ai browser access contract",
+  "violations": 25,
   "bySeverity": {
-    "warn": 26
+    "warn": 25
   },
   "byEdge": {
-    "ui -> domains": 26
+    "ui -> domains": 25
   }
 }
