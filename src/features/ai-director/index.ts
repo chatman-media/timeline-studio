@@ -32,8 +32,6 @@ export {
   AIDirectorService,
   aiDirectorService,
 } from "@/core/services"
-// The XState machine still uses the legacy Tauri command module and is migrated separately.
-export { aiDirectorMachine } from "@/domains/ai-director"
 
 // Components (UI components removed - now using Timeline Analysis tab)
 

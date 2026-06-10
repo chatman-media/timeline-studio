@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core api keys hook",
-  "violations": 67,
+  "source": "Phase F7 remove ai director machine barrel",
+  "violations": 66,
   "bySeverity": {
-    "warn": 67
+    "warn": 66
   },
   "byEdge": {
-    "ui -> domains": 67
+    "ui -> domains": 66
   }
 }
