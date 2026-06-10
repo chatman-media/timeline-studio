@@ -10,8 +10,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react"
 
+import { useMediaFiles } from "@/core/hooks/use-media-files"
 import { analysisStorageService } from "@/domains/ai-services/services/analysis-storage-service"
-import { useMediaFiles } from "@/domains/project-management/hooks"
 import { createFileProgressFromResult } from "@/features/ai-director"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import type {

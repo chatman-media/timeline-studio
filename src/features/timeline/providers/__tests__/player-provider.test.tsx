@@ -4,7 +4,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react"
 import type { ReactNode } from "react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { PlayerProvider, usePlayer } from "../player-provider"
 
 // Mock dependencies
@@ -50,7 +50,7 @@ const mockUserSettings = {
   updatePlayerVideoSource: vi.fn(),
 }
 
-vi.mock("@/domains/project-management", () => ({
+vi.mock("@/core/hooks/use-user-settings", () => ({
   useUserSettings: () => mockUserSettings,
 }))
 

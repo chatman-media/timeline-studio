@@ -109,6 +109,17 @@ const mockDragState = vi.hoisted(() => ({
 }))
 
 // Mock все внешние зависимости
+vi.mock("@/core/hooks/use-user-settings", () => ({
+  useUserSettings: () => ({
+    playerVolume: 50,
+    playerVideoSource: "browser",
+    timelineVirtualizationEnabled: false,
+    updatePlayerVolume: vi.fn(),
+    updatePlayerVideoSource: vi.fn(),
+    updateSettings: vi.fn(),
+  }),
+}))
+
 vi.mock("@/components/ui/badge", () => ({
   Badge: ({ children, variant }: any) => (
     <span data-variant={variant} data-oid="rx5:arb">
@@ -148,23 +159,19 @@ vi.mock("@/components/ui/resizable", () => ({
   ResizablePanelGroup: ({ children }: any) => <div data-oid="-d0s3vl">{children}</div>,
 }))
 
-vi.mock("@/domains/project-management/hooks", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/domains/project-management/hooks")>()
-  return {
-    ...actual,
-    useCurrentProject: () => ({
-      currentProject: {
-        id: "test-project",
+vi.mock("@/core/hooks/use-current-project", () => ({
+  useCurrentProject: () => ({
+    currentProject: {
+      id: "test-project",
+      name: "Test Project",
+      metadata: {
         name: "Test Project",
-        metadata: {
-          name: "Test Project",
-          file_path: null,
-          is_dirty: false,
-        },
+        file_path: null,
+        is_dirty: false,
       },
-    }),
-  }
-})
+    },
+  }),
+}))
 
 vi.mock("@/features/project-settings/hooks/use-project-settings", () => ({
   useProjectSettings: vi.fn(() => ({

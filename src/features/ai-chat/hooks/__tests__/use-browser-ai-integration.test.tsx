@@ -7,7 +7,7 @@
 
 import { renderHook } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
-import type { MediaFile } from "@/domains/media-management"
+import type { MediaFile } from "@/core/types"
 import { useBrowserAIIntegration } from "../use-browser-ai-integration"
 
 // Mock browser state
@@ -72,7 +72,7 @@ const mockProjectState = {
   },
 }
 
-vi.mock("@/domains/project-management/providers", () => ({
+vi.mock("@/core/hooks/use-app", () => ({
   useApp: () => ({
     projectState: mockProjectState,
   }),

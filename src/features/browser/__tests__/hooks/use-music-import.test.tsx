@@ -17,7 +17,7 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn(),
 }))
 
-vi.mock("@/domains/project-management/hooks/use-current-project", () => ({
+vi.mock("@/core/hooks/use-current-project", () => ({
   useCurrentProject: vi.fn(() => ({
     currentProject: {
       path: "/test/project",

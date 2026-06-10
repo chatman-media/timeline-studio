@@ -80,7 +80,7 @@ const mockProjectState: {
   },
 }
 
-vi.mock("@/domains/project-management/providers", () => ({
+vi.mock("@/core/hooks/use-app", () => ({
   useApp: () => ({
     projectState: mockProjectState,
   }),

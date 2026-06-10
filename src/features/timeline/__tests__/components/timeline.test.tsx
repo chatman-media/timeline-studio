@@ -10,10 +10,11 @@ import React from "react"
 import { describe, expect, it, vi } from "vitest"
 
 // Mock useUserSettings before any imports
-vi.mock("@/features/user-settings/hooks/use-user-settings", () => ({
+vi.mock("@/core/hooks/use-user-settings", () => ({
   useUserSettings: () => ({
     openAiApiKey: "test-api-key",
     claudeApiKey: "test-claude-key",
+    timelineVirtualizationEnabled: false,
     updateSettings: vi.fn(),
     settings: {
       timelineVirtualizationEnabled: false,

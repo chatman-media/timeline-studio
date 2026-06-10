@@ -7,9 +7,9 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react"
 
 import { container } from "@/core/container"
+import { useApp } from "@/core/hooks/use-app"
 import type { FfprobeData, MediaFile } from "@/core/types"
 import { MediaType as LocalMediaType } from "@/core/types"
-import { useApp } from "@/domains/project-management/providers"
 // Backend event handlers removed - simplified architecture
 import {
   type EffectResource,

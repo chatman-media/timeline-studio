@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core modal hooks",
-  "violations": 183,
+  "source": "Phase F7 core project hooks",
+  "violations": 171,
   "bySeverity": {
-    "warn": 183
+    "warn": 171
   },
   "byEdge": {
-    "ui -> domains": 183
+    "ui -> domains": 171
   }
 }

@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { useUserSettings } from "@/domains/project-management/hooks"
+import { useUserSettings } from "@/core/hooks/use-user-settings"
 import { ResourcesPanel } from "@/features/resources/components/resources-panel"
 import { cn } from "@/lib/utils"
 
