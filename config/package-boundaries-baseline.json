@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 core video compiler services",
-  "violations": 68,
+  "source": "Phase F7 core api keys hook",
+  "violations": 67,
   "bySeverity": {
-    "warn": 68
+    "warn": 67
   },
   "byEdge": {
-    "ui -> domains": 68
+    "ui -> domains": 67
   }
 }

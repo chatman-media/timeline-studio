@@ -1,7 +1,7 @@
 /**
  * API Keys Hook
  *
- * Legacy re-export until API keys get their own core port.
+ * Feature-facing API keys hook routed through core.
  */
 
-export { useApiKeys } from "@/domains/project-management/hooks"
+export { useApiKeys } from "@/core/hooks/use-api-keys"
