@@ -10,7 +10,7 @@ export {
   analyzeVideoQuality as analyzeVideoQualityCommand,
   detectKeyMomentsFromDetections,
   generateMontagePlanFromMoments,
-} from "@/domains/ai-services/tauri/montage-planner-commands"
+} from "./montage-planner-commands"
 export {
   applyPlanToTimeline,
   ContentAnalyzer,

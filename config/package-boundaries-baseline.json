@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-11",
-  "source": "Phase F7 keep project music hook in browser feature",
-  "violations": 11,
+  "source": "Phase F7 keep montage tauri commands in feature",
+  "violations": 10,
   "bySeverity": {
-    "warn": 11
+    "warn": 10
   },
   "byEdge": {
-    "ui -> domains": 11
+    "ui -> domains": 10
   }
 }
