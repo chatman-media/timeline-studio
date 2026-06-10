@@ -1,5 +1,6 @@
 import type { VideoFilter } from "./filters"
 import type { MediaFile } from "./media"
+import type { SubtitleStyleTemplate } from "./subtitles"
 import type { MediaTemplate } from "./templates"
 import type { Transition } from "./transitions"
 
@@ -35,7 +36,7 @@ export interface MusicResource extends Resource {
 
 export interface SubtitleResource extends Resource {
   type: "subtitle"
-  style: any
+  style: SubtitleStyleTemplate
   params?: Record<string, unknown>
 }
 

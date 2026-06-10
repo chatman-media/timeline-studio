@@ -4,7 +4,6 @@
  * Template types re-exported from canonical source in video-editing domain
  */
 
-// Re-export subtitle template types from domains
 export type {
   SubtitleAlignment,
   SubtitleAnimation,
@@ -18,10 +17,10 @@ export type {
   SubtitlePosition,
   SubtitleStyleTemplate,
   SubtitleTag,
-} from "@/domains/video-editing/types/templates"
+} from "@/core/types/subtitles"
 
 // Import types for use in interfaces below
-import type { SubtitleAnimation, SubtitleInlineStyle, SubtitlePosition } from "@/domains/video-editing/types/templates"
+import type { SubtitleAnimation, SubtitleInlineStyle, SubtitlePosition } from "@/core/types/subtitles"
 
 /**
  * Интерфейс для субтитра с временными метками

@@ -1,11 +1,11 @@
 {
   "updated": "2026-06-10",
-  "source": "Phase F7 effects core type hooks",
-  "violations": 260,
+  "source": "Phase F7 subtitles core type hooks",
+  "violations": 252,
   "bySeverity": {
-    "warn": 260
+    "warn": 252
   },
   "byEdge": {
-    "ui -> domains": 260
+    "ui -> domains": 252
   }
 }
