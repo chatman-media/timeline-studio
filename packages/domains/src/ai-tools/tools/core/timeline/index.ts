@@ -12,6 +12,7 @@ import { trackCreationTool } from "./create-tracks"
 import { sceneDetectionTool } from "./detect-scenes"
 import { timelineExportTool } from "./export-data"
 import { clipManagementTool } from "./manage-clips"
+import { musicWorkflowTool } from "./music-workflow"
 import { timelineOptimizationTool } from "./optimize-timeline"
 import { clipPlacementTool } from "./place-clips"
 import { smartTemplatesTools } from "./smart-templates"
@@ -40,6 +41,7 @@ export {
 } from "./detect-scenes"
 export { exportTimelineData, timelineExportTool } from "./export-data"
 export { clipManagementTool, manageTimelineClips } from "./manage-clips"
+export { musicWorkflowTool, runMusicWorkflow } from "./music-workflow"
 export {
   optimizeTimelinePerformance,
   timelineOptimizationTool,
@@ -72,6 +74,7 @@ export const timelineTools = [
   enhancementApplicationTool,
   storyAnalysisTool,
   sceneDetectionTool,
+  musicWorkflowTool,
   musicSyncTool,
   improvementsSuggestionTool,
   timelineExportTool,
@@ -96,6 +99,8 @@ export async function executeTimelineTool(operation: string, params: any, option
     apply_enhancements: enhancementApplicationTool,
     analyze_story: storyAnalysisTool,
     detect_scenes: sceneDetectionTool,
+    music_workflow: musicWorkflowTool,
+    insert_music: musicWorkflowTool,
     sync_music: musicSyncTool,
     suggest_improvements: improvementsSuggestionTool,
     export_data: timelineExportTool,

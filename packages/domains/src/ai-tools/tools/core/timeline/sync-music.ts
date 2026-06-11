@@ -19,6 +19,7 @@ export interface MusicSyncInput {
     syncTransitions?: boolean
     beatDetection?: "auto" | "manual" | "bpm-based"
     targetBPM?: number
+    manualBeats?: BeatMarker[]
   }
 }
 
@@ -93,8 +94,7 @@ export class MusicSyncTool extends BaseAITool {
   }
 
   async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
-    // Delegate to main method - will be implemented by the specific tool
-    return this.executeWithErrorHandling(async () => ({}), input, options)
+    return this.synchronizeTimelineWithMusic(input as MusicSyncInput, options)
   }
 
   /**
@@ -273,19 +273,30 @@ export class MusicSyncTool extends BaseAITool {
     musicClip: any,
     syncOptions: MusicSyncInput["syncOptions"],
   ): Promise<MusicAnalysis> {
-    const duration = musicClip.duration
-    const detectionMethod = syncOptions?.beatDetection || "auto"
+    const duration = this.readFiniteNumber(musicClip.duration, "musicClip.duration")
+    const startOffset = this.readFiniteNumber(musicClip.startTime ?? 0, "musicClip.startTime")
+    const detectionMethod = syncOptions?.beatDetection || (syncOptions?.targetBPM ? "bpm-based" : "auto")
 
-    // Определяем BPM
     let bpm: number
-    if (syncOptions?.targetBPM) {
-      bpm = syncOptions.targetBPM
-    } else {
-      bpm = this.estimateBPMFromClip(musicClip)
-    }
+    let beats: BeatMarker[]
 
-    // Генерируем массив битов на основе BPM
-    const beats = this.generateBeatMarkers(bpm, duration, musicClip.startTime)
+    if (detectionMethod === "manual") {
+      if (!syncOptions?.manualBeats?.length) {
+        throw new Error("Manual beat sync requires syncOptions.manualBeats")
+      }
+      beats = syncOptions.manualBeats.map((beat, index) => this.normalizeManualBeat(beat, index))
+      bpm = syncOptions.targetBPM ?? this.estimateBPMFromManualBeats(beats)
+    } else if (detectionMethod === "bpm-based") {
+      if (!syncOptions?.targetBPM) {
+        throw new Error("BPM-based beat sync requires syncOptions.targetBPM")
+      }
+      bpm = syncOptions.targetBPM
+      beats = this.generateBeatMarkers(bpm, duration, startOffset)
+    } else {
+      throw new Error(
+        "Real beat detection is not configured for sync-music; provide targetBPM with beatDetection=bpm-based or manualBeats with beatDetection=manual",
+      )
+    }
 
     // Определяем ритмическую сложность
     const rhythmComplexity = this.calculateRhythmComplexity(bpm, duration)
@@ -393,37 +404,60 @@ export class MusicSyncTool extends BaseAITool {
   // Вспомогательные методы
 
   /**
-   * Оценивает BPM на основе клипа
-   */
-  private estimateBPMFromClip(clip: any): number {
-    const duration = clip.duration
-
-    // Простая эвристика для оценки BPM
-    if (duration < 60) {
-      return 140 // Быстрая музыка
-    }
-    if (duration < 180) {
-      return 120 // Умеренная
-    }
-    return 80 // Медленная
-  }
-
-  /**
    * Генерирует маркеры битов
    */
   private generateBeatMarkers(bpm: number, duration: number, startOffset = 0): BeatMarker[] {
+    if (!Number.isFinite(bpm) || bpm <= 0 || bpm > 300) {
+      throw new Error("BPM must be a finite number between 1 and 300")
+    }
+
     const beats: BeatMarker[] = []
     const beatInterval = 60 / bpm // Интервал между битами в секундах
 
     for (let time = startOffset; time < startOffset + duration; time += beatInterval) {
+      const isDownbeat = beats.length % 4 === 0
       beats.push({
         time,
-        strength: Math.random() * 0.5 + 0.5, // Случайная сила бита от 0.5 до 1
-        isDownbeat: beats.length % 4 === 0, // Каждый 4-й бит - сильная доля
+        strength: isDownbeat ? 1 : 0.65,
+        isDownbeat,
       })
     }
 
     return beats
+  }
+
+  private normalizeManualBeat(beat: BeatMarker, index: number): BeatMarker {
+    return {
+      time: this.readFiniteNumber(beat.time, `manualBeats.${index}.time`),
+      strength:
+        beat.strength === undefined ? 1 : this.readFiniteNumber(beat.strength, `manualBeats.${index}.strength`),
+      isDownbeat: beat.isDownbeat === true,
+    }
+  }
+
+  private estimateBPMFromManualBeats(beats: BeatMarker[]): number {
+    if (beats.length < 2) {
+      throw new Error("At least two manualBeats are required when targetBPM is not provided")
+    }
+
+    const sortedBeats = [...beats].sort((a, b) => a.time - b.time)
+    const intervals = sortedBeats
+      .slice(1)
+      .map((beat, index) => beat.time - sortedBeats[index].time)
+      .filter((interval) => interval > 0)
+    if (intervals.length === 0) {
+      throw new Error("manualBeats must contain increasing beat times")
+    }
+
+    const averageInterval = intervals.reduce((sum, interval) => sum + interval, 0) / intervals.length
+    return 60 / averageInterval
+  }
+
+  private readFiniteNumber(value: unknown, field: string): number {
+    if (typeof value !== "number" || !Number.isFinite(value)) {
+      throw new Error(`${field} must be a finite number`)
+    }
+    return value
   }
 
   /**
