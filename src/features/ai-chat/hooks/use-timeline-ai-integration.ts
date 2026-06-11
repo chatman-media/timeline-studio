@@ -1,27 +1,13 @@
+import {
+  setTimelineStateAccess,
+  type TimelineStateAccess,
+} from "@timeline-studio/domains/ai-tools/tools/core/timeline/types"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { createLogger, type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"
 import type { TimelineClip, TimelineSection, TimelineTrack } from "../../timeline/types"
 
 const logger = createLogger({ module: "UseTimelineAiIntegration" })
-
-// Временно определяем типы локально
-interface TimelineStateAccess {
-  getCurrentProject: () => any
-  createProject: (project: any) => Promise<void>
-  updateProject: (updates: any) => Promise<void>
-  createSection: (section: any) => Promise<any>
-  createTrack: (track: any) => Promise<any>
-  addClip: (clip: any) => Promise<any>
-  getProjectStats: () => any
-  sendTimelineCommand: (command: string, params?: any) => Promise<void>
-}
-
-// Временная заглушка для setTimelineStateAccess
-let timelineStateAccess: TimelineStateAccess | null = null
-const setTimelineStateAccess = (access: TimelineStateAccess | null) => {
-  timelineStateAccess = access
-}
 
 /**
  * Хук для интеграции Timeline с AI функциональностью

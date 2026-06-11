@@ -11,7 +11,7 @@ import {
   BaseAITool,
 } from "../../../base"
 import { generateClipId } from "./utils/generators"
-import { getCurrentTimelineProject, saveTimelineProject } from "./utils/helpers"
+import { assignTrackForClip, getCurrentTimelineProject, saveTimelineProject } from "./utils/helpers"
 
 // Типы для размещения клипов
 export interface ClipPlacementConfig {
@@ -77,8 +77,7 @@ export class ClipPlacementTool extends BaseAITool {
   }
 
   async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
-    // Delegate to main method - will be implemented by the specific tool
-    return this.executeWithErrorHandling(async () => ({}), input, options)
+    return this.placeClipsOnTimeline(input as PlaceClipsInput, options)
   }
 
   /**
@@ -125,6 +124,17 @@ export class ClipPlacementTool extends BaseAITool {
       }
     })
 
+    if (!validation.isValid) {
+      return {
+        success: false,
+        errors: validation.errors,
+        message: "Ошибка валидации параметров размещения клипов",
+        executionTime: 1,
+        toolName: this.metadata.name,
+        executionId: `${this.metadata.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      }
+    }
+
     const clips = input.clips
     const strategy = input.strategy || "sequential"
     const trackAssignment = input.trackAssignment || "smart"
@@ -154,6 +164,10 @@ export class ClipPlacementTool extends BaseAITool {
         const skippedClips: PlaceClipsResult["skippedClips"] = []
         const trackDistribution: Record<string, number> = {}
         let currentTime = 0
+        const allTracks = [
+          ...(currentProject.globalTracks || []),
+          ...(currentProject.sections || []).flatMap((section) => section.tracks || []),
+        ]
 
         // Сортируем клипы если стратегия chronological
         const clipsToPlace = [...clips]
@@ -163,13 +177,38 @@ export class ClipPlacementTool extends BaseAITool {
 
         for (const clipConfig of clipsToPlace) {
           try {
+            const targetTrackId =
+              clipConfig.targetTrackId || assignTrackForClip(allTracks, clipConfig, trackAssignment) || undefined
+            const targetTrack = allTracks.find((track) => track.id === targetTrackId)
+
+            if (!targetTrack) {
+              throw new Error(
+                targetTrackId
+                  ? `Трек с ID ${targetTrackId} не найден`
+                  : "Нет доступных треков для размещения клипа",
+              )
+            }
+
+            const startTime = clipConfig.startTime ?? currentTime
+            if (preventOverlaps) {
+              const hasOverlap = targetTrack.clips?.some(
+                (existingClip) =>
+                  startTime < existingClip.startTime + existingClip.duration &&
+                  startTime + clipConfig.duration > existingClip.startTime,
+              )
+
+              if (hasOverlap) {
+                throw new Error(`Клип пересекается с существующим клипом на треке ${targetTrack.id}`)
+              }
+            }
+
             // Создаем и размещаем клип (упрощенная версия оригинальной логики)
             const clip: TimelineClip = {
               id: generateClipId(),
               name: clipConfig.name || `Clip ${placedClips.length + 1}`,
-              trackId: clipConfig.targetTrackId || "default-track",
+              trackId: targetTrack.id,
               mediaId: clipConfig.resourceId,
-              startTime: clipConfig.startTime || currentTime,
+              startTime,
               duration: clipConfig.duration,
               sourceIn: clipConfig.trimStart || 0,
               sourceOut: (clipConfig.trimStart || 0) + clipConfig.duration,
@@ -201,6 +240,7 @@ export class ClipPlacementTool extends BaseAITool {
               updatedAt: new Date(),
             }
 
+            targetTrack.clips = [...(targetTrack.clips || []), clip].sort((a, b) => a.startTime - b.startTime)
             placedClips.push(clip)
             trackDistribution[clip.trackId] = (trackDistribution[clip.trackId] || 0) + 1
 
@@ -220,6 +260,12 @@ export class ClipPlacementTool extends BaseAITool {
         const warnings: string[] = []
         if (skippedClips.length > 0) {
           warnings.push(`Пропущено ${skippedClips.length} клипов из-за ошибок`)
+        }
+
+        if (placedClips.length === 0 && skippedClips.length > 0) {
+          throw new Error(
+            `Не удалось разместить клипы: ${skippedClips.map((clip) => clip.reason).join("; ")}`,
+          )
         }
 
         const result: PlaceClipsResult = {
