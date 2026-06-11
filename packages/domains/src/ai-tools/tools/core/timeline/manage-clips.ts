@@ -124,8 +124,7 @@ export class ClipManagementTool extends BaseAITool {
   }
 
   async execute(input: any, options?: AIToolExecutionOptions): Promise<AIToolResult> {
-    // Delegate to main method - will be implemented by the specific tool
-    return this.executeWithErrorHandling(async () => ({}), input, options)
+    return this.manageTimelineClips(input as ClipManagementInput, options)
   }
 
   /**
@@ -167,6 +166,17 @@ export class ClipManagementTool extends BaseAITool {
         errors,
       }
     })
+
+    if (!validation.isValid) {
+      return {
+        success: false,
+        errors: validation.errors,
+        message: "Ошибка валидации параметров управления клипами",
+        executionTime: 1,
+        toolName: this.metadata.name,
+        executionId: `${this.metadata.name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      }
+    }
 
     const operation = input.operation
     const scope = input.scope || "all"

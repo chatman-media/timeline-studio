@@ -3,7 +3,8 @@
  */
 
 import type { AIToolResult, IAITool } from "@timeline-studio/core/types/ai-tools"
-import { describe, expect, it } from "vitest"
+import { clipPlacementTool, setTimelineStateAccess } from "@timeline-studio/domains/ai-tools/tools/core/timeline"
+import { afterEach, describe, expect, it } from "vitest"
 import {
   convertToolsToUnifiedFormat,
   convertToUnifiedAITool,
@@ -326,6 +327,10 @@ describe("Function Calling Integration", () => {
   })
 
   describe("executeToolByName", () => {
+    afterEach(() => {
+      setTimelineStateAccess(null)
+    })
+
     it("должен выполнить инструмент по имени", async () => {
       const mockTools = [new MockTool()]
       const result = await executeToolByName(mockTools, "mock-tool", { testParam: "test" })
@@ -379,6 +384,56 @@ describe("Function Calling Integration", () => {
       const result = await executeToolByName(mockTools, "mock-tool", input)
 
       expect(result.result).toBe("Executed with custom-value")
+    })
+
+    it("должен выполнять реальные timeline mutations для AI Chat timeline tools", async () => {
+      const project: any = {
+        id: "project-1",
+        name: "AI Chat Timeline Test",
+        globalTracks: [
+          {
+            id: "track-video-1",
+            name: "Video 1",
+            type: "video",
+            order: 0,
+            clips: [],
+          },
+        ],
+        sections: [],
+      }
+
+      setTimelineStateAccess({
+        getCurrentProject: () => project,
+        createProject: async () => undefined,
+        updateProject: async () => undefined,
+        createSection: async (section: any) => section,
+        createTrack: async (track: any) => track,
+        addClip: async (clip: any) => clip,
+        getProjectStats: () => ({
+          totalDuration: 0,
+          totalClips: project.globalTracks[0].clips.length,
+          totalTracks: project.globalTracks.length,
+          totalSections: 0,
+        }),
+        sendTimelineCommand: async () => undefined,
+      })
+
+      const result = await executeToolByName([clipPlacementTool], "place-clips", {
+        clips: [{ resourceId: "media-1", name: "Clip 1", duration: 3, startTime: 1 }],
+        strategy: "manual",
+        trackAssignment: "smart",
+      })
+
+      expect(result.analysis).toMatchObject({
+        placedCount: 1,
+        skippedCount: 0,
+      })
+      expect(project.globalTracks[0].clips).toHaveLength(1)
+      expect(project.globalTracks[0].clips[0]).toMatchObject({
+        mediaId: "media-1",
+        trackId: "track-video-1",
+        startTime: 1,
+      })
     })
 
     it("должен обрабатывать инструменты с пустым результатом", async () => {

@@ -50,10 +50,10 @@ export function determineContentType(clip: TimelineClip): string {
   }
 
   // Fallback: анализ по track ID
-  if (clip.trackId.includes("video")) return "Video"
-  if (clip.trackId.includes("audio")) return "Audio"
-  if (clip.trackId.includes("music")) return "Music"
-  if (clip.trackId.includes("image")) return "Image"
+  if (clip.trackId?.includes("video")) return "Video"
+  if (clip.trackId?.includes("audio")) return "Audio"
+  if (clip.trackId?.includes("music")) return "Music"
+  if (clip.trackId?.includes("image")) return "Image"
 
   return "Unknown"
 }
