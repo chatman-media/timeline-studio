@@ -1,13 +1,16 @@
 # Bot-first workflow
 
-**Статус:** Active, tracked in [#171](https://github.com/chatman-media/timeline-studio/issues/171)
+**Статус:** Completed, tracked in closed [#171](https://github.com/chatman-media/timeline-studio/issues/171)
 **Приоритет:** High
 **Создано:** 2026-06-08
+**Завершено:** 2026-06-10
 **Ответственный:** Architecture Team
 
 ## Контекст
 
 Целевая модель Timeline Studio - пользователь управляет созданием ролика через бота. Desktop UI остается полезным для просмотра, настройки и ручного редактирования, но основной happy path должен работать без открытия приложения: бот принимает материалы и параметры, запускает сборку проекта, рендерит видео и возвращает результат или публикует его в выбранный канал.
+
+Этот foundational epic закрыт. Production AI review, Node/Rust orchestration and external/headless contract hardening продолжены и закрыты в [#226](https://github.com/chatman-media/timeline-studio/issues/226), [#238](https://github.com/chatman-media/timeline-studio/issues/238) and [#282](https://github.com/chatman-media/timeline-studio/issues/282). Следующий recommended roadmap - [Phase H production rollout](../../10_project_state/roadmap.md#далее-phase-h-proposal).
 
 Это меняет приоритет архитектурной миграции: вместо отдельных UI/export slices нужно в первую очередь выделять headless contracts и worker-friendly services, которыми сможет пользоваться бот, CLI, desktop и будущий backend.
 

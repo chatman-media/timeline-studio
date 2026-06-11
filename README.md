@@ -34,7 +34,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/timeline-studio?style=flat-square&label=downloads)](https://www.npmjs.com/package/timeline-studio)
 
 [![GitHub stars](https://img.shields.io/github/stars/chatman-media/timeline-studio?style=for-the-badge)](https://github.com/chatman-media/timeline-studio/stargazers)
-[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](./docs/en/README.md)
+[![Documentation](https://img.shields.io/badge/read-docs-blue?style=for-the-badge)](./docs/README.md)
 [![Telegram](https://img.shields.io/badge/Join%20Group-Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/timelinestudio)
 [![Discord](https://img.shields.io/badge/Chat-on%20Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/uvSBCw6e)
 
@@ -76,7 +76,7 @@
 - **Modular Architecture** - easily add new features through plugins
 - **Open Source** - transparency and ability to participate in development
 
-![Timeline Interface #1](/public/screen.png)
+![Timeline Interface #1](/public/screen2.png)
 
 ## 🏗️ Architecture
 
@@ -88,16 +88,16 @@ Timeline Studio is built on modern modular architecture:
 - **UI Components** - shadcn/ui + Radix UI + Tailwind CSS v4
 - **TypeScript** - strict typing and safety
 
-### Backend (Rust + Tauri v2)
-- **Modular structure** - Core, Security, Media, Compiler, Plugins
-- **Service layer** - DI container, EventBus, Telemetry
-- **FFmpeg integration** - advanced video processing
-- **Security** - API key encryption, OAuth, Keychain
+### Backend and Headless Runtime
+- **Rust workspace** - `crates/*` owns schema, render, media analysis, montage, publish and the `timeline` CLI
+- **TypeScript workspaces** - `packages/core`, `packages/domains`, `packages/adapters`, `packages/ui`
+- **Desktop host** - Tauri v2 remains the desktop shell over the shared runtime
+- **Headless entrypoints** - `render-job`, `bot-workflow`, `bot-worker` and Rust `timeline`
 
-📚 **[Detailed Frontend Architecture →](docs/en/03_architecture/frontend/)**
-📚 **[Detailed Backend Architecture →](docs/en/03_architecture/backend/)**
-📚 **[Plugin System →](docs/en/08_tasks/planned/plugin-system.md)**
-🛠️ **[Technical Stack Details →](docs/en/03_architecture/backend/rust-architecture.md#technology-overview)**
+📚 **[Detailed Frontend Architecture →](docs/03_architecture/frontend/)**
+📚 **[Detailed Backend Architecture →](docs/03_architecture/backend/)**
+📚 **[Plugin System →](docs/08_tasks/planned/plugin-system.md)**
+🛠️ **[Technical Stack Details →](docs/03_architecture/backend/rust-architecture.md#technology-overview)**
 
 ## 🤖 AI Integration
 
@@ -118,40 +118,36 @@ Timeline Studio features comprehensive AI integration with 100+ specialized tool
 - **And 40+ more specialized tools**
 
 📚 **[AI Chat Documentation →](src/features/ai-chat/README.md)**
-🛠️ **[AI Tools Reference →](src/features/ai-chat/tools/README.md)**
+🛠️ **[AI Tools Reference →](packages/domains/src/ai-tools/README.md)**
 
-## 📚 Backend Module Documentation
+## 📚 Runtime Documentation
 
-Timeline Studio uses a modular Rust backend architecture. Each module provides specific functionality:
+Timeline Studio uses a modular Rust + TypeScript workspace architecture. Desktop, CLI and bot/headless workflows share the same contracts where possible.
 
-### Core Modules
-🔧 **[Core System](src-tauri/src/core/README.md)** - DI container, EventBus, Performance monitoring
-🔌 **[Plugin System](src-tauri/src/core/plugins/README.md)** - Modular plugin architecture with sandbox security
-🎬 **[Video Compiler](src-tauri/src/video_compiler/README.md)** - FFmpeg integration and video processing
-📁 **[Media Management](src-tauri/src/media/README.md)** - File scanning, metadata extraction, thumbnails
+### Headless and Contracts
+📚 **[External Headless Contracts](docs/engineering/external-headless-contracts.md)** - supported `ProjectSchema`, Rust `timeline`, `render-job`, `bot-workflow`, `bot-worker` and `bot-cleanup` entrypoints
+🤖 **[Bot-First Production Contract](docs/engineering/bot-first-production-contract.md)** - Telegram AI review state, restart, retry, cleanup and Rust publish boundary
+🧪 **[Telegram AI Review Sandbox Smoke](docs/06_deployment/telegram-ai-review-sandbox-smoke.md)** - mocked and real sandbox validation path
 
-### AI & Recognition
-🧠 **[Smart Montage Planner](src-tauri/src/montage_planner/README.md)** - AI-powered video montage generation
-👁️ **[Recognition System](src-tauri/src/recognition/README.md)** - YOLO object detection and scene analysis
-📝 **[Subtitles Engine](src-tauri/src/subtitles/README.md)** - Subtitle generation, parsing, synchronization
+### Architecture
+🧱 **[Package Boundaries](docs/engineering/package-boundaries.md)** - workspace ownership and import boundaries
+🔁 **[Root Compatibility Shims](docs/engineering/root-compatibility-shims.md)** - temporary root paths and migration criteria
+🦀 **[Rust Backend Architecture](docs/03_architecture/backend/rust-architecture.md)** - Rust/Tauri architecture and technology overview
 
-### Security & Services
-🔒 **[Security Module](src-tauri/src/security/README.md)** - API validation, OAuth, secure storage
-
-*All modules include comprehensive test suites and detailed API documentation.*
+*`src-tauri` remains a desktop host/glue layer. External consumers should use the documented headless entrypoints instead of importing desktop internals.*
 
 ## 🏗️ Project Status
 
 **🚀 Alpha version: 97.5% ready** 🎯
 
-✅ **Completed**: 55+ modules (100% ready) - 30+ frontend + 25+ backend
+✅ **Completed**: modular Rust workspace, TypeScript workspaces and bot-first/headless contract hardening
 📋 **Recently Completed**:
-- 🤖 **AI Chat Integration** - Full Claude/OpenAI/DeepSeek/Ollama provider support with 100+ specialized tools
-- 💬 **Chat UI** - Modern chat interface with markdown support, code highlighting, and streaming responses
-- 🧠 **Smart Montage Planner** - AI-powered automatic montage generation with quality analysis
-- 🎬 **Timeline Integration** - Complete timeline editing with AI assistance
+- 📦 **Phase F TypeScript Workspaces** - `core`, `domains`, `adapters`, `ui`, `apps/desktop` and `apps/cli`
+- 🤖 **Bot-first Telegram AI Review** - upload, preview, text/voice/video-note revisions, approval and publish
+- 🧱 **Phase G Headless Contracts** - supported external entrypoints, package boundaries and root shim migration path
+- ✅ **Green main CI** - build, frontend tests, bot/AI headless tests and Node lint after Phase G merge
 
-[→ Detailed Roadmap](docs/en/10_project_state/)
+[→ Detailed Roadmap](docs/10_project_state/)
 
 ## Getting Started
 
@@ -190,10 +186,10 @@ sudo apt-get install ffmpeg libavcodec-dev libavformat-dev
 - **macOS**: Install Xcode Command Line Tools: `xcode-select --install`
 - **Linux**: Install build essentials: `sudo apt-get install build-essential`
 
-📚 **[Complete Installation Guide →](docs/en/02_requirements/)**
-🪟 **[Windows Setup →](docs/en/06_deployment/platforms/)**
+📚 **[Complete Installation Guide →](docs/02_requirements/)**
+🪟 **[Windows Setup →](docs/06_deployment/platforms/)**
 🎥 **[Video Tutorial →](https://www.youtube.com/@chatman-media)**
-📖 **[Full Documentation →](docs/en/)** - Complete documentation with 18+ sections
+📖 **[Full Documentation →](docs/)** - Complete documentation with 18+ sections
 
 ## Development
 
@@ -210,7 +206,7 @@ bun run test && bun run test:rust
 bun run check:all
 ```
 
-📚 **[Complete Development Guide →](docs/en/05_development/)**
+📚 **[Complete Development Guide →](docs/05_development/)**
 
 ## CI/CD & Code Quality
 
@@ -220,8 +216,8 @@ bun run check:all
 - ✅ **Coverage**: Codecov integration
 - ✅ **Build**: Cross-platform builds
 
-📚 **[Detailed CI/CD Guide →](docs/en/13_ci_cd/)**
-🔧 **[Linting & Formatting →](docs/en/05_development/linting-and-formatting.md)**
+📚 **[Detailed CI/CD Guide →](docs/13_ci_cd/)**
+🔧 **[Linting & Formatting →](docs/05_development/linting-and-formatting.md)**
 
 ## 👨‍💻 Developer Resources
 
@@ -231,15 +227,15 @@ bun run check:all
 - 💡 **[Feature Requests](https://github.com/chatman-media/timeline-studio/discussions)** - Suggest new features
 
 ### Plugin Development
-- 🔌 **[Plugin System Guide](docs/en/08_tasks/planned/plugin-system.md)** - Build your own plugins
-- 🚀 **[Plugin Quickstart](docs/en/05_development/)** - Get started in 5 minutes
-- 📦 **[Plugin API Reference](docs/en/04_api_reference/)** - Complete API documentation
+- 🔌 **[Plugin System Guide](docs/08_tasks/planned/plugin-system.md)** - Build your own plugins
+- 🚀 **[Plugin Quickstart](docs/05_development/)** - Get started in 5 minutes
+- 📦 **[Plugin API Reference](docs/04_api_reference/)** - Complete API documentation
 
 ### Testing & Quality
-- 🧪 **[Testing Guide](docs/en/12_testing/)** - Unit, integration, E2E testing
-- 📊 **[Test Utils](docs/en/12_testing/)** - Audio and Tauri component testing
+- 🧪 **[Testing Guide](docs/12_testing/)** - Unit, integration, E2E testing
+- 📊 **[Test Utils](docs/12_testing/)** - Audio and Tauri component testing
 - ✅ **[Code Style](CLAUDE.md#code-style-guidelines)** - Coding standards
-- 🔍 **[Performance Guide](docs/en/08_tasks/planned/performance-optimization.md)** - Optimization tips
+- 🔍 **[Performance Guide](docs/08_tasks/planned/performance-optimization.md)** - Optimization tips
 
 ## 🌐 Community & Support
 
@@ -250,21 +246,21 @@ bun run check:all
 [![YouTube](https://img.shields.io/badge/Subscribe-YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@chatman-media)
 
 ### Get Help
-- 📚 **[FAQ](docs/en/09_architectural_decisions/)** - Frequently asked questions
+- 📚 **[FAQ](docs/09_architectural_decisions/)** - Frequently asked questions
 - 💬 **[Discussions](https://github.com/chatman-media/timeline-studio/discussions)** - Ask questions, share ideas
 - 🐛 **[Issue Tracker](https://github.com/chatman-media/timeline-studio/issues)** - Report bugs
 - 📧 **Email Support** - ak.chatman.media@gmail.com
 
 ### Project Roadmap
-- 🗺️ **[Development Roadmap](docs/en/10_project_state/)** - See what's coming next
-- ✨ **[Completed Features](docs/en/08_tasks/completed/)** - Recently shipped features
-- 🎯 **[Alpha Release Progress](docs/en/17_releases/)** - 97.5% complete!
+- 🗺️ **[Development Roadmap](docs/10_project_state/)** - See what's coming next
+- ✨ **[Completed Features](docs/08_tasks/completed/)** - Recently shipped features
+- 🎯 **[Alpha Release Progress](docs/17_releases/)** - 97.5% complete!
 - 📊 **[Project Status](#project-status)** - Current development stats
 
 ### Support the Project
 - ⭐ **[Star on GitHub](https://github.com/chatman-media/timeline-studio)** - Show your support
 - 🤝 **[Contribute](CONTRIBUTING.md)** - Join the development
-- 💼 **[Commercial License](docs/en/11_legal/)** - For business use
+- 💼 **[Commercial License](docs/11_legal/)** - For business use
 
 ## 🤝 Contributors
 
@@ -349,4 +345,4 @@ Support the development via crypto donations:
 
 MIT License with Commons Clause - free for personal use, commercial use requires agreement.
 
-📄 **[Full License Details →](docs/en/11_legal/)** | 📧 **Commercial License**: ak.chatman.media@gmail.com
+📄 **[Full License Details →](docs/11_legal/)** | 📧 **Commercial License**: ak.chatman.media@gmail.com

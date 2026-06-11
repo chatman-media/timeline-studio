@@ -1,9 +1,10 @@
 # Миграция на JS workspaces и модульную архитектуру
 
-**Статус:** Active, tracked in [#150](https://github.com/chatman-media/timeline-studio/issues/150)
+**Статус:** Completed, tracked in closed [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Приоритет:** High
 **Создано:** 2025-11-29
 **Актуализировано:** 2026-06-11
+**Завершено:** 2026-06-10
 **Ответственный:** Architecture Team
 
 ## Контекст
@@ -36,7 +37,7 @@ timeline-studio/
 └── bun.lock
 ```
 
-После F5 пакеты получили физические workspace shells (`packages/*`, `apps/*`). После F7 package-boundary baseline снижен до нуля, поэтому следующие фазы переводят shell-пакеты в реальные владельцы кода:
+После F5 пакеты получили физические workspace shells (`packages/*`, `apps/*`). После F7 package-boundary baseline снижен до нуля. F9-F14 завершили физический перенос в реальные владельцы кода:
 
 - F9: `packages/core/src` становится владельцем core-контрактов, сервисов, hooks и типов.
 - F10: `packages/domains/src` становится владельцем domain-модулей.
@@ -59,7 +60,9 @@ adapters -> core
 
 ## Bot-first priority
 
-С 2026-06-08 следующий верхнеуровневый вектор - [Bot-first workflow](./bot-first-workflow.md). Phase F остается обязательной инженерной базой и quality gate, но новые slices должны в первую очередь приближать headless bot workflow: render job contracts, worker/event stream, intake contract и publishing destinations.
+С 2026-06-08 верхнеуровневым вектором был [Bot-first workflow](./bot-first-workflow.md). Phase F была обязательной инженерной базой и quality gate для этого направления: render job contracts, worker/event stream, intake contract and publishing destinations.
+
+На 2026-06-11 Phase F закрыта, а следующий фокус описан в [Roadmap](../../10_project_state/roadmap.md#далее-phase-h-proposal): production rollout and external integration readiness.
 
 ## Phase F PR slices
 

@@ -1,29 +1,29 @@
 # Roadmap Timeline Studio
 
-*Последнее обновление: 9 июня 2026*
+*Последнее обновление: 11 июня 2026*
 
 ## Видение
 
-Timeline Studio развивается в видеоредактор, которым можно пользоваться как через GUI, так и headless: агент получает цель, анализирует исходные медиа, строит `ProjectSchema`, рендерит, оптимизирует и публикует результат.
+Timeline Studio развивается в видеоредактор, которым можно пользоваться через desktop GUI, CLI и bot-first/headless workflows. Целевой поток: пользователь или внешний сервис передает медиа и цель, Timeline Studio строит `ProjectSchema`, рендерит, оптимизирует, возвращает preview, принимает правки и публикует только после явного approval.
 
-Ключевая архитектурная ставка: единый типизированный контракт между GUI, headless CLI, агентом и внешними интеграциями.
+Ключевая архитектурная ставка: один типизированный контракт между GUI, Rust CLI, Node bot worker, AI orchestration and external consumers.
 
 ## Завершено
 
 ### Rust modularization
 
-Закрыт epic [#91](https://github.com/chatman-media/timeline-studio/issues/91): backend распилен на layered `ts-*` crates.
+Закрыт epic [#91](https://github.com/chatman-media/timeline-studio/issues/91).
 
 Готово:
 
 - Cargo workspace для `crates/*`.
-- `ts-schema` и `ts-core-types` как foundation layer.
-- `ts-render` и headless render path.
-- Доменные крейты `ts-media`, `ts-recognition`, `ts-analysis`, `ts-montage`, `ts-subtitles`.
-- `ts-state` без Tauri-зависимости.
-- `ts-agent` и headless video tools.
-- Slim Tauri host поверх новых крейтов.
-- Изоляция heavy deps: `tauri`, `ort`, `pyo3`, `wasmtime` не протекают в общий headless path.
+- `ts-schema` and `ts-core-types` foundation layer.
+- `ts-render` and headless render path.
+- Domain crates: `ts-media`, `ts-recognition`, `ts-analysis`, `ts-montage`, `ts-subtitles`.
+- `ts-state` without Tauri dependency.
+- `ts-agent` and headless video tools.
+- Slim Tauri host over workspace crates.
+- Heavy dependencies isolated from the common headless path.
 
 ### Agentic headless pipeline
 
@@ -31,11 +31,11 @@ Timeline Studio развивается в видеоредактор, котор
 
 Готово:
 
-- Единый `timeline` CLI.
+- Rust `timeline` CLI.
 - `render`, `ingest`, `analyze`, `montage-plan`, `optimize`, `thumbnail`.
-- `publish telegram` и `publish youtube`.
-- `pipeline` для базового produce-to-publish flow.
-- LLM planner через OpenAI-compatible BYOK endpoint.
+- `publish telegram` and `publish youtube`.
+- `pipeline` for the basic produce-to-publish flow.
+- LLM planner through OpenAI-compatible BYOK endpoint.
 
 ### Contracts
 
@@ -48,98 +48,186 @@ Timeline Studio развивается в видеоредактор, котор
 - `@timeline/shared-types`.
 - [Agent Contract Reference](../engineering/AGENT_CONTRACT_REFERENCE.md).
 
+### Bot-first workflow
+
+Закрыт epic [#171](https://github.com/chatman-media/timeline-studio/issues/171).
+
+Готово:
+
+- `render-job`, `bot-workflow`, `bot-worker` CLI paths.
+- Telegram-like intake, media resolver, draft state, async queue, retry/cancel/status commands.
+- Bot workflow job store and polling offset store.
+- Rust render/publish adapters for bot-first paths.
+- Backpressure, acknowledgements and update-level error isolation.
+
+### Telegram AI review workflow
+
+Закрыт epic [#226](https://github.com/chatman-media/timeline-studio/issues/226).
+
+Готово:
+
+- Upload -> first preview -> text/voice/video-note revisions -> approval -> publish.
+- File-backed edit sessions and revision history.
+- AI project editor contract with validation/repair boundary.
+- First-cut generator via Rust planner with deterministic fallback.
+- Review commands: `/approve`, `/revise`, `/versions`, `/discard`, `/cancel`.
+- Per-revision preview artifact metadata and Telegram preview delivery.
+
+### AI module stabilization and Node/Rust orchestration
+
+Закрыт epic [#238](https://github.com/chatman-media/timeline-studio/issues/238).
+
+Готово:
+
+- Node owns Telegram orchestration, sessions, provider glue and validation.
+- Rust owns first-cut planning, preview rendering and final publishing through CLI adapters.
+- `bot-worker` production mode wires real AI review services, not only mocked unit smoke.
+- Dedicated bot/AI headless CI protects review-loop regressions.
+
+### Phase F: TypeScript workspaces
+
+Закрыт epic [#150](https://github.com/chatman-media/timeline-studio/issues/150).
+
+Готово:
+
+- `packages/core`, `packages/domains`, `packages/adapters`, `packages/ui`, `packages/shared-types`.
+- `apps/desktop` and `apps/cli`.
+- Zero package-boundary baseline.
+- `check:boundaries:strict` in CI.
+- Workspace-local test setup helpers.
+
+### Phase G: External/headless contract hardening
+
+Закрыт epic [#282](https://github.com/chatman-media/timeline-studio/issues/282).
+
+Готово:
+
+- Supported external entrypoints documented: `ProjectSchema`, Rust `timeline`, `render-job`, `bot-workflow`, `bot-worker`, `bot-cleanup`.
+- `postim`/headless guidance: use bot-first/headless layer, not `src-tauri`, root aliases or package-private paths.
+- Root compatibility shims documented with owners and removal criteria.
+- External contract examples guarded by `bun run check:boundaries:external`.
+- Telegram AI review sandbox smoke documented and expanded to text, voice and video-note feedback.
+- Bot-first production contract documents state, restart, retry, cleanup and Rust publish boundary.
+
 ## Сейчас
 
-### P0: стабилизировать CI
+There is no open GitHub Project backlog left for the completed bot/headless migration track. The immediate project need is not another broad refactor; it is a new production/external rollout roadmap.
 
-- [#147](https://github.com/chatman-media/timeline-studio/issues/147) - lock-файлы для `@timeline/shared-types`.
-- [#148](https://github.com/chatman-media/timeline-studio/issues/148) - `ts-montage` doctest/API drift.
+Current baseline:
 
-Acceptance:
+- `main` is green after PR [#290](https://github.com/chatman-media/timeline-studio/pull/290).
+- Issues [#282](https://github.com/chatman-media/timeline-studio/issues/282)-[#289](https://github.com/chatman-media/timeline-studio/issues/289) are closed and `Done`.
+- Supported headless boundaries are now documented and enforced for docs examples.
 
-- `bun install --frozen-lockfile` проходит.
-- `npm ci --omit=optional` проходит.
-- `cd crates && cargo test -p ts-montage --doc` проходит.
-- Crates workspace CI больше не падает на doctest.
+## Далее: Phase H proposal
 
-### P1: защитить headless pipeline
+Recommended next epic: **Phase H - Bot-first production rollout and external integration readiness**.
 
-- [#149](https://github.com/chatman-media/timeline-studio/issues/149) - end-to-end smoke для agent produce-to-publish.
+This phase should be hardening for real consumers, not another extraction phase. It should keep the official entrypoints stable and prove they are usable outside the desktop app.
 
-Acceptance:
+### H1: Real Telegram AI review sandbox
 
-- Быстрый smoke можно запускать локально и в CI.
-- Проверяется минимальный contract/render/analyze/pipeline path без GUI.
-- Failure clearly points to the broken pipeline step.
-
-### P1: Telegram AI review workflow
-
-- [#226](https://github.com/chatman-media/timeline-studio/issues/226) - Telegram становится интерфейсом итеративного AI-редактирования: upload, first preview, text/voice feedback, preview revisions, explicit approval and Rust-first publish. Implementation slice merged; production runtime stabilization completed in [#238](https://github.com/chatman-media/timeline-studio/issues/238).
-- [#225](https://github.com/chatman-media/timeline-studio/issues/225) документирует production topology, deployment foundation, generic media retention and cleanup policy. Runtime cleanup command/job: [#262](https://github.com/chatman-media/timeline-studio/issues/262).
-
-Готово в текущем implementation slice:
-
-- Edit session store, revision history and file-backed restart recovery.
-- Telegram voice/video-note feedback intake and transcription boundary.
-- AI project editor contract with validation/repair and deterministic mock.
-- First-cut generator boundary over Rust planner with deterministic fallback.
-- Review commands: `/approve`, `/revise`, `/versions`, `/discard`, `/cancel`.
-- Approval-gated publishing and Rust publish adapter for bot path.
-- Destination capability validation before render/publish.
-- Per-revision preview artifact metadata, Telegram `sendVideo` delivery and fallback links.
-- Mocked smoke for upload -> first preview -> text revision -> voice revision -> approval -> publish.
-
-### P1: AI module stabilization and Node/Rust orchestration
-
-- [#238](https://github.com/chatman-media/timeline-studio/issues/238) - production AI path для Telegram review workflow стабилизирован; граница ответственности Node/Rust закреплена.
-- [#239](https://github.com/chatman-media/timeline-studio/issues/239) - аудит текущих AI модулей, headless flows and broken wiring.
-- [#240](https://github.com/chatman-media/timeline-studio/issues/240) - Node/Rust ownership boundary.
-
-Итог:
-
-- `bot-worker` CLI прокидывает production `editSessionStore`, `feedbackTranscriber`, `aiProjectEditor`, Rust first-cut planner/generator fallback, preview renderer and publish services.
-- `IAIProjectEditor` имеет production OpenAI-compatible adapter; Rust `llm-edit` command остается medium-term направлением.
-- Rust `montage-plan`/`llm-plan` output покрыт TS `ProjectSchema` validation fixtures; deterministic fallback остается явным диагностируемым режимом.
-- Render and publish should stay Rust-first through `timeline render` / `timeline publish`; Node owns orchestration, sessions, provider glue and Telegram runtime.
+Goal: run the documented Telegram AI review loop against a real sandbox bot/channel with redacted logs and repeatable operator steps.
 
 Acceptance:
 
-- [x] Bot review loop runs from CLI with production wiring, not only mocked unit smoke.
-- [x] First-cut and edit outputs validate as canonical `ProjectSchema` or fail/fallback with explicit diagnostics.
-- [x] Text and voice feedback share one AI editor path.
-- [x] Dedicated headless bot/AI smoke catches regressions separately from the large frontend suite.
+- Real media upload produces first preview.
+- Text, voice and video-note revisions produce validated previews.
+- Approval gates publish.
+- Failure/retry path is documented with safe recovery.
 
-### P1: Phase F TypeScript packages
+### H2: `postim`/headless integration example
 
-- [#150](https://github.com/chatman-media/timeline-studio/issues/150) - JS packages/workspaces для `core`, `domains`, `adapters`, `ui`.
+Goal: give external consumers a concrete integration path without importing internals.
 
 Acceptance:
 
-- Есть пошаговый migration plan.
-- UI не импортирует platform-specific adapters напрямую.
-- Каждый slice оставляет desktop app buildable/testable.
+- Example uses only `ProjectSchema`, `render-job`, `bot-workflow`, `bot-worker`, `bot-cleanup` or Rust `timeline`.
+- No root aliases, `src-tauri`, `packages/*/src`, or desktop-only paths.
+- Example is covered by `check:boundaries:external`.
 
-## Далее
+### H3: Root shim retirement execution
 
-### Product hardening
+Goal: turn the shim inventory into migration slices.
 
-- Реальные fixture-based integration tests для render/analyze/publish validate paths.
-- Улучшение diagnostics для CLI и agent contract validation.
-- Headless Docker image и runtime docs после стабилизации CI.
+Acceptance:
 
-### Frontend architecture
+- Each root compatibility path has an owner, package replacement and removal condition.
+- Migration docs show old import -> supported import mapping.
+- No external/headless docs recommend root shims.
 
-- Перенести существующие Ports & Adapters правила из docs в enforceable import boundaries.
-- Начать package extraction с минимального shared/core слоя, затем adapters, затем UI/features.
+### H4: Rust/Node AI edit parity plan
 
-### Documentation
+Goal: define the path from Node-only `IAIProjectEditor` to Rust-backed `llm-edit` without blocking current production bot usage.
 
-- Обновить architecture overview под `crates/*`, `packages/shared-types` и `timeline` CLI.
-- Связать user-facing docs с headless/agent flows только после green smoke coverage.
+Acceptance:
+
+- `llm-edit` input/output contract is documented.
+- Current Node AI editor remains supported orchestration glue.
+- `ProjectSchema` stays canonical.
+
+### H5: Publish destination support matrix
+
+Goal: make publish behavior explicit across Telegram, YouTube and future destinations.
+
+Acceptance:
+
+- Matrix documents render support, validate-only support, credential requirements and failure modes.
+- Unsupported destinations fail before render/publish with actionable diagnostics.
+- TypeScript does not become a second production publish backend for Rust-supported destinations.
+
+### H6: Operator observability
+
+Goal: make bot-worker production failures debuggable without reading raw logs only.
+
+Acceptance:
+
+- Session/revision/publish diagnostics are persisted with redaction.
+- `/status` and `/versions` expose high-signal fields.
+- Preview render and publish failures retain enough metadata for retry.
+
+### H7: Docs and SDK examples
+
+Goal: make the supported contract copy-pasteable for integrators.
+
+Acceptance:
+
+- Minimal `ProjectSchema` example.
+- `render-job` JSON example.
+- `bot-workflow` Telegram-like fixture example.
+- `bot-worker` production/sandbox config example.
+- Docs examples pass boundary guardrails.
+
+## Separate Future Track
+
+Streaming should remain separate from Phase H.
+
+Recommended future track: `ts-stream` / postim streaming integration after Phase H confirms stable headless contracts. It should depend on the supported entrypoints and add streaming-specific APIs only where the current render/publish contract is insufficient.
+
+## Current Quality Gates
+
+For changes touching headless contracts, run:
+
+```bash
+bun run check:boundaries:strict
+bun run check:boundaries:external
+bun run test:bot-ai
+bun run check:type
+```
+
+For broad workspace changes, also run:
+
+```bash
+bun run lint:ci
+bun run test
+```
 
 ## Источники правды
 
 - [Current Status](current-status.md)
-- [Agent Contract Reference](../engineering/AGENT_CONTRACT_REFERENCE.md)
-- [Rust crates workspace](../../crates/Cargo.toml)
-- [Shared TypeScript package](../../packages/shared-types/package.json)
+- [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
+- [Bot-First Production Contract](../engineering/bot-first-production-contract.md)
+- [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md)
+- [Root Compatibility Shims](../engineering/root-compatibility-shims.md)
+- [Package Boundaries](../engineering/package-boundaries.md)
+- [Timeline Studio CLI](../../apps/cli/COMMANDS.md)

@@ -37,7 +37,7 @@ Telegram AI review workflow уже добавил продуктовый кон�
 
 - Rust planner/editor parity still needs continued care when the Rust side changes its `ProjectSchema` emission.
 - Rust `llm-plan` is currently a first-cut planner only. It is not an edit command that accepts `currentProject + instruction + revisionHistory -> nextProject`.
-- Generic production topology, deployment assets, retention, cleanup jobs and sandbox operator checklist remain owned by B28/#225.
+- Generic production topology, deployment assets, retention and cleanup jobs were closed in B28/[#225](https://github.com/chatman-media/timeline-studio/issues/225). Real sandbox rollout and external consumer validation are now Phase H candidates.
 
 ## Node/Rust Ownership Decision
 
@@ -135,7 +135,7 @@ Operators should not need raw logs only to diagnose a review loop failure. The b
 
 The review chat exposes the same high-signal fields through `/status` and `/versions`: revision id, provider/model, prompt id, attempts, render job id, artifact reference, publish status and failure reason. API keys, tokens, authorization headers, secrets, passwords and credentials are redacted before they are stored or rendered.
 
-Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](./telegram-ai-review-workflow.md). Generic deployment topology, log retention and cleanup policies stay linked to B28/#225.
+Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](./telegram-ai-review-workflow.md). Generic deployment topology, log retention and cleanup policies are linked to closed B28/[#225](https://github.com/chatman-media/timeline-studio/issues/225). Real sandbox/production rollout belongs in the next roadmap.
 
 ## PR Slices
 
@@ -223,4 +223,4 @@ Workflow-specific runbook details live in [Telegram AI Review Editing Workflow](
 
 B39-B46 are complete and the Telegram AI review runtime now has a production Node/Rust boundary: Node owns Telegram orchestration, sessions, provider glue and validation; Rust owns first-cut planning, preview rendering and final publishing through CLI adapters.
 
-Remaining production-readiness work intentionally stays in [B28/#225](https://github.com/chatman-media/timeline-studio/issues/225): deployment topology, operator runbooks, retention/cleanup policy and sandbox checklist.
+Remaining production-readiness work is now the Phase H rollout layer: real sandbox execution, external consumer validation, operator observability and published integration examples. B28/[#225](https://github.com/chatman-media/timeline-studio/issues/225) is closed.

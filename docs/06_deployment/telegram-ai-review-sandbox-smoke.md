@@ -1,6 +1,6 @@
 # Telegram AI Review Sandbox Smoke
 
-**Status:** Phase G sandbox contract for [#289](https://github.com/chatman-media/timeline-studio/issues/289)
+**Status:** Completed Phase G sandbox contract for closed [#289](https://github.com/chatman-media/timeline-studio/issues/289)
 **Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Telegram Bot Worker Production Runbook](telegram-bot-worker-production.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
 
 This smoke path validates the bot-first AI review loop without opening the desktop UI.
