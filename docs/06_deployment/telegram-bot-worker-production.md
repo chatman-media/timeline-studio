@@ -33,7 +33,7 @@ Use durable storage for all bot state. A recommended system layout:
 /var/lib/timeline-studio/bot/first-cut/       Rust planner temp ProjectSchema files
 ```
 
-The env template lives at [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example). Systemd examples live at [config/systemd/timeline-bot-worker.service](../../config/systemd/timeline-bot-worker.service), [config/systemd/timeline-bot-cleanup.service](../../config/systemd/timeline-bot-cleanup.service), and [config/systemd/timeline-bot-cleanup.timer](../../config/systemd/timeline-bot-cleanup.timer).
+The production env template lives at [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example). The safer local sandbox template lives at [config/bot-worker.sandbox.env.example](../../config/bot-worker.sandbox.env.example). Systemd examples live at [config/systemd/timeline-bot-worker.service](../../config/systemd/timeline-bot-worker.service), [config/systemd/timeline-bot-cleanup.service](../../config/systemd/timeline-bot-cleanup.service), and [config/systemd/timeline-bot-cleanup.timer](../../config/systemd/timeline-bot-cleanup.timer).
 
 ## Deployment
 

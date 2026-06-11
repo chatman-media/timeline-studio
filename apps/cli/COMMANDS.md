@@ -186,6 +186,7 @@ Fixture payloads live in `docs/08_tasks/planned/fixtures/`.
 Запуск Telegram worker для bot-first workflow: обработка raw `Update`, один `getUpdates` batch или долгоживущий polling loop.
 В polling-режиме ошибки обработки отдельного update возвращаются как failed-result, отправляют короткий ответ в чат при наличии chat id и не останавливают batch.
 Production topology, systemd setup and retention policy are documented in [Telegram Bot Worker Production Runbook](../../docs/06_deployment/telegram-bot-worker-production.md). The supported production state/publish/recovery contract is documented in [Bot-First Production Contract](../../docs/engineering/bot-first-production-contract.md), and the repeatable sandbox checklist is documented in [Telegram AI Review Sandbox Smoke](../../docs/06_deployment/telegram-ai-review-sandbox-smoke.md). Use [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) as the production env template.
+For local real Telegram AI review validation, start from [config/bot-worker.sandbox.env.example](../../config/bot-worker.sandbox.env.example); it defaults to file-only final approval so a sandbox can verify the review loop before any real publish upload.
 Supported external/headless entrypoints and unsupported internal imports are documented in [External And Headless Integration Contracts](../../docs/engineering/external-headless-contracts.md).
 
 ```bash
@@ -213,6 +214,22 @@ TIMELINE_BOT_WORKFLOW_QUEUE_LIMIT=20 \
 TIMELINE_BOT_MEDIA_DIR=.tmp/timeline-bot/media \
 bun run apps/cli/src/index.ts bot-worker --poll --rust-render
 ```
+
+Для реального Telegram AI review sandbox:
+
+```bash
+cp config/bot-worker.sandbox.env.example .env.telegram-ai-review-sandbox
+chmod 0600 .env.telegram-ai-review-sandbox
+
+set -a
+. ./.env.telegram-ai-review-sandbox
+set +a
+
+cargo build --manifest-path crates/Cargo.toml -p ts-cli --bin timeline
+bun run apps/cli/src/index.ts bot-worker --poll --async-workflows --rust-render --pretty
+```
+
+Сначала проходите sandbox с `TIMELINE_BOT_DEFAULT_DESTINATION=file` и `TIMELINE_BOT_RUST_PUBLISH=false`. После успешного `/approve` можно отдельно включить `TIMELINE_BOT_DEFAULT_DESTINATION=telegram` и `TIMELINE_BOT_RUST_PUBLISH=true` для проверки реальной финальной публикации.
 
 Для проверки Rust-backed AI review preview/publish path без запуска Telegram worker:
 
@@ -345,7 +362,7 @@ export AI_REVIEW_RUST_SMOKE_YOUTUBE_TOKEN=ya29...
 ```
 
 `bot-worker` also accepts `TELEGRAM_BOT_TOKEN` as a generic fallback. Explicit CLI flags take priority over `TIMELINE_BOT_*` environment defaults.
-For production, prefer the dedicated env template at `config/bot-worker.production.env.example` instead of copying these inline examples.
+For production, prefer the dedicated env template at `config/bot-worker.production.env.example` instead of copying these inline examples. For local real Telegram AI review validation, prefer `config/bot-worker.sandbox.env.example`.
 
 ## Примеры использования
 
