@@ -36,6 +36,23 @@
 
 ## Доступные инструменты (18 штук)
 
+## Production readiness
+
+MCP tool schemas are visible to Claude/AI Chat, but only implemented tools may return `success: true`. Planned tools must return `success: false` with a clear `not implemented` error until they mutate project state or execute the export/preview service.
+
+| Tool | Status | Canonical input |
+| --- | --- | --- |
+| `add_clip` | Production timeline edit | `track_id`, `media_id`, `time` |
+| `move_clip` | Production timeline edit | `clip_id`, `new_track_id`, `new_time` |
+| `split_clip` | Production timeline edit | `clip_id`, `time` |
+| `list_media_files` | Production project query | optional `filter_type=all/video/audio/image` |
+| `apply_filter` | Planned | returns failure until implemented |
+| `add_transition` | Planned | returns failure until implemented |
+| `apply_color_grading` | Planned | returns failure until implemented |
+| `add_text_overlay` | Planned | returns failure until implemented |
+| `export_video` | Planned | returns failure until implemented |
+| `create_preview` | Planned | returns failure until implemented |
+
 ### Анализ видео
 1. **analyze_video** - Полный анализ видео (качество, метаданные, контент)
 2. **detect_scenes** - Обнаружение сцен с анализом качества
