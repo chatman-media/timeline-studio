@@ -28,9 +28,30 @@ export interface SubtitleExportOptions {
   output_path: string
 }
 
+export interface TimelineSubtitleSegment {
+  id?: string
+  start_time?: number
+  startTime?: number
+  end_time?: number
+  endTime?: number
+  text: string
+  style?: unknown
+  speaker?: string
+  confidence?: number
+  language?: string
+  [key: string]: unknown
+}
+
 export interface UpdateTimelineSubtitlesParams {
   trackId: string
-  subtitles: any[]
+  subtitles: TimelineSubtitleSegment[]
+}
+
+export interface UpdateTimelineSubtitlesResult {
+  track_id: string
+  resource_id: string
+  subtitle_count: number
+  version: number
 }
 
 export async function readSubtitleFile(filePath: string): Promise<SubtitleImportResult> {
@@ -85,17 +106,20 @@ export async function saveSubtitleFile(options: SubtitleExportOptions): Promise<
   }
 }
 
-export async function updateTimelineSubtitles(params: UpdateTimelineSubtitlesParams): Promise<void> {
+export async function updateTimelineSubtitles(
+  params: UpdateTimelineSubtitlesParams,
+): Promise<UpdateTimelineSubtitlesResult> {
   commandLogger.infoSync("Updating timeline subtitles", {
     trackId: params.trackId,
     subtitlesCount: params.subtitles.length,
   })
   try {
-    await invoke("update_timeline_subtitles", {
+    const result = await invoke<UpdateTimelineSubtitlesResult>("update_timeline_subtitles", {
       trackId: params.trackId,
       subtitles: params.subtitles,
     })
     commandLogger.infoSync("Timeline subtitles updated successfully", { trackId: params.trackId })
+    return result
   } catch (error) {
     commandLogger.errorSync("Failed to update timeline subtitles", { error, params })
     throw error
@@ -127,7 +151,10 @@ export class SubtitleService {
     return saveSubtitleFile(options)
   }
 
-  async updateTimelineSubtitles(trackId: string, subtitles: any[]): Promise<void> {
+  async updateTimelineSubtitles(
+    trackId: string,
+    subtitles: TimelineSubtitleSegment[],
+  ): Promise<UpdateTimelineSubtitlesResult> {
     serviceLogger.infoSync("Updating timeline subtitles", { trackId, subtitlesCount: subtitles.length })
     return updateTimelineSubtitles({ trackId, subtitles })
   }

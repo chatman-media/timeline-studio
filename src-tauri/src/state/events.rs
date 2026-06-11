@@ -241,6 +241,11 @@ pub enum ProjectEvent {
     subtitle_id: String,
     name: String,
   },
+  SubtitleTrackUpdated {
+    track_id: String,
+    resource_id: String,
+    subtitle_count: u32,
+  },
   SubtitleRemoved {
     subtitle_id: String,
   },
