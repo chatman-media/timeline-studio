@@ -10,7 +10,7 @@ Group=timeline-bot
 WorkingDirectory=/opt/timeline-studio
 Environment=NODE_ENV=production
 EnvironmentFile=/etc/timeline-studio/bot-worker.env
-ExecStart=/usr/bin/env bun run src/cli/index.ts bot-worker --poll
+ExecStart=/usr/bin/env bun run apps/cli/src/index.ts bot-worker --poll
 Restart=on-failure
 RestartSec=10
 KillSignal=SIGINT

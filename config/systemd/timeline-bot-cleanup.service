@@ -8,7 +8,7 @@ Group=timeline-bot
 WorkingDirectory=/opt/timeline-studio
 Environment=NODE_ENV=production
 EnvironmentFile=/etc/timeline-studio/bot-worker.env
-ExecStart=/usr/bin/env bun run src/cli/index.ts bot-cleanup --delete
+ExecStart=/usr/bin/env bun run apps/cli/src/index.ts bot-cleanup --delete
 StateDirectory=timeline-studio
 CacheDirectory=timeline-studio
 NoNewPrivileges=true
