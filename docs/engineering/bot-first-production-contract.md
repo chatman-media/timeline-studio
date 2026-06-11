@@ -18,6 +18,8 @@ This contract defines the supported bot-first/headless production path for Teleg
 
 TypeScript owns orchestration, adapters, status delivery and state recovery. It must not grow a second production social-publish backend for a destination already supported by Rust `timeline publish`. A TypeScript `IPublishService` implementation in production should wrap the Rust publish adapter unless the destination has no Rust support yet and the exception is documented.
 
+Destination support and user-facing unavailable-destination behavior are documented in [Publish Destination Support Matrix](publish-destination-support-matrix.md).
+
 ## Supported Workflow
 
 1. Upload intake: the user sends Telegram media with a caption or a draft sequence of messages. Direct Telegram uploads are the default. Remote URL downloads stay disabled unless `TIMELINE_BOT_DOWNLOAD_REMOTE_MEDIA=true` is explicitly configured with host allow/block lists.
