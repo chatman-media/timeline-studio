@@ -28,6 +28,12 @@ Phase F moved core workspace ownership into `packages/*` and `apps/*`, but the r
 | `src/test` | Test infrastructure | Root Vitest setup, shared mocks, and test utilities | Split domain/package setup into workspace-local helpers under G5 | Workspace tests no longer require root global setup for package-specific services |
 | `src/hooks`, `src/i18n`, `src/global`, `src/styles`, `src/components/error-boundary.tsx` | Desktop/app-shell owners | Root app UI utilities and global app support | Move or wrap under `apps/desktop` when desktop root compatibility is reduced | Desktop root entrypoints no longer import these paths directly |
 
+## Retired Shim Groups
+
+| Retired path | Replacement | Evidence | Guardrail |
+| --- | --- | --- | --- |
+| `src/cli/index.ts` | `apps/cli/src/index.ts` | H3 migrated production systemd units to the workspace CLI entrypoint. The root CLI path has no filesystem owner and must not be used by production/headless docs or config. | `bun run check:shims:retired` |
+
 ## External Contract Rule
 
 The supported external/headless path is not a root shim path. External consumers should use:
@@ -43,3 +49,11 @@ bun run check:boundaries:external
 ```
 
 This check scans documented external/headless code examples and fails if they recommend root aliases, `src-tauri` internals, or package-private source paths.
+
+Run the root shim retirement guardrail locally:
+
+```bash
+bun run check:shims:retired
+```
+
+This check fails if production/headless docs or config reintroduce retired root CLI references.
