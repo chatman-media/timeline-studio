@@ -1,7 +1,4 @@
-import {
-  setTimelineStateAccess,
-  type TimelineStateAccess,
-} from "@timeline-studio/domains/ai-tools/tools/core/timeline/types"
+import { setTimelineStateAccess, type TimelineStateAccess } from "@timeline-studio/core/services/timeline-state-access"
 import { useCallback, useEffect, useMemo, useRef } from "react"
 import { createLogger, type LogContext, logError, logInfo } from "@/lib/tauri-logger"
 import { useTimeline } from "../../timeline/hooks"

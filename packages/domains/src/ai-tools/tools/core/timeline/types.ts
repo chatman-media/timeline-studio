@@ -6,6 +6,11 @@
  */
 
 import type { TimelineClip, TimelineSection, TimelineTrack } from "@timeline-studio/domains/video-editing/types"
+export type { TimelineStateAccess } from "@timeline-studio/core/services/timeline-state-access"
+export {
+  getTimelineStateAccess,
+  setTimelineStateAccess,
+} from "@timeline-studio/core/services/timeline-state-access"
 
 /**
  * Типы для функций обратного вызова в reduce операциях
@@ -55,40 +60,4 @@ export interface TimelineToolResult {
   errors?: string[]
   warnings?: string[]
   nextActions?: string[]
-}
-
-/**
- * Интерфейс для доступа к состоянию Timeline
- */
-export interface TimelineStateAccess {
-  getCurrentProject: () => unknown
-  createProject: (project: any) => Promise<void>
-  updateProject: (updates: any) => Promise<void>
-  createSection: (section: any) => Promise<any>
-  createTrack: (track: any) => Promise<any>
-  addClip: (clip: any) => Promise<any>
-  getProjectStats: () => {
-    totalDuration: number
-    totalClips: number
-    totalTracks: number
-    totalSections: number
-  }
-  sendTimelineCommand: (command: string, params?: any) => Promise<void>
-}
-
-// Глобальная переменная для доступа к состоянию timeline
-let timelineStateAccess: TimelineStateAccess | null = null
-
-/**
- * Устанавливает доступ к состоянию timeline
- */
-export function setTimelineStateAccess(access: TimelineStateAccess | null) {
-  timelineStateAccess = access
-}
-
-/**
- * Получает доступ к состоянию timeline
- */
-export function getTimelineStateAccess(): TimelineStateAccess | null {
-  return timelineStateAccess
 }
