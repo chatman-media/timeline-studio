@@ -1,7 +1,7 @@
 # External And Headless Integration Contracts
 
 **Status:** Completed Phase G contract hardening for closed [#282](https://github.com/chatman-media/timeline-studio/issues/282)
-**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Bot-First Production Contract](bot-first-production-contract.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [postim Headless Integration Example](../../examples/headless-postim/README.md), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
+**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Bot-First Production Contract](bot-first-production-contract.md), [Rust/Node AI Edit Parity](rust-node-ai-edit-parity.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [postim Headless Integration Example](../../examples/headless-postim/README.md), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
 
 This document defines the supported integration surface for external consumers after the workspace extraction. It is intentionally narrow: consumers should build against `ProjectSchema`, the Rust `timeline` CLI, and the headless Node CLI commands. They should not import private package files, root aliases, or `src-tauri` internals.
 
