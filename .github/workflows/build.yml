@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install system dependencies
+        timeout-minutes: 25
         run: |
           sudo apt-get update
           
@@ -108,6 +109,7 @@ jobs:
           key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Clean install dependencies
+        timeout-minutes: 20
         run: |
           npm config set fetch-timeout 300000
           npm config set fetch-retries 5
@@ -136,6 +138,7 @@ jobs:
         run: mkdir -p dist
 
       - name: Verify Cargo configuration
+        timeout-minutes: 5
         run: |
           cd src-tauri
           echo "=== Cargo.toml content ==="
@@ -148,6 +151,7 @@ jobs:
           grep -A 5 'name = "tauri"' Cargo.lock || echo "Tauri not found in Cargo.lock"
 
       - name: Build Rust dependencies
+        timeout-minutes: 60
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
           RUST_BACKTRACE: 1
@@ -180,14 +184,18 @@ jobs:
           cargo build --release --verbose
 
       - name: Generate TypeScript bindings
+        timeout-minutes: 10
         run: |
           cd src-tauri
+          echo "Generating TypeScript bindings with cargo run --bin generate_types"
           cargo run --bin generate_types
 
       - name: Build Next.js app
+        timeout-minutes: 35
         run: |
           npm run build || echo "Build failed due to known Next.js 16 bug (issue 85604), continuing workflow..."
         continue-on-error: true
 
       - name: Run tests
+        timeout-minutes: 35
         run: npm run test

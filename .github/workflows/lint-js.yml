@@ -47,6 +47,7 @@ jobs:
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
+        timeout-minutes: 15
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libglib2.0-dev
@@ -57,8 +58,10 @@ jobs:
 
       - name: Install Windows dependencies for Tauri bindings
         if: runner.os == 'Windows'
+        timeout-minutes: 30
         shell: pwsh
         run: |
+          Write-Host "Preparing Windows FFmpeg/pkg-config dependencies for bindings generation"
           # Install pkg-config
           choco install pkgconfiglite -y
           
@@ -88,12 +91,25 @@ jobs:
           echo "FFMPEG_NO_PKG_CONFIG=1" >> $env:GITHUB_ENV
           echo "RUSTFLAGS=-C link-arg=/LIBPATH:C:\ffmpeg\lib" >> $env:GITHUB_ENV
           echo "C:\ffmpeg\bin" >> $env:GITHUB_PATH
+          Write-Host "FFmpeg directory:"
+          Get-ChildItem -Path C:\ffmpeg | Select-Object -First 20 | Format-Table -AutoSize
+
+      - name: Print lint job diagnostics
+        timeout-minutes: 5
+        shell: pwsh
+        run: |
+          Write-Host "Runner OS: $env:RUNNER_OS"
+          node --version
+          npm --version
+          rustc --version
+          cargo --version
 
       - name: Create dist directory
         run: mkdir -p dist
 
       - name: Build Rust dependencies on Unix
         if: runner.os != 'Windows'
+        timeout-minutes: 40
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
         run: |
@@ -102,14 +118,17 @@ jobs:
 
       - name: Generate TypeScript bindings on Unix
         if: runner.os != 'Windows'
+        timeout-minutes: 10
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
         run: |
           cd src-tauri
+          echo "Generating TypeScript bindings on Unix"
           cargo run --bin generate_types
 
       - name: Build Rust dependencies on Windows
         if: runner.os == 'Windows'
+        timeout-minutes: 45
         shell: pwsh
         env:
           FFMPEG_DIR: C:\ffmpeg
@@ -127,6 +146,7 @@ jobs:
 
       - name: Generate TypeScript bindings on Windows
         if: runner.os == 'Windows'
+        timeout-minutes: 10
         shell: pwsh
         env:
           FFMPEG_DIR: C:\ffmpeg
@@ -140,10 +160,12 @@ jobs:
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_LINK: "1"
         run: |
           cd src-tauri
+          Write-Host "Generating TypeScript bindings on Windows"
           cargo run --bin generate_types
 
       - name: Install dependencies on Unix
         if: runner.os != 'Windows'
+        timeout-minutes: 15
         run: |
           npm config set fetch-timeout 300000
           npm config set fetch-retries 5
@@ -151,10 +173,12 @@ jobs:
 
       - name: Install dependencies on Windows
         if: runner.os == 'Windows'
+        timeout-minutes: 20
         shell: pwsh
         run: ./scripts/windows-npm-install.ps1
 
       - name: Run lint step
+        timeout-minutes: 10
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
         run: npm run lint:ci

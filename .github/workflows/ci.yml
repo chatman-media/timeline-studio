@@ -20,6 +20,7 @@ jobs:
 
     steps:
       - name: Free disk space
+        timeout-minutes: 10
         run: |
           # Агрессивное освобождение места (~25GB)
           sudo rm -rf /usr/share/dotnet
@@ -56,6 +57,7 @@ jobs:
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
+        timeout-minutes: 20
         run: |
           export ONNXRUNTIME_DOWNLOAD_TIMEOUT=600000
           bun install --frozen-lockfile || bun install
@@ -66,6 +68,7 @@ jobs:
           toolchain: 1.90.0
 
       - name: Install Linux dependencies
+        timeout-minutes: 15
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libglib2.0-dev
@@ -79,6 +82,18 @@ jobs:
       - name: Create dist directory
         run: mkdir -p dist
 
+      - name: Print frontend CI diagnostics
+        timeout-minutes: 5
+        run: |
+          echo "Runner: $RUNNER_OS $ImageOS"
+          echo "Disk:"
+          df -h
+          echo "Bun:"
+          bun --version
+          echo "Rust:"
+          rustc --version
+          cargo --version
+
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
@@ -90,6 +105,7 @@ jobs:
           save-if: false
 
       - name: Build Rust dependencies
+        timeout-minutes: 35
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
           FFMPEG_SYS_DISABLE_X86ASM: "1"
@@ -99,6 +115,7 @@ jobs:
           cargo build --release
 
       - name: Clean build artifacts
+        timeout-minutes: 5
         run: |
           cd src-tauri
           # Удаляем большие временные файлы и debug артефакты
@@ -111,16 +128,19 @@ jobs:
           find target/release -type f -name "*.rlib" -delete
           find target/release -maxdepth 1 -type f ! -name "generate_types*" -delete
 
-      - name: Generate TypeScript bindings
+      - name: Generate TypeScript bindings (cargo generate_types)
+        timeout-minutes: 10
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
           FFMPEG_SYS_DISABLE_X86ASM: "1"
           CARGO_FEATURE_FFMPEG_SYS_DISABLE_X86ASM: "1"
         run: |
           cd src-tauri
+          echo "Generating TypeScript bindings from src-tauri"
           cargo run --bin generate_types
 
-      - name: Run frontend tests
+      - name: Run frontend tests (Vitest)
+        timeout-minutes: 35
         run: bun run test
         env:
           NODE_OPTIONS: --max-old-space-size=8192
@@ -142,6 +162,7 @@ jobs:
 
     steps:
       - name: Free disk space
+        timeout-minutes: 10
         run: |
           # Агрессивное освобождение места (~25GB)
           sudo rm -rf /usr/share/dotnet
@@ -179,6 +200,7 @@ jobs:
           save-if: false
 
       - name: Install Linux dependencies
+        timeout-minutes: 15
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
@@ -194,6 +216,7 @@ jobs:
         run: mkdir -p dist
 
       - name: Run Rust tests
+        timeout-minutes: 20
         env:
           PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
           CARGO_BUILD_JOBS: 2
@@ -207,6 +230,7 @@ jobs:
           fi
 
       - name: Clean test artifacts
+        timeout-minutes: 5
         run: |
           cd src-tauri
           # Удаляем временные тестовые артефакты
@@ -242,9 +266,11 @@ jobs:
             ${{ runner.os }}-bun-lint-
 
       - name: Install dependencies
+        timeout-minutes: 15
         run: bun install --frozen-lockfile || bun install
 
       - name: Run linting
+        timeout-minutes: 10
         run: bun run lint:ci
         env:
           NODE_OPTIONS: --max-old-space-size=4096
@@ -274,9 +300,11 @@ jobs:
             ${{ runner.os }}-bun-typecheck-
 
       - name: Install dependencies
+        timeout-minutes: 15
         run: bun install --frozen-lockfile || bun install
 
       - name: Install promo dependencies
+        timeout-minutes: 10
         run: |
           cd promo
           bun install --frozen-lockfile || bun install
@@ -285,10 +313,13 @@ jobs:
       - name: Run type check
         # src/types/generated/tauri-bindings.ts is committed to the repo,
         # so no Rust build or Linux system deps are needed here.
+        timeout-minutes: 10
         run: bun run check:type
 
       - name: Run workspace type checks
+        timeout-minutes: 10
         run: bun run check:workspaces
 
       - name: Run package boundary strict gate
+        timeout-minutes: 5
         run: bun run check:boundaries:strict
