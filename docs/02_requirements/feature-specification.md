@@ -121,7 +121,7 @@ Timeline Studio - профессиональный видеоредактор с
 Глобальное управление состоянием через XState машины.
 - 18 компонентов, 14 хуков, 18 сервисов
 - **228 тестов**
-- 📖 [Документация](../../src/features/app-state/README.md)
+- 📖 Документация модуля app-state перенесена в доменный слой project-management.
 
 #### User Settings - 100%
 Пользовательские настройки и персонализация.
@@ -150,13 +150,13 @@ Timeline Studio - профессиональный видеоредактор с
 Система версионирования проектов.
 - 9 компонентов, 4 хука, 3 сервиса
 - Snapshots, branches, auto-save
-- 📖 [Документация](../../src/features/version-control/README.md)
+- 📖 [Документация](../../packages/ui/src/features/version-control/README.md)
 
 #### Workspace - 100%
 Управление рабочими областями.
 - 7 компонентов, 3 хука, 4 сервиса
 - 4 preset лейаута, drag & drop
-- 📖 [Документация](../../src/features/workspace/README.md)
+- 📖 Документация workspace README отсутствует в текущей структуре.
 
 #### Motion Graphics - 100%
 Моушн графика и анимации.
@@ -283,7 +283,7 @@ AI режиссёр для анализа видео.
 ### Analysis Dashboard - 100%
 Аналитическая панель с графиками и метриками.
 - 11 компонентов, 4 хука, 6 сервисов
-- 📖 [Документация](../../src/features/analysis-dashboard/README.md)
+- 📖 Документация analysis-dashboard README отсутствует в текущей структуре.
 
 ### Montage Planner - 100%
 Планировщик автоматического монтажа.
@@ -315,57 +315,57 @@ Timeline Studio использует **Orchestrator Pattern** для всех д
 Single source of truth для состояния проекта.
 - **228 тестов**, 100% готовность
 - BackendSync для синхронизации с Rust backend
-- 📖 [Документация](../../src/domains/project-management/README.md)
+- 📖 [Документация](../../packages/domains/src/project-management/README.md)
 
 #### Media Management
 Orchestrator pattern для управления медиафайлами.
 - **15 сервисов**, 5 state machines
 - MediaManagementOrchestrator (613 строк)
-- 📖 [Документация](../../src/domains/media-management/README.md)
+- 📖 [Документация](../../packages/domains/src/media-management/README.md)
 
 #### Video Editing
 Логика видеоредактирования, компиляции, рендеринга.
 - **22 сервиса**, 5 state machines
 - Интеграция с FFmpeg через Tauri
-- 📖 [Документация](../../src/domains/video-editing/README.md)
+- 📖 [Документация](../../packages/domains/src/video-editing/README.md)
 
 #### AI Services
 Интеграция с AI провайдерами.
 - **55 сервисов**, 6 state machines
 - UnifiedOrchestrator (рейтинг 9/10)
 - Claude, OpenAI, Azure, **Ollama**
-- 📖 [Документация](../../src/domains/ai-services/README.md)
+- 📖 [Документация](../../packages/domains/src/ai-services/README.md)
 
 #### AI Tools
 82 инструмента для AI ассистента.
 - Категории: analysis, automation, content, editing, project, timeline
 - **MCP Integration** (Model Context Protocol)
-- 📖 [Документация](../../src/domains/ai-tools/README.md)
+- 📖 [Документация](../../packages/domains/src/ai-tools/README.md)
 
 #### AI Director
 AI-powered анализ и режиссура видео.
 - **7 сервисов**, анализ контента
-- 📖 [Документация](../../src/domains/ai-director/README.md)
+- 📖 [Документация](../../packages/domains/src/ai-director/README.md)
 
 #### System Integration
 Интеграция с системными API.
 - Нотификации, файлы, clipboard
 - BackendSync для двусторонней синхронизации
-- 📖 [Документация](../../src/domains/system-integration/README.md)
+- 📖 [Документация](../../packages/domains/src/system-integration/README.md)
 
 #### Browser
 Backend логика для медиа браузера.
-- 📖 [Документация](../../src/domains/browser/README.md)
+- 📖 [Документация](../../packages/domains/src/browser/README.md)
 
 #### Subtitles
 Обработка субтитров, генерация, синхронизация.
-- 📖 [Документация](../../src/domains/subtitles/README.md)
+- 📖 [Документация](../../packages/domains/src/subtitles/README.md)
 
 #### Shared
 Общие утилиты и типы для всех доменов.
 - Domain Event Bus
 - Контракты между доменами
-- 📖 [Документация](../../src/domains/shared/README.md)
+- 📖 [Документация](../../packages/domains/src/shared/README.md)
 
 ## Статус разработки
 

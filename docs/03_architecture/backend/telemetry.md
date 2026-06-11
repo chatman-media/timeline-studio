@@ -21,24 +21,24 @@
 ## 📁 Структура документации
 
 ### Настройка и конфигурация
-- [**Configuration Guide**](configuration.md) - Настройка системы телеметрии
-- [**Installation Guide**](installation.md) - Установка и интеграция
-- [**Environment Setup**](environment.md) - Настройка окружения для dev/prod
+- **Configuration Guide** - Настройка системы телеметрии (планируется)
+- **Installation Guide** - Установка и интеграция (планируется)
+- **Environment Setup** - Настройка окружения для dev/prod (планируется)
 
 ### Мониторинг и наблюдение
-- [**Monitoring Setup**](monitoring.md) - Настройка мониторинга в production
-- [**Dashboards**](dashboards.md) - Готовые dashboard'ы для Grafana
-- [**Alerting Rules**](alerting.md) - Правила алертов и уведомлений
+- [**Monitoring and Metrics**](monitoring-and-metrics.md) - Мониторинг и метрики backend
+- **Dashboards** - Готовые dashboard'ы для Grafana (планируется)
+- **Alerting Rules** - Правила алертов и уведомлений (планируется)
 
 ### Разработка и интеграция
-- [**OpenTelemetry Guide**](opentelemetry.md) - Работа с OpenTelemetry
-- [**Custom Metrics**](custom-metrics.md) - Создание пользовательских метрик
-- [**Distributed Tracing**](tracing.md) - Настройка distributed tracing
+- **OpenTelemetry Guide** - Работа с OpenTelemetry (планируется)
+- **Custom Metrics** - Создание пользовательских метрик (планируется)
+- **Distributed Tracing** - Настройка distributed tracing (планируется)
 
 ### Troubleshooting и оптимизация
-- [**Performance Analysis**](performance-analysis.md) - Анализ производительности
-- [**Troubleshooting Guide**](troubleshooting.md) - Решение проблем
-- [**Best Practices**](best-practices.md) - Лучшие практики
+- **Performance Analysis** - Анализ производительности (планируется)
+- **Troubleshooting Guide** - Решение проблем (планируется)
+- **Best Practices** - Лучшие практики (планируется)
 
 ## 🚀 Быстрый старт
 
@@ -760,10 +760,10 @@ tracer.trace_async("debug_video_processing", |span| async move {
 
 ## 🔗 Связанные разделы
 
-- [**Backend Architecture**](../02-architecture/backend.md) - Архитектура backend
-- [**Performance Optimization**](../08-roadmap/planned/performance-optimization.md) - Оптимизация производительности
-- [**Backend Testing**](../08-roadmap/in-progress/backend-testing-architecture.md) - Тестирование backend
-- [**Development Commands**](../05-development/development-commands.md) - Команды разработки
+- [**Backend Architecture**](README.md) - Архитектура backend
+- [**Performance Optimization**](../../08_tasks/planned/performance-optimization.md) - Оптимизация производительности
+- [**Backend Testing**](../../12_testing/backend-testing.md) - Тестирование backend
+- [**Development Commands**](../../05_development/development-commands.md) - Команды разработки
 
 ---
 

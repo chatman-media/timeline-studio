@@ -167,7 +167,7 @@ module-name/
 
 ### 3.3 Архитектурная документация
 
-- [ ] **Наличие в `/docs/ru/03_architecture/`**
+- [ ] **Наличие в `/docs/03_architecture/`**
   - [ ] Документ с описанием архитектуры модуля
   - [ ] Диаграммы компонентов (если сложный модуль)
   - [ ] Описание state machines (если есть)
@@ -176,7 +176,7 @@ module-name/
 ### 3.4 Migration guide (если нужен)
 
 - [ ] **При breaking changes**
-  - [ ] Документ в `/docs/ru/05_development/`
+  - [ ] Документ в `/docs/05_development/`
   - [ ] Описание изменений
   - [ ] Примеры миграции кода
   - [ ] Checklist для миграции
@@ -525,7 +525,7 @@ describe('Timeline Machine', () => {
 
 1. Определите приоритет задач
 2. Оцените время на каждую задачу
-3. Создайте plan в `/docs/ru/08_tasks/active/`
+3. Создайте plan в `/docs/08_tasks/active/`
 
 ### Шаг 3: Реализация
 
@@ -552,11 +552,11 @@ describe('Timeline Machine', () => {
 
 ## 12. 📖 СВЯЗАННЫЕ ДОКУМЕНТЫ
 
-- [Руководство по разработке](/docs/ru/05_development/README.md)
-- [Стандарты кодирования](/docs/ru/05_development/coding-standards.md)
-- [Руководство по тестированию](/docs/ru/05_development/testing.md)
-- [Архитектура проекта](/docs/ru/03_architecture/README.md)
-- [Прогресс финализации модулей](/docs/ru/14_quality_assurance/modules-finalization-progress.md)
+- [Руководство по разработке](../05_development/README.md)
+- [Стандарты кодирования](../05_development/coding-standards.md)
+- [Руководство по тестированию](../05_development/testing.md)
+- [Архитектура проекта](../03_architecture/README.md)
+- [Прогресс финализации модулей](modules-finalization-progress.md)
 
 ---
 

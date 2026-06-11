@@ -35,6 +35,7 @@
     "check:boundaries:external": "node scripts/check-package-boundaries.mjs --external-contracts",
     "check:boundaries:baseline": "node scripts/check-package-boundaries.mjs --baseline=config/package-boundaries-baseline.json --max-details=0",
     "check:boundaries:strict": "node scripts/check-package-boundaries.mjs --strict",
+    "check:docs:links": "node scripts/validate-docs-links.mjs",
     "check:examples:postim": "node scripts/validate-headless-postim-example.mjs",
     "check:examples:headless-sdk": "node scripts/validate-bot-headless-sdk-docs.mjs",
     "check:shims:retired": "node scripts/validate-root-shim-retirement.mjs",

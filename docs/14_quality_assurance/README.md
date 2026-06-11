@@ -7,9 +7,9 @@
 ## 📋 Содержание
 
 - [alpha-testing-guide.md](alpha-testing-guide.md) - Руководство по альфа-тестированию ✨ NEW
-- [bug-reporting.md](bug-reporting.md) - Как правильно репортить баги
-- [test-scenarios.md](test-scenarios.md) - Тестовые сценарии для альфа-версии
-- [performance-testing.md](performance-testing.md) - Тестирование производительности
+- bug-reporting.md - Как правильно репортить баги (планируется)
+- test-scenarios.md - Тестовые сценарии для альфа-версии (планируется)
+- performance-testing.md - Тестирование производительности (планируется)
 
 ## 🎯 Процессы QA для альфа-версии
 
@@ -146,4 +146,4 @@
 
 *Спасибо за помощь в тестировании Timeline Studio!*
 
-[← К CI/CD](../13_ci_cd/README.md) | [К проекту →](../10_project_state/README.md)
+[← К CI/CD](../13_ci_cd/README.md) | [К проекту →](../10_project_state/current-status.md)

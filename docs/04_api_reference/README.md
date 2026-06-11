@@ -18,71 +18,72 @@
 ### 🎯 Timeline и редактирование
 
 - [**Timeline API**](timeline-api.md) - Управление таймлайном и клипами
-- [**Clips API**](clips-api.md) - Операции с клипами
-- [**Tracks API**](tracks-api.md) - Управление треками
-- [**Effects API**](effects-api.md) - Применение и настройка эффектов
-- [**Filters API**](filters-api.md) - Работа с фильтрами
+- **Clips API** - Операции с клипами (планируется)
+- **Tracks API** - Управление треками (планируется)
+- **Effects API** - Применение и настройка эффектов (планируется)
+- **Filters API** - Работа с фильтрами (планируется)
 
 ### 🤖 AI и автоматизация
 
 - [**AI Chat API**](ai-chat-api.md) - Интеграция с AI ассистентами (Claude, GPT)
-- [**AI Tools API**](ai-tools-api.md) - 257 AI инструмент для автоматизации
+- **AI Tools API** - 257 AI инструмент для автоматизации (планируется)
 - [**Recognition API**](recognition-api.md) - Распознавание объектов и лиц
-- [**AI Content Intelligence API**](ai-content-intelligence-api.md) - Интеллектуальный анализ контента
-- [**Montage Planner API**](montage-planner-api.md) - Автоматическое планирование монтажа
+- **AI Content Intelligence API** - Интеллектуальный анализ контента (планируется)
+- **Montage Planner API** - Автоматическое планирование монтажа (планируется)
 
 ### 🎨 Профессиональные инструменты
 
-- [**Color Grading API**](color-grading-api.md) - Цветокоррекция
-- [**Fairlight Audio API**](fairlight-audio-api.md) - Профессиональный аудиомикшер
-- [**Motion Graphics API**](motion-graphics-api.md) - Анимация и графика
-- [**Multicam API**](multicam-api.md) - Многокамерное редактирование
+- **Color Grading API** - Цветокоррекция (планируется)
+- **Fairlight Audio API** - Профессиональный аудиомикшер (планируется)
+- **Motion Graphics API** - Анимация и графика (планируется)
+- **Multicam API** - Многокамерное редактирование (планируется)
 
 ### 📤 Экспорт и публикация
 
 - [**Export API**](export-api.md) - Экспорт видео с GPU ускорением
-- [**Social Media API**](social-media-api.md) - Публикация в социальные сети
+- **Social Media API** - Публикация в социальные сети (планируется)
 - [**Video Compiler API**](video-compiler-api.md) - Низкоуровневый API компиляции
 
 ### 🎥 Захват и запись
 
-- [**Camera Capture API**](camera-capture-api.md) - Захват с камеры
-- [**Voice Recording API**](voice-recording-api.md) - Запись голоса
-- [**Screen Recording API**](screen-recording-api.md) - Запись экрана
+- **Camera Capture API** - Захват с камеры (планируется)
+- **Voice Recording API** - Запись голоса (планируется)
+- **Screen Recording API** - Запись экрана (планируется)
 
 ### 🔧 Утилиты и хелперы
 
-- [**State Management API**](state-management-api.md) - XState машины состояний
-- [**Storage API**](storage-api.md) - Локальное хранилище и кэширование
-- [**Theme API**](theme-api.md) - Управление темами
-- [**Localization API**](localization-api.md) - Интернационализация
+- **State Management API** - XState машины состояний (планируется)
+- **Storage API** - Локальное хранилище и кэширование (планируется)
+- **Theme API** - Управление темами (планируется)
+- **Localization API** - Интернационализация (планируется)
 
 ## Backend API (Tauri Commands)
 
 ### 📁 Файловая система
 
-- [**File System Commands**](backend/filesystem-commands.md) - Работа с файлами
-- [**Project Commands**](backend/project-commands.md) - Управление проектами
-- [**Media Import Commands**](backend/media-import-commands.md) - Импорт медиафайлов
+- [**Backend Commands Overview**](backend/README.md) - Общий справочник backend API
+- **File System Commands** - Работа с файлами (планируется)
+- **Project Commands** - Управление проектами (планируется)
+- **Media Import Commands** - Импорт медиафайлов (планируется)
 
 ### 🎬 Обработка видео
 
-- [**FFmpeg Commands**](backend/ffmpeg-commands.md) - FFmpeg операции
-- [**Frame Extraction Commands**](backend/frame-extraction-commands.md) - Извлечение кадров
-- [**Rendering Commands**](backend/rendering-commands.md) - Рендеринг видео
-- [**GPU Commands**](backend/gpu-commands.md) - GPU ускорение
+- **FFmpeg Commands** - FFmpeg операции (планируется)
+- **Frame Extraction Commands** - Извлечение кадров (планируется)
+- **Rendering Commands** - Рендеринг видео (планируется)
+- **GPU Commands** - GPU ускорение (планируется)
 
 ### 🤖 AI обработка
 
-- [**Recognition Commands**](backend/recognition-commands.md) - YOLO распознавание
-- [**Whisper Commands**](backend/whisper-commands.md) - Транскрипция аудио
-- [**AI Processing Commands**](backend/ai-processing-commands.md) - AI обработка
+- **Recognition Commands** - YOLO распознавание (планируется)
+- **Whisper Commands** - Транскрипция аудио (планируется)
+- **AI Processing Commands** - AI обработка (планируется)
 
 ### 🔧 Системные команды
 
-- [**System Info Commands**](backend/system-info-commands.md) - Информация о системе
-- [**Performance Commands**](backend/performance-commands.md) - Мониторинг производительности
-- [**Plugin Commands**](backend/plugin-commands.md) - Управление плагинами
+- **System Info Commands** - Информация о системе (планируется)
+- **Performance Commands** - Мониторинг производительности (планируется)
+- **Plugin Commands** - Управление плагинами (планируется)
 
 ## 🔌 Интеграции
 
@@ -97,20 +98,20 @@
 
 - [**Claude API Integration**](integrations/claude-api.md)
 - [**OpenAI API Integration**](integrations/openai-api.md)
-- [**Anthropic API Integration**](integrations/anthropic-api.md)
+- **Anthropic API Integration** - объединено с Claude/OpenAI интеграциями
 
 ## 🌐 WebSocket API
 
-- [**Real-time Events**](websocket/events.md) - События в реальном времени
-- [**Progress Tracking**](websocket/progress.md) - Отслеживание прогресса
-- [**Collaboration**](websocket/collaboration.md) - Совместная работа (планируется)
+- **Real-time Events** - События в реальном времени (планируется)
+- **Progress Tracking** - Отслеживание прогресса (планируется)
+- **Collaboration** - Совместная работа (планируется)
 
 ## 📚 Дополнительные ресурсы
 
-- [Примеры использования](examples/README.md)
-- [Миграция с v1 на v2](migration-guide.md)
-- [Troubleshooting](troubleshooting.md)
-- [Performance Best Practices](performance.md)
+- Примеры использования (планируется)
+- Миграция с v1 на v2 (планируется)
+- Troubleshooting (планируется)
+- Performance Best Practices (планируется)
 
 ---
 

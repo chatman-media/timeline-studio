@@ -258,9 +258,9 @@ cargo build
 ## 🔗 Дополнительные ресурсы
 
 ### Внутренние
-- [Создание нового модуля](creating-features.md)
-- [Работа с XState](xstate-patterns.md)
-- [Оптимизация производительности](../07-guides/performance.md)
+- [Чеклист разработки](development-checklist.md)
+- [Работа с XState](../03_architecture/frontend/state-management.md)
+- [Оптимизация производительности](performance.md)
 
 ### Внешние
 - [Tauri Documentation](https://tauri.app/v2/guides/)
@@ -270,4 +270,4 @@ cargo build
 
 ---
 
-[← Функциональность](../03-features/README.md) | [Далее: Настройка окружения →](setup.md)
+[← Функциональность](../02_requirements/feature-specification.md) | [Далее: Настройка окружения →](setup.md)
