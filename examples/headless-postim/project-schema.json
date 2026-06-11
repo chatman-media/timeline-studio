@@ -1,0 +1,113 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "name": "postim-headless-example",
+    "description": "Contract fixture for external postim/headless consumers. Replace the media path with a real file before rendering.",
+    "created_at": "2026-06-11T00:00:00.000Z",
+    "modified_at": "2026-06-11T00:00:00.000Z",
+    "author": "postim-example"
+  },
+  "timeline": {
+    "duration": 5,
+    "fps": 30,
+    "resolution": [1920, 1080],
+    "sample_rate": 48000,
+    "aspect_ratio": "Ratio16x9"
+  },
+  "tracks": [
+    {
+      "id": "postim-video-track",
+      "track_type": "Video",
+      "name": "Postim video",
+      "enabled": true,
+      "volume": 1,
+      "locked": false,
+      "clips": [
+        {
+          "id": "postim-clip-001",
+          "source": {
+            "File": "examples/headless-postim/media/input.mp4"
+          },
+          "start_time": 0,
+          "end_time": 5,
+          "source_start": 0,
+          "source_end": 5,
+          "speed": 1,
+          "opacity": 1,
+          "effects": [],
+          "filters": [],
+          "template_id": null,
+          "template_position": null,
+          "color_correction": null,
+          "crop": null,
+          "transform": null,
+          "audio_track_index": null,
+          "properties": {
+            "notes": "Replace examples/headless-postim/media/input.mp4 with a real media file before rendering.",
+            "tags": ["postim", "headless", "contract"],
+            "custom_metadata": {
+              "integration": "postim",
+              "handoff": "headless"
+            }
+          }
+        }
+      ],
+      "effects": [],
+      "filters": []
+    }
+  ],
+  "effects": [],
+  "transitions": [],
+  "filters": [],
+  "templates": [],
+  "style_templates": [],
+  "subtitles": [],
+  "settings": {
+    "export": {
+      "format": "Mp4",
+      "quality": 85,
+      "video_bitrate": 8000,
+      "audio_bitrate": 192,
+      "hardware_acceleration": false,
+      "preferred_gpu_encoder": null,
+      "ffmpeg_args": [],
+      "encoding_profile": "main",
+      "rate_control_mode": "vbr",
+      "keyframe_interval": 60,
+      "b_frames": 2,
+      "multi_pass": 1,
+      "preset": "medium",
+      "max_bitrate": null,
+      "min_bitrate": null,
+      "crf": null,
+      "optimize_for_speed": false,
+      "optimize_for_network": false,
+      "normalize_audio": false,
+      "audio_target": -23,
+      "audio_peak": -1
+    },
+    "preview": {
+      "resolution": [640, 360],
+      "quality": 75,
+      "fps": 15,
+      "format": "Jpeg"
+    },
+    "custom": {
+      "externalConsumer": "postim",
+      "publishHandoff": "file-only"
+    },
+    "output": {
+      "format": "Mp4",
+      "quality": 85,
+      "video_bitrate": 8000,
+      "audio_bitrate": 192,
+      "duration": 5
+    },
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frame_rate": 30,
+    "aspect_ratio": "Ratio16x9"
+  }
+}
