@@ -114,6 +114,8 @@ npx ts-node apps/cli/src/index.ts render project.json output.mp4 --verbose
 
 `render-job` is the supported one-shot Node entrypoint for external job runners that already have a render job JSON payload. It returns machine-readable `BotRenderJobResult` JSON and can delegate rendering to the Rust headless CLI with `--rust-render`.
 
+The postim/headless contract example lives in [examples/headless-postim](../../examples/headless-postim/README.md).
+
 ```bash
 bun run apps/cli/src/index.ts render-job ./render-job.json --pretty --rust-render
 ```
@@ -160,6 +162,8 @@ bun run apps/cli/src/index.ts bot-workflow ./payload.json \
 ```
 
 Fixture payloads live in `docs/08_tasks/planned/fixtures/`.
+
+The postim/headless one-shot workflow example lives in [examples/headless-postim](../../examples/headless-postim/README.md).
 
 **Опции:**
 | Опция | Описание |

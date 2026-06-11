@@ -1,0 +1,11 @@
+{
+  "chat": {
+    "id": "postim-demo-chat"
+  },
+  "from": {
+    "id": "postim-demo-user"
+  },
+  "message_id": "postim-demo-message-001",
+  "text": "project=examples/headless-postim/project-schema.json output=.tmp/postim-headless/bot-workflow.mp4 destination=file resolution=1080p title=postim-demo",
+  "attachments": []
+}

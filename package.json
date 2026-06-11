@@ -35,6 +35,7 @@
     "check:boundaries:external": "node scripts/check-package-boundaries.mjs --external-contracts",
     "check:boundaries:baseline": "node scripts/check-package-boundaries.mjs --baseline=config/package-boundaries-baseline.json --max-details=0",
     "check:boundaries:strict": "node scripts/check-package-boundaries.mjs --strict",
+    "check:examples:postim": "node scripts/validate-headless-postim-example.mjs",
     "check:all": "npm run lint && npm run lint:css && npm run check:rust && npm run test && npm run test:rust",
     "fix:all": "npm run lint:fix && npm run lint:css:fix && npm run fix:rust",
     "tauri": "tauri",

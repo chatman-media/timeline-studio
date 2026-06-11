@@ -1,0 +1,18 @@
+{
+  "source": "cli",
+  "project": {
+    "type": "file",
+    "path": "examples/headless-postim/project-schema.json"
+  },
+  "output": {
+    "format": "mp4",
+    "path": ".tmp/postim-headless/render-job.mp4",
+    "destination": "file",
+    "resolution": "1080p"
+  },
+  "params": {
+    "integration": "postim",
+    "correlationId": "postim-demo-001",
+    "publishHandoff": "file-only"
+  }
+}
