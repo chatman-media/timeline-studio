@@ -1,6 +1,6 @@
 # Root Compatibility Shims
 
-**Status:** Phase G shim migration path for [#285](https://github.com/chatman-media/timeline-studio/issues/285)  
+**Status:** Completed Phase G shim migration path for closed [#285](https://github.com/chatman-media/timeline-studio/issues/285)
 **Related:** [External And Headless Integration Contracts](external-headless-contracts.md), [Package Boundaries](package-boundaries.md)
 
 Phase F moved core workspace ownership into `packages/*` and `apps/*`, but the repository still has root paths that are intentionally kept for compatibility. This document records the owner, migration path, and removal condition for each group. Removing a shim before its replacement path is documented is out of scope.

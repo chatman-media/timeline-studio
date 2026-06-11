@@ -1,6 +1,6 @@
 # Package Boundaries
 
-**Status:** Phase F workspace ownership for [#150](https://github.com/chatman-media/timeline-studio/issues/150)
+**Status:** Completed Phase F workspace ownership for closed [#150](https://github.com/chatman-media/timeline-studio/issues/150)
 **Updated:** 2026-06-11
 
 This document defines the TypeScript package boundaries used during the modular architecture migration. After F9-F13, `core`, `domains`, `adapters`, reusable `ui`, and the CLI have real workspace-owned source trees. Desktop keeps a small set of root compatibility entrypoints while the root Next/Tauri build flow is still in place.

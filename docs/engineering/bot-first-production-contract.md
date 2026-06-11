@@ -1,6 +1,6 @@
 # Bot-First Production Contract
 
-**Status:** Phase G contract hardening for [#288](https://github.com/chatman-media/timeline-studio/issues/288)
+**Status:** Completed Phase G contract hardening for closed [#288](https://github.com/chatman-media/timeline-studio/issues/288)
 **Related:** [External And Headless Integration Contracts](external-headless-contracts.md), [Telegram Bot Worker Production Runbook](../06_deployment/telegram-bot-worker-production.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
 
 This contract defines the supported bot-first/headless production path for Telegram AI review. Operators and external consumers should be able to understand this path without reading package internals.

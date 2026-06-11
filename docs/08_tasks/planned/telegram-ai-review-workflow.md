@@ -1,6 +1,6 @@
 # Telegram AI Review Editing Workflow
 
-**Статус:** Implementation slice merged; production runtime stabilization completed in [AI Module Stabilization and Node/Rust Orchestration](./ai-module-node-rust-orchestration.md)
+**Статус:** Completed; implementation slice merged, production runtime stabilization completed in [AI Module Stabilization and Node/Rust Orchestration](./ai-module-node-rust-orchestration.md), external/headless contract hardening completed in [Phase G](https://github.com/chatman-media/timeline-studio/issues/282)
 **Приоритет:** High
 **Создано:** 2026-06-09
 **Ответственный:** Architecture Team
@@ -23,7 +23,7 @@ upload media
   -> publish only after explicit approval
 ```
 
-> Важно: этот документ описывает реализованный product/workflow contract. Production wiring для AI editor, Rust planner schema alignment, preview renderer and bot-worker CLI flags закрыты в [#238](https://github.com/chatman-media/timeline-studio/issues/238); deployment, retention and cleanup остаются в [#225](https://github.com/chatman-media/timeline-studio/issues/225).
+> Важно: этот документ описывает реализованный product/workflow contract. Production wiring для AI editor, Rust planner schema alignment, preview renderer and bot-worker CLI flags закрыты в [#238](https://github.com/chatman-media/timeline-studio/issues/238); deployment, retention and cleanup закрыты в [#225](https://github.com/chatman-media/timeline-studio/issues/225); supported external/headless contract закреплен в [#282](https://github.com/chatman-media/timeline-studio/issues/282). Следующий шаг - реальный sandbox/production rollout в [Phase H proposal](../../10_project_state/roadmap.md#далее-phase-h-proposal).
 
 ## Связь с B28 / production readiness
 
@@ -158,7 +158,7 @@ bun run smoke:ai-review:rust
 
 The repeatable sandbox operator checklist lives in [Telegram AI Review Sandbox Smoke](../../06_deployment/telegram-ai-review-sandbox-smoke.md). The production state, restart, cleanup and publish boundary lives in [Bot-First Production Contract](../../engineering/bot-first-production-contract.md).
 
-For production polling, keep model/provider and secret config at process/env/service-manager boundaries. Do not put raw provider credentials into edit session store metadata or issue/test output. Generic log retention, deployment topology and cleanup policies remain owned by B28/#225.
+For production polling, keep model/provider and secret config at process/env/service-manager boundaries. Do not put raw provider credentials into edit session store metadata or issue/test output. Generic log retention, deployment topology and cleanup policies were closed in B28/[#225](https://github.com/chatman-media/timeline-studio/issues/225); real sandbox rollout is a Phase H follow-up.
 
 ### Failure recovery checks
 

@@ -13,9 +13,9 @@
 
 ## 📁 Структура документации
 
-### [00_manifest/](00_manifest/)
+### [00_project_manifest/](00_project_manifest/)
 Главный документ с видением, целями и ключевыми инновациями проекта:
-- **[Манифест проекта](00_manifest/project-overview.md)** - Полное описание проекта и его инноваций
+- **[Манифест проекта](00_project_manifest/README.md)** - Полное описание проекта и его инноваций
 
 ### [01_project_docs/](01_project_docs/)
 - **[Обзор архитектуры](01_project_docs/architecture-overview.md)** - Высокоуровневый обзор системы
@@ -53,9 +53,7 @@
 - **[Transition Sync API](04_api_reference/transition-sync-api.md)** - API для синхронизации переходов
 - **[Video Player Transitions API](04_api_reference/video-player-transitions-api.md)** - API для переходов в плеере
 - **[Backend API](04_api_reference/backend/)** - Backend API документация
-- **[WebSocket API](04_api_reference/websocket/)** - WebSocket API документация
 - **[Интеграции](04_api_reference/integrations/)** - API интеграций
-- **[Примеры](04_api_reference/examples/)** - Примеры использования API
 
 ### [05_development/](05_development/)
 Руководства для разработчиков:
@@ -89,10 +87,6 @@
 - **[Telegram Bot Worker Production Runbook](06_deployment/telegram-bot-worker-production.md)** - Production topology, systemd setup, retention and sandbox smoke for bot-first worker
 - **[Telegram AI Review Sandbox Smoke](06_deployment/telegram-ai-review-sandbox-smoke.md)** - Mocked and real sandbox smoke path for Telegram AI review without desktop UI
 - **[Платформы](06_deployment/platforms/)** - Специфика развертывания по платформам
-
-### [07_milestones/](07_milestones/)
-Основные вехи проекта:
-- **[Alpha релиз](07_milestones/alpha_release.md)** - Планы и требования для Alpha версии
 
 ### [08_tasks/](08_tasks/)
 - **[active/](08_tasks/active/)** - Текущие задачи  
@@ -146,11 +140,8 @@
 ### [17_releases/](17_releases/)
 Управление релизами:
 - **[Релизы](17_releases/README.md)** - Управление версиями и релизами
-- **[v0.60.0-alpha](17_releases/v0.60.0-alpha.md)** - Релиз Alpha версии
 
 ### [18_marketing/](18_marketing/) ⭐
-- **[Стратегия продвижения](18_marketing/timeline-studio-promotion-strategy.md)** - Стратегический план продвижения
-- **[Комплексный план](18_marketing/comprehensive-promotion-plan.md)** - Детальный маркетинговый план
 - **[Бизнес-план](18_marketing/business-plan.md)** - Бизнес-план проекта
 - **[Конкурентный анализ](18_marketing/competitive-analysis.md)** - Анализ конкурентов
 - **[Финансовые прогнозы](18_marketing/financial-projections.md)** - Финансовые прогнозы
@@ -170,17 +161,17 @@
 
 ## 📊 Ключевые метрики
 
-- **Общая готовность**: 94%+
-- **Frontend модулей**: 30+ завершено
-- **Backend модулей**: 21+ завершено  
-- **Покрытие тестами**: 80%+
+- **Alpha готовность**: 97.5%
+- **Rust workspace**: `crates/*` decomposition завершена
+- **TypeScript workspace**: `packages/*` and `apps/*` extraction завершены
+- **Bot/headless contracts**: Phase G закрыта, main CI зеленый
 
 ## 🤝 Как внести вклад
 
-1. Изучите [Манифест проекта](00_manifest/project-overview.md)
+1. Изучите [Манифест проекта](00_project_manifest/README.md)
 2. Выберите задачу из [Планируемых](08_tasks/planned/README.md)
 3. Следуйте руководствам из [Development](05_development/README.md)
-4. Используйте Claude Code multiflow методологию для документации
+4. Для bot/headless задач начинайте с [Current Status](10_project_state/current-status.md) and [Roadmap](10_project_state/roadmap.md)
 
 ## 🏗️ Структура документации
 
@@ -195,7 +186,8 @@
 
 - **GitHub**: https://github.com/chatman-media/timeline-studio
 - **Маркетинговые стратегии**: [18_marketing/](18_marketing/)
-- **Английская версия**: [../en/](../en/)
+- **Текущий статус**: [10_project_state/current-status.md](10_project_state/current-status.md)
+- **Roadmap**: [10_project_state/roadmap.md](10_project_state/roadmap.md)
 
 ### [99_templates/](99_templates/)
 Шаблоны документов:
@@ -207,4 +199,4 @@
 
 ---
 
-*Последнее обновление: Январь 2025*
+*Последнее обновление: 11 июня 2026*
