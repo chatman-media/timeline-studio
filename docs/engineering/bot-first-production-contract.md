@@ -1,7 +1,7 @@
 # Bot-First Production Contract
 
 **Status:** Completed Phase G contract hardening for closed [#288](https://github.com/chatman-media/timeline-studio/issues/288)
-**Related:** [External And Headless Integration Contracts](external-headless-contracts.md), [Rust/Node AI Edit Parity](rust-node-ai-edit-parity.md), [Telegram Bot Worker Production Runbook](../06_deployment/telegram-bot-worker-production.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
+**Related:** [External And Headless Integration Contracts](external-headless-contracts.md), [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md), [Rust/Node AI Edit Parity](rust-node-ai-edit-parity.md), [Telegram Bot Worker Production Runbook](../06_deployment/telegram-bot-worker-production.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
 
 This contract defines the supported bot-first/headless production path for Telegram AI review. Operators and external consumers should be able to understand this path without reading package internals.
 
@@ -82,5 +82,7 @@ External consumers such as postim should use this layer through documented entry
 - `bot-workflow` for one-shot Telegram-like intake without polling.
 - `bot-worker` for production Telegram polling and AI review.
 - Rust `timeline publish ... --json` directly only for standalone publish validation/upload.
+
+The copy-pasteable external examples and validation command live in [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md).
 
 Do not import root aliases, desktop providers, `src-tauri` internals or package-private source files. If a capability is missing from the supported surfaces, add a core port, package export or CLI contract before integrating.

@@ -68,7 +68,7 @@ Supported external/headless entrypoints are intentionally narrow:
 - Node CLI `bot-worker`.
 - Node CLI `bot-cleanup`.
 
-The contract is documented in [External And Headless Integration Contracts](../engineering/external-headless-contracts.md). Production Telegram review state/retry/cleanup/publish behavior is documented in [Bot-First Production Contract](../engineering/bot-first-production-contract.md).
+The contract is documented in [External And Headless Integration Contracts](../engineering/external-headless-contracts.md). Production Telegram review state/retry/cleanup/publish behavior is documented in [Bot-First Production Contract](../engineering/bot-first-production-contract.md). External consumer examples and validation commands are documented in [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md).
 
 Important boundary: external consumers such as `postim` should use the bot-first/headless layer and Rust CLI publish/render paths. They should not import root aliases, `src-tauri`, `packages/*/src`, or desktop internals.
 
@@ -106,6 +106,7 @@ No active project blocker is tracked in the GitHub project after Phase G. Remain
 - Root compatibility shims are documented but not yet retired.
 - Rust `llm-plan` is still first-cut oriented; edit-capable Rust `llm-edit` remains a future parity track.
 - External consumer integration, especially `postim`, needs a concrete example contract and migration path.
+- External consumers should start from [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md) and [examples/headless-postim](../../examples/headless-postim/README.md) instead of reading internal source.
 - Streaming should stay separate from Phase G and depend on stable headless boundaries.
 
 ## Recommended Next Roadmap
@@ -128,6 +129,7 @@ Keep streaming as a separate future `ts-stream`/postim track that depends on Pha
 
 - [Roadmap](roadmap.md)
 - [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
+- [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md)
 - [Bot-First Production Contract](../engineering/bot-first-production-contract.md)
 - [Root Compatibility Shims](../engineering/root-compatibility-shims.md)
 - [Package Boundaries](../engineering/package-boundaries.md)

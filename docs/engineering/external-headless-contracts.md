@@ -1,7 +1,7 @@
 # External And Headless Integration Contracts
 
 **Status:** Completed Phase G contract hardening for closed [#282](https://github.com/chatman-media/timeline-studio/issues/282)
-**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Bot-First Production Contract](bot-first-production-contract.md), [Rust/Node AI Edit Parity](rust-node-ai-edit-parity.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [postim Headless Integration Example](../../examples/headless-postim/README.md), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
+**Related:** [G1](https://github.com/chatman-media/timeline-studio/issues/283), [G2](https://github.com/chatman-media/timeline-studio/issues/284), [Bot-First Production Contract](bot-first-production-contract.md), [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md), [Rust/Node AI Edit Parity](rust-node-ai-edit-parity.md), [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md), [postim Headless Integration Example](../../examples/headless-postim/README.md), [Package Boundaries](package-boundaries.md), [Root Compatibility Shims](root-compatibility-shims.md), [Agent Contract Reference](AGENT_CONTRACT_REFERENCE.md)
 
 This document defines the supported integration surface for external consumers after the workspace extraction. It is intentionally narrow: consumers should build against `ProjectSchema`, the Rust `timeline` CLI, and the headless Node CLI commands. They should not import private package files, root aliases, or `src-tauri` internals.
 
@@ -128,9 +128,10 @@ bun run apps/cli/src/index.ts bot-workflow ./payload.json \
 
 Use `--telegram-bot-token`, `--media-dir`, and `--download-remote-media` only when the payload needs Telegram file resolution or remote URL downloads. Keep remote URL downloads opt-in.
 
-The postim one-shot headless fixture lives in [examples/headless-postim](../../examples/headless-postim/README.md). Validate it with:
+The general external quickstart is [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md). The postim one-shot headless fixture lives in [examples/headless-postim](../../examples/headless-postim/README.md). Validate both with:
 
 ```bash
+bun run check:examples:headless-sdk
 bun run check:examples:postim
 ```
 
@@ -156,7 +157,7 @@ postim and similar external consumers should integrate through the bot-first/hea
 3. Read machine-readable `BotRenderJobResult`, workflow result, session status, preview artifact, and publish result payloads.
 4. Use Rust `timeline publish ... --json` indirectly through the configured Node adapter or directly when only publish validation/upload is needed.
 
-The supported runnable handoff example is [examples/headless-postim](../../examples/headless-postim/README.md). It includes `ProjectSchema`, `render-job`, and `bot-workflow` payloads plus a validation command that checks the fixture does not depend on private repo internals.
+The supported runnable handoff examples are documented in [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md) and [examples/headless-postim](../../examples/headless-postim/README.md). They include `ProjectSchema`, `render-job`, and `bot-workflow` payloads plus validation commands that check the fixtures do not depend on private repo internals.
 
 postim must not:
 

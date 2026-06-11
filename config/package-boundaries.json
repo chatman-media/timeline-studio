@@ -63,6 +63,7 @@
     "documents": [
       "docs/engineering/external-headless-contracts.md",
       "docs/engineering/bot-first-production-contract.md",
+      "docs/09_examples/bot-headless-sdk-quickstart.md",
       "docs/engineering/package-boundaries.md",
       "docs/engineering/AGENT_CONTRACT_REFERENCE.md",
       "docs/06_deployment/telegram-bot-worker-production.md",
