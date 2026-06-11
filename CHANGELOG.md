@@ -1,3 +1,12 @@
+## [3.92.2](https://github.com/chatman-media/timeline-studio/compare/v3.92.1...v3.92.2) (2026-06-11)
+
+
+### Bug Fixes
+
+* **ai:** execute real timeline tool mutations ([#314](https://github.com/chatman-media/timeline-studio/issues/314)) ([b608460](https://github.com/chatman-media/timeline-studio/commit/b60846090a685f3c7d3774efae3376562b1a7f81))
+* **mcp:** align ai edit tool contracts ([#316](https://github.com/chatman-media/timeline-studio/issues/316)) ([1c8e1f8](https://github.com/chatman-media/timeline-studio/commit/1c8e1f8223635aba1c7b7579efe2e410b33f06a6))
+* **montage:** apply plans with backend timeline ids ([#317](https://github.com/chatman-media/timeline-studio/issues/317)) ([6b99a6f](https://github.com/chatman-media/timeline-studio/commit/6b99a6fb570d857555621b1d2046b0269238faec))
+
 ## [3.92.1](https://github.com/chatman-media/timeline-studio/compare/v3.92.0...v3.92.1) (2026-06-10)
 
 
