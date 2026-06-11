@@ -279,27 +279,9 @@ export class SubtitleAIIntegrationService {
       return audioDetections
     } catch (error) {
       logger.error("Speech analysis failed:", { error })
-
-      // Fallback на симулированные данные если Whisper недоступен
-      logger.warn("Warning", { data: "Using fallback mock speech data" })
-      const mockSpeechSegments: SpeechDetection[] = [
-        {
-          startTime: 2.5,
-          endTime: 7.8,
-          text: "Пример распознанной речи (fallback)",
-          transcript: "Пример распознанной речи (fallback)",
-          speaker: "Говорящий 1",
-          language: language,
-          confidence: 0.7,
-        },
-      ]
-
-      return {
-        speech: mockSpeechSegments,
-        music: [],
-        soundEffects: [],
-        silence: [],
-      }
+      throw new Error(
+        `Speech analysis for subtitles failed: ${error instanceof Error ? error.message : String(error)}`,
+      )
     }
   }
 

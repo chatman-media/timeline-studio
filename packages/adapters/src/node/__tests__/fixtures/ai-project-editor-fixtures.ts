@@ -1,4 +1,5 @@
 import type { AIProjectEditorResult } from "@timeline-studio/core"
+import { createProjectSubtitleFromSegment } from "@timeline-studio/core/services"
 import type { BotRenderJobDestination } from "@timeline-studio/core/types"
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
@@ -84,14 +85,13 @@ export const AI_PROJECT_EDITOR_VALID_FIXTURES: readonly AIProjectEditorFixture[]
       nextProject.metadata.modified_at = "2026-06-09T12:02:00.000Z"
       nextProject.subtitles = [
         ...nextProject.subtitles,
-        {
+        createProjectSubtitleFromSegment({
           id: "fixture-title-caption",
           text: "Launch day",
           start_time: 0,
           end_time: 2.5,
-          position: "bottom",
-        },
-      ] as ProjectSchema["subtitles"]
+        }, nextProject.subtitles.length),
+      ]
 
       return {
         nextProject,

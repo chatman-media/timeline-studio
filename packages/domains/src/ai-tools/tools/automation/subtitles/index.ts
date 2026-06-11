@@ -5,6 +5,11 @@
 
 import { type AIToolExecutionOptions, type AIToolLogger, type AIToolResult, BaseAITool } from "../../../base"
 import type { AIToolMetadata, IAITool } from "../../../types"
+import {
+  createProjectSubtitlesFromSegments,
+  type ProjectSubtitle,
+  type ProjectSubtitleSegmentInput,
+} from "@timeline-studio/core/services"
 
 // Типы для операций с субтитрами
 export interface SubtitleInput {
@@ -21,6 +26,7 @@ export interface SubtitleInput {
     | "validate_subtitles"
   clipId?: string
   subtitles?: SubtitleItem[]
+  transcription?: { segments?: TranscriptionSegmentInput[] } | TranscriptionSegmentInput[]
   language?: string
   targetLanguage?: string
   format?: "srt" | "vtt" | "ass" | "sub" | "sbv" | "dfxp"
@@ -46,10 +52,26 @@ export interface SubtitleItem {
   speaker?: string // имя говорящего (для диалогов)
 }
 
+export interface TranscriptionSegmentInput {
+  id?: string | number
+  start?: number
+  end?: number
+  start_time?: number
+  end_time?: number
+  startTime?: number
+  endTime?: number
+  text?: string
+  transcript?: string
+  speaker?: string
+  confidence?: number
+  language?: string
+}
+
 export interface SubtitleResult {
   operation: string
   success: boolean
   subtitles?: SubtitleItem[]
+  projectSubtitles?: ProjectSubtitle[]
   filePath?: string
   stats?: {
     totalSubtitles: number
@@ -63,6 +85,90 @@ export interface SubtitleResult {
   }
   message: string
   recommendations: string[]
+}
+
+function resolveRealSubtitleItems(input: SubtitleInput): SubtitleItem[] {
+  if (input.subtitles?.length) {
+    return input.subtitles.map((subtitle, index) => normalizeSubtitleItem(subtitle, index))
+  }
+
+  const transcriptionSegments = Array.isArray(input.transcription)
+    ? input.transcription
+    : input.transcription?.segments
+
+  if (transcriptionSegments?.length) {
+    return transcriptionSegments.map((segment, index) => subtitleItemFromTranscriptionSegment(segment, index))
+  }
+
+  throw new Error(
+    "Генерация субтитров требует реальные subtitles или transcription.segments; demo subtitles отключены",
+  )
+}
+
+function normalizeSubtitleItem(subtitle: SubtitleItem, index: number): SubtitleItem {
+  const text = subtitle.text.trim()
+  const startTime = finiteNumber(subtitle.startTime, `subtitles.${index}.startTime`)
+  const endTime = finiteNumber(subtitle.endTime, `subtitles.${index}.endTime`)
+
+  if (!text) {
+    throw new Error(`subtitles.${index}.text cannot be empty`)
+  }
+  if (endTime <= startTime) {
+    throw new Error(`subtitles.${index}.endTime must be greater than startTime`)
+  }
+
+  return {
+    ...subtitle,
+    id: subtitle.id || `subtitle-${index + 1}`,
+    text,
+    startTime,
+    endTime,
+  }
+}
+
+function subtitleItemFromTranscriptionSegment(segment: TranscriptionSegmentInput, index: number): SubtitleItem {
+  const startSeconds = finiteNumber(
+    segment.start ?? segment.start_time ?? segment.startTime,
+    `transcription.segments.${index}.start`,
+  )
+  const endSeconds = finiteNumber(
+    segment.end ?? segment.end_time ?? segment.endTime,
+    `transcription.segments.${index}.end`,
+  )
+  const text = String(segment.text ?? segment.transcript ?? "").trim()
+
+  if (!text) {
+    throw new Error(`transcription.segments.${index}.text cannot be empty`)
+  }
+  if (endSeconds <= startSeconds) {
+    throw new Error(`transcription.segments.${index}.end must be greater than start`)
+  }
+
+  return {
+    id: String(segment.id ?? `transcript-${index + 1}`),
+    startTime: startSeconds * 1000,
+    endTime: endSeconds * 1000,
+    text,
+    speaker: segment.speaker,
+  }
+}
+
+function toProjectSubtitleSegments(subtitles: SubtitleItem[]): ProjectSubtitleSegmentInput[] {
+  return subtitles.map((subtitle) => ({
+    id: subtitle.id,
+    text: subtitle.text,
+    startTime: subtitle.startTime,
+    endTime: subtitle.endTime,
+    speaker: subtitle.speaker,
+  }))
+}
+
+function finiteNumber(value: unknown, field: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`${field} must be a finite number`)
+  }
+
+  return value
 }
 
 /**
@@ -275,6 +381,7 @@ export class SubtitleTool extends BaseAITool implements IAITool {
 
         return result
       },
+      input,
       {
         timeout: options.timeout || 60000,
         retries: options.retries || 1,
@@ -299,35 +406,24 @@ export class SubtitleTool extends BaseAITool implements IAITool {
       language: input.language,
     })
 
-    // Заглушка для генерации
-    const subtitles: SubtitleItem[] = [
-      {
-        id: "1",
-        startTime: 0,
-        endTime: 3000,
-        text: "Пример сгенерированного субтитра",
-        speaker: input.detectSpeakers ? "Диктор 1" : undefined,
-      },
-      {
-        id: "2",
-        startTime: 3000,
-        endTime: 6000,
-        text: "Второй субтитр с автоматической синхронизацией",
-        speaker: input.detectSpeakers ? "Диктор 2" : undefined,
-      },
-    ]
+    const subtitles = resolveRealSubtitleItems(input)
+    const projectSubtitles = createProjectSubtitlesFromSegments(toProjectSubtitleSegments(subtitles), {
+      timeUnit: "milliseconds",
+    })
+    const totalDuration = subtitles.reduce((duration, subtitle) => Math.max(duration, subtitle.endTime), 0)
 
     return {
       operation: "generate_subtitles",
       success: true,
       subtitles,
+      projectSubtitles,
       stats: {
         totalSubtitles: subtitles.length,
-        totalDuration: 6000,
-        averageLength: 3000,
+        totalDuration,
+        averageLength: subtitles.length > 0 ? totalDuration / subtitles.length : 0,
         languages: [input.language || "ru"],
       },
-      message: "Субтитры сгенерированы успешно",
+      message: "Субтитры подготовлены из реальных сегментов транскрипции",
       recommendations: [],
     }
   }
@@ -477,23 +573,7 @@ export class SubtitleTool extends BaseAITool implements IAITool {
       clipId: input.clipId,
     })
 
-    // Заглушка для извлечения
-    const extractedSubtitles: SubtitleItem[] = [
-      {
-        id: "extracted-1",
-        startTime: 0,
-        endTime: 3000,
-        text: "Извлеченный субтитр из видео",
-      },
-    ]
-
-    return {
-      operation: "extract_subtitles",
-      success: true,
-      subtitles: extractedSubtitles,
-      message: "Субтитры извлечены из видео",
-      recommendations: [],
-    }
+    throw new Error("Извлечение субтитров требует реального backend/transcription provider; demo fallback отключен")
   }
 
   /**

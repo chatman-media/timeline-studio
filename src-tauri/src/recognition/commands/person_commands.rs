@@ -1,7 +1,11 @@
 // Removed unused imports
 use crate::recognition::person_database::{PersonProfile, SimilaritySearchResult};
 use crate::recognition::types::FaceEmbedding;
-use serde;
+use crate::state::project_state::{ProjectState, SubtitleResource};
+use crate::state::ProjectEvent;
+use chrono::Utc;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Map, Value};
 use tauri::State;
 
 #[tauri::command]
@@ -221,29 +225,262 @@ pub async fn ffmpeg_generate_thumbnail(
 /// Update timeline subtitles
 #[tauri::command]
 pub async fn update_timeline_subtitles(
-  timeline_id: String,
+  state_manager: State<'_, crate::state::StateManager>,
+  track_id: String,
   subtitles: Vec<SubtitleEntry>,
-) -> Result<(), String> {
+) -> Result<SubtitleUpdateSummary, String> {
   log::info!(
-    "Updating subtitles for timeline {} with {} entries",
-    timeline_id,
+    "Updating subtitles for track {} with {} entries",
+    track_id,
     subtitles.len()
   );
 
-  // TODO: Implement actual subtitle update logic
-  Ok(())
+  let summary = {
+    let mut state = state_manager.project_state().write().await;
+    apply_timeline_subtitles_to_state(&mut state, track_id.clone(), subtitles)?
+  };
+
+  state_manager
+    .event_bus()
+    .publish(
+      ProjectEvent::SubtitleTrackUpdated {
+        track_id: summary.track_id.clone(),
+        resource_id: summary.resource_id.clone(),
+        subtitle_count: summary.subtitle_count,
+      },
+      "subtitle_command".to_string(),
+      summary.version,
+    )
+    .await
+    .ok();
+
+  Ok(summary)
 }
 
 // Helper structures for new commands
 
 // RenderJobInfo, BatchCommand и связанные структуры перенесены в соответствующие модули
 
-#[derive(serde::Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SubtitleEntry {
+  #[serde(default)]
+  pub id: Option<String>,
+  #[serde(alias = "startTime")]
   pub start_time: f64,
+  #[serde(alias = "endTime")]
   pub end_time: f64,
   pub text: String,
-  pub style: Option<String>,
+  #[serde(default)]
+  pub style: Option<Value>,
+  #[serde(default)]
+  pub speaker: Option<String>,
+  #[serde(default)]
+  pub confidence: Option<f64>,
+  #[serde(default)]
+  pub language: Option<String>,
+  #[serde(flatten)]
+  pub metadata: Map<String, Value>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SubtitleUpdateSummary {
+  pub track_id: String,
+  pub resource_id: String,
+  pub subtitle_count: u32,
+  pub version: u32,
+}
+
+fn apply_timeline_subtitles_to_state(
+  state: &mut ProjectState,
+  track_id: String,
+  subtitles: Vec<SubtitleEntry>,
+) -> Result<SubtitleUpdateSummary, String> {
+  let trimmed_track_id = track_id.trim();
+  if trimmed_track_id.is_empty() {
+    return Err("track_id is required for updating timeline subtitles".to_string());
+  }
+
+  let normalized_subtitles = normalize_subtitle_entries(subtitles)?;
+  let subtitle_count = normalized_subtitles.len() as u32;
+  let project = state
+    .project
+    .as_mut()
+    .ok_or_else(|| "No project open for subtitle update".to_string())?;
+  let resource_id = format!("timeline-subtitles:{}", trimmed_track_id);
+  let updated_at = Utc::now();
+
+  let resource = SubtitleResource {
+    id: resource_id.clone(),
+    name: format!("Timeline subtitles ({})", trimmed_track_id),
+    style_id: trimmed_track_id.to_string(),
+    data: json!({
+      "kind": "timeline_subtitle_segments",
+      "track_id": trimmed_track_id,
+      "subtitles": normalized_subtitles,
+      "updated_at": updated_at.to_rfc3339(),
+    }),
+    added_at: updated_at.timestamp() as f64,
+  };
+
+  project.subtitles_pool.insert(resource_id.clone(), resource);
+  state.mark_dirty();
+
+  Ok(SubtitleUpdateSummary {
+    track_id: trimmed_track_id.to_string(),
+    resource_id,
+    subtitle_count,
+    version: state.version,
+  })
+}
+
+fn normalize_subtitle_entries(subtitles: Vec<SubtitleEntry>) -> Result<Vec<Value>, String> {
+  subtitles
+    .into_iter()
+    .enumerate()
+    .map(|(index, subtitle)| normalize_subtitle_entry(index, subtitle))
+    .collect()
+}
+
+fn normalize_subtitle_entry(index: usize, subtitle: SubtitleEntry) -> Result<Value, String> {
+  if !subtitle.start_time.is_finite() {
+    return Err(format!("subtitles[{}].start_time must be finite", index));
+  }
+  if !subtitle.end_time.is_finite() {
+    return Err(format!("subtitles[{}].end_time must be finite", index));
+  }
+  if subtitle.end_time <= subtitle.start_time {
+    return Err(format!(
+      "subtitles[{}].end_time must be greater than start_time",
+      index
+    ));
+  }
+
+  let text = subtitle.text.trim();
+  if text.is_empty() {
+    return Err(format!("subtitles[{}].text cannot be empty", index));
+  }
+
+  let mut entry = Map::new();
+  entry.insert(
+    "id".to_string(),
+    Value::String(
+      subtitle
+        .id
+        .filter(|id| !id.trim().is_empty())
+        .unwrap_or_else(|| format!("subtitle-{}", index + 1)),
+    ),
+  );
+  entry.insert("start_time".to_string(), json!(subtitle.start_time));
+  entry.insert("end_time".to_string(), json!(subtitle.end_time));
+  entry.insert("text".to_string(), Value::String(text.to_string()));
+
+  if let Some(style) = subtitle.style {
+    entry.insert("style".to_string(), style);
+  }
+  if let Some(speaker) = subtitle
+    .speaker
+    .filter(|speaker| !speaker.trim().is_empty())
+  {
+    entry.insert("speaker".to_string(), Value::String(speaker));
+  }
+  if let Some(confidence) = subtitle.confidence {
+    entry.insert("confidence".to_string(), json!(confidence));
+  }
+  if let Some(language) = subtitle
+    .language
+    .filter(|language| !language.trim().is_empty())
+  {
+    entry.insert("language".to_string(), Value::String(language));
+  }
+
+  for (key, value) in subtitle.metadata {
+    entry.entry(key).or_insert(value);
+  }
+
+  Ok(Value::Object(entry))
 }
 
 // Helper functions перенесены в соответствующие модули
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::state::project_state::{ProjectSettings, Resolution};
+
+  fn project_state_with_project() -> ProjectState {
+    let mut state = ProjectState::default();
+    state.create_project(
+      "Subtitle test".to_string(),
+      ProjectSettings {
+        resolution: Resolution {
+          width: 1920,
+          height: 1080,
+        },
+        frame_rate: 30.0,
+        audio_sample_rate: 48_000,
+        audio_channels: 2,
+      },
+    );
+    state
+  }
+
+  #[test]
+  fn update_timeline_subtitles_persists_segments_in_project_state() {
+    let mut state = project_state_with_project();
+
+    let summary = apply_timeline_subtitles_to_state(
+      &mut state,
+      "subtitle-track".to_string(),
+      vec![SubtitleEntry {
+        id: Some("caption-1".to_string()),
+        start_time: 0.5,
+        end_time: 2.5,
+        text: "Hello from Whisper".to_string(),
+        style: None,
+        speaker: Some("Speaker 1".to_string()),
+        confidence: Some(0.91),
+        language: Some("en".to_string()),
+        metadata: Map::new(),
+      }],
+    )
+    .expect("subtitle update should persist");
+
+    assert_eq!(summary.track_id, "subtitle-track");
+    assert_eq!(summary.subtitle_count, 1);
+
+    let project = state.project.as_ref().expect("project exists");
+    let resource = project
+      .subtitles_pool
+      .get("timeline-subtitles:subtitle-track")
+      .expect("subtitle resource exists");
+
+    assert_eq!(resource.style_id, "subtitle-track");
+    assert_eq!(resource.data["kind"], "timeline_subtitle_segments");
+    assert_eq!(resource.data["subtitles"][0]["text"], "Hello from Whisper");
+    assert!(project.metadata.is_dirty);
+  }
+
+  #[test]
+  fn update_timeline_subtitles_rejects_invalid_timing() {
+    let mut state = project_state_with_project();
+
+    let result = apply_timeline_subtitles_to_state(
+      &mut state,
+      "subtitle-track".to_string(),
+      vec![SubtitleEntry {
+        id: None,
+        start_time: 3.0,
+        end_time: 1.0,
+        text: "Invalid".to_string(),
+        style: None,
+        speaker: None,
+        confidence: None,
+        language: None,
+        metadata: Map::new(),
+      }],
+    );
+
+    assert!(result.is_err());
+    assert!(result.unwrap_err().contains("end_time"));
+  }
+}
