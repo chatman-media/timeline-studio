@@ -95,6 +95,12 @@
 - **[completed/](08_tasks/completed/)** - Выполненные задачи
 - **[planned/](08_tasks/planned/)** - Будущие задачи
 
+### [09_examples/](09_examples/)
+Проверяемые примеры и quickstarts:
+- **[Bot/Headless SDK Quickstart](09_examples/bot-headless-sdk-quickstart.md)** - Supported `ProjectSchema`, `render-job`, `bot-workflow`, `bot-worker`, and publish validation path for external consumers
+- **[AI Director Usage](09_examples/ai-director-usage.md)** - Пример использования AI Director
+- **[Peaks.js Usage Examples](09_examples/peaks-js-usage-examples.md)** - Примеры waveform-интеграции
+
 ### [09_architectural_decisions/](09_architectural_decisions/)
 Архитектурные решения:
 - **[Исследование DI](09_architectural_decisions/adr_di_research.md)** - Исследование dependency injection

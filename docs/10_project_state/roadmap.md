@@ -118,6 +118,7 @@ Current baseline:
 - `main` is green after PR [#290](https://github.com/chatman-media/timeline-studio/pull/290).
 - Issues [#282](https://github.com/chatman-media/timeline-studio/issues/282)-[#289](https://github.com/chatman-media/timeline-studio/issues/289) are closed and `Done`.
 - Supported headless boundaries are now documented and enforced for docs examples.
+- External consumer quickstarts are tracked in [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md) and guarded by `bun run check:examples:headless-sdk`.
 
 ## Далее: Phase H proposal
 
@@ -198,6 +199,8 @@ Acceptance:
 - `bot-worker` production/sandbox config example.
 - Docs examples pass boundary guardrails.
 
+The working quickstart is [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md).
+
 ## Separate Future Track
 
 Streaming should remain separate from Phase H.
@@ -226,6 +229,7 @@ bun run test
 
 - [Current Status](current-status.md)
 - [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
+- [Bot/Headless SDK Quickstart](../09_examples/bot-headless-sdk-quickstart.md)
 - [Bot-First Production Contract](../engineering/bot-first-production-contract.md)
 - [Telegram AI Review Sandbox Smoke](../06_deployment/telegram-ai-review-sandbox-smoke.md)
 - [Root Compatibility Shims](../engineering/root-compatibility-shims.md)
