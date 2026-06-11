@@ -319,7 +319,9 @@ function findMediaFileForClip(project: any, mediaId: string | undefined): any | 
       name: mediaPoolItem.name ?? mediaId,
       path: mediaPoolItem.path,
       type: String(mediaPoolItem.media_type ?? mediaPoolItem.mediaType ?? "audio").toLowerCase(),
-      isAudio: String(mediaPoolItem.media_type ?? mediaPoolItem.mediaType ?? "").toLowerCase().includes("audio"),
+      isAudio: String(mediaPoolItem.media_type ?? mediaPoolItem.mediaType ?? "")
+        .toLowerCase()
+        .includes("audio"),
       duration: mediaPoolItem.duration ?? 0,
     }
   }
