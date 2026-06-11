@@ -3,8 +3,23 @@ export interface TimelineStateAccess {
   createProject: (project: any) => Promise<void>
   updateProject: (updates: any) => Promise<void>
   createSection: (section: any) => Promise<any>
-  createTrack: (track: any) => Promise<any>
-  addClip: (clip: any) => Promise<any>
+  createTrack: (track: {
+    type?: string
+    name?: string
+    sectionId?: string
+    [key: string]: unknown
+  }) => Promise<any>
+  addClip: (clip: {
+    trackId?: string
+    targetTrackId?: string
+    mediaId?: string
+    resourceId?: string
+    mediaFile?: any
+    startTime?: number
+    time?: number
+    duration?: number
+    [key: string]: unknown
+  }) => Promise<any>
   getProjectStats: () => {
     totalDuration: number
     totalClips: number

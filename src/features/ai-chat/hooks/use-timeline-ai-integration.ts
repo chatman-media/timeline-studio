@@ -180,8 +180,10 @@ export function useTimelineAIIntegration() {
       createTrack: async (track: any) => {
         logInfo("[useTimelineAIIntegration] Создание трека", { trackType: track.type })
         try {
-          const id = `track_${Date.now()}`
-          await timelineRef.current.addTrack(track.type, undefined, track.name)
+          const id = await timelineRef.current.addTrack(track.type, track.name, track.sectionId)
+          if (!id) {
+            throw new Error("Timeline addTrack did not return track id")
+          }
           logInfo("[useTimelineAIIntegration] Трек создан", { id })
           return { ...track, id, clips: [] }
         } catch (error) {
@@ -190,13 +192,25 @@ export function useTimelineAIIntegration() {
         }
       },
       addClip: async (clip: any) => {
-        logInfo("[useTimelineAIIntegration] Добавление клипа", { clipId: clip.id })
+        const trackId = clip.trackId || clip.targetTrackId
+        const mediaId = clip.mediaId || clip.resourceId
+        const startTime = clip.startTime ?? clip.time ?? 0
+        logInfo("[useTimelineAIIntegration] Добавление клипа", { clipId: clip.id, trackId, mediaId })
         try {
-          const id = `clip_${Date.now()}`
-          // TODO: Need mediaFile parameter in addClip
-          logger.warn("addClip needs proper implementation")
+          if (!trackId) {
+            throw new Error("trackId is required for AI timeline addClip")
+          }
+          if (!mediaId && !clip.mediaFile) {
+            throw new Error("mediaId or mediaFile is required for AI timeline addClip")
+          }
+
+          const mediaFile = clip.mediaFile ?? findMediaFileForClip(timelineRef.current.project, mediaId)
+          const id = await timelineRef.current.addClip(trackId, mediaFile ?? mediaId, startTime)
+          if (!id) {
+            throw new Error("Timeline addClip did not return clip id")
+          }
           logInfo("[useTimelineAIIntegration] Клип добавлен", { id })
-          return { ...clip, id }
+          return { ...clip, id, trackId, mediaId }
         } catch (error) {
           logError("[useTimelineAIIntegration] Ошибка добавления клипа", error as LogContext)
           throw error
@@ -279,4 +293,38 @@ export function useTimelineAIIntegration() {
   }, [timeline.isReady, timeline.project, getAllClips, getAllTracks, getProjectDuration])
 
   return result
+}
+
+function findMediaFileForClip(project: any, mediaId: string | undefined): any | undefined {
+  if (!project || !mediaId) return undefined
+
+  const resourceGroups = [project.resources?.music, project.resources?.media]
+  for (const resources of resourceGroups) {
+    if (!Array.isArray(resources)) continue
+
+    const resource = resources.find((item: any) => {
+      const file = item?.file && typeof item.file === "object" ? item.file : item
+      return item?.resourceId === mediaId || item?.id === mediaId || file?.id === mediaId
+    })
+    if (resource) {
+      return resource.file && typeof resource.file === "object" ? resource.file : resource
+    }
+  }
+
+  const mediaPoolItems = project.media_pool?.items ?? project.mediaPool?.items
+  const mediaPoolItem = mediaPoolItems?.[mediaId]
+  if (mediaPoolItem) {
+    return {
+      id: mediaPoolItem.id ?? mediaId,
+      name: mediaPoolItem.name ?? mediaId,
+      path: mediaPoolItem.path,
+      type: String(mediaPoolItem.media_type ?? mediaPoolItem.mediaType ?? "audio").toLowerCase(),
+      isAudio: String(mediaPoolItem.media_type ?? mediaPoolItem.mediaType ?? "")
+        .toLowerCase()
+        .includes("audio"),
+      duration: mediaPoolItem.duration ?? 0,
+    }
+  }
+
+  return undefined
 }
