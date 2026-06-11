@@ -434,7 +434,7 @@ export function useTimelineTracks() {
 // ===========================
 interface TimelineClipsContext {
   clips: TimelineClip[]
-  addClip: (trackId: string, mediaFile: MediaFile | string, time: number) => Promise<void>
+  addClip: (trackId: string, mediaFile: MediaFile | string, time: number) => Promise<string | null>
   removeClip: (clipId: string) => Promise<void>
   moveClip: (clipId: string, trackId: string, time: number) => Promise<void>
   trimClip: (clipId: string, startTime: number, endTime: number) => Promise<void>

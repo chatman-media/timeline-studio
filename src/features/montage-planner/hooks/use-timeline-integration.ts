@@ -6,10 +6,8 @@ import type { MediaFile } from "@timeline-studio/core/types"
 import { useCallback, useState } from "react"
 import { useTimelineMarkers } from "@/features/timeline/hooks/markers/use-timeline-markers"
 import { useTimeline } from "@/features/timeline/hooks/state/use-timeline"
-import { useTimelineActions } from "@/features/timeline/hooks/state/use-timeline-actions"
 import { createLogger } from "@/lib/tauri-logger"
 import {
-  applyPlanToTimeline as applyPlanToTimelineService,
   createMarkersFromPlan as createMarkersFromPlanService,
   type TimelineIntegrationOptions,
 } from "../services/domain-adapters"
@@ -37,18 +35,8 @@ export interface UseTimelineIntegrationReturn {
 }
 
 export function useTimelineIntegration(): UseTimelineIntegrationReturn {
-  const { project, saveProject } = useTimeline()
-  const { addMediaToTimeline } = useTimelineActions()
+  const { project, saveProject, addTrack, addClip, updateClip } = useTimeline()
   const { addMarker } = useTimelineMarkers()
-
-  // Функция для обновления проекта
-  const updateProject = useCallback(
-    async (_updatedProject: any) => {
-      // Сохраняем проект в timeline
-      await saveProject()
-    },
-    [saveProject],
-  )
 
   // Функция для добавления маркеров
   const addMarkers = useCallback(
@@ -92,11 +80,96 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
           throw new Error(`Missing media files: ${missingFiles.join(", ")}`)
         }
 
-        // Применяем план к Timeline
-        const updatedProject = applyPlanToTimelineService(plan, project as any, mediaFiles, options)
+        const mediaById = new Map(mediaFiles.map((file) => [file.id, file]))
+        const sequenceTrackIds = new Map<string, string>()
+        let currentTime = options.timeOffset ?? 0
 
-        // Обновляем проект
-        await updateProject(updatedProject)
+        const getTrackTypeForClip = (clip: PlannedClip): "audio" | "image" | "video" => {
+          const mediaType = String(clip.fragment?.sourceFile?.type ?? "").toLowerCase()
+          if (["audio", "music", "voiceover", "sfx", "ambient"].some((type) => mediaType.includes(type))) {
+            return "audio"
+          }
+          if (["image", "stillimage", "imagesequence"].some((type) => mediaType.includes(type))) {
+            return "image"
+          }
+          return "video"
+        }
+
+        const getTrackForClip = async (sequence: Sequence, clip: PlannedClip) => {
+          const trackType = getTrackTypeForClip(clip)
+          const targetTrack =
+            options.useExistingTracks && trackType === "audio" ? options.targetAudioTrack : options.targetVideoTrack
+
+          if (options.useExistingTracks && targetTrack) {
+            return targetTrack
+          }
+
+          const trackKey = `${sequence.id}:${trackType}`
+          const existingTrackId = sequenceTrackIds.get(trackKey)
+          if (existingTrackId) {
+            return existingTrackId
+          }
+
+          const trackName = `${sequence.type} ${trackType} - ${sequence.purpose}`
+          const createdTrackId = await addTrack(trackType, trackName)
+          if (!createdTrackId) {
+            throw new Error(`Backend did not return track_id for sequence ${sequence.id}`)
+          }
+
+          sequenceTrackIds.set(trackKey, createdTrackId)
+          return createdTrackId
+        }
+
+        for (const sequence of plan.sequences) {
+          const sortedClips = [...sequence.clips].sort((a, b) => a.sequenceOrder - b.sequenceOrder)
+
+          for (const plannedClip of sortedClips) {
+            const fragment = plannedClip.fragment
+            const sourceFile = fragment?.sourceFile
+            if (!fragment || !sourceFile) {
+              throw new Error(`Fragment or source file not found for clip ${plannedClip.fragmentId}`)
+            }
+
+            const mediaFile = mediaById.get(sourceFile.id) ?? (sourceFile as any)
+            const trackId = await getTrackForClip(sequence, plannedClip)
+            const clipId = await addClip(trackId, mediaFile as any, currentTime)
+
+            if (!clipId) {
+              throw new Error(`Backend did not return clip_id for fragment ${fragment.id}`)
+            }
+
+            const updates: Record<string, unknown> = {}
+            if (plannedClip.adjustments?.speedMultiplier && plannedClip.adjustments.speedMultiplier !== 1) {
+              updates.speed = plannedClip.adjustments.speedMultiplier
+              updates.playbackRate = plannedClip.adjustments.speedMultiplier
+            }
+
+            if (plannedClip.adjustments?.crop) {
+              updates.position = {
+                x: plannedClip.adjustments.crop.x,
+                y: plannedClip.adjustments.crop.y,
+                width: plannedClip.adjustments.crop.width,
+                height: plannedClip.adjustments.crop.height,
+                rotation: 0,
+                scaleX: 1,
+                scaleY: 1,
+              }
+            }
+
+            if (Object.keys(updates).length > 0) {
+              await updateClip(clipId, updates as any)
+            }
+
+            const duration = fragment.duration || mediaFile.duration || 0
+            currentTime += plannedClip.adjustments?.speedMultiplier
+              ? duration / plannedClip.adjustments.speedMultiplier
+              : duration
+          }
+
+          currentTime += 0.5
+        }
+
+        await saveProject()
 
         // Добавляем маркеры если нужно
         if (options.createNewSection) {
@@ -113,7 +186,7 @@ export function useTimelineIntegration(): UseTimelineIntegrationReturn {
         setIsApplying(false)
       }
     },
-    [project, updateProject, addMarkers],
+    [project, addTrack, addClip, updateClip, saveProject, addMarkers],
   )
 
   /**
