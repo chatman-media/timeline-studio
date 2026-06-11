@@ -1,7 +1,7 @@
 # Telegram Bot Worker Production Runbook
 
 **Status:** Completed production foundation for closed [#225](https://github.com/chatman-media/timeline-studio/issues/225)
-**Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Publish Destination Support Matrix](../engineering/publish-destination-support-matrix.md), [Telegram AI Review Sandbox Smoke](telegram-ai-review-sandbox-smoke.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md), [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
+**Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Publish Destination Support Matrix](../engineering/publish-destination-support-matrix.md), [Bot/Headless Operator Observability](bot-headless-observability.md), [Telegram AI Review Sandbox Smoke](telegram-ai-review-sandbox-smoke.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [AI Module Stabilization](../08_tasks/planned/ai-module-node-rust-orchestration.md), [External And Headless Integration Contracts](../engineering/external-headless-contracts.md)
 
 This runbook defines the supported operating model for the Telegram bot-first and AI review worker. It covers topology, persistence, deployment, restart behavior, media retention and startup smoke. The product/runtime contract is in [Bot-First Production Contract](../engineering/bot-first-production-contract.md); the repeatable sandbox checklist is in [Telegram AI Review Sandbox Smoke](telegram-ai-review-sandbox-smoke.md).
 
@@ -171,7 +171,7 @@ Host lists are comma/space separated. Exact hosts match directly; wildcard patte
 ## Logs And Secrets
 
 - `bot-worker` writes machine-readable results to stdout for one-shot modes; systemd captures long-running worker logs in journald.
-- Review/session observability stores redacted provider/model/prompt/render/publish metadata.
+- Review/session observability stores redacted provider/model/prompt/render/publish metadata; the operator investigation path is documented in [Bot/Headless Operator Observability](bot-headless-observability.md).
 - Keep `/etc/timeline-studio/bot-worker.env` mode `0600` and owned by root with read access only for the service group.
 - Do not commit real Telegram tokens, AI keys or channel ids to docs, fixtures or issue comments.
 

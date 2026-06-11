@@ -1,7 +1,7 @@
 # Telegram AI Review Sandbox Smoke
 
 **Status:** Phase H real sandbox runbook for [#293](https://github.com/chatman-media/timeline-studio/issues/293), building on completed Phase G sandbox contract [#289](https://github.com/chatman-media/timeline-studio/issues/289)
-**Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Telegram Bot Worker Production Runbook](telegram-bot-worker-production.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
+**Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Telegram Bot Worker Production Runbook](telegram-bot-worker-production.md), [Bot/Headless Operator Observability](bot-headless-observability.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
 
 This smoke path validates the bot-first AI review loop without opening the desktop UI.
 
@@ -140,7 +140,7 @@ Exercise the chat workflow:
 9. Run `/approve` only after verifying the preview. In the default file-only pass, approval should record a `file` publish result against the approved preview artifact. For real Telegram final publish, first complete the file-only pass, then explicitly set `TIMELINE_BOT_DEFAULT_DESTINATION=telegram` and `TIMELINE_BOT_RUST_PUBLISH=true` in the sandbox env.
 10. Run `bot-cleanup --pretty` in dry-run mode and confirm active sessions are preserved.
 
-Capture sanitized evidence with [telegram-ai-review-sandbox-report.template.md](telegram-ai-review-sandbox-report.template.md). Do not paste raw tokens, chat ids, provider keys, private media names or unredacted session JSON into public issues.
+Capture sanitized evidence with [telegram-ai-review-sandbox-report.template.md](telegram-ai-review-sandbox-report.template.md) and the field checklist in [Bot/Headless Operator Observability](bot-headless-observability.md). Do not paste raw tokens, chat ids, provider keys, private media names or unredacted session JSON into public issues.
 
 ## Publish Validation
 

@@ -12,6 +12,7 @@
 
 ### 🤖 Bot-first deployment
 - [**telegram-bot-worker-production.md**](telegram-bot-worker-production.md) - Production topology, systemd setup, restart behavior and retention for Telegram bot-worker
+- [**bot-headless-observability.md**](bot-headless-observability.md) - Operator diagnostics for bot/headless sessions, revisions, renders, publish, retry and cleanup
 - [**telegram-ai-review-sandbox-smoke.md**](telegram-ai-review-sandbox-smoke.md) - Mocked and real sandbox smoke checklist for Telegram AI review without desktop UI
 - [**telegram-ai-review-sandbox-report.template.md**](telegram-ai-review-sandbox-report.template.md) - Sanitized evidence template for real Telegram AI review sandbox runs
 
