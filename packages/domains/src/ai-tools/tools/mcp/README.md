@@ -55,6 +55,23 @@ allAITools.forEach(tool => {
 
 ## Список MCP Tools (18)
 
+## Production Readiness
+
+AI Chat must treat MCP `success: true` as a real project mutation/result only for implemented tools. Planned tools stay visible in the schema list, but Rust returns `success: false` until they are wired to project state or render/export services.
+
+| MCP adapter | Rust tool | Status | Canonical input |
+| --- | --- | --- | --- |
+| `mcp-add-clip` | `add_clip` | Production timeline edit | `track_id`, `media_id`, `time` |
+| `mcp-move-clip` | `move_clip` | Production timeline edit | `clip_id`, `new_track_id`, `new_time` |
+| `mcp-split-clip` | `split_clip` | Production timeline edit | `clip_id`, `time` |
+| `mcp-list-media-files` | `list_media_files` | Production project query | optional `filter_type=all/video/audio/image` |
+| `mcp-apply-filter` | `apply_filter` | Planned | returns failure until implemented |
+| `mcp-add-transition` | `add_transition` | Planned | returns failure until implemented |
+| `mcp-apply-color-grading` | `apply_color_grading` | Planned | returns failure until implemented |
+| `mcp-add-text-overlay` | `add_text_overlay` | Planned | returns failure until implemented |
+| `mcp-export-video` | `export_video` | Planned | returns failure until implemented |
+| `mcp-create-preview` | `create_preview` | Planned | returns failure until implemented |
+
 ### Analysis (4)
 1. **mcp-analyze-video** - Полный анализ видео (качество, метаданные, контент)
 2. **mcp-detect-scenes** - Обнаружение сцен с анализом качества

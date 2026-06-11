@@ -210,28 +210,24 @@ impl VideoTools {
   fn tool_add_clip(&self) -> MCPTool {
     MCPTool {
       name: "add_clip".to_string(),
-      description: "Добавить видео клип на timeline".to_string(),
+      description: "Добавить медиа клип на timeline".to_string(),
       input_schema: json!({
         "type": "object",
         "properties": {
-          "video_path": {
+          "track_id": {
             "type": "string",
-            "description": "Путь к видео файлу"
+            "description": "ID целевого трека"
           },
-          "start_time": {
+          "media_id": {
+            "type": "string",
+            "description": "ID медиа файла из media pool проекта"
+          },
+          "time": {
             "type": "number",
             "description": "Время начала на timeline (секунды)"
-          },
-          "duration": {
-            "type": "number",
-            "description": "Длительность клипа (секунды)"
-          },
-          "track_index": {
-            "type": "number",
-            "description": "Номер трека (0, 1, 2...)"
           }
         },
-        "required": ["video_path", "start_time"]
+        "required": ["track_id", "media_id", "time"]
       }),
     }
   }
@@ -264,16 +260,16 @@ impl VideoTools {
             "type": "string",
             "description": "ID клипа"
           },
-          "new_start_time": {
+          "new_track_id": {
+            "type": "string",
+            "description": "Новый ID трека"
+          },
+          "new_time": {
             "type": "number",
             "description": "Новое время начала (секунды)"
-          },
-          "new_track_index": {
-            "type": "number",
-            "description": "Новый номер трека"
           }
         },
-        "required": ["clip_id", "new_start_time"]
+        "required": ["clip_id", "new_track_id", "new_time"]
       }),
     }
   }
@@ -289,12 +285,12 @@ impl VideoTools {
             "type": "string",
             "description": "ID клипа"
           },
-          "split_time": {
+          "time": {
             "type": "number",
             "description": "Время разделения внутри клипа (секунды)"
           }
         },
-        "required": ["clip_id", "split_time"]
+        "required": ["clip_id", "time"]
       }),
     }
   }
@@ -798,22 +794,6 @@ impl VideoTools {
   }
 
   async fn execute_add_clip(&self, arguments: Value) -> MCPToolResult {
-    // Проверяем наличие project state
-    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
-      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
-      _ => {
-        return MCPToolResult {
-          success: false,
-          data: None,
-          error: Some(
-            "Timeline operations require initialized project state. Please open a project first."
-              .to_string(),
-          ),
-        }
-      }
-    };
-
-    // Парсим аргументы
     let track_id = match arguments.get("track_id").and_then(|v| v.as_str()) {
       Some(id) => id.to_string(),
       None => {
@@ -836,10 +816,31 @@ impl VideoTools {
       }
     };
 
-    let time = arguments
-      .get("time")
-      .and_then(|v| v.as_f64())
-      .unwrap_or(0.0);
+    let time = match arguments.get("time").and_then(|v| v.as_f64()) {
+      Some(time) => time,
+      None => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some("Missing required parameter: time".to_string()),
+        }
+      }
+    };
+
+    // Проверяем наличие project state
+    let (project_state, event_bus) = match (&self.project_state, &self.event_bus) {
+      (Some(state), Some(bus)) => (state.clone(), bus.clone()),
+      _ => {
+        return MCPToolResult {
+          success: false,
+          data: None,
+          error: Some(
+            "Timeline operations require initialized project state. Please open a project first."
+              .to_string(),
+          ),
+        }
+      }
+    };
 
     // Используем TimelineCommands для добавления клипа
     let timeline_commands = TimelineCommands::new(project_state, event_bus);
@@ -1027,67 +1028,49 @@ impl VideoTools {
 
   async fn execute_apply_filter(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "apply_filter will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool apply_filter is not implemented".to_string()),
     }
   }
 
   async fn execute_add_transition(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "add_transition will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool add_transition is not implemented".to_string()),
     }
   }
 
   async fn execute_apply_color_grading(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "apply_color_grading will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool apply_color_grading is not implemented".to_string()),
     }
   }
 
   async fn execute_add_text_overlay(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "add_text_overlay will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool add_text_overlay is not implemented".to_string()),
     }
   }
 
   async fn execute_export_video(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "export_video will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool export_video is not implemented".to_string()),
     }
   }
 
   async fn execute_create_preview(&self, _arguments: Value) -> MCPToolResult {
     MCPToolResult {
-      success: true,
-      data: Some(json!({
-        "status": "not_implemented",
-        "message": "create_preview will be implemented"
-      })),
-      error: None,
+      success: false,
+      data: None,
+      error: Some("MCP tool create_preview is not implemented".to_string()),
     }
   }
 
@@ -1252,5 +1235,112 @@ impl VideoTools {
 impl Default for VideoTools {
   fn default() -> Self {
     Self::new()
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn tool_schema(tools: &VideoTools, name: &str) -> Value {
+    tools
+      .get_available_tools()
+      .into_iter()
+      .find(|tool| tool.name == name)
+      .unwrap_or_else(|| panic!("missing MCP tool schema for {name}"))
+      .input_schema
+  }
+
+  fn required_fields(schema: &Value) -> Vec<&str> {
+    schema["required"]
+      .as_array()
+      .expect("schema required must be an array")
+      .iter()
+      .map(|field| field.as_str().expect("required field must be a string"))
+      .collect()
+  }
+
+  #[test]
+  fn add_clip_schema_uses_canonical_timeline_contract() {
+    let schema = tool_schema(&VideoTools::new(), "add_clip");
+
+    assert_eq!(
+      required_fields(&schema),
+      vec!["track_id", "media_id", "time"]
+    );
+    assert!(schema["properties"]["track_id"].is_object());
+    assert!(schema["properties"]["media_id"].is_object());
+    assert!(schema["properties"]["time"].is_object());
+    assert!(schema["properties"]["video_path"].is_null());
+    assert!(schema["properties"]["start_time"].is_null());
+    assert!(schema["properties"]["track_index"].is_null());
+  }
+
+  #[test]
+  fn timeline_mcp_schemas_cover_key_edit_tools() {
+    let tools = VideoTools::new();
+
+    assert_eq!(
+      required_fields(&tool_schema(&tools, "move_clip")),
+      vec!["clip_id", "new_track_id", "new_time"]
+    );
+    assert_eq!(
+      required_fields(&tool_schema(&tools, "split_clip")),
+      vec!["clip_id", "time"]
+    );
+
+    let list_media_schema = tool_schema(&tools, "list_media_files");
+    let filter_enum = list_media_schema["properties"]["filter_type"]["enum"]
+      .as_array()
+      .expect("list_media_files filter_type enum must be present");
+    assert_eq!(
+      filter_enum
+        .iter()
+        .map(|value| value.as_str().expect("enum value must be a string"))
+        .collect::<Vec<_>>(),
+      vec!["all", "video", "audio", "image"]
+    );
+  }
+
+  #[tokio::test]
+  async fn add_clip_rejects_missing_time_before_timeline_execution() {
+    let result = VideoTools::new()
+      .execute_tool(
+        "add_clip",
+        json!({ "track_id": "track-1", "media_id": "media-1" }),
+      )
+      .await;
+
+    assert!(!result.success);
+    assert_eq!(
+      result.error.as_deref(),
+      Some("Missing required parameter: time")
+    );
+  }
+
+  #[tokio::test]
+  async fn planned_mcp_tools_return_failures_until_implemented() {
+    let tools = VideoTools::new();
+
+    for tool_name in [
+      "apply_filter",
+      "add_transition",
+      "apply_color_grading",
+      "add_text_overlay",
+      "export_video",
+      "create_preview",
+    ] {
+      let result = tools.execute_tool(tool_name, json!({})).await;
+      assert!(!result.success, "{tool_name} must not report success");
+      assert!(
+        result
+          .error
+          .as_deref()
+          .unwrap_or("")
+          .contains("not implemented"),
+        "{tool_name} should report not implemented, got {:?}",
+        result.error
+      );
+    }
   }
 }
