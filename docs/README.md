@@ -86,6 +86,7 @@
 - **[Настройка OAuth](06_deployment/oauth-setup.md)** - Настройка OAuth интеграций
 - **[Telegram Bot Worker Production Runbook](06_deployment/telegram-bot-worker-production.md)** - Production topology, systemd setup, retention and sandbox smoke for bot-first worker
 - **[Telegram AI Review Sandbox Smoke](06_deployment/telegram-ai-review-sandbox-smoke.md)** - Mocked and real sandbox smoke path for Telegram AI review without desktop UI
+- **[Telegram AI Review Sandbox Report Template](06_deployment/telegram-ai-review-sandbox-report.template.md)** - Sanitized evidence template for real sandbox runs
 - **[Платформы](06_deployment/platforms/)** - Специфика развертывания по платформам
 
 ### [08_tasks/](08_tasks/)

@@ -1,6 +1,6 @@
 # Telegram AI Review Sandbox Smoke
 
-**Status:** Completed Phase G sandbox contract for closed [#289](https://github.com/chatman-media/timeline-studio/issues/289)
+**Status:** Phase H real sandbox runbook for [#293](https://github.com/chatman-media/timeline-studio/issues/293), building on completed Phase G sandbox contract [#289](https://github.com/chatman-media/timeline-studio/issues/289)
 **Related:** [Bot-First Production Contract](../engineering/bot-first-production-contract.md), [Telegram Bot Worker Production Runbook](telegram-bot-worker-production.md), [Telegram AI Review Workflow](../08_tasks/planned/telegram-ai-review-workflow.md), [Timeline Studio CLI](../../apps/cli/COMMANDS.md)
 
 This smoke path validates the bot-first AI review loop without opening the desktop UI.
@@ -61,19 +61,86 @@ In a real sandbox chat, operators should see this progression:
 
 ## Real Sandbox Checklist
 
-Use a non-production bot, private chat/channel and small media file.
+Use a non-production bot, private chat/channel and small media file. The sandbox env template is [config/bot-worker.sandbox.env.example](../../config/bot-worker.sandbox.env.example). It intentionally defaults final approval to `destination=file` and `TIMELINE_BOT_RUST_PUBLISH=false`; real Telegram final publish is an opt-in second pass.
 
-1. Build/install the Rust `timeline` CLI and ensure `TIMELINE_BOT_RUST_RENDER=true`.
-2. Copy [config/bot-worker.production.env.example](../../config/bot-worker.production.env.example) to a local sandbox env file and set only sandbox tokens/ids.
-3. Set `TIMELINE_BOT_ALLOWED_CHAT_IDS` or `TIMELINE_BOT_ALLOWED_USER_IDS`.
-4. Use temporary sandbox directories for offset, jobs, drafts, media, previews and edit sessions.
-5. Start `bot-worker --poll --rust-render`; use `--poll-once` first if validating update access.
-6. Send `/help`, then a small video with a caption such as `Make a 15s product promo destination=telegram`.
-7. Confirm preview delivery, then send one text correction, one voice correction and one video-note correction.
-8. Run `/versions` and confirm revision ids, provider/model and artifact references are present and secrets are redacted.
-9. Restart the worker, run `/status`, and confirm the latest session/revision survives.
-10. Run `/approve` only after verifying the preview; confirm publish result or stored publish failure.
-11. Run `bot-cleanup --pretty` in dry-run mode and confirm active sessions are preserved.
+Prepare the local env and disposable state directories:
+
+```bash
+cp config/bot-worker.sandbox.env.example .env.telegram-ai-review-sandbox
+chmod 0600 .env.telegram-ai-review-sandbox
+
+mkdir -p \
+  .tmp/timeline-bot-sandbox/drafts \
+  .tmp/timeline-bot-sandbox/edit-sessions \
+  .tmp/timeline-bot-sandbox/media \
+  .tmp/timeline-bot-sandbox/previews \
+  .tmp/timeline-bot-sandbox/first-cut \
+  .tmp/timeline-bot-sandbox/final
+```
+
+Edit `.env.telegram-ai-review-sandbox` and set only sandbox values:
+
+- `TIMELINE_BOT_TELEGRAM_TOKEN`;
+- `TIMELINE_BOT_ALLOWED_CHAT_IDS` or `TIMELINE_BOT_ALLOWED_USER_IDS`;
+- `TIMELINE_BOT_AI_EDITOR_API_KEY`, or `OPENAI_API_KEY`/`LLM_API_KEY` in the shell;
+- optional AI/transcriber model overrides.
+
+Run local preflight checks before polling Telegram:
+
+```bash
+bun install --frozen-lockfile --ignore-scripts
+cargo build --manifest-path crates/Cargo.toml -p ts-cli --bin timeline
+
+bunx vitest run --config vitest.bot-ai.config.ts \
+  packages/adapters/src/node/__tests__/telegram-ai-review-workflow-smoke.test.ts
+
+bun run smoke:ai-review:rust
+```
+
+Check Telegram access before enabling AI review state. This intentionally disables review-specific env for the access check, because `TIMELINE_BOT_EDIT_SESSION_DIR` enables AI review mode and requires an AI editor key.
+
+```bash
+set -a
+. ./.env.telegram-ai-review-sandbox
+set +a
+
+env \
+  -u TIMELINE_BOT_EDIT_SESSION_DIR \
+  -u TIMELINE_BOT_REVIEW_PREVIEW_DIR \
+  -u TIMELINE_BOT_FIRST_CUT_PLANNER_TEMP_DIR \
+  -u TIMELINE_BOT_AI_EDITOR_API_KEY \
+  -u TIMELINE_BOT_AI_EDITOR \
+  bun run apps/cli/src/index.ts bot-worker --poll-once --pretty
+```
+
+Start the real sandbox worker after access succeeds:
+
+```bash
+set -a
+. ./.env.telegram-ai-review-sandbox
+set +a
+
+bun run apps/cli/src/index.ts bot-worker \
+  --poll \
+  --async-workflows \
+  --rust-render \
+  --pretty
+```
+
+Exercise the chat workflow:
+
+1. Send `/help`.
+2. Send a small video with a caption such as `Make a 15s product promo destination=file`.
+3. Confirm queued/running status and first preview delivery.
+4. Send one text correction.
+5. Send one voice correction.
+6. Send one video-note correction.
+7. Run `/versions` and confirm revision ids, provider/model and artifact references are present and secrets are redacted.
+8. Stop and restart the worker, then run `/status` and confirm the latest session/revision survives.
+9. Run `/approve` only after verifying the preview. In the default file-only pass, approval should record a `file` publish result against the approved preview artifact. For real Telegram final publish, first complete the file-only pass, then explicitly set `TIMELINE_BOT_DEFAULT_DESTINATION=telegram` and `TIMELINE_BOT_RUST_PUBLISH=true` in the sandbox env.
+10. Run `bot-cleanup --pretty` in dry-run mode and confirm active sessions are preserved.
+
+Capture sanitized evidence with [telegram-ai-review-sandbox-report.template.md](telegram-ai-review-sandbox-report.template.md). Do not paste raw tokens, chat ids, provider keys, private media names or unredacted session JSON into public issues.
 
 ## Publish Validation
 
