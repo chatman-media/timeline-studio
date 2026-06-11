@@ -274,11 +274,13 @@ async function applyPlanToTimeline(plan: MontagePlan): Promise<{
       const trackName = `${sequence.type} - ${sequence.purpose}`
 
       try {
-        await orchestrator.addTrack("video", trackName)
+        const trackId = await orchestrator.addTrack("video", trackName)
+        if (!trackId) {
+          errors.push(`Backend не вернул track_id для sequence ${sequence.id}`)
+          logger.error("Backend did not return track_id", { sequenceId: sequence.id, trackName })
+          continue
+        }
 
-        // После создания трека нужно получить его ID из backend
-        // Используем временное решение - генерируем ID локально
-        const trackId = `track-${sequence.id}-${Date.now()}`
         sequenceTracks.set(sequence.id, trackId)
 
         logger.debug("Created track for sequence", { trackId, trackName })
@@ -313,12 +315,17 @@ async function applyPlanToTimeline(plan: MontagePlan): Promise<{
           }
 
           // Добавляем клип на timeline
-          await orchestrator.addClip(trackId, mediaFile, currentTime)
+          const clipStartTime = currentTime
+          const clipId = await orchestrator.addClip(trackId, mediaFile, clipStartTime)
+          if (!clipId) {
+            errors.push(`Backend не вернул clip_id для фрагмента ${fragment.id}`)
+            logger.error("Backend did not return clip_id", { fragmentId: fragment.id, trackId })
+            continue
+          }
 
           // Применяем adjustments если есть
           if (plannedClip.adjustments) {
             const adjustments = plannedClip.adjustments
-            const clipId = `clip-${fragment.id}` // Временный ID, должен прийти от backend
 
             const updates: Partial<TimelineClip> = {}
 
@@ -354,14 +361,18 @@ async function applyPlanToTimeline(plan: MontagePlan): Promise<{
 
           // Обновляем позицию для следующего клипа
           const clipDuration = fragment.duration
-          currentTime += plannedClip.adjustments?.speedMultiplier
+          const effectiveDuration = plannedClip.adjustments?.speedMultiplier
             ? clipDuration / plannedClip.adjustments.speedMultiplier
             : clipDuration
+          currentTime += effectiveDuration
 
           logger.debug("Added clip to timeline", {
             fragmentId: fragment.id,
-            startTime: currentTime - clipDuration,
+            clipId,
+            trackId,
+            startTime: clipStartTime,
             duration: clipDuration,
+            effectiveDuration,
           })
         } catch (error) {
           errors.push(

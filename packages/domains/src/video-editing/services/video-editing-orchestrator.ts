@@ -441,7 +441,7 @@ export class VideoEditingOrchestrator {
   /**
    * API для управления клипами
    */
-  async addClip(trackId: string, mediaFile: any, time: number) {
+  async addClip(trackId: string, mediaFile: any, time: number): Promise<string | null> {
     const command: ProjectCommand = {
       type: "AddClip",
       params: {
@@ -451,7 +451,8 @@ export class VideoEditingOrchestrator {
       },
     }
 
-    await this.executeCommand(command)
+    const data = await this.executeCommand(command)
+    const clipId = typeof data?.clip_id === "string" ? data.clip_id : null
 
     this.timelineActor.send({
       type: "ADD_CLIP",
@@ -460,8 +461,17 @@ export class VideoEditingOrchestrator {
       time,
     })
 
-    // Публикуем событие
-    const clipId = `clip-${Date.now()}` // Временный ID
+    if (!clipId) {
+      logger.warn("[Video Editing Orchestrator] Clip created without backend clip_id; skipping CLIP_ADDED event")
+      return null
+    }
+
+    logger.info("[Video Editing Orchestrator] Clip created:", {
+      trackId,
+      clipId,
+    })
+
+    // Публикуем событие только с ID, полученным от backend.
     eventBus.publish(DOMAIN_EVENTS.VIDEO.CLIP_ADDED, "video-editing", {
       trackId,
       clip: {
@@ -473,6 +483,8 @@ export class VideoEditingOrchestrator {
         mediaId: typeof mediaFile === "string" ? mediaFile : mediaFile.id,
       },
     })
+
+    return clipId
   }
 
   async moveClip(clipId: string, newTrackId: string, newTime: number) {

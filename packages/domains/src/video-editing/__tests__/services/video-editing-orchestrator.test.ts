@@ -165,6 +165,26 @@ describe("VideoEditingOrchestrator", () => {
       expect(timelineState).toBeDefined()
     })
 
+    it("should return backend clip id when adding clip", async () => {
+      const executeCommandSpy = vi.spyOn(orchestrator, "executeCommand").mockResolvedValueOnce({
+        clip_id: "backend-clip-1",
+      })
+
+      const clipId = await orchestrator.addClip("track-1", mockMediaFile, 0)
+
+      expect(clipId).toBe("backend-clip-1")
+      expect(executeCommandSpy).toHaveBeenCalledWith({
+        type: "AddClip",
+        params: {
+          track_id: "track-1",
+          media_id: "media-1",
+          time: 0,
+        },
+      })
+
+      executeCommandSpy.mockRestore()
+    })
+
     it("should move clip", async () => {
       await orchestrator.moveClip("clip-1", "track-2", 5)
 

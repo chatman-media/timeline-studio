@@ -10,8 +10,8 @@ import { MomentCategory, SequencePurpose, SequenceType } from "@timeline-studio/
 import { applyPlanToTimeline } from "../index"
 
 // Create persistent mocks
-const mockAddTrack = vi.fn().mockResolvedValue(undefined)
-const mockAddClip = vi.fn().mockResolvedValue(undefined)
+const mockAddTrack = vi.fn()
+const mockAddClip = vi.fn()
 const mockUpdateClip = vi.fn().mockResolvedValue(undefined)
 
 // Mock VideoEditingOrchestrator
@@ -35,9 +35,13 @@ vi.mock("@/lib/tauri-logger", () => ({
 
 describe("applyPlanToTimeline", () => {
   beforeEach(() => {
-    mockAddTrack.mockClear()
-    mockAddClip.mockClear()
-    mockUpdateClip.mockClear()
+    mockAddTrack.mockReset()
+    mockAddClip.mockReset()
+    mockUpdateClip.mockReset()
+
+    mockAddTrack.mockImplementation(async () => `backend-track-${mockAddTrack.mock.calls.length}`)
+    mockAddClip.mockImplementation(async () => `backend-clip-${mockAddClip.mock.calls.length}`)
+    mockUpdateClip.mockResolvedValue(undefined)
   })
 
   const createMockPlan = (overrides?: Partial<MontagePlan>): MontagePlan => ({
@@ -176,7 +180,7 @@ describe("applyPlanToTimeline", () => {
 
     const result = await applyPlanToTimeline(plan)
 
-    expect(mockAddClip).toHaveBeenCalled()
+    expect(mockAddClip).toHaveBeenCalledWith("backend-track-1", clip.fragment?.sourceFile, 0)
     expect(result.appliedClips).toBe(1)
   })
 
@@ -193,7 +197,7 @@ describe("applyPlanToTimeline", () => {
 
     // Should call updateClip with speed adjustments
     expect(mockUpdateClip).toHaveBeenCalledWith(
-      expect.any(String),
+      "backend-clip-1",
       expect.objectContaining({
         speed: 2.0,
         playbackRate: 2.0,
@@ -219,7 +223,7 @@ describe("applyPlanToTimeline", () => {
 
     // Should call updateClip with position (crop) adjustments
     expect(mockUpdateClip).toHaveBeenCalledWith(
-      expect.any(String),
+      "backend-clip-1",
       expect.objectContaining({
         position: expect.objectContaining({
           x: 0.1,
@@ -294,9 +298,80 @@ describe("applyPlanToTimeline", () => {
     expect(result.appliedClips).toBe(2)
   })
 
+  it("should apply a multi-clip plan with backend track and clip ids", async () => {
+    const clip1 = createMockClip({
+      sequenceOrder: 0,
+      adjustments: {
+        speedMultiplier: 2,
+      },
+    })
+    const clip2 = createMockClip({
+      fragmentId: "frag-2",
+      sequenceOrder: 1,
+    })
+    const sequence = createMockSequence({ clips: [clip1, clip2] })
+    const plan = createMockPlan({ sequences: [sequence] })
+
+    const result = await applyPlanToTimeline(plan)
+
+    expect(result.success).toBe(true)
+    expect(result.appliedClips).toBe(2)
+    expect(mockAddClip).toHaveBeenNthCalledWith(1, "backend-track-1", clip1.fragment?.sourceFile, 0)
+    expect(mockAddClip).toHaveBeenNthCalledWith(2, "backend-track-1", clip2.fragment?.sourceFile, 2.5)
+    expect(mockUpdateClip).toHaveBeenCalledWith(
+      "backend-clip-1",
+      expect.objectContaining({
+        speed: 2,
+        playbackRate: 2,
+      }),
+    )
+
+    const backendMutationIds = [
+      ...mockAddClip.mock.calls.map(([trackId]) => trackId),
+      ...mockUpdateClip.mock.calls.map(([clipId]) => clipId),
+    ]
+    expect(backendMutationIds.every((id) => !String(id).startsWith("track-") && !String(id).startsWith("clip-"))).toBe(
+      true,
+    )
+  })
+
+  it("should fail without falling back to fake track ids when backend returns no track id", async () => {
+    mockAddTrack.mockResolvedValueOnce(null)
+
+    const clip = createMockClip()
+    const sequence = createMockSequence({ clips: [clip] })
+    const plan = createMockPlan({ sequences: [sequence] })
+
+    const result = await applyPlanToTimeline(plan)
+
+    expect(result.success).toBe(false)
+    expect(result.appliedClips).toBe(0)
+    expect(mockAddClip).not.toHaveBeenCalled()
+    expect(result.errors[0]).toContain("track_id")
+  })
+
+  it("should fail without applying adjustments when backend returns no clip id", async () => {
+    mockAddClip.mockResolvedValueOnce(null)
+
+    const clip = createMockClip({
+      adjustments: {
+        speedMultiplier: 2,
+      },
+    })
+    const sequence = createMockSequence({ clips: [clip] })
+    const plan = createMockPlan({ sequences: [sequence] })
+
+    const result = await applyPlanToTimeline(plan)
+
+    expect(result.success).toBe(false)
+    expect(result.appliedClips).toBe(0)
+    expect(mockUpdateClip).not.toHaveBeenCalled()
+    expect(result.errors[0]).toContain("clip_id")
+  })
+
   it("should continue processing after error in one clip", async () => {
     // First clip fails, second succeeds
-    mockAddClip.mockRejectedValueOnce(new Error("First clip error")).mockResolvedValueOnce(undefined)
+    mockAddClip.mockRejectedValueOnce(new Error("First clip error")).mockResolvedValueOnce("backend-clip-2")
 
     const clip1 = createMockClip({ fragmentId: "frag-1" })
     const clip2 = createMockClip({ fragmentId: "frag-2" })
