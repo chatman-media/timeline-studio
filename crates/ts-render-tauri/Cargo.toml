@@ -17,6 +17,9 @@ serde_json = "1"
 # Tauri-free фундамент (Wave 1): VideoCompilerState + ServiceContainer + services/* +
 # ffmpeg_command/ переехали сюда; этот крейт их реэкспортирует.
 ts-render-services = { path = "../ts-render-services" }
+# Движок рендера (#90): перенесённые группы команд (Wave 2+) ссылаются на
+# core::{gpu,error,...} и CompilerSettings напрямую из ts-render.
+ts-render = { path = "../ts-render" }
 
 [dev-dependencies]
 # Используется в тестах группы workflow.

@@ -21,7 +21,10 @@ pub mod compiler_settings_commands;
 pub mod ffmpeg_advanced;
 pub mod ffmpeg_builder;
 pub mod frame_extraction;
-pub mod gpu;
+// `gpu` вынесена в крейт `ts-render-tauri` (Wave 2, эпик #91/#92).
+// Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::gpu::*`
+// и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
+pub use ts_render_tauri::gpu;
 pub mod info;
 pub mod metrics;
 pub mod misc;

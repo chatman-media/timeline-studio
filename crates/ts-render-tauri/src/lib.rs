@@ -27,6 +27,15 @@
 /// — никакой линковки libav, никакого общего состояния.
 pub mod workflow;
 
+/// Wave 2: группа команд `gpu` (детект/возможности/аппаратное ускорение).
+///
+/// Первая перенесённая state-зависимая группа: команды берут `GpuService` через
+/// `tauri::State<VideoCompilerState>` (фундамент в `ts-render-services`) и движок
+/// `GpuDetector`/`GpuInfo` из `ts-render`. В монолите `video_compiler/commands/mod.rs`
+/// оставлен ре-экспорт-шим `pub use ts_render_tauri::gpu;`; записи в
+/// `app_builder.rs::generate_handler!` квалифицированы подмодулем `gpu::<fn>`.
+pub mod gpu;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

@@ -218,12 +218,15 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     crate::analysis::commands::calculate_quality,
     crate::analysis::commands::analyze_content_comprehensive,
     // Video compiler commands - using the already exported commands from the module
-    crate::video_compiler::commands::auto_select_gpu,
-    crate::video_compiler::commands::benchmark_gpu,
+    // Группа `gpu` вынесена в крейт ts-render-tauri (#91, Wave 2) — пути квалифицированы
+    // подмодулем `gpu::`, чтобы tauri::generate_handler! нашёл сосед `__cmd__<fn>`
+    // (glob-ре-экспорт функции не протаскивает скрытый __cmd__-item).
+    crate::video_compiler::commands::gpu::auto_select_gpu,
+    crate::video_compiler::commands::gpu::benchmark_gpu,
     crate::video_compiler::commands::check_gpu_encoder_availability,
     crate::video_compiler::commands::check_hardware_acceleration,
-    crate::video_compiler::commands::check_hardware_acceleration_support,
-    crate::video_compiler::commands::get_gpu_capabilities_full,
+    crate::video_compiler::commands::gpu::check_hardware_acceleration_support,
+    crate::video_compiler::commands::gpu::get_gpu_capabilities_full,
     crate::video_compiler::commands::cache_media_metadata,
     crate::video_compiler::commands::clean_old_cache,
     crate::video_compiler::commands::cleanup_cache,
@@ -609,7 +612,7 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     // Phase 6: Final 2 Commands for 100% Coverage (2 команды) 🎯
     // ============================================================================
     crate::commands::init_yolo::init_yolo_processor,
-    crate::video_compiler::commands::check_gpu_availability,
+    crate::video_compiler::commands::gpu::check_gpu_availability,
     // MCP (Model Context Protocol) commands
     crate::mcp::commands::mcp_initialize,
     crate::mcp::commands::mcp_update_config,

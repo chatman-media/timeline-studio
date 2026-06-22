@@ -16,14 +16,14 @@ pub struct GpuCapabilitiesInfo {
 pub struct GpuUsageStatus {
   pub hardware_acceleration_enabled: bool,
   pub gpu_index: Option<usize>,
-  pub current_gpu: Option<crate::video_compiler::core::gpu::GpuInfo>,
+  pub current_gpu: Option<ts_render::video_compiler::core::gpu::GpuInfo>,
   pub available_gpus: usize,
 }
 
 /// Результаты бенчмарка GPU
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GpuBenchmarkResult {
-  pub gpu: Option<crate::video_compiler::core::gpu::GpuInfo>,
+  pub gpu: Option<ts_render::video_compiler::core::gpu::GpuInfo>,
   pub encoding_speed: f64,
   pub decoding_speed: f64,
   pub supported_codecs: Vec<String>,
@@ -39,4 +39,4 @@ pub struct GpuEncoderDetails {
 }
 
 // Re-export основных типов из core::gpu для удобства
-pub use crate::video_compiler::core::gpu::{GpuEncoder, GpuInfo};
+pub use ts_render::video_compiler::core::gpu::{GpuEncoder, GpuInfo};

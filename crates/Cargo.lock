@@ -5538,6 +5538,7 @@ dependencies = [
  "serde_json",
  "tauri",
  "tempfile",
+ "ts-render",
  "ts-render-services",
 ]
 

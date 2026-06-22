@@ -2,9 +2,9 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::core::gpu::GpuDetector;
-use crate::video_compiler::error::{Result, VideoCompilerError};
-use crate::video_compiler::VideoCompilerState;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::core::gpu::GpuDetector;
+use ts_render_services::VideoCompilerState;
 use tauri::State;
 
 /// Обнаружить доступные GPU
@@ -23,7 +23,7 @@ pub async fn detect_gpus(state: State<'_, VideoCompilerState>) -> Result<Vec<Gpu
 pub async fn get_gpu_capabilities(
   _gpu_index: usize,
   state: State<'_, VideoCompilerState>,
-) -> Result<crate::video_compiler::services::gpu_service::GpuCapabilities> {
+) -> Result<ts_render_services::services::gpu_service::GpuCapabilities> {
   let gpu_service = state
     .services
     .get_gpu_service()
