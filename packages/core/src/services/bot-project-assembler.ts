@@ -1,5 +1,6 @@
 import type { AspectRatio, Clip, ProjectSchema, Track } from "@/types/contracts/project-schema"
 
+import type { ScriptDraft, ScriptScene } from "../ports/script-generator.port"
 import type {
   BotProjectAssemblyOptions,
   BotProjectAssemblyResolution,
@@ -7,6 +8,8 @@ import type {
   BotRenderJobOutput,
   BotRenderJobRequest,
 } from "../types"
+
+const HOOK_DURATION_SECONDS = 3
 
 const DEFAULT_CLIP_DURATION_SECONDS = 5
 const DEFAULT_FPS = 30
@@ -113,7 +116,7 @@ export function createBotProjectSchemaFromRenderJob(
     filters: [],
     templates: [],
     style_templates: [],
-    subtitles: [],
+    subtitles: generateScriptSubtitles(options.script, clipDuration, duration),
     settings: {
       export: {
         format: "Mp4",
@@ -262,10 +265,15 @@ function resolveResolution(
   switch (optionResolution ?? outputResolution) {
     case "720p":
       return [1280, 720]
+    case "1080p":
+      return [1920, 1080]
     case "4k":
       return [3840, 2160]
+    case "portrait-1080p":
+      return [1080, 1920]
     default:
-      return [1920, 1080]
+      // Bot renders default to vertical 9:16 for Reels/Shorts
+      return [1080, 1920]
   }
 }
 
@@ -282,9 +290,11 @@ function resolveAspectRatio([width, height]: [number, number]): AspectRatio {
 }
 
 function previewResolution([width, height]: [number, number]): [number, number] {
-  if (width <= 1280 && height <= 720) return [width, height]
+  const maxW = width >= height ? 1280 : 720
+  const maxH = width >= height ? 720 : 1280
+  if (width <= maxW && height <= maxH) return [width, height]
 
-  const scale = Math.min(1280 / width, 720 / height)
+  const scale = Math.min(maxW / width, maxH / height)
   return [Math.round(width * scale), Math.round(height * scale)]
 }
 
@@ -312,4 +322,143 @@ function isUrl(value: string): boolean {
 
 function isClose(actual: number, expected: number): boolean {
   return Math.abs(actual - expected) < 0.01
+}
+
+// ---------------------------------------------------------------------------
+// Subtitle generation from ScriptDraft
+// ---------------------------------------------------------------------------
+
+interface BotSubtitle {
+  id: string
+  text: string
+  start_time: number
+  end_time: number
+  duration: number
+  position: { type: "Relative"; align_x: "Center"; align_y: "Top" | "Bottom" }
+  style: {
+    font_family: string
+    font_size: number
+    font_weight: "Normal" | "Bold"
+    color: string
+    stroke_color: string
+    stroke_width: number
+    shadow_color: string
+    shadow_x: number
+    shadow_y: number
+    shadow_blur: number
+    background_color: null
+    background_opacity: number
+    padding: { top: number; right: number; bottom: number; left: number }
+    border_radius: number
+    line_height: number
+    letter_spacing: number
+    max_width: number
+  }
+  enabled: boolean
+  animations: []
+  // compat fields mirroring Rust Subtitle struct
+  font_family: string
+  font_size: number
+  color: string
+  opacity: number
+  font_weight: "Normal" | "Bold"
+  shadow: boolean
+  outline: boolean
+}
+
+const VOICEOVER_STYLE: BotSubtitle["style"] = {
+  font_family: "Arial",
+  font_size: 24,
+  font_weight: "Normal",
+  color: "#FFFFFF",
+  stroke_color: "#000000",
+  stroke_width: 2,
+  shadow_color: "#000000",
+  shadow_x: 2,
+  shadow_y: 2,
+  shadow_blur: 4,
+  background_color: null,
+  background_opacity: 0.8,
+  padding: { top: 8, right: 12, bottom: 8, left: 12 },
+  border_radius: 4,
+  line_height: 1.2,
+  letter_spacing: 0,
+  max_width: 80,
+}
+
+const HOOK_STYLE: BotSubtitle["style"] = {
+  ...VOICEOVER_STYLE,
+  font_size: 36,
+  font_weight: "Bold",
+  stroke_width: 3,
+  max_width: 85,
+}
+
+function makeSubtitle(
+  id: string,
+  text: string,
+  startTime: number,
+  endTime: number,
+  alignY: "Top" | "Bottom",
+  style: BotSubtitle["style"],
+): BotSubtitle {
+  const dur = endTime - startTime
+  return {
+    id,
+    text,
+    start_time: startTime,
+    end_time: endTime,
+    duration: dur,
+    position: { type: "Relative", align_x: "Center", align_y: alignY },
+    style,
+    enabled: true,
+    animations: [],
+    font_family: style.font_family,
+    font_size: style.font_size,
+    color: style.color,
+    opacity: 1,
+    font_weight: style.font_weight,
+    shadow: true,
+    outline: true,
+  }
+}
+
+function sceneClipDuration(scene: ScriptScene, defaultClipDuration: number): number {
+  return typeof scene.durationSeconds === "number" && scene.durationSeconds > 0
+    ? scene.durationSeconds
+    : defaultClipDuration
+}
+
+export function generateScriptSubtitles(
+  script: ScriptDraft | undefined,
+  clipDurationSeconds: number,
+  totalDuration: number,
+): BotSubtitle[] {
+  if (!script) return []
+
+  const subtitles: BotSubtitle[] = []
+
+  if (script.hook?.trim()) {
+    const hookEnd = Math.min(HOOK_DURATION_SECONDS, totalDuration)
+    subtitles.push(makeSubtitle("sub-hook", script.hook.trim(), 0, hookEnd, "Top", HOOK_STYLE))
+  }
+
+  let cursor = 0
+  for (const scene of script.scenes) {
+    const dur = sceneClipDuration(scene, clipDurationSeconds)
+    const sceneStart = cursor
+    const sceneEnd = Math.min(cursor + dur, totalDuration)
+    cursor = sceneEnd
+
+    const voiceover = scene.voiceover?.trim()
+    if (voiceover) {
+      subtitles.push(
+        makeSubtitle(`sub-scene-${scene.index}`, voiceover, sceneStart, sceneEnd, "Bottom", VOICEOVER_STYLE),
+      )
+    }
+
+    if (cursor >= totalDuration) break
+  }
+
+  return subtitles
 }

@@ -6,6 +6,7 @@
  */
 
 import type { IBotFirstCutGenerator } from "../ports/bot-first-cut-generator.port"
+import type { ScriptDraft } from "../ports/script-generator.port"
 import type {
   BotPublishResult,
   BotRenderJobArtifact,
@@ -287,6 +288,8 @@ export interface BotProjectAssemblyOptions {
   sampleRate?: number
   resolution?: BotProjectAssemblyResolution
   now?: () => string
+  /** When provided, voiceover subtitles and hook title are auto-generated from the script. */
+  script?: ScriptDraft
 }
 
 export interface BotWorkflowIntakeOptions {
