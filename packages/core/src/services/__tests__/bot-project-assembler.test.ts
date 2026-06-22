@@ -146,6 +146,8 @@ describe("bot project assembler", () => {
 
     const audioTrack = schema?.tracks[1]
     expect(audioTrack).toMatchObject({ id: "bot-audio-track", track_type: "Audio" })
+    // Image-only slideshow has no speech to protect, so music plays at full volume.
+    expect(audioTrack?.volume).toBe(1)
     expect(audioTrack?.clips).toHaveLength(1)
     expect(audioTrack?.clips[0]).toMatchObject({
       source: { File: "/tmp/music.mp3" },
@@ -160,6 +162,40 @@ describe("bot project assembler", () => {
 
     // Timeline spans the longer music clip so the looping image is fully scored.
     expect(schema?.timeline.duration).toBe(30)
+  })
+
+  it("ducks background music when the project also contains video", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [
+        { type: "file", value: "/tmp/clip.mp4", mimeType: "video/mp4" },
+        { type: "file", value: "/tmp/music.mp3", mimeType: "audio/mpeg" },
+      ],
+      output: { format: "mp4" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request)
+    const audioTrack = schema?.tracks.find((track) => track.track_type === "Audio")
+
+    expect(audioTrack?.volume).toBe(0.3)
+  })
+
+  it("honors an explicit musicVolume override", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [
+        { type: "file", value: "/tmp/clip.mp4", mimeType: "video/mp4" },
+        { type: "file", value: "/tmp/music.mp3", mimeType: "audio/mpeg" },
+      ],
+      params: { musicVolume: "0.8" },
+      output: { format: "mp4" },
+    }
+
+    const fromParams = createBotProjectSchemaFromRenderJob(request)
+    expect(fromParams?.tracks.find((track) => track.track_type === "Audio")?.volume).toBe(0.8)
+
+    const fromOptions = createBotProjectSchemaFromRenderJob(request, { musicVolume: 1.5 })
+    expect(fromOptions?.tracks.find((track) => track.track_type === "Audio")?.volume).toBe(1.5)
   })
 
   it("detects audio media by file extension when no mimeType is provided", () => {

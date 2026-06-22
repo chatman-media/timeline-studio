@@ -274,7 +274,9 @@ impl<'a> FilterBuilder<'a> {
       let mut track_filters = Vec::new();
 
       for clip in &track.clips {
-        let clip_filter = self.build_audio_clip_filter(clip, *input_index).await?;
+        let clip_filter = self
+          .build_audio_clip_filter(clip, *input_index, track.volume)
+          .await?;
         track_filters.push(clip_filter);
         *input_index += 1;
       }
@@ -371,7 +373,9 @@ impl<'a> FilterBuilder<'a> {
         let clip_end = clip.start_time + clip_duration;
 
         if clip.start_time < end_time && clip_end > start_time {
-          let clip_filter = self.build_audio_clip_filter(clip, *input_index).await?;
+          let clip_filter = self
+            .build_audio_clip_filter(clip, *input_index, track.volume)
+            .await?;
           filters.push(clip_filter);
           *input_index += 1;
         }
@@ -420,14 +424,21 @@ impl<'a> FilterBuilder<'a> {
     Ok(parts.join(";"))
   }
 
-  /// Построить фильтр для аудио клипа
-  async fn build_audio_clip_filter(&self, clip: &Clip, input_index: usize) -> Result<String> {
+  /// Построить фильтр для аудио клипа.
+  /// `track_volume` — громкость родительского трека (0.0–2.0): фоновая музыка
+  /// уходит на отдельный аудио-трек с пониженной громкостью, чтобы не перекрывать речь.
+  async fn build_audio_clip_filter(
+    &self,
+    clip: &Clip,
+    input_index: usize,
+    track_volume: f32,
+  ) -> Result<String> {
     let mut filters = Vec::new();
 
-    // Базовая обработка аудио
+    // Базовая обработка аудио (громкость берём из трека, а не хардкодим 1.0)
     let base_filter = format!(
       "[{}:a]asetpts=PTS-STARTPTS,volume={}[a{}]",
-      input_index, 1.0, input_index
+      input_index, track_volume, input_index
     );
     filters.push(base_filter);
 
@@ -741,15 +752,15 @@ mod tests {
     let clip = &project.tracks[0].clips[0];
     let input_index = 0;
 
-    let result = builder.build_audio_clip_filter(clip, input_index).await;
+    let result = builder.build_audio_clip_filter(clip, input_index, 0.3).await;
     assert!(result.is_ok());
 
     let filter = result.unwrap();
     assert!(!filter.is_empty(), "Audio clip filter should not be empty");
 
-    // Проверяем что фильтр содержит аудио элементы
+    // Проверяем что фильтр содержит аудио элементы и громкость трека
     assert!(filter.contains("asetpts="));
-    assert!(filter.contains("volume="));
+    assert!(filter.contains("volume=0.3"));
   }
 
   #[test]
