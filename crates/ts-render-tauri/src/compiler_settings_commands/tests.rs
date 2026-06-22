@@ -4,7 +4,7 @@
 mod compiler_settings_tests {
   use super::super::business_logic;
   use super::super::types::*;
-  use crate::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::core::error::VideoCompilerError;
 
   #[test]
   fn test_validate_compiler_settings_valid() {

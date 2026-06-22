@@ -1,13 +1,13 @@
 //! Tauri команды для управления проектами
 
-use super::super::state::VideoCompilerState;
 use super::{business_logic, types::*};
-use crate::video_compiler::{
+use std::collections::HashMap;
+use tauri::State;
+use ts_render::video_compiler::core::{
   error::{Result, VideoCompilerError},
   schema::{Clip, ProjectSchema, Subtitle, Track},
 };
-use std::collections::HashMap;
-use tauri::State;
+use ts_render_services::VideoCompilerState;
 
 /// Валидировать схему проекта
 #[tauri::command]

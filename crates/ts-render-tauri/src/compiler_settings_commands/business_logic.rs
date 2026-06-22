@@ -1,9 +1,9 @@
 //! Бизнес-логика для настроек компилятора
 
 use super::types::*;
-use crate::video_compiler::core::constants::{compiler::*, export::*, quality_presets};
-use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::path::Path;
+use ts_render::video_compiler::core::constants::{compiler::*, export::*, quality_presets};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 
 /// Валидирует настройки компилятора
 pub fn validate_compiler_settings(settings: &CompilerSettings) -> Result<()> {

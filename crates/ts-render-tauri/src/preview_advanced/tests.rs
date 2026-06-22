@@ -3,8 +3,8 @@
 #[cfg(test)]
 mod preview_advanced_tests {
   use super::super::*;
-  use crate::video_compiler::VideoCompilerState;
   use base64::Engine;
+  use ts_render_services::VideoCompilerState;
 
   #[test]
   fn test_batch_preview_params_serialization() {

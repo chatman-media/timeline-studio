@@ -8713,6 +8713,7 @@ dependencies = [
 name = "ts-render-tauri"
 version = "0.1.0"
 dependencies = [
+ "base64 0.22.1",
  "chrono",
  "log",
  "num_cpus",
@@ -8724,6 +8725,7 @@ dependencies = [
  "tokio",
  "ts-render",
  "ts-render-services",
+ "uuid",
 ]
 
 [[package]]

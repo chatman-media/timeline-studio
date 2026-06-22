@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod prerender_tests {
   use super::super::*;
-  use crate::video_compiler::schema::{ProjectSchema, Timeline};
+  use ts_render::video_compiler::core::schema::{ProjectSchema, Timeline};
 
   fn create_test_project() -> ProjectSchema {
     let mut project = ProjectSchema::new("Test Project".to_string());
@@ -12,7 +12,7 @@ mod prerender_tests {
       fps: 30,
       resolution: (1920, 1080),
       sample_rate: 48000,
-      aspect_ratio: crate::video_compiler::schema::common::AspectRatio::Ratio16x9,
+      aspect_ratio: ts_render::video_compiler::core::schema::common::AspectRatio::Ratio16x9,
     };
     project
   }

@@ -1,11 +1,11 @@
 //! Бизнес-логика для команд управления проектами
 
 use super::types::*;
-use crate::video_compiler::{
+use std::collections::{HashMap, HashSet};
+use ts_render::video_compiler::core::{
   error::{Result, VideoCompilerError},
   schema::{Clip, ClipSource, ProjectSchema, Subtitle, Track},
 };
-use std::collections::{HashMap, HashSet};
 
 /// Создать результат валидации проекта
 pub fn create_validation_result(is_valid: bool, error: Option<String>) -> ProjectValidationResult {

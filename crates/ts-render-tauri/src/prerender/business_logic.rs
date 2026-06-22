@@ -1,7 +1,7 @@
 //! Бизнес-логика для команд пререндеринга
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 
 /// Получить оптимальные настройки пререндеринга
 pub fn get_optimal_prerender_settings(
@@ -75,8 +75,8 @@ fn calculate_estimated_file_size(width: u32, height: u32, frame_rate: f32) -> f6
 }
 
 // Заглушки для недостающих функций
-use crate::video_compiler::VideoCompilerState;
 use tauri::State;
+use ts_render_services::VideoCompilerState;
 
 pub fn validate_prerender_segment_params(params: &PrerenderSegmentParams) -> Result<()> {
   if params.output_path.is_empty() {

@@ -17,7 +17,8 @@
 pub mod ai_api_proxy;
 pub mod batch;
 pub mod cache;
-pub mod compiler_settings_commands;
+// `compiler_settings_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::compiler_settings_commands;
 pub mod ffmpeg_advanced;
 pub mod ffmpeg_builder;
 pub mod frame_extraction;
@@ -34,10 +35,13 @@ pub use ts_render_tauri::monitoring;
 pub mod multimodal_commands;
 pub mod pipeline;
 pub mod platform_optimization;
-pub mod prerender;
+// `prerender` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::prerender;
 pub mod preview;
-pub mod preview_advanced;
-pub mod project;
+// `preview_advanced` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::preview_advanced;
+// `project` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::project;
 pub mod recognition_advanced_commands;
 pub mod rendering;
 pub mod schema;

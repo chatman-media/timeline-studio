@@ -2,9 +2,9 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
 use tauri::State;
+use ts_render::video_compiler::core::error::Result;
+use ts_render_services::VideoCompilerState;
 
 /// Получить настройки компилятора
 #[tauri::command]

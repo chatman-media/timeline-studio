@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod project_tests {
   use super::super::*;
-  use crate::video_compiler::schema::{
+  use ts_render::video_compiler::core::schema::{
     AspectRatio, Clip, ClipSource, ProjectMetadata, ProjectSchema, Subtitle, Timeline, Track,
     TrackType,
   };
@@ -39,7 +39,7 @@ mod project_tests {
         Subtitle::new("First subtitle".to_string(), 0.0, 5.0),
         Subtitle::new("Second subtitle".to_string(), 5.0, 10.0),
       ],
-      settings: crate::video_compiler::schema::export::ProjectSettings::default(),
+      settings: ts_render::video_compiler::core::schema::export::ProjectSettings::default(),
     }
   }
 

@@ -33,7 +33,7 @@ pub struct PrerenderCacheFile {
 /// Параметры для предрендеринга сегмента
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PrerenderSegmentParams {
-  pub project_schema: crate::video_compiler::schema::ProjectSchema,
+  pub project_schema: ts_render::video_compiler::core::schema::ProjectSchema,
   pub start_time: f64,
   pub end_time: f64,
   pub output_path: String,

@@ -1,13 +1,14 @@
 //! Tauri команды для предрендеринга
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{commands::VideoCompilerState, error::Result};
 use tauri::State;
+use ts_render::video_compiler::core::error::Result;
+use ts_render_services::VideoCompilerState;
 
 /// Предварительно отрендерить сегмент
 #[tauri::command]
 pub async fn prerender_segment(
-  project_schema: crate::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::core::schema::ProjectSchema,
   start_time: f64,
   end_time: f64,
   output_path: String,
@@ -135,7 +136,7 @@ pub async fn validate_prerender_segment_params(
 /// Получить оптимальные настройки предрендеринга
 #[tauri::command]
 pub async fn get_optimal_prerender_settings(
-  project_schema: crate::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::core::schema::ProjectSchema,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
   let resolution = (
@@ -154,7 +155,7 @@ pub async fn get_optimal_prerender_settings(
 /// Построить предрендеренный сегмент напрямую
 #[tauri::command]
 pub async fn build_prerender_segment_direct(
-  project_schema: crate::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::core::schema::ProjectSchema,
   start_time: f64,
   end_time: f64,
   output_path: String,

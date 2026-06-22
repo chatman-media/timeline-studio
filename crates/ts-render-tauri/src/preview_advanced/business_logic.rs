@@ -1,10 +1,10 @@
 //! Бизнес-логика для расширенных команд превью
 
 use super::types::*;
-use crate::video_compiler::core::preview::{PreviewGenerator, PreviewRequest};
-use crate::video_compiler::error::Result;
 use base64::Engine;
 use std::path::PathBuf;
+use ts_render::video_compiler::core::error::Result;
+use ts_render::video_compiler::core::preview::{PreviewGenerator, PreviewRequest};
 
 /// Создать генератор превью с кастомным путем к FFmpeg
 pub fn create_preview_generator_with_ffmpeg_logic(ffmpeg_path: String) -> Result<String> {
@@ -24,7 +24,7 @@ pub async fn generate_preview_batch_advanced_logic(
 ) -> Result<Vec<PreviewResult>> {
   if params.video_paths.len() != params.timestamps.len() {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::validation(
+      ts_render::video_compiler::core::error::VideoCompilerError::validation(
         "Video paths and timestamps must have the same length".to_string(),
       ),
     );
