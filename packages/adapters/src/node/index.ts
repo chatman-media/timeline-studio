@@ -5,7 +5,7 @@
  * Использует нативные Node.js модули и CLI инструменты (ffmpeg, whisper).
  */
 
-import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator } from "@timeline-studio/core"
+import { type BotFirstCutGeneratorOptions, DefaultBotFirstCutGenerator, DefaultScriptGenerator } from "@timeline-studio/core"
 import { container } from "@timeline-studio/core/container"
 
 import { MockUserSettingsService } from "../mock/user-settings"
@@ -25,6 +25,7 @@ import { type NodePlatformOptions, NodePlatformService } from "./platform"
 import { type NodePublishOptions, NodePublishService } from "./publish"
 import { NodeRenderJobService, type NodeRenderJobServiceOptions } from "./render-job"
 import { NodeRustFirstCutPlanner, type NodeRustFirstCutPlannerOptions } from "./rust-first-cut-planner"
+import { NodeLlmScriptPlanner, type NodeLlmScriptPlannerOptions } from "./script-generator-llm"
 import { NodeRustPublishService, type NodeRustPublishServiceOptions } from "./rust-publish"
 import { type NodeRustRenderVideoOptions, NodeRustRenderVideoService } from "./rust-render-video"
 import { type NodeStorageOptions, NodeStorageService } from "./storage"
@@ -96,6 +97,11 @@ export {
   type NodeRustFirstCutPlannerKind,
   type NodeRustFirstCutPlannerOptions,
 } from "./rust-first-cut-planner"
+export {
+  NodeLlmScriptPlanner,
+  type NodeLlmScriptPlannerFetch,
+  type NodeLlmScriptPlannerOptions,
+} from "./script-generator-llm"
 export {
   type NodeRustPublishCommandResult,
   NodeRustPublishService,
@@ -216,7 +222,9 @@ export interface NodeAppOptions {
   /** Опции для bot-first first-cut Rust planner */
   botFirstCutPlanner?: NodeRustFirstCutPlannerOptions | false
   /** Опции для bot-first first-cut generator */
-  botFirstCutGenerator?: Omit<BotFirstCutGeneratorOptions, "planner"> | false
+  botFirstCutGenerator?: Omit<BotFirstCutGeneratorOptions, "planner" | "scriptGenerator"> | false
+  /** Опции для LLM-based script/storyboard generator (idea → ScriptDraft → FirstCut) */
+  botScriptGenerator?: (NodeLlmScriptPlannerOptions & { defaultSceneCount?: number; fallbackToDeterministic?: boolean }) | false
   /** Опции для Telegram AI edit session store */
   botEditSessions?: NodeBotEditSessionFileStoreOptions | false
   /** Опции для bot-first media resolver */
@@ -247,6 +255,7 @@ export interface NodeAppServices {
   botWorkflow: NodeBotWorkflowService
   botFirstCutGenerator?: DefaultBotFirstCutGenerator
   botFirstCutPlanner?: NodeRustFirstCutPlanner
+  botScriptGenerator?: DefaultScriptGenerator
   botEditSessions?: NodeBotEditSessionFileStore
   botMediaResolver?: NodeBotMediaResolver
   botFeedbackTranscriber?: NodeBotFeedbackTranscriber
@@ -299,7 +308,8 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
   const aiProjectEditor = createNodeAIProjectEditor(options.aiProjectEditor)
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
-  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
+  const botScriptGenerator = createNodeScriptGenerator(options.botScriptGenerator)
+  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner, botScriptGenerator)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
     mediaResolver: options.botWorkflow?.mediaResolver ?? botMediaResolver,
@@ -340,6 +350,7 @@ export async function initNodeApp(options: NodeAppOptions = {}): Promise<NodeApp
     botWorkflow,
     ...(botFirstCutGenerator ? { botFirstCutGenerator } : {}),
     ...(botFirstCutPlanner ? { botFirstCutPlanner } : {}),
+    ...(botScriptGenerator ? { botScriptGenerator } : {}),
     ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
     ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
@@ -369,7 +380,8 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
   const botEditSessions = createNodeBotEditSessionStore(options.botEditSessions)
   const botStatus = createNodeBotStatusNotifier(options.botStatus)
   const botFirstCutPlanner = createNodeRustFirstCutPlanner(options.botFirstCutPlanner)
-  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner)
+  const botScriptGenerator = createNodeScriptGenerator(options.botScriptGenerator)
+  const botFirstCutGenerator = createNodeBotFirstCutGenerator(options.botFirstCutGenerator, botFirstCutPlanner, botScriptGenerator)
   const aiProjectEditor = createNodeAIProjectEditor(options.aiProjectEditor)
   const botWorkflow = new NodeBotWorkflowService(renderJob, {
     ...options.botWorkflow,
@@ -395,6 +407,7 @@ export function createNodeServices(options: NodeAppOptions = {}): NodeAppService
     botWorkflow,
     ...(botFirstCutGenerator ? { botFirstCutGenerator } : {}),
     ...(botFirstCutPlanner ? { botFirstCutPlanner } : {}),
+    ...(botScriptGenerator ? { botScriptGenerator } : {}),
     ...(botEditSessions ? { botEditSessions } : {}),
     ...(botMediaResolver ? { botMediaResolver } : {}),
     ...(botFeedbackTranscriber ? { botFeedbackTranscriber } : {}),
@@ -423,14 +436,28 @@ function createNodePublishService(
   return new NodeRustPublishService(rustPublishOptions === true ? {} : rustPublishOptions)
 }
 
+function createNodeScriptGenerator(
+  options?: (NodeLlmScriptPlannerOptions & { defaultSceneCount?: number; fallbackToDeterministic?: boolean }) | false,
+): DefaultScriptGenerator | undefined {
+  if (options === undefined || options === false) return undefined
+  const { defaultSceneCount, fallbackToDeterministic, ...plannerOptions } = options
+  return new DefaultScriptGenerator({
+    planner: new NodeLlmScriptPlanner(plannerOptions),
+    ...(defaultSceneCount !== undefined ? { defaultSceneCount } : {}),
+    ...(fallbackToDeterministic !== undefined ? { fallbackToDeterministic } : {}),
+  })
+}
+
 function createNodeBotFirstCutGenerator(
-  options: Omit<BotFirstCutGeneratorOptions, "planner"> | false | undefined,
+  options: Omit<BotFirstCutGeneratorOptions, "planner" | "scriptGenerator"> | false | undefined,
   planner: NodeRustFirstCutPlanner | undefined,
+  scriptGenerator: DefaultScriptGenerator | undefined,
 ): DefaultBotFirstCutGenerator | undefined {
   if (options === false) return undefined
   return new DefaultBotFirstCutGenerator({
     ...(options ?? {}),
     ...(planner ? { planner } : {}),
+    ...(scriptGenerator ? { scriptGenerator } : {}),
   })
 }
 

@@ -10,6 +10,7 @@ import path from "node:path"
 import { Command } from "commander"
 import type {
   NodeAIProjectEditorOptions,
+  NodeLlmScriptPlannerOptions,
   NodeRustFirstCutPlannerKind,
   NodeRustFirstCutPlannerOptions,
   NodeTelegramBotWorkerPollResult,
@@ -87,6 +88,12 @@ export interface BotWorkerCommandOptions {
   firstCutPlannerModel?: string
   firstCutPlannerTempDir?: string
   firstCutStrict?: boolean
+  scriptGenerator?: boolean
+  scriptGeneratorApiKey?: string
+  scriptGeneratorApiUrl?: string
+  scriptGeneratorModel?: string
+  scriptGeneratorSceneCount?: string
+  scriptGeneratorStrict?: boolean
   aiEditor?: boolean
   aiEditorApiKey?: string
   aiEditorApiUrl?: string
@@ -162,6 +169,15 @@ export const botWorkerCommand = new Command("bot-worker")
     "--first-cut-strict",
     "Fail instead of deterministic first-cut fallback when Rust planner fails or returns invalid output",
   )
+  .option("--script-generator", "Enable LLM-based idea-to-storyboard generation before first-cut assembly")
+  .option("--script-generator-api-key <key>", "API key for the LLM script generator")
+  .option("--script-generator-api-url <url>", "OpenAI-compatible base URL for the LLM script generator")
+  .option("--script-generator-model <model>", "Model for the LLM script generator")
+  .option("--script-generator-scene-count <count>", "Default number of storyboard scenes to generate")
+  .option(
+    "--script-generator-strict",
+    "Fail instead of deterministic storyboard fallback when LLM script generator fails",
+  )
   .option("--ai-editor", "Enable the production AI project editor for review feedback")
   .option("--ai-editor-api-key <key>", "API key for the AI project editor")
   .option("--ai-editor-api-url <url>", "OpenAI-compatible base URL for the AI project editor")
@@ -224,6 +240,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     botFeedbackTranscriber: createBotFeedbackTranscriberOptions(resolvedOptions),
     botFirstCutPlanner: createBotFirstCutPlannerOptions(resolvedOptions),
     botFirstCutGenerator: createBotFirstCutGeneratorOptions(resolvedOptions),
+    botScriptGenerator: createBotScriptGeneratorOptions(resolvedOptions),
     botMediaResolver: createBotMediaResolverOptions(resolvedOptions),
     botStatus: createBotStatusOptions(resolvedOptions),
     publish: createBotPublishOptions(resolvedOptions),
@@ -380,6 +397,20 @@ export function resolveBotWorkerCommandOptions(
       env.TIMELINE_BOT_FIRST_CUT_PLANNER_TEMP_DIR,
     ),
     firstCutStrict: options.firstCutStrict ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_STRICT),
+    scriptGenerator: options.scriptGenerator ?? parseBooleanEnv(env.TIMELINE_BOT_SCRIPT_GENERATOR),
+    scriptGeneratorApiKey: firstConfigured(
+      options.scriptGeneratorApiKey,
+      env.TIMELINE_BOT_SCRIPT_GENERATOR_API_KEY,
+      env.OPENAI_API_KEY,
+      env.LLM_API_KEY,
+    ),
+    scriptGeneratorApiUrl: firstConfigured(options.scriptGeneratorApiUrl, env.TIMELINE_BOT_SCRIPT_GENERATOR_API_URL),
+    scriptGeneratorModel: firstConfigured(options.scriptGeneratorModel, env.TIMELINE_BOT_SCRIPT_GENERATOR_MODEL),
+    scriptGeneratorSceneCount: firstConfigured(
+      options.scriptGeneratorSceneCount,
+      env.TIMELINE_BOT_SCRIPT_GENERATOR_SCENE_COUNT,
+    ),
+    scriptGeneratorStrict: options.scriptGeneratorStrict ?? parseBooleanEnv(env.TIMELINE_BOT_SCRIPT_GENERATOR_STRICT),
     aiEditor: options.aiEditor ?? parseBooleanEnv(env.TIMELINE_BOT_AI_EDITOR),
     aiEditorApiKey: firstConfigured(
       options.aiEditorApiKey,
@@ -502,6 +533,28 @@ function createBotFirstCutGeneratorOptions(options: BotWorkerCommandOptions) {
   if (!options.firstCutStrict) return undefined
   return {
     fallbackToDeterministic: false,
+  }
+}
+
+function createBotScriptGeneratorOptions(
+  options: BotWorkerCommandOptions,
+): (NodeLlmScriptPlannerOptions & { defaultSceneCount?: number; fallbackToDeterministic?: boolean }) | false {
+  const hasConfig = Boolean(
+    options.scriptGenerator ||
+      options.scriptGeneratorApiKey ||
+      options.scriptGeneratorApiUrl ||
+      options.scriptGeneratorModel ||
+      options.scriptGeneratorSceneCount,
+  )
+  if (!hasConfig) return false
+
+  const defaultSceneCount = parseOptionalPositiveInteger(options.scriptGeneratorSceneCount)
+  return {
+    ...(options.scriptGeneratorApiKey ? { apiKey: options.scriptGeneratorApiKey } : {}),
+    ...(options.scriptGeneratorApiUrl ? { apiUrl: options.scriptGeneratorApiUrl } : {}),
+    ...(options.scriptGeneratorModel ? { model: options.scriptGeneratorModel } : {}),
+    ...(defaultSceneCount !== undefined ? { defaultSceneCount } : {}),
+    ...(options.scriptGeneratorStrict ? { fallbackToDeterministic: false } : {}),
   }
 }
 

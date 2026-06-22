@@ -106,6 +106,17 @@ export type {
 } from "./platform.port"
 export type { IPublishService } from "./publish.port"
 export type { IRenderJobService } from "./render-job.port"
+export type {
+  IScriptGenerator,
+  IScriptPlanner,
+  ScriptDraft,
+  ScriptGeneratorProvider,
+  ScriptGeneratorRequest,
+  ScriptGeneratorResult,
+  ScriptPlannerResult,
+  ScriptScene,
+  ScriptSource,
+} from "./script-generator.port"
 export type { IStorageService } from "./storage.port"
 export type { ITranscriptionService } from "./transcription.port"
 export type { IUpdateService } from "./update-service.port"
