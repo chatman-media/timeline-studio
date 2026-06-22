@@ -2,14 +2,12 @@
 
 #![allow(clippy::explicit_auto_deref)]
 
-use super::super::state::VideoCompilerState;
 use super::business_logic;
-use crate::video_compiler::{
-  error::{Result, VideoCompilerError},
-  services::FileInfo,
-};
 use std::{path::Path, process::Command};
 use tauri::State;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render_services::services::FileInfo;
+use ts_render_services::VideoCompilerState;
 
 /// Получить версию FFmpeg
 #[tauri::command]

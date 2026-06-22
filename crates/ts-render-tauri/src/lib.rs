@@ -36,6 +36,21 @@ pub mod workflow;
 /// `app_builder.rs::generate_handler!` квалифицированы подмодулем `gpu::<fn>`.
 pub mod gpu;
 
+/// Wave 2: группа команд `info` (версия ffmpeg, кодеки, системная информация).
+/// Берёт `FileInfo`/`VideoCompilerState` из `ts-render-services`, `error` из `ts-render`,
+/// системные метрики через `sysinfo`. Шим: `pub use ts_render_tauri::info;`.
+pub mod info;
+
+/// Wave 2: группа команд `monitoring` (метрики сервисов, prometheus-экспорт,
+/// progress tracker). Берёт `services::monitoring::*`/`VideoCompilerState` из
+/// `ts-render-services`. Шим: `pub use ts_render_tauri::monitoring;`.
+pub mod monitoring;
+
+/// Wave 2: группа команд `service_container` (инфо о сервисах, `MetricsRegistry`).
+/// Берёт `ServiceContainer`/`services::monitoring::*` из `ts-render-services`.
+/// Шим: `pub use ts_render_tauri::service_container;`.
+pub mod service_container;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

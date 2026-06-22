@@ -1,12 +1,12 @@
 //! Бизнес-логика для команд мониторинга
 
 use super::types::*;
-use crate::video_compiler::{
-  error::Result, services::monitoring::MetricsSummary, VideoCompilerState,
-};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::State;
+use ts_render::video_compiler::core::error::Result;
+use ts_render_services::services::monitoring::MetricsSummary;
+use ts_render_services::VideoCompilerState;
 
 /// Валидация имени сервиса
 pub fn validate_service_name(service_name: &str) -> std::result::Result<(), String> {

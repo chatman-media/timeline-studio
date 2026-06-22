@@ -1,9 +1,9 @@
 //! Бизнес-логика для команд получения информации
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
 use std::process::Command;
 use sysinfo::{Disks, System};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 
 /// Получить версию FFmpeg из вывода команды
 pub fn parse_ffmpeg_version(output: &str) -> String {

@@ -25,10 +25,12 @@ pub mod frame_extraction;
 // Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::gpu::*`
 // и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
 pub use ts_render_tauri::gpu;
-pub mod info;
+// `info` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::info;
 pub mod metrics;
 pub mod misc;
-pub mod monitoring;
+// `monitoring` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::monitoring;
 pub mod multimodal_commands;
 pub mod pipeline;
 pub mod platform_optimization;
@@ -40,7 +42,8 @@ pub mod recognition_advanced_commands;
 pub mod rendering;
 pub mod schema;
 pub mod service;
-pub mod service_container;
+// `service_container` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::service_container;
 pub mod state;
 pub mod video_analysis;
 pub mod whisper_commands;

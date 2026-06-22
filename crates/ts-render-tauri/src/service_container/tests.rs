@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod service_container_tests {
   use super::super::*;
-  use crate::video_compiler::VideoCompilerState;
+  use ts_render_services::VideoCompilerState;
 
   #[test]
   fn test_service_metrics_params_serialization() {
@@ -218,7 +218,7 @@ mod service_container_tests {
   #[tokio::test]
   async fn test_metrics_registry_creation() {
     // Тестируем создание MetricsRegistry
-    let registry = crate::video_compiler::services::monitoring::MetricsRegistry::new();
+    let registry = ts_render_services::services::monitoring::MetricsRegistry::new();
 
     // Тестируем базовую функциональность
     let prometheus_export = registry.export_prometheus().await;

@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod monitoring_tests {
   use super::super::*;
-  use crate::video_compiler::services::monitoring::{MetricsSummary, OperationMetrics};
+  use ts_render_services::services::monitoring::{MetricsSummary, OperationMetrics};
   use std::collections::HashMap;
 
   fn create_test_metrics_summary(service_name: &str) -> MetricsSummary {

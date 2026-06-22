@@ -1,14 +1,14 @@
 //! Бизнес-логика для работы с ServiceContainer и метриками
 
 use super::types::*;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::services::monitoring::MetricsRegistry;
+use ts_render::video_compiler::core::error::Result;
+use ts_render_services::services::monitoring::MetricsRegistry;
 
 /// Получить информацию о проектном сервисе
 pub async fn get_project_service_info_logic() -> Result<ProjectServiceInfo> {
   // Создаем заглушку для ServiceContainer с демо параметрами
   let cache_dir = std::env::temp_dir();
-  match crate::video_compiler::services::ServiceContainer::new("ffmpeg".to_string(), cache_dir, 4)
+  match ts_render_services::services::ServiceContainer::new("ffmpeg".to_string(), cache_dir, 4)
     .await
   {
     Ok(container) => match container.get_project_service() {

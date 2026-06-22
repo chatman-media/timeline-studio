@@ -8713,9 +8713,15 @@ dependencies = [
 name = "ts-render-tauri"
 version = "0.1.0"
 dependencies = [
+ "chrono",
+ "log",
+ "num_cpus",
+ "os_info",
  "serde",
  "serde_json",
+ "sysinfo",
  "tauri",
+ "tokio",
  "ts-render",
  "ts-render-services",
 ]

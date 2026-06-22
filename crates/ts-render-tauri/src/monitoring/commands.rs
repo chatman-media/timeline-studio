@@ -1,11 +1,11 @@
 //! Tauri команды для мониторинга
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{
-  error::Result, services::monitoring::MetricsSummary, VideoCompilerState,
-};
 use std::collections::HashMap;
 use tauri::State;
+use ts_render::video_compiler::core::error::Result;
+use ts_render_services::services::monitoring::MetricsSummary;
+use ts_render_services::VideoCompilerState;
 
 /// Получить сводку метрик для конкретного сервиса
 #[tauri::command]
@@ -14,7 +14,7 @@ pub async fn get_service_metrics_summary(
   state: State<'_, VideoCompilerState>,
 ) -> Result<MetricsSummary> {
   business_logic::validate_service_name(&service_name)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)?;
+    .map_err(ts_render::video_compiler::core::error::VideoCompilerError::InvalidParameter)?;
 
   // Получаем метрики нужного сервиса
   let metrics = match service_name.as_str() {
@@ -37,7 +37,7 @@ pub async fn reset_service_metrics_detailed(
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
   business_logic::validate_service_name(&service_name)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)?;
+    .map_err(ts_render::video_compiler::core::error::VideoCompilerError::InvalidParameter)?;
 
   // Получаем метрики нужного сервиса
   let metrics = match service_name.as_str() {
@@ -94,7 +94,7 @@ pub async fn export_metrics_prometheus_detailed(
 ) -> Result<String> {
   let params = PrometheusExportParams::default();
   business_logic::validate_prometheus_export_params(&params)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)?;
+    .map_err(ts_render::video_compiler::core::error::VideoCompilerError::InvalidParameter)?;
 
   let service_getter = |service_name: &str| -> Option<MetricsSummary> {
     match service_name {
@@ -222,7 +222,7 @@ pub async fn check_services_health_with_criteria(
   state: State<'_, VideoCompilerState>,
 ) -> Result<HealthCheckResult> {
   business_logic::validate_health_criteria(&criteria)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)?;
+    .map_err(ts_render::video_compiler::core::error::VideoCompilerError::InvalidParameter)?;
 
   let mut health_checks = Vec::new();
 
@@ -253,7 +253,7 @@ pub async fn export_metrics_prometheus_with_params(
   state: State<'_, VideoCompilerState>,
 ) -> Result<String> {
   business_logic::validate_prometheus_export_params(&params)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)?;
+    .map_err(ts_render::video_compiler::core::error::VideoCompilerError::InvalidParameter)?;
 
   let service_getter = |service_name: &str| -> Option<MetricsSummary> {
     match service_name {
