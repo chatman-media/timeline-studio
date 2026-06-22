@@ -1,0 +1,33 @@
+[package]
+name = "ts-render-services"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri-free сервисный фундамент Video Compiler (#91/#92, Wave 1): VideoCompilerState + ServiceContainer + services/* + ffmpeg_command/. Вынесен из ts-render-tauri, чтобы фундамент собирался и использовался БЕЗ Tauri (headless: CLI/agent/tests). НЕ зависит от tauri."
+
+[lib]
+name = "ts_render_services"
+path = "src/lib.rs"
+
+[dependencies]
+# Движок рендера (#90): services/state ре-используют core::{cache,gpu,preview,renderer,
+# pipeline_refactored,progress,error,ffmpeg_builder,ffmpeg_executor} и CompilerSettings.
+ts-render = { path = "../ts-render" }
+# Схема проекта (#93): core::schema == ts_schema (timeline/Clip/Track/ProjectSchema/...).
+ts-schema = { path = "../ts-schema" }
+
+# Рантайм-зависимости перенесённого слоя services/state (синхронны с src-tauri/Cargo.toml).
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"
+uuid = { version = "1", features = ["serde", "v4"] }
+once_cell = "1"
+chrono = { version = "0.4", features = ["serde"] }
+log = "0.4"
+
+[dev-dependencies]
+tempfile = "3"
+# Используются только в перенесённых тестах: futures::future::join_all (state.rs),
+# filetime (cache_service.rs — выставление mtime для теста вытеснения кэша).
+futures = "0.3"
+filetime = "0.2"

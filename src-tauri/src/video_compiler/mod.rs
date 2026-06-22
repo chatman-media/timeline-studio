@@ -10,7 +10,6 @@
 // Новая модульная структура
 pub mod commands;
 pub mod core;
-pub mod registry;
 pub mod services;
 
 #[cfg(test)]

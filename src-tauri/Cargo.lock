@@ -8063,6 +8063,8 @@ dependencies = [
  "ts-platform",
  "ts-recognition",
  "ts-render",
+ "ts-render-services",
+ "ts-render-tauri",
  "ts-schema",
  "ts-state",
  "ts-subtitles",
@@ -8689,6 +8691,42 @@ dependencies = [
  "ts-schema",
  "uuid",
  "zstd",
+]
+
+[[package]]
+name = "ts-render-services"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "log",
+ "once_cell",
+ "serde",
+ "serde_json",
+ "tokio",
+ "ts-render",
+ "ts-schema",
+ "uuid",
+]
+
+[[package]]
+name = "ts-render-tauri"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "chrono",
+ "log",
+ "num_cpus",
+ "once_cell",
+ "os_info",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "tauri",
+ "tokio",
+ "ts-render",
+ "ts-render-services",
+ "uuid",
 ]
 
 [[package]]

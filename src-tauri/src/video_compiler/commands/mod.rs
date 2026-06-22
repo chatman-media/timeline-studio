@@ -15,33 +15,54 @@
 //! - `misc` - Дополнительные команды
 
 pub mod ai_api_proxy;
-pub mod batch;
-pub mod cache;
-pub mod compiler_settings_commands;
+// `batch` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::batch;
+// `cache` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::cache;
+// `compiler_settings_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::compiler_settings_commands;
 pub mod ffmpeg_advanced;
 pub mod ffmpeg_builder;
 pub mod frame_extraction;
-pub mod gpu;
-pub mod info;
-pub mod metrics;
+// `gpu` вынесена в крейт `ts-render-tauri` (Wave 2, эпик #91/#92).
+// Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::gpu::*`
+// и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
+pub use ts_render_tauri::gpu;
+// `info` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::info;
+// `metrics` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::metrics;
 pub mod misc;
-pub mod monitoring;
-pub mod multimodal_commands;
-pub mod pipeline;
+// `monitoring` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::monitoring;
+// `multimodal_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::multimodal_commands;
+// `pipeline` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::pipeline;
 pub mod platform_optimization;
-pub mod prerender;
-pub mod preview;
-pub mod preview_advanced;
-pub mod project;
+// `prerender` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::prerender;
+// `preview` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::preview;
+// `preview_advanced` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::preview_advanced;
+// `project` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::project;
 pub mod recognition_advanced_commands;
 pub mod rendering;
-pub mod schema;
-pub mod service;
-pub mod service_container;
+// `schema` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::schema;
+// `service` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::service;
+// `service_container` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::service_container;
 pub mod state;
 pub mod video_analysis;
 pub mod whisper_commands;
-pub mod workflow;
+// `workflow` вынесена в крейт `ts-render-tauri` (Option B, эпик #91/#92).
+// Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::workflow::*`
+// и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
+pub use ts_render_tauri::workflow;
 // pub mod workflow_commands; // Заменено на модуль workflow
 
 // Re-export всех команд для удобства использования
@@ -49,6 +70,10 @@ pub mod workflow;
 pub use ai_api_proxy::*;
 #[allow(ambiguous_glob_reexports)]
 pub use batch::*;
+// `CacheStats` приходит и из `cache::*` (рендер-кэш, теперь тип крейта ts-render-tauri),
+// и из `ai_api_proxy::*` (AI-кэш) — это разные типы. Флэтовый `commands::CacheStats`
+// нигде не используется (все пути квалифицированы), поэтому глушим как и соседние строки.
+#[allow(ambiguous_glob_reexports)]
 pub use cache::*;
 #[allow(ambiguous_glob_reexports, hidden_glob_reexports)]
 pub use compiler_settings_commands::*;
