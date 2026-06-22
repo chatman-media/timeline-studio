@@ -1,5 +1,5 @@
-use crate::video_compiler::error::{Result, VideoCompilerError};
-use crate::video_compiler::schema::{OutputFormat, ProjectSchema};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::schema::{OutputFormat, ProjectSchema};
 
 use super::types::*;
 
@@ -258,7 +258,7 @@ pub fn get_first_input_path(project_schema: &ProjectSchema) -> std::path::PathBu
   if let Some(track) = project_schema.tracks.first() {
     if let Some(clip) = track.clips.first() {
       match &clip.source {
-        crate::video_compiler::schema::ClipSource::File(path) => std::path::PathBuf::from(path),
+        ts_render::video_compiler::schema::ClipSource::File(path) => std::path::PathBuf::from(path),
         _ => std::path::PathBuf::from("/tmp/empty.mp4"),
       }
     } else {

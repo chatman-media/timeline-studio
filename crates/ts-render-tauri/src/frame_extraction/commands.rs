@@ -2,10 +2,10 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::commands::VideoCompilerState;
-use crate::video_compiler::error::{Result, VideoCompilerError};
-use crate::video_compiler::preview::PreviewGenerator;
-use crate::video_compiler::schema::ProjectSchema;
+use ts_render_services::VideoCompilerState;
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::preview::PreviewGenerator;
+use ts_render::video_compiler::schema::ProjectSchema;
 use std::path::Path;
 use tauri::State;
 
@@ -60,7 +60,7 @@ pub async fn extract_subtitle_frames(
 
     if let Some(clip) = video_clip {
       match &clip.source {
-        crate::video_compiler::schema::ClipSource::File(_video_path) => {
+        ts_render::video_compiler::schema::ClipSource::File(_video_path) => {
           // Извлекаем базовый кадр из видео
           let base_frame_path = format!("{}_base.png", frame_path.trim_end_matches(".png"));
           generator
@@ -549,7 +549,7 @@ async fn generate_subtitle_overlay(
   log::debug!("Генерируем субтитр: {:?}", cmd);
 
   let output = cmd.output().map_err(|e| {
-    crate::video_compiler::error::VideoCompilerError::ProcessingError {
+    ts_render::video_compiler::error::VideoCompilerError::ProcessingError {
       operation: "detect_scene_changes".to_string(),
       details: format!("Failed to generate subtitle overlay: {}", e),
     }
@@ -558,7 +558,7 @@ async fn generate_subtitle_overlay(
   if !output.status.success() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     return Err(
-      crate::video_compiler::error::VideoCompilerError::ProcessingError {
+      ts_render::video_compiler::error::VideoCompilerError::ProcessingError {
         operation: "ffmpeg_scene_detection".to_string(),
         details: format!("FFmpeg subtitle overlay failed: {}", stderr),
       },

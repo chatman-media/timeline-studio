@@ -107,6 +107,25 @@ pub mod metrics;
 /// Шим: `pub use ts_render_tauri::service;`.
 pub mod service;
 
+/// Wave 2: группа команд `ffmpeg_builder` (построение ffmpeg-команд из схемы).
+/// Берёт `core::{renderer,ffmpeg_builder,ffmpeg_executor,progress,schema}` из `ts-render`.
+/// Шим: `pub use ts_render_tauri::ffmpeg_builder;`.
+pub mod ffmpeg_builder;
+
+/// Wave 2: группа команд `rendering` (компиляция/отмена рендера, команды рендеринга).
+/// Берёт `core::{frame_extraction,ffmpeg_builder,progress,schema,error}` из `ts-render`.
+/// Шим: `pub use ts_render_tauri::rendering;`.
+pub mod rendering;
+
+/// Wave 2: группа команд `whisper_commands` (локальный/OpenAI Whisper, аудио для транскрипции).
+/// Берёт `core::{error,ffmpeg_executor}` из `ts-render`, reqwest для OpenAI API.
+/// Шим: `pub use ts_render_tauri::whisper_commands;`.
+pub mod whisper_commands;
+
+/// Wave 2: группа команд `frame_extraction` (извлечение кадров/субтитров/распознавания).
+/// Берёт `core::{frame_extraction,...}` из `ts-render`. Шим: `pub use ts_render_tauri::frame_extraction;`.
+pub mod frame_extraction;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

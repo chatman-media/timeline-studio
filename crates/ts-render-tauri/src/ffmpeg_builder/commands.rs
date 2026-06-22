@@ -1,8 +1,9 @@
 //! Tauri команды для работы с FFmpeg builder
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{error::Result, VideoCompilerState};
 use tauri::State;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::VideoCompilerState;
 
 // Re-export types from business_logic for Tauri command signatures
 use business_logic::{
@@ -40,7 +41,7 @@ pub async fn create_ffmpeg_with_prerender_settings(
 #[tauri::command]
 pub async fn get_clip_input_index_from_builder(
   clip_id: String,
-  project: crate::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<Option<usize>> {
   let result = business_logic::get_clip_input_index_logic(&project, &clip_id);
@@ -51,7 +52,7 @@ pub async fn get_clip_input_index_from_builder(
 #[tauri::command]
 pub async fn get_clip_index_details(
   clip_id: String,
-  project: crate::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<ClipIndexResult> {
   Ok(business_logic::get_clip_input_index_logic(

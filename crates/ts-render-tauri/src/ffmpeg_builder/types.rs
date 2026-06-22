@@ -1,6 +1,6 @@
 //! Типы для модуля ffmpeg_builder
 
-use crate::video_compiler::schema::ProjectSchema;
+use ts_render::video_compiler::schema::ProjectSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 

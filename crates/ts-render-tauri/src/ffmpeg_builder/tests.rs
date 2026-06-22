@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod ffmpeg_builder_tests {
   use super::super::*;
-  use crate::video_compiler::schema::{
+  use ts_render::video_compiler::schema::{
     timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
     ProjectMetadata, ProjectSchema, ProjectSettings, Timeline,
   };

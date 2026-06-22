@@ -12,7 +12,34 @@ use ts_render::video_compiler::core::progress::RenderProgress;
 use ts_render::video_compiler::core::progress::RenderStatus;
 use ts_render::video_compiler::core::renderer::VideoRenderer;
 use crate::services::ServiceContainer;
+use serde::Serialize;
 use ts_render::video_compiler::CompilerSettings;
+
+/// События Video Compiler для WebSocket/Tauri-эмиссии.
+///
+/// Перенесено из монолита (`src-tauri/src/video_compiler/mod.rs`) в фундамент
+/// `ts-render-services` (Wave 2, #91), чтобы группа команд `rendering` могла
+/// эмитить события из крейта `ts-render-tauri`. Чистый data-enum (serde), без Tauri.
+/// Монолит держит ре-экспорт `pub use ts_render_services::VideoCompilerEvent;`.
+#[derive(Serialize, Debug, Clone)]
+#[serde(tag = "type")]
+pub enum VideoCompilerEvent {
+  /// Рендеринг начат
+  RenderStarted { job_id: String },
+  /// Прогресс рендеринга обновлен
+  RenderProgress {
+    job_id: String,
+    progress: RenderProgress,
+  },
+  /// Рендеринг завершен успешно
+  RenderCompleted { job_id: String, output_path: String },
+  /// Рендеринг завершился с ошибкой
+  RenderFailed { job_id: String, error: String },
+  /// Превью сгенерировано
+  PreviewGenerated { timestamp: f64, image_data: Vec<u8> },
+  /// Кэш обновлен
+  CacheUpdated { cache_size_mb: f64 },
+}
 
 /// Метаданные активной задачи рендеринга
 #[derive(Debug, Clone)]
