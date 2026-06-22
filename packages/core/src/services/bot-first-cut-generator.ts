@@ -122,7 +122,9 @@ export function createDeterministicFirstCutProject(request: BotFirstCutGenerator
       ...(script ? { script: serializeScriptForParams(script) } : {}),
     },
   }
-  const project = createBotProjectSchemaFromRenderJob(renderRequest)
+  const project = createBotProjectSchemaFromRenderJob(renderRequest, {
+    ...(script ? { script } : {}),
+  })
   if (!project) {
     throw new Error("Cannot generate first cut without source media")
   }

@@ -108,6 +108,7 @@ export {
   createBotWorkflowStatusMessage,
   createDeterministicFirstCutProject,
   createDeterministicScriptDraft,
+  generateScriptSubtitles,
   createNoopBotMediaResolver,
   createTelegramLikeBotWorkflow,
   DefaultBotFirstCutGenerator,

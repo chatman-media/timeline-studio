@@ -34,7 +34,7 @@ export type BotRenderJobProjectInput =
 export interface BotRenderJobOutput {
   format: "mp4"
   path?: string
-  resolution?: "720p" | "1080p" | "4k"
+  resolution?: "720p" | "1080p" | "portrait-1080p" | "4k"
   destination?: BotRenderJobDestination
 }
 

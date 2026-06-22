@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
+import type { ScriptDraft } from "../../ports/script-generator.port"
 import type { BotRenderJobRequest } from "../../types"
-import { createBotProjectSchemaFromRenderJob, withBotProjectSchema } from "../bot-project-assembler"
+import { createBotProjectSchemaFromRenderJob, generateScriptSubtitles, withBotProjectSchema } from "../bot-project-assembler"
 
 describe("bot project assembler", () => {
   it("creates a ProjectSchema from bot media and template hints", () => {
@@ -208,6 +209,33 @@ describe("bot project assembler", () => {
     })
   })
 
+  it("defaults to portrait 9:16 resolution when no resolution is specified", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [{ type: "file", value: "/tmp/clip.mp4" }],
+      output: { format: "mp4" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request)
+
+    expect(schema?.timeline.resolution).toEqual([1080, 1920])
+    expect(schema?.timeline.aspect_ratio).toBe("Ratio9x16")
+    expect(schema?.settings.resolution).toEqual({ width: 1080, height: 1920 })
+  })
+
+  it("respects explicit landscape resolution override", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [{ type: "file", value: "/tmp/clip.mp4" }],
+      output: { format: "mp4", resolution: "1080p" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request)
+
+    expect(schema?.timeline.resolution).toEqual([1920, 1080])
+    expect(schema?.timeline.aspect_ratio).toBe("Ratio16x9")
+  })
+
   it("preserves explicit project inputs and ignores empty media", () => {
     const explicit: BotRenderJobRequest = {
       source: "bot",
@@ -223,5 +251,89 @@ describe("bot project assembler", () => {
     expect(withBotProjectSchema(explicit)).toBe(explicit)
     expect(createBotProjectSchemaFromRenderJob(empty)).toBeNull()
     expect(withBotProjectSchema(empty)).toBe(empty)
+  })
+})
+
+describe("generateScriptSubtitles", () => {
+  const SCRIPT: ScriptDraft = {
+    hook: "Watch this!",
+    scenes: [
+      { index: 0, shot: "product close-up", voiceover: "Meet our product." },
+      { index: 1, shot: "happy user", voiceover: "You will love it." },
+    ],
+  }
+
+  it("returns empty array when no script provided", () => {
+    expect(generateScriptSubtitles(undefined, 5, 10)).toEqual([])
+  })
+
+  it("generates a hook subtitle at top-center for first 3 seconds", () => {
+    const subs = generateScriptSubtitles(SCRIPT, 5, 30)
+    const hook = subs.find((s) => s.id === "sub-hook")
+    expect(hook).toBeDefined()
+    expect(hook?.text).toBe("Watch this!")
+    expect(hook?.start_time).toBe(0)
+    expect(hook?.end_time).toBe(3)
+    expect(hook?.position.align_y).toBe("Top")
+    expect(hook?.font_weight).toBe("Bold")
+  })
+
+  it("generates voiceover subtitles at bottom-center per scene", () => {
+    const subs = generateScriptSubtitles(SCRIPT, 5, 30)
+    const scene0 = subs.find((s) => s.id === "sub-scene-0")
+    const scene1 = subs.find((s) => s.id === "sub-scene-1")
+    expect(scene0?.text).toBe("Meet our product.")
+    expect(scene0?.position.align_y).toBe("Bottom")
+    expect(scene0?.start_time).toBe(0)
+    expect(scene0?.end_time).toBe(5)
+    expect(scene1?.start_time).toBe(5)
+    expect(scene1?.end_time).toBe(10)
+  })
+
+  it("clamps hook end_time to totalDuration", () => {
+    const subs = generateScriptSubtitles({ hook: "Quick!", scenes: [] }, 5, 1)
+    const hook = subs.find((s) => s.id === "sub-hook")
+    expect(hook?.end_time).toBe(1)
+  })
+
+  it("omits voiceover subtitle when voiceover is empty", () => {
+    const script: ScriptDraft = {
+      scenes: [{ index: 0, shot: "shot", voiceover: "  " }],
+    }
+    const subs = generateScriptSubtitles(script, 5, 10)
+    expect(subs).toHaveLength(0)
+  })
+
+  it("respects scene-level durationSeconds when set", () => {
+    const script: ScriptDraft = {
+      scenes: [
+        { index: 0, shot: "shot", voiceover: "Hello", durationSeconds: 8 },
+        { index: 1, shot: "shot2", voiceover: "World", durationSeconds: 4 },
+      ],
+    }
+    const subs = generateScriptSubtitles(script, 5, 30)
+    expect(subs[0].end_time).toBe(8)
+    expect(subs[1].start_time).toBe(8)
+    expect(subs[1].end_time).toBe(12)
+  })
+
+  it("script passed to assembler produces subtitles in project schema", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [
+        { type: "file", value: "/tmp/a.mp4" },
+        { type: "file", value: "/tmp/b.mp4" },
+      ],
+      params: { clipDurationSeconds: "5" },
+      output: { format: "mp4" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request, { script: SCRIPT })
+
+    expect(schema?.subtitles).not.toHaveLength(0)
+    const hookSub = (schema?.subtitles as { id: string }[]).find((s) => s.id === "sub-hook")
+    const voiceSub = (schema?.subtitles as { id: string }[]).find((s) => s.id === "sub-scene-0")
+    expect(hookSub).toBeDefined()
+    expect(voiceSub).toBeDefined()
   })
 })
