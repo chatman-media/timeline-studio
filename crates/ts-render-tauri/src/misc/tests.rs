@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod misc_tests {
   use super::super::*;
-  use crate::video_compiler::gpu::GpuEncoder;
+  use ts_render::video_compiler::gpu::GpuEncoder;
 
   #[test]
   fn test_ffmpeg_capabilities_creation() {
@@ -257,7 +257,7 @@ mod misc_tests {
   #[test]
   fn test_metadata_json_parsing_logic() {
     // Test conversion to cached metadata structure
-    let test_metadata = crate::video_compiler::cache::MediaMetadata {
+    let test_metadata = ts_render::video_compiler::cache::MediaMetadata {
       file_path: "/path/to/video.mp4".to_string(),
       file_size: 1048576,
       modified_time: std::time::SystemTime::now(),
@@ -442,8 +442,13 @@ mod misc_tests {
 /// Tests for new commands that use previously unused methods
 #[cfg(test)]
 mod new_commands_tests {
-  use crate::video_compiler::commands::*;
-  use crate::video_compiler::schema::{ProjectSchema, Subtitle};
+  // Бывший плоский `crate::video_compiler::commands::*` распался на под-крейтовые модули
+  // после выноса групп в ts-render-tauri (#91 Wave 2). Импортируем точечно.
+  use crate::gpu::get_gpu_encoder_details;
+  use crate::project::{get_clip_info, touch_project_schema, track_operations, validate_subtitle};
+  use crate::schema::create_schema_objects;
+  use ts_render::video_compiler::schema::{ProjectSchema, Subtitle};
+  use ts_render_services::VideoCompilerState;
 
   #[tokio::test]
   async fn test_get_cache_stats_detailed() {
@@ -452,7 +457,7 @@ mod new_commands_tests {
     // Add some data to cache
     {
       let mut cache = state.cache_manager.write().await;
-      let key = crate::video_compiler::cache::PreviewKey::new(
+      let key = ts_render::video_compiler::cache::PreviewKey::new(
         "test_video".to_string(),
         1.0,
         (1920, 1080),
@@ -529,7 +534,7 @@ mod new_commands_tests {
 
   #[tokio::test]
   async fn test_track_operations() {
-    use crate::video_compiler::schema::{Clip, Track, TrackType};
+    use ts_render::video_compiler::schema::{Clip, Track, TrackType};
     use std::path::PathBuf;
 
     let track = Track::new(TrackType::Video, "Test Track".to_string());
@@ -553,7 +558,7 @@ mod new_commands_tests {
 
   #[tokio::test]
   async fn test_get_clip_info() {
-    use crate::video_compiler::schema::Clip;
+    use ts_render::video_compiler::schema::Clip;
     use std::path::PathBuf;
 
     let clip = Clip::new(PathBuf::from("/test/video.mp4"), 5.0, 10.0);
@@ -601,7 +606,7 @@ mod new_commands_tests {
   #[tokio::test]
   async fn test_build_render_command_with_settings() {
     // Test the FFmpegBuilder logic directly since we can't create tauri::State in tests
-    use crate::video_compiler::core::ffmpeg_builder::{
+    use ts_render::video_compiler::core::ffmpeg_builder::{
       builder::FFmpegBuilderSettings, FFmpegBuilder,
     };
 
@@ -628,8 +633,8 @@ mod new_commands_tests {
 /// Tests for segment filter functionality
 #[cfg(test)]
 mod segment_filter_tests {
-  use crate::video_compiler::core::ffmpeg_builder::filters::FilterBuilder;
-  use crate::video_compiler::schema::{
+  use ts_render::video_compiler::core::ffmpeg_builder::filters::FilterBuilder;
+  use ts_render::video_compiler::schema::{
     Clip, ClipSource, ProjectMetadata, ProjectSchema, ProjectSettings, Timeline, Track, TrackType,
   };
 
@@ -651,7 +656,7 @@ mod segment_filter_tests {
       crop: None,
       transform: None,
       audio_track_index: None,
-      properties: crate::video_compiler::schema::timeline::ClipProperties::default(),
+      properties: ts_render::video_compiler::schema::timeline::ClipProperties::default(),
     };
 
     let video_track = Track {
@@ -683,7 +688,7 @@ mod segment_filter_tests {
       crop: None,
       transform: None,
       audio_track_index: None,
-      properties: crate::video_compiler::schema::timeline::ClipProperties::default(),
+      properties: ts_render::video_compiler::schema::timeline::ClipProperties::default(),
     };
 
     let audio_track = Track {

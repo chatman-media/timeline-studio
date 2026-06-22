@@ -132,6 +132,12 @@ pub mod whisper_commands;
 /// Берёт `core::{frame_extraction,...}` из `ts-render`. Шим: `pub use ts_render_tauri::frame_extraction;`.
 pub mod frame_extraction;
 
+/// Wave 2: группа команд `misc` (разнородные команды: кэш/метаданные, gpu-инфо,
+/// secure storage, делегаты к ffmpeg_advanced/project/gpu). Берёт фундамент из
+/// `ts-render-services`/`ts-render` и зовёт соседние крейтовые группы.
+/// Шим: `pub use ts_render_tauri::misc;`.
+pub mod misc;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

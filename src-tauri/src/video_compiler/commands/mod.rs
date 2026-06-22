@@ -33,7 +33,8 @@ pub use ts_render_tauri::gpu;
 pub use ts_render_tauri::info;
 // `metrics` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::metrics;
-pub mod misc;
+// `misc` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::misc;
 // `monitoring` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::monitoring;
 // `multimodal_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
@@ -88,6 +89,9 @@ pub use frame_extraction::*;
 pub use gpu::*;
 pub use info::*;
 pub use metrics::*;
+// `CacheConfig` приходит и из misc::*, и из ai_api_proxy::* — разные типы; флэтовый
+// commands::CacheConfig нигде не используется (все пути квалифицированы). #91 Wave 2.
+#[allow(ambiguous_glob_reexports)]
 pub use misc::*;
 #[allow(ambiguous_glob_reexports)]
 pub use monitoring::*;

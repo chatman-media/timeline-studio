@@ -1,12 +1,12 @@
 //! Бизнес-логика для дополнительных команд
 
 use super::types::*;
-use crate::video_compiler::{
+use ts_render::video_compiler::{
   error::Result,
   gpu::{GpuDetector, GpuEncoder, GpuInfo},
   schema::*,
-  VideoCompilerState,
 };
+use ts_render_services::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
@@ -72,7 +72,7 @@ pub fn create_project_schema(name: String, resolution: (u32, u32), fps: u32) -> 
 
 /// Конвертировать метаданные из кэша в формат для API
 pub fn convert_metadata_to_json(
-  metadata: &crate::video_compiler::cache::MediaMetadata,
+  metadata: &ts_render::video_compiler::cache::MediaMetadata,
 ) -> CachedMediaMetadata {
   CachedMediaMetadata {
     duration: metadata.duration,
@@ -99,7 +99,7 @@ pub fn create_gpu_info_from_encoder(encoder: GpuEncoder) -> GpuInfo {
 
 /// Конвертировать использование памяти кэшем в JSON формат
 pub fn create_cache_memory_usage(
-  usage: &crate::video_compiler::core::cache::CacheMemoryUsage,
+  usage: &ts_render::video_compiler::core::cache::CacheMemoryUsage,
 ) -> CacheMemoryUsage {
   CacheMemoryUsage {
     total_bytes: usage.total_bytes as u64,
@@ -134,8 +134,8 @@ pub fn parse_cache_config(config: &serde_json::Value) -> CacheConfig {
 }
 
 /// Создать метаданные медиафайла для кэширования
-pub fn create_media_metadata(file_path: String) -> crate::video_compiler::cache::MediaMetadata {
-  crate::video_compiler::cache::MediaMetadata {
+pub fn create_media_metadata(file_path: String) -> ts_render::video_compiler::cache::MediaMetadata {
+  ts_render::video_compiler::cache::MediaMetadata {
     file_path,
     file_size: 0,
     modified_time: std::time::SystemTime::now(),
@@ -156,7 +156,7 @@ pub async fn check_hardware_acceleration_available(ffmpeg_path: String) -> Resul
   Ok(!encoders.is_empty())
 }
 /// FFmpeg Utilities Commands - команды для утилит FFmpeg
-use crate::video_compiler::commands::ffmpeg_advanced::{
+use crate::ffmpeg_advanced::{
   execute_ffmpeg_simple, get_ffmpeg_codecs, get_ffmpeg_execution_info, get_ffmpeg_formats,
 };
 
@@ -286,7 +286,7 @@ pub async fn get_ffmpeg_available_codecs(
   match get_ffmpeg_codecs().await {
     Ok(codecs) => Ok(codecs),
     Err(e) => Err(
-      crate::video_compiler::error::VideoCompilerError::validation(format!(
+      ts_render::video_compiler::error::VideoCompilerError::validation(format!(
         "Failed to get FFmpeg codecs: {e}"
       )),
     ),
@@ -300,7 +300,7 @@ pub async fn get_ffmpeg_available_formats(
   match get_ffmpeg_formats().await {
     Ok(formats) => Ok(formats),
     Err(e) => Err(
-      crate::video_compiler::error::VideoCompilerError::validation(format!(
+      ts_render::video_compiler::error::VideoCompilerError::validation(format!(
         "Failed to get FFmpeg formats: {e}"
       )),
     ),
@@ -387,7 +387,7 @@ pub async fn get_ffmpeg_execution_information(
       })
     }
     Err(e) => Err(
-      crate::video_compiler::error::VideoCompilerError::validation(format!(
+      ts_render::video_compiler::error::VideoCompilerError::validation(format!(
         "Failed to get FFmpeg execution info: {e}"
       )),
     ),
@@ -395,7 +395,7 @@ pub async fn get_ffmpeg_execution_information(
 }
 
 /// Final Utilities Commands - финальные команды для оставшихся функций
-use crate::video_compiler::commands::ffmpeg_advanced::generate_subtitle_preview;
+use crate::ffmpeg_advanced::generate_subtitle_preview;
 
 /// Параметры для генерации превью субтитров
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -587,12 +587,12 @@ pub fn clear_secure_storage_logic(confirm: bool) -> serde_json::Value {
 }
 
 /// Remaining Utilities Commands - команды для оставшихся неиспользуемых функций
-use crate::video_compiler::commands::ffmpeg_advanced::test_hardware_acceleration;
-use crate::video_compiler::commands::project::{
+use crate::ffmpeg_advanced::test_hardware_acceleration;
+use crate::project::{
   get_clip_info, touch_project_schema, track_operations, validate_subtitle,
 };
-use crate::video_compiler::core::cache::{CacheStats, RenderCache};
-use crate::video_compiler::schema::{Clip, ProjectSchema, Subtitle, Track};
+use ts_render::video_compiler::core::cache::{CacheStats, RenderCache};
+use ts_render::video_compiler::schema::{Clip, ProjectSchema, Subtitle, Track};
 
 /// Результат тестирования аппаратного ускорения
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -914,7 +914,7 @@ mod tests {
 
   #[test]
   fn test_track_operations_params_serialization() {
-    use crate::video_compiler::schema::{Track, TrackType};
+    use ts_render::video_compiler::schema::{Track, TrackType};
 
     let track = Track::new(TrackType::Video, "Test Track".to_string());
     let params = TrackOperationsParams {
