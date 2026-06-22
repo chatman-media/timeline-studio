@@ -3,7 +3,7 @@
 use tokio::process::Command;
 
 use crate::video_compiler::error::Result;
-use crate::video_compiler::schema::{Clip, ProjectSchema, Track, TrackType, Transition};
+use crate::video_compiler::schema::{Clip, ClipSource, ProjectSchema, Track, TrackType, Transition};
 
 use super::effects::EffectBuilder;
 use super::subtitles::SubtitleBuilder;
@@ -34,12 +34,10 @@ impl<'a> FilterBuilder<'a> {
 
       // Маппинг выходов
       let has_video = self.has_video_tracks();
-      // Аудио на выходе: отдельные audio-треки ИЛИ встроенное аудио видео-клипов.
-      let has_audio = self.has_audio_tracks()
-        || self
-          .get_video_tracks()
-          .iter()
-          .any(|t| t.enabled && !t.clips.is_empty());
+      // Аудио на выходе мапим ТОЛЬКО если граф реально его произведёт, иначе `-map [outa]`
+      // ссылается на несуществующий поток и FFmpeg падает (частый случай: фото без музыки —
+      // у изображения нет аудиодорожки).
+      let has_audio = self.audio_output_present();
       let has_subtitles = !self.project.subtitles.is_empty();
 
       if has_video {
@@ -241,69 +239,103 @@ impl<'a> FilterBuilder<'a> {
   }
 
   /// Аудио из встроенных дорожек видео-клипов (когда отдельных audio-треков нет).
-  /// Индексы входов совпадают с видео-клипами (0..N), т.к. этот путь работает только
-  /// при `!has_audio_tracks()`. Допущение: видео-клипы содержат аудиодорожку — клипы без
-  /// звука пока не отсеиваются (потребуют ffprobe); для видео-со-звуком покрывает типичный случай.
+  /// Индексы входов совпадают с порядком File-клипов (0..N) — ровно так их нумерует
+  /// `InputBuilder`. Клипы-изображения пропускаем: у фото нет аудиопотока, и ссылка
+  /// `[i:a]` на него уронила бы рендер. Не-File источники не становятся входами FFmpeg.
   fn build_video_clips_audio_chain(&self) -> String {
-    let count: usize = self
-      .get_video_tracks()
-      .iter()
-      .filter(|t| t.enabled)
-      .map(|t| t.clips.len())
-      .sum();
-    match count {
-      0 => String::new(),
-      1 => "[0:a]anull[outa]".to_string(),
-      n => {
-        let inputs: String = (0..n).map(|i| format!("[{i}:a]")).collect();
-        format!("{inputs}concat=n={n}:v=0:a=1[outa]")
+    let mut labels: Vec<String> = Vec::new();
+    let mut input_index = 0usize;
+
+    for track in self.get_video_tracks() {
+      if !track.enabled {
+        continue;
       }
+      for clip in &track.clips {
+        // Индекс входа выделяется только File-клипам (см. InputBuilder::collect_input_sources).
+        if matches!(&clip.source, ClipSource::File(_)) {
+          if Self::clip_provides_embedded_audio(&clip.source) {
+            labels.push(format!("[{input_index}:a]"));
+          }
+          input_index += 1;
+        }
+      }
+    }
+
+    match labels.len() {
+      0 => String::new(),
+      1 => format!("{}anull[outa]", labels[0]),
+      n => format!("{}concat=n={n}:v=0:a=1[outa]", labels.join("")),
     }
   }
 
-  /// Построить цепочку аудио фильтров
+  /// Построить цепочку аудио фильтров.
+  ///
+  /// Симметрично видео-цепочке: каждый аудиоклип даёт тело с меткой `[a{i}]`, затем клипы
+  /// трека склеиваются `concat` с ЯВНЫМ перечислением входных меток, а треки сводятся `amix`.
+  /// Метки обязательны — без них ffmpeg падает с «No such filter: ''» (ровно эта ошибка уже
+  /// была вычищена в видео-пути; в аудио-пути её пропустили: `;concat=` без входов и финальный
+  /// `[atrack0][outa]` без фильтра между метками).
   async fn build_audio_filter_chain(&self, input_index: &mut usize) -> Result<String> {
     let mut filters = Vec::new();
+    let mut track_labels: Vec<String> = Vec::new();
     let audio_tracks = self.get_audio_tracks();
 
-    for (track_idx, track) in audio_tracks.iter().enumerate() {
+    for track in audio_tracks.iter() {
       if !track.enabled {
         continue;
       }
 
-      let mut track_filters = Vec::new();
+      let mut clip_chains: Vec<String> = Vec::new();
+      let mut clip_labels: Vec<String> = Vec::new();
 
       for clip in &track.clips {
         let clip_filter = self.build_audio_clip_filter(clip, *input_index).await?;
-        track_filters.push(clip_filter);
+        clip_chains.push(clip_filter);
+        clip_labels.push(format!("[a{}]", *input_index));
         *input_index += 1;
       }
 
-      // Объединяем клипы трека
-      if !track_filters.is_empty() {
-        let track_filter = format!(
-          "{};concat=n={}:v=0:a=1[atrack{}]",
-          track_filters.join(";"),
-          track_filters.len(),
-          track_idx
-        );
-        filters.push(track_filter);
+      if clip_chains.is_empty() {
+        continue;
       }
+
+      let track_label = format!("atrack{}", track_labels.len());
+      let chain = if clip_labels.len() == 1 {
+        // один клип на треке — переименовываем его выход null-фильтром (без лишнего concat)
+        format!(
+          "{};{}anull[{}]",
+          clip_chains.join(";"),
+          clip_labels[0],
+          track_label
+        )
+      } else {
+        // несколько клипов — склейка concat с ВХОДНЫМИ метками
+        format!(
+          "{};{}concat=n={}:v=0:a=1[{}]",
+          clip_chains.join(";"),
+          clip_labels.join(""),
+          clip_labels.len(),
+          track_label
+        )
+      };
+      filters.push(chain);
+      track_labels.push(format!("[{track_label}]"));
     }
 
-    // Смешиваем аудио треки
-    if filters.len() > 1 {
-      let mix_filter = format!(
-        "{}amix=inputs={}[outa]",
-        (0..filters.len())
-          .map(|i| format!("[atrack{i}]"))
-          .collect::<Vec<_>>()
-          .join(""),
-        filters.len()
-      );
-      filters.push(mix_filter);
-    } else if filters.len() == 1 {
-      filters.push("[atrack0][outa]".to_string());
+    // Сводим аудио треки в [outa]
+    match track_labels.len() {
+      0 => {}
+      1 => {
+        // один трек — переименовываем его выход в [outa] null-фильтром
+        filters.push(format!("{}anull[outa]", track_labels[0]));
+      }
+      _ => {
+        filters.push(format!(
+          "{}amix=inputs={}[outa]",
+          track_labels.join(""),
+          track_labels.len()
+        ));
+      }
     }
 
     Ok(filters.join(";"))
@@ -515,6 +547,34 @@ impl<'a> FilterBuilder<'a> {
       .iter()
       .filter(|t| t.track_type == TrackType::Audio)
       .collect()
+  }
+
+  /// Содержит ли File-клип собственную аудиодорожку.
+  /// Только File-клипы становятся входами FFmpeg; фото беззвучны, поэтому исключаются.
+  fn clip_provides_embedded_audio(source: &ClipSource) -> bool {
+    matches!(source, ClipSource::File(p) if !super::is_image_path(p))
+  }
+
+  /// Будет ли в filtergraph реально получен аудиовыход `[outa]`.
+  ///
+  /// Должно точно совпадать с логикой `build_filter_complex`: при наличии аудио-треков
+  /// аудио берётся из них (нужен хотя бы один клип), иначе — из встроенного звука
+  /// неизображённых видео-клипов. Иначе `-map [outa]` сошлётся на несуществующий поток.
+  fn audio_output_present(&self) -> bool {
+    if self.has_audio_tracks() {
+      self
+        .get_audio_tracks()
+        .iter()
+        .any(|t| t.enabled && !t.clips.is_empty())
+    } else {
+      self.get_video_tracks().iter().any(|t| {
+        t.enabled
+          && t
+            .clips
+            .iter()
+            .any(|c| Self::clip_provides_embedded_audio(&c.source))
+      })
+    }
   }
 }
 
@@ -974,6 +1034,137 @@ mod tests {
     let filter = result.unwrap();
     // Должен содержать amix для смешивания треков
     assert!(filter.contains("amix"));
+  }
+
+  #[tokio::test]
+  async fn test_build_audio_filter_chain_single_track_is_valid() {
+    let mut project = create_minimal_project();
+
+    let mut audio_track = Track::new(TrackType::Audio, "Music".to_string());
+    audio_track
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/music.mp3"), 0.0, 5.0));
+    project.tracks.push(audio_track);
+
+    let builder = FilterBuilder::new(&project);
+    let mut input_index = 0;
+    let filter = builder
+      .build_audio_filter_chain(&mut input_index)
+      .await
+      .unwrap();
+
+    // Метка клипа существует и корректно сводится в [outa] через anull.
+    assert!(filter.contains("[a0]"), "filter was: {filter}");
+    assert!(filter.contains("anull[outa]"), "filter was: {filter}");
+    // Регрессия: ранее генерировались невалидные участки графа.
+    assert!(
+      !filter.contains("[atrack0][outa]"),
+      "label-only segment must not appear: {filter}"
+    );
+    assert!(
+      !filter.contains(";concat="),
+      "concat must list input labels: {filter}"
+    );
+  }
+
+  #[test]
+  fn test_build_video_clips_audio_chain_skips_images() {
+    let mut project = create_minimal_project();
+
+    let mut video_track = Track::new(TrackType::Video, "Video".to_string());
+    // index 0 — фото (без звука), index 1 — видео (со звуком)
+    video_track
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/photo.jpg"), 0.0, 5.0));
+    video_track
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/clip.mp4"), 5.0, 5.0));
+    project.tracks.push(video_track);
+
+    let builder = FilterBuilder::new(&project);
+    let chain = builder.build_video_clips_audio_chain();
+
+    // Фото пропущено: ссылаемся только на аудио видеоклипа (вход 1).
+    assert!(chain.contains("[1:a]"), "chain was: {chain}");
+    assert!(!chain.contains("[0:a]"), "image must be skipped: {chain}");
+    assert!(chain.contains("anull[outa]"), "chain was: {chain}");
+  }
+
+  #[test]
+  fn test_audio_output_present() {
+    // Только фото, без аудио-трека → аудиовыхода нет.
+    let mut photo_only = create_minimal_project();
+    let mut video_track = Track::new(TrackType::Video, "Video".to_string());
+    video_track
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/photo.jpg"), 0.0, 5.0));
+    photo_only.tracks.push(video_track);
+    assert!(!FilterBuilder::new(&photo_only).audio_output_present());
+
+    // Фото + музыка → аудиовыход есть.
+    let mut with_music = photo_only.clone();
+    let mut audio_track = Track::new(TrackType::Audio, "Music".to_string());
+    audio_track
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/music.mp3"), 0.0, 5.0));
+    with_music.tracks.push(audio_track);
+    assert!(FilterBuilder::new(&with_music).audio_output_present());
+  }
+
+  #[tokio::test]
+  async fn test_add_filter_complex_photo_music_subtitles() {
+    // Полный сценарий бота: фото (видео) + музыка (аудио) + субтитр.
+    let mut project = create_minimal_project();
+
+    let mut video = Track::new(TrackType::Video, "Video".to_string());
+    video
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/photo.jpg"), 0.0, 5.0));
+    let mut audio = Track::new(TrackType::Audio, "Music".to_string());
+    audio
+      .clips
+      .push(Clip::new(std::path::PathBuf::from("/tmp/music.mp3"), 0.0, 5.0));
+    project.tracks.push(video);
+    project.tracks.push(audio);
+    project.subtitles.push(crate::video_compiler::schema::Subtitle::new(
+      "Привет".to_string(),
+      0.0,
+      5.0,
+    ));
+
+    let builder = FilterBuilder::new(&project);
+    let mut cmd = Command::new("ffmpeg");
+    builder.add_filter_complex(&mut cmd).await.unwrap();
+
+    let args: Vec<String> = cmd
+      .as_std()
+      .get_args()
+      .map(|s| s.to_string_lossy().to_string())
+      .collect();
+
+    let fc_idx = args
+      .iter()
+      .position(|a| a == "-filter_complex")
+      .expect("filter_complex must be present");
+    let fc = &args[fc_idx + 1];
+
+    // Субтитр выжигается (drawtext) и даёт отдельный видеовыход.
+    assert!(fc.contains("drawtext"), "subtitle burn-in missing: {fc}");
+    assert!(fc.contains("[outv_with_subs]"), "subtitle output missing: {fc}");
+    // Аудио сведено в [outa].
+    assert!(fc.contains("[outa]"), "audio output missing: {fc}");
+    // Граф не содержит регрессионных «пустых» участков.
+    assert!(!fc.contains(";concat="), "concat without inputs: {fc}");
+
+    // Маппинг выходов: видео-с-субтитрами + аудио.
+    assert!(
+      args.windows(2).any(|w| w[0] == "-map" && w[1] == "[outv_with_subs]"),
+      "args: {args:?}"
+    );
+    assert!(
+      args.windows(2).any(|w| w[0] == "-map" && w[1] == "[outa]"),
+      "args: {args:?}"
+    );
   }
 
   #[tokio::test]
