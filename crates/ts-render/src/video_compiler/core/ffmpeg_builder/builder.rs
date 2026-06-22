@@ -61,16 +61,28 @@ impl FFmpegBuilder {
   pub async fn build_render_command(&self, output_path: &Path) -> Result<Command> {
     let mut cmd = Command::new(&self.settings.ffmpeg_path);
 
+    // Субтитры выжигаются фильтром drawtext, которого нет, если ffmpeg собран без libfreetype.
+    // Чтобы из-за этого не падал ВЕСЬ рендер ("No such filter: 'drawtext'"), при отсутствии
+    // фильтра рендерим без субтитров. Проба ffmpeg делается только когда субтитры реально есть.
+    let drawtext_ok = self.project.subtitles.is_empty() || self.drawtext_available();
+    if !drawtext_ok {
+      log::warn!(
+        "FFmpeg '{}' не содержит фильтр drawtext (нет libfreetype) — рендер без выжженных субтитров",
+        self.settings.ffmpeg_path
+      );
+    }
+    let project = project_without_unsupported_subtitles(&self.project, drawtext_ok);
+
     // Добавляем входные файлы
-    let input_builder = InputBuilder::new(&self.project);
+    let input_builder = InputBuilder::new(&project);
     input_builder.add_input_sources(&mut cmd).await?;
 
     // Добавляем фильтры
-    let filter_builder = FilterBuilder::new(&self.project);
+    let filter_builder = FilterBuilder::new(&project);
     filter_builder.add_filter_complex(&mut cmd).await?;
 
     // Добавляем настройки вывода
-    let output_builder = OutputBuilder::new(&self.project, &self.settings);
+    let output_builder = OutputBuilder::new(&project, &self.settings);
     output_builder
       .add_output_settings(&mut cmd, output_path)
       .await?;
@@ -79,6 +91,20 @@ impl FFmpegBuilder {
     self.add_global_options(&mut cmd);
 
     Ok(cmd)
+  }
+
+  /// Доступен ли в текущем ffmpeg фильтр `drawtext` (нужен libfreetype) для выжигания субтитров.
+  /// Переопределяется переменной окружения `TIMELINE_ASSUME_DRAWTEXT` (1/0) — например, чтобы
+  /// не запускать пробу в окружении без ffmpeg.
+  fn drawtext_available(&self) -> bool {
+    if let Ok(v) = std::env::var("TIMELINE_ASSUME_DRAWTEXT") {
+      return !(v == "0" || v.eq_ignore_ascii_case("false"));
+    }
+    std::process::Command::new(&self.settings.ffmpeg_path)
+      .args(["-hide_banner", "-loglevel", "error", "-filters"])
+      .output()
+      .map(|o| String::from_utf8_lossy(&o.stdout).contains("drawtext"))
+      .unwrap_or(false)
   }
 
   /// Построить команду для генерации превью
@@ -177,6 +203,21 @@ impl FFmpegBuilder {
   /// Получить проект
   pub fn project(&self) -> &ProjectSchema {
     &self.project
+  }
+}
+
+/// Вернуть проект без субтитров, если их выжигание невозможно (нет фильтра drawtext).
+/// Заимствует исходный проект без копирования, когда субтитров нет или они поддерживаются.
+fn project_without_unsupported_subtitles(
+  project: &ProjectSchema,
+  drawtext_available: bool,
+) -> std::borrow::Cow<'_, ProjectSchema> {
+  if project.subtitles.is_empty() || drawtext_available {
+    std::borrow::Cow::Borrowed(project)
+  } else {
+    let mut stripped = project.clone();
+    stripped.subtitles.clear();
+    std::borrow::Cow::Owned(stripped)
   }
 }
 
@@ -343,6 +384,29 @@ mod tests {
     // Проверяем что команда содержит основные элементы сегмента
     assert!(args.contains(&"-y".to_string()));
     assert!(args.contains(&"-hide_banner".to_string()));
+  }
+
+  #[test]
+  fn test_project_without_unsupported_subtitles() {
+    let mut project = create_minimal_project();
+    project.subtitles.push(crate::video_compiler::schema::Subtitle::new(
+      "hi".to_string(),
+      0.0,
+      2.0,
+    ));
+
+    // drawtext доступен → субтитры сохраняются, проект заимствуется без клона.
+    let kept = project_without_unsupported_subtitles(&project, true);
+    assert_eq!(kept.subtitles.len(), 1);
+    assert!(matches!(kept, std::borrow::Cow::Borrowed(_)));
+
+    // drawtext недоступен → субтитры убираем, чтобы рендер не падал целиком.
+    let stripped = project_without_unsupported_subtitles(&project, false);
+    assert!(stripped.subtitles.is_empty());
+    assert!(matches!(stripped, std::borrow::Cow::Owned(_)));
+
+    // исходный проект не мутируется
+    assert_eq!(project.subtitles.len(), 1);
   }
 
   #[test]

@@ -6,6 +6,10 @@ use tokio::process::Command;
 use crate::video_compiler::error::Result;
 use crate::video_compiler::schema::{ClipSource, ProjectSchema, TrackType};
 
+/// Длительность показа фото по умолчанию, если у клипа не задана корректная длительность.
+/// Нужна как страховка от бесконечного `-loop 1` без `-t`.
+const DEFAULT_IMAGE_DURATION_SECONDS: f64 = 5.0;
+
 /// Информация о входном источнике
 #[derive(Debug, Clone)]
 pub struct InputSource {
@@ -61,25 +65,46 @@ impl<'a> InputBuilder<'a> {
   fn add_input_source(&self, cmd: &mut Command, source: &InputSource) -> Result<()> {
     // --- Опции ВХОДА: обязаны идти ДО -i ---
 
-    // Время начала чтения источника
-    if source.start_time > 0.0 {
-      cmd.args(["-ss", &source.start_time.to_string()]);
-    }
+    let path = source.path.to_string_lossy();
+    let is_image = matches!(source.track_type, TrackType::Video) && super::is_image_path(&path);
 
-    // Ограничение длительности чтения ВХОДА.
-    // ВАЖНО: -t обязан стоять ДО -i — иначе это ВЫХОДНАЯ опция и обрезает весь рендер
-    // до длины последнего клипа (был баг мультиклипа: 3×2с давали выход 2с).
-    if source.duration > 0.0 {
-      cmd.args(["-t", &source.duration.to_string()]);
-    }
+    if is_image {
+      // Статичное фото: зацикливаем единственный кадр и задаём частоту кадров входа.
+      // Без `-loop 1` FFmpeg декодирует ровно один кадр, `-t` ни на что не влияет,
+      // и на выходе получается ~1 кадр вместо клипа нужной длины.
+      cmd.args(["-loop", "1"]);
+      cmd.args(["-framerate", &self.project.settings.frame_rate.to_string()]);
 
-    // Аппаратное декодирование — тоже опция входа (до -i)
-    if matches!(source.track_type, TrackType::Video) && self.should_use_hardware_decoding() {
-      cmd.args(["-hwaccel", "auto"]);
+      // Длительность показа фото (опция ВХОДА, до -i — ограничивает бесконечный цикл).
+      let duration = if source.duration > 0.0 {
+        source.duration
+      } else {
+        DEFAULT_IMAGE_DURATION_SECONDS
+      };
+      cmd.args(["-t", &duration.to_string()]);
+
+      // У фото нет временно́й оси — `-ss`/`-hwaccel` не применяем.
+    } else {
+      // Время начала чтения источника
+      if source.start_time > 0.0 {
+        cmd.args(["-ss", &source.start_time.to_string()]);
+      }
+
+      // Ограничение длительности чтения ВХОДА.
+      // ВАЖНО: -t обязан стоять ДО -i — иначе это ВЫХОДНАЯ опция и обрезает весь рендер
+      // до длины последнего клипа (был баг мультиклипа: 3×2с давали выход 2с).
+      if source.duration > 0.0 {
+        cmd.args(["-t", &source.duration.to_string()]);
+      }
+
+      // Аппаратное декодирование — тоже опция входа (до -i)
+      if matches!(source.track_type, TrackType::Video) && self.should_use_hardware_decoding() {
+        cmd.args(["-hwaccel", "auto"]);
+      }
     }
 
     // Входной файл
-    cmd.args(["-i", &source.path.to_string_lossy()]);
+    cmd.args(["-i", &path]);
 
     Ok(())
   }
@@ -378,6 +403,88 @@ mod tests {
 
     assert!(args.contains(&"-i".to_string()));
     assert!(args.contains(&"/test/audio.mp3".to_string()));
+  }
+
+  #[test]
+  fn test_add_input_source_image_loops() {
+    let project = create_minimal_project();
+    let builder = InputBuilder::new(&project);
+    let mut cmd = Command::new("ffmpeg");
+
+    let source = InputSource {
+      path: PathBuf::from("/test/photo.jpg"),
+      start_time: 0.0,
+      duration: 5.0,
+      track_type: TrackType::Video,
+    };
+
+    builder.add_input_source(&mut cmd, &source).unwrap();
+
+    let args: Vec<String> = cmd
+      .as_std()
+      .get_args()
+      .map(|s| s.to_string_lossy().to_string())
+      .collect();
+
+    // Фото обязано зацикливаться и иметь частоту кадров + ограничение длительности.
+    assert!(args.contains(&"-loop".to_string()));
+    assert!(args.contains(&"1".to_string()));
+    assert!(args.contains(&"-framerate".to_string()));
+    assert!(args.contains(&"-t".to_string()));
+    assert!(args.contains(&"5".to_string()));
+    assert!(args.contains(&"/test/photo.jpg".to_string()));
+  }
+
+  #[test]
+  fn test_add_input_source_image_uses_default_duration() {
+    let project = create_minimal_project();
+    let builder = InputBuilder::new(&project);
+    let mut cmd = Command::new("ffmpeg");
+
+    // Длительность не задана (0.0) — фото всё равно не должно зацикливаться бесконечно.
+    let source = InputSource {
+      path: PathBuf::from("/test/photo.png"),
+      start_time: 0.0,
+      duration: 0.0,
+      track_type: TrackType::Video,
+    };
+
+    builder.add_input_source(&mut cmd, &source).unwrap();
+
+    let args: Vec<String> = cmd
+      .as_std()
+      .get_args()
+      .map(|s| s.to_string_lossy().to_string())
+      .collect();
+
+    assert!(args.contains(&"-loop".to_string()));
+    assert!(args.contains(&"-t".to_string()));
+    assert!(args.contains(&"5".to_string())); // DEFAULT_IMAGE_DURATION_SECONDS
+  }
+
+  #[test]
+  fn test_add_input_source_video_does_not_loop() {
+    let project = create_minimal_project();
+    let builder = InputBuilder::new(&project);
+    let mut cmd = Command::new("ffmpeg");
+
+    let source = InputSource {
+      path: PathBuf::from("/test/clip.mp4"),
+      start_time: 0.0,
+      duration: 5.0,
+      track_type: TrackType::Video,
+    };
+
+    builder.add_input_source(&mut cmd, &source).unwrap();
+
+    let args: Vec<String> = cmd
+      .as_std()
+      .get_args()
+      .map(|s| s.to_string_lossy().to_string())
+      .collect();
+
+    assert!(!args.contains(&"-loop".to_string()));
+    assert!(!args.contains(&"-framerate".to_string()));
   }
 
   #[tokio::test]

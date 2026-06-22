@@ -104,6 +104,38 @@ describe("bot project assembler", () => {
     })
   })
 
+  it("puts audio media on a separate Audio track (photo + music)", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [
+        { type: "file", value: "/tmp/photo.jpg", name: "photo.jpg", mimeType: "image/jpeg" },
+        { type: "file", value: "/tmp/music.mp3", name: "music.mp3", mimeType: "audio/mpeg" },
+        // без mimeType — определяется по расширению
+        { type: "file", value: "/tmp/track.flac" },
+      ],
+      output: { format: "mp4" },
+      params: { clipDurationSeconds: "5" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request)
+    expect(schema).not.toBeNull()
+
+    const videoTrack = schema!.tracks.find((t) => t.track_type === "Video")
+    const audioTrack = schema!.tracks.find((t) => t.track_type === "Audio")
+
+    expect(videoTrack?.id).toBe("bot-video-track")
+    expect(videoTrack?.clips).toHaveLength(1)
+    expect(videoTrack?.clips[0]?.source).toEqual({ File: "/tmp/photo.jpg" })
+
+    expect(audioTrack?.id).toBe("bot-audio-track")
+    expect(audioTrack?.clips).toHaveLength(2)
+    expect(audioTrack?.clips[0]?.source).toEqual({ File: "/tmp/music.mp3" })
+    expect(audioTrack?.clips[1]?.source).toEqual({ File: "/tmp/track.flac" })
+    // аудио-клипы нумеруются независимо (последовательно внутри своего трека)
+    expect(audioTrack?.clips[0]?.start_time).toBe(0)
+    expect(audioTrack?.clips[1]?.start_time).toBe(5)
+  })
+
   it("hydrates render jobs without an explicit project", () => {
     const request: BotRenderJobRequest = {
       source: "bot",

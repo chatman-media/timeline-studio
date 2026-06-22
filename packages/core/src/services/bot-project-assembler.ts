@@ -43,18 +43,41 @@ export function createBotProjectSchemaFromRenderJob(
   const aspectRatio = resolveAspectRatio(resolution)
   const fps = options.fps ?? DEFAULT_FPS
   const sampleRate = options.sampleRate ?? DEFAULT_SAMPLE_RATE
-  const clips = media.map((item, index) => createClip(item, index, request, clipDuration))
-  const duration = Math.max(...clips.map((clip) => clip.end_time), clipDuration)
-  const track: Track = {
-    id: "bot-video-track",
-    track_type: "Video",
-    name: "Bot Video",
-    enabled: true,
-    volume: 1,
-    locked: false,
-    clips,
-    effects: [],
-    filters: [],
+  // Аудио (музыка) должно попадать на отдельную Audio-дорожку, а не на видео-трек:
+  // иначе Rust-рендер обрабатывает звук как видеовход (scale=... падает) и не миксует музыку.
+  const visualMedia = media.filter((item) => mediaKind(item) !== "audio")
+  const audioMedia = media.filter((item) => mediaKind(item) === "audio")
+
+  const visualClips = visualMedia.map((item, index) => createClip(item, index, request, clipDuration))
+  const audioClips = audioMedia.map((item, index) => createClip(item, index, request, clipDuration))
+  const duration = Math.max(...[...visualClips, ...audioClips].map((clip) => clip.end_time), clipDuration)
+
+  const tracks: Track[] = []
+  if (visualClips.length > 0) {
+    tracks.push({
+      id: "bot-video-track",
+      track_type: "Video",
+      name: "Bot Video",
+      enabled: true,
+      volume: 1,
+      locked: false,
+      clips: visualClips,
+      effects: [],
+      filters: [],
+    })
+  }
+  if (audioClips.length > 0) {
+    tracks.push({
+      id: "bot-audio-track",
+      track_type: "Audio",
+      name: "Bot Audio",
+      enabled: true,
+      volume: 1,
+      locked: false,
+      clips: audioClips,
+      effects: [],
+      filters: [],
+    })
   }
 
   return {
@@ -73,7 +96,7 @@ export function createBotProjectSchemaFromRenderJob(
       sample_rate: sampleRate,
       aspect_ratio: aspectRatio,
     },
-    tracks: [track],
+    tracks,
     effects: [],
     transitions: [],
     filters: [],
@@ -241,6 +264,17 @@ function positiveNumber(value: unknown): number | undefined {
 
 function isUrl(value: string): boolean {
   return value.startsWith("http://") || value.startsWith("https://")
+}
+
+/// Тип медиа: "audio" (музыка/звук) — на отдельную аудио-дорожку; "visual" (видео/фото) — на видео.
+function mediaKind(media: BotRenderJobMediaInput): "audio" | "visual" {
+  const mime = media.mimeType?.toLowerCase() ?? ""
+  if (mime.startsWith("audio/")) return "audio"
+  if (mime.startsWith("video/") || mime.startsWith("image/")) return "visual"
+
+  const ref = (media.name ?? media.value).toLowerCase()
+  if (/\.(mp3|wav|aac|m4a|flac|ogg|oga|opus|wma|aif|aiff|alac)$/.test(ref)) return "audio"
+  return "visual"
 }
 
 function isClose(actual: number, expected: number): boolean {
