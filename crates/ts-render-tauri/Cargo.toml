@@ -1,0 +1,18 @@
+[package]
+name = "ts-render-tauri"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri-командный слой Timeline Studio поверх ts-render (#91/#92, Option B). Вынос video_compiler::commands/services/state из монолита src-tauri в крейт. Содержит #[tauri::command]-обёртки, поэтому зависит от tauri (в отличие от headless ts-render)."
+
+[lib]
+name = "ts_render_tauri"
+path = "src/lib.rs"
+
+[dependencies]
+# tauri нужен для #[tauri::command]; версия и фичи держатся в синхроне с src-tauri/Cargo.toml.
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"

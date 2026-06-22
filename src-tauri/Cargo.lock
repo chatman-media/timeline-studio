@@ -8063,6 +8063,7 @@ dependencies = [
  "ts-platform",
  "ts-recognition",
  "ts-render",
+ "ts-render-tauri",
  "ts-schema",
  "ts-state",
  "ts-subtitles",
@@ -8689,6 +8690,15 @@ dependencies = [
  "ts-schema",
  "uuid",
  "zstd",
+]
+
+[[package]]
+name = "ts-render-tauri"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
 ]
 
 [[package]]
