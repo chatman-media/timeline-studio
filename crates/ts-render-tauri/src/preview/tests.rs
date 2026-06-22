@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod preview_tests {
   use super::super::*;
-  use crate::video_compiler::schema::{Clip, ProjectSchema, Track, TrackType};
+  use ts_render::video_compiler::schema::{Clip, ProjectSchema, Track, TrackType};
   use serde_json::json;
   use std::path::PathBuf;
   use tempfile::TempDir;
@@ -121,7 +121,7 @@ mod preview_tests {
 
   #[test]
   fn test_preview_key_creation() {
-    use crate::video_compiler::cache::PreviewKey;
+    use ts_render::video_compiler::cache::PreviewKey;
 
     let key = PreviewKey::new("test_video".to_string(), 5.0, (1920, 1080), 85);
 

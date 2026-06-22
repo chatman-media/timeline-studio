@@ -2,10 +2,10 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::core::pipeline_refactored::{PipelineBuilder, RenderPipeline};
-use crate::video_compiler::error::Result;
-use crate::video_compiler::schema::ProjectSchema;
-use crate::video_compiler::VideoCompilerState;
+use ts_render::video_compiler::core::pipeline_refactored::{PipelineBuilder, RenderPipeline};
+use ts_render::video_compiler::error::Result;
+use ts_render::video_compiler::schema::ProjectSchema;
+use ts_render_services::VideoCompilerState;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::State;
@@ -25,7 +25,7 @@ pub async fn create_and_execute_pipeline(
 
   // Создаем трекер прогресса
   let (sender, _receiver) = tokio::sync::mpsc::unbounded_channel();
-  let progress_tracker = Arc::new(crate::video_compiler::progress::ProgressTracker::new(
+  let progress_tracker = Arc::new(ts_render::video_compiler::progress::ProgressTracker::new(
     sender,
   ));
 
@@ -85,7 +85,7 @@ pub async fn get_pipeline_info(
     })
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -104,7 +104,7 @@ pub async fn cancel_pipeline(job_id: String, state: State<'_, VideoCompilerState
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -126,7 +126,7 @@ pub async fn get_pipeline_statistics(
     Ok(serde_json::to_value(stats)?)
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -159,7 +159,7 @@ pub async fn get_pipeline_context(
     Ok(context_data)
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -171,7 +171,7 @@ pub async fn get_pipeline_context(
 #[tauri::command]
 pub async fn update_pipeline_settings(
   job_id: String,
-  new_settings: crate::video_compiler::CompilerSettings,
+  new_settings: ts_render::video_compiler::CompilerSettings,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
   let pipelines = state.active_pipelines.read().await;
@@ -182,7 +182,7 @@ pub async fn update_pipeline_settings(
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -204,7 +204,7 @@ pub async fn validate_pipeline_configuration(
     Ok(true)
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -231,7 +231,7 @@ pub async fn get_active_pipelines(state: State<'_, VideoCompilerState>) -> Resul
 //     Ok(())
 //   } else {
 //     Err(
-//       crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+//       ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
 //         "Pipeline not found: {}",
 //         job_id
 //       )),
@@ -250,7 +250,7 @@ pub async fn get_active_pipelines(state: State<'_, VideoCompilerState>) -> Resul
 //     Ok(())
 //   } else {
 //     Err(
-//       crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+//       ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
 //         "Pipeline not found: {}",
 //         job_id
 //       )),
@@ -305,18 +305,18 @@ pub async fn insert_pipeline_stage(
       "validation" => {
         pipeline.insert_stage(
           index,
-          Box::new(crate::video_compiler::core::stages::ValidationStage::new()),
+          Box::new(ts_render::video_compiler::core::stages::ValidationStage::new()),
         );
       }
       "preprocessing" => {
         pipeline.insert_stage(
           index,
-          Box::new(crate::video_compiler::core::stages::PreprocessingStage::new()),
+          Box::new(ts_render::video_compiler::core::stages::PreprocessingStage::new()),
         );
       }
       _ => {
         return Err(
-          crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+          ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
             "Unknown stage type: {}",
             stage_name
           )),
@@ -327,7 +327,7 @@ pub async fn insert_pipeline_stage(
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -349,7 +349,7 @@ pub async fn remove_pipeline_stage(
     Ok(pipeline.remove_stage(&stage_name))
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -373,7 +373,7 @@ pub async fn build_custom_pipeline(
 
   // Создаем трекер прогресса
   let (sender, _receiver) = tokio::sync::mpsc::unbounded_channel();
-  let progress_tracker = Arc::new(crate::video_compiler::progress::ProgressTracker::new(
+  let progress_tracker = Arc::new(ts_render::video_compiler::progress::ProgressTracker::new(
     sender,
   ));
 
@@ -391,27 +391,27 @@ pub async fn build_custom_pipeline(
     match stage_name.as_str() {
       "validation" => {
         builder = builder.add_stage(Box::new(
-          crate::video_compiler::core::stages::ValidationStage::new(),
+          ts_render::video_compiler::core::stages::ValidationStage::new(),
         ));
       }
       "preprocessing" => {
         builder = builder.add_stage(Box::new(
-          crate::video_compiler::core::stages::PreprocessingStage::new(),
+          ts_render::video_compiler::core::stages::PreprocessingStage::new(),
         ));
       }
       "composition" => {
         builder = builder.add_stage(Box::new(
-          crate::video_compiler::core::stages::CompositionStage::new(),
+          ts_render::video_compiler::core::stages::CompositionStage::new(),
         ));
       }
       "encoding" => {
         builder = builder.add_stage(Box::new(
-          crate::video_compiler::core::stages::EncodingStage::new(),
+          ts_render::video_compiler::core::stages::EncodingStage::new(),
         ));
       }
       "finalization" => {
         builder = builder.add_stage(Box::new(
-          crate::video_compiler::core::stages::FinalizationStage::new(),
+          ts_render::video_compiler::core::stages::FinalizationStage::new(),
         ));
       }
       _ => {
@@ -451,7 +451,7 @@ pub async fn get_pipeline_execution_summary(
     Ok(serde_json::to_value(summary)?)
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),
@@ -472,7 +472,7 @@ pub async fn get_pipeline_progress(
     Ok(pipeline.get_progress().await)
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Pipeline not found: {}",
         job_id
       )),

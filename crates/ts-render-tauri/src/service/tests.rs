@@ -3,17 +3,15 @@
 #[cfg(test)]
 mod service_tests {
   use super::super::*;
-  use crate::video_compiler::{
-    commands::state::{ActiveRenderJob, RenderJobMetadata},
-    schema::{
-      timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
-      ProjectSchema,
-    },
+  use ts_render::video_compiler::schema::{
+    timeline::{Clip, ClipProperties, ClipSource, Track, TrackType},
+    ProjectSchema,
   };
+  use ts_render_services::state::{ActiveRenderJob, RenderJobMetadata};
 
   /// Helper function to create test VideoCompilerState
-  fn create_test_state() -> crate::video_compiler::commands::VideoCompilerState {
-    crate::video_compiler::commands::VideoCompilerState::default()
+  fn create_test_state() -> ts_render_services::VideoCompilerState {
+    ts_render_services::VideoCompilerState::default()
   }
 
   /// Helper function to create a test project with clips
@@ -100,15 +98,15 @@ mod service_tests {
 
   /// Helper function to create a test active job
   async fn create_test_active_job() -> ActiveRenderJob {
-    use crate::video_compiler::{renderer::VideoRenderer, schema::ProjectSchema};
+    use ts_render::video_compiler::{renderer::VideoRenderer, schema::ProjectSchema};
     use std::sync::Arc;
     use tokio::sync::{mpsc, RwLock};
 
     let project = ProjectSchema::new("Test Project".to_string());
     let settings = Arc::new(RwLock::new(
-      crate::video_compiler::CompilerSettings::default(),
+      ts_render::video_compiler::CompilerSettings::default(),
     ));
-    let cache = Arc::new(RwLock::new(crate::video_compiler::cache::RenderCache::new()));
+    let cache = Arc::new(RwLock::new(ts_render::video_compiler::cache::RenderCache::new()));
     let (tx, _rx) = mpsc::unbounded_channel();
 
     let renderer = VideoRenderer::new(project, settings, cache, tx)

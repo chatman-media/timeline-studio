@@ -1,8 +1,8 @@
 //! Tauri команды для генерации превью
 
-use super::super::state::VideoCompilerState;
+use ts_render_services::VideoCompilerState;
 use super::{business_logic, types::*};
-use crate::video_compiler::{
+use ts_render::video_compiler::{
   error::{Result, VideoCompilerError},
   schema::ProjectSchema,
 };
@@ -291,7 +291,7 @@ pub async fn get_cached_preview_info(
 ) -> Result<Option<serde_json::Value>> {
   // Создаем ключ для поиска превью
   let key =
-    crate::video_compiler::cache::PreviewKey::new(preview_id.clone(), 0.0, (1920, 1080), 85);
+    ts_render::video_compiler::cache::PreviewKey::new(preview_id.clone(), 0.0, (1920, 1080), 85);
   let mut cache_mut = state.cache_manager.write().await;
   if let Some(preview_data) = cache_mut.get_preview(&key).await {
     let info =
@@ -327,7 +327,7 @@ pub async fn generate_custom_preview(
     .ok_or_else(|| VideoCompilerError::validation("PreviewService не найден"))?;
 
   // Парсим настройки из JSON
-  let preview_options: crate::video_compiler::core::preview::PreviewOptions =
+  let preview_options: ts_render::video_compiler::core::preview::PreviewOptions =
     serde_json::from_value(options)
       .map_err(|e| VideoCompilerError::InvalidParameter(format!("Invalid preview options: {e}")))?;
 
@@ -346,7 +346,7 @@ pub async fn generate_preview_batch_with_settings(
   settings: serde_json::Value,
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<String>> {
-  use crate::video_compiler::preview::{PreviewGenerator, PreviewRequest, PreviewSettings};
+  use ts_render::video_compiler::preview::{PreviewGenerator, PreviewRequest, PreviewSettings};
   use base64::Engine;
 
   let cache = state.cache_manager.clone();
@@ -359,7 +359,7 @@ pub async fn generate_preview_batch_with_settings(
   let preview_settings = PreviewSettings {
     default_resolution: (width, height),
     default_quality: quality,
-    format: crate::video_compiler::schema::PreviewFormat::Jpeg,
+    format: ts_render::video_compiler::schema::PreviewFormat::Jpeg,
     timeline_resolution: (width, height),
     timeline_quality: quality,
     supported_formats: vec!["mp4".to_string(), "avi".to_string(), "mov".to_string()],
@@ -425,7 +425,7 @@ pub async fn set_preview_generator_ffmpeg_path(
   path: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  use crate::video_compiler::preview::PreviewGenerator;
+  use ts_render::video_compiler::preview::PreviewGenerator;
 
   // Проверяем что путь валидный
   let output = std::process::Command::new(&path)
@@ -457,7 +457,7 @@ pub async fn clear_preview_generator_cache_for_file(
   _file_path: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  use crate::video_compiler::preview::PreviewGenerator;
+  use ts_render::video_compiler::preview::PreviewGenerator;
 
   let cache = state.cache_manager.clone();
   let generator = PreviewGenerator::new(cache);
@@ -476,7 +476,7 @@ pub async fn generate_video_thumbnails_service(
   thumbnail_count: u32,
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<String>> {
-  use crate::video_compiler::services::preview_service::{PreviewRequest, PreviewType};
+  use ts_render_services::services::preview_service::{PreviewRequest, PreviewType};
 
   let preview_service = state
     .services
@@ -520,7 +520,7 @@ pub async fn generate_storyboard_service(
   rows: u32,
   state: State<'_, VideoCompilerState>,
 ) -> Result<String> {
-  use crate::video_compiler::services::preview_service::{PreviewRequest, PreviewType};
+  use ts_render_services::services::preview_service::{PreviewRequest, PreviewType};
 
   let preview_service = state
     .services
@@ -555,7 +555,7 @@ pub async fn batch_generate_previews_service(
   requests: Vec<serde_json::Value>,
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<String>> {
-  use crate::video_compiler::services::preview_service::{PreviewRequest, PreviewType};
+  use ts_render_services::services::preview_service::{PreviewRequest, PreviewType};
 
   let preview_service = state
     .services

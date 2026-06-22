@@ -2,9 +2,9 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::commands::VideoCompilerState;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::services::{monitoring::MetricsSummary, METRICS};
+use ts_render_services::VideoCompilerState;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::services::{monitoring::MetricsSummary, METRICS};
 use tauri::State;
 
 /// Получить сводку метрик для всех сервисов
@@ -55,7 +55,7 @@ pub async fn reset_service_metrics_original(
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Сервис '{}' не найден",
         service_name
       )),
@@ -107,7 +107,7 @@ pub async fn export_metrics(
   let summaries = METRICS.get_all_summaries().await;
 
   business_logic::prepare_metrics_for_export(&summaries, &format)
-    .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)
+    .map_err(ts_render::video_compiler::error::VideoCompilerError::InvalidParameter)
 }
 
 /// Получить детальные метрики производительности
@@ -169,7 +169,7 @@ pub async fn get_global_metrics(_state: State<'_, VideoCompilerState>) -> Result
 #[tauri::command]
 pub async fn get_cache_performance_metrics(
   _state: State<'_, VideoCompilerState>,
-) -> Result<crate::video_compiler::services::cache_service::CachePerformanceMetrics> {
+) -> Result<ts_render_services::services::cache_service::CachePerformanceMetrics> {
   log::debug!("Получение расширенных метрик кэша");
   Ok(business_logic::generate_cache_performance_metrics())
 }
@@ -177,7 +177,7 @@ pub async fn get_cache_performance_metrics(
 /// Установить пороги для алертов кэша
 #[tauri::command]
 pub async fn set_cache_alert_thresholds(
-  thresholds: crate::video_compiler::services::cache_service::CacheAlertThresholds,
+  thresholds: ts_render_services::services::cache_service::CacheAlertThresholds,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
   log::info!(
@@ -188,7 +188,7 @@ pub async fn set_cache_alert_thresholds(
 
   if !business_logic::validate_alert_thresholds(&thresholds) {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
         "Invalid alert thresholds".to_string(),
       ),
     );
@@ -202,7 +202,7 @@ pub async fn set_cache_alert_thresholds(
 #[tauri::command]
 pub async fn get_cache_alerts(
   _state: State<'_, VideoCompilerState>,
-) -> Result<Vec<crate::video_compiler::services::cache_service::CacheAlert>> {
+) -> Result<Vec<ts_render_services::services::cache_service::CacheAlert>> {
   log::debug!("Получение активных алертов кэша");
   Ok(business_logic::generate_cache_alerts())
 }
@@ -242,7 +242,7 @@ pub async fn create_custom_alert(
     &operator,
     &severity,
   )
-  .map_err(crate::video_compiler::error::VideoCompilerError::InvalidParameter)
+  .map_err(ts_render::video_compiler::error::VideoCompilerError::InvalidParameter)
 }
 
 /// Получить историю метрик для анализа трендов

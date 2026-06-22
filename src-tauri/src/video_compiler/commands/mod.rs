@@ -30,17 +30,20 @@ pub mod frame_extraction;
 pub use ts_render_tauri::gpu;
 // `info` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::info;
-pub mod metrics;
+// `metrics` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::metrics;
 pub mod misc;
 // `monitoring` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::monitoring;
 // `multimodal_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::multimodal_commands;
-pub mod pipeline;
+// `pipeline` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::pipeline;
 pub mod platform_optimization;
 // `prerender` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::prerender;
-pub mod preview;
+// `preview` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::preview;
 // `preview_advanced` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::preview_advanced;
 // `project` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
@@ -49,7 +52,8 @@ pub mod recognition_advanced_commands;
 pub mod rendering;
 // `schema` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::schema;
-pub mod service;
+// `service` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::service;
 // `service_container` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::service_container;
 pub mod state;

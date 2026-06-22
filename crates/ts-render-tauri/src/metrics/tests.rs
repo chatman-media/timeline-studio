@@ -3,10 +3,10 @@
 #[cfg(test)]
 mod metrics_tests {
   use super::super::*;
-  use crate::video_compiler::services::cache_service::{
+  use ts_render_services::services::cache_service::{
     AlertSeverity, CacheAlertThresholds, CacheAlertType,
   };
-  use crate::video_compiler::services::monitoring::{MetricsSummary, OperationMetrics};
+  use ts_render_services::services::monitoring::{MetricsSummary, OperationMetrics};
   use std::collections::HashMap;
 
   fn create_test_summaries() -> Vec<MetricsSummary> {

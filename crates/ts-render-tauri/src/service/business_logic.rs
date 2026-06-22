@@ -3,12 +3,12 @@
 #![allow(clippy::explicit_auto_deref)]
 
 use super::types::*;
-use crate::video_compiler::{
-  commands::VideoCompilerState,
+use std::collections::HashMap;
+use ts_render::video_compiler::{
   error::{Result, VideoCompilerError},
   schema::timeline::ClipSource,
 };
-use std::collections::HashMap;
+use ts_render_services::VideoCompilerState;
 
 /// Получить список активных задач
 pub async fn get_active_job_ids(state: &VideoCompilerState) -> Vec<String> {
@@ -61,7 +61,7 @@ pub async fn create_render_statistics(
 
 /// Анализировать источники входных данных проекта
 pub fn analyze_input_sources(
-  project_schema: &crate::video_compiler::schema::ProjectSchema,
+  project_schema: &ts_render::video_compiler::schema::ProjectSchema,
 ) -> InputSourcesResult {
   let mut sources = HashMap::new();
 

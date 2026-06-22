@@ -1,7 +1,7 @@
 //! Бизнес-логика для команд генерации превью
 
 use super::types::*;
-use crate::video_compiler::{
+use ts_render::video_compiler::{
   core::preview::PreviewOptions,
   error::{Result, VideoCompilerError},
   schema::ProjectSchema,

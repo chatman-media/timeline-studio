@@ -1,8 +1,9 @@
 //! Tauri команды для управления сервисами
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{commands::VideoCompilerState, error::Result};
 use tauri::State;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::VideoCompilerState;
 
 /// Получить активные задачи
 #[tauri::command]
@@ -31,7 +32,7 @@ pub async fn get_render_statistics(
 /// Получить информацию об источниках входных данных
 #[tauri::command]
 pub async fn get_input_sources_info(
-  project_schema: crate::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<InputSourcesResult> {
   Ok(business_logic::analyze_input_sources(&project_schema))
 }

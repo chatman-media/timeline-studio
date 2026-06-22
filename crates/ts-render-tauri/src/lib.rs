@@ -89,6 +89,24 @@ pub mod schema;
 /// Шим: `pub use ts_render_tauri::multimodal_commands;`.
 pub mod multimodal_commands;
 
+/// Wave 2: группа команд `pipeline` (конвейер рендеринга: стадии, контекст, прогресс).
+/// Берёт `core::{pipeline_refactored,stages,progress}`/`CompilerSettings` из `ts-render`.
+/// Шим: `pub use ts_render_tauri::pipeline;`.
+pub mod pipeline;
+
+/// Wave 2: группа команд `preview` (генерация превью/раскадровок/waveform/превью-кэш).
+/// Берёт `core::preview`/`services::preview_service` из фундамента. Шим: `pub use ts_render_tauri::preview;`.
+pub mod preview;
+
+/// Wave 2: группа команд `metrics` (агрегированные метрики, алерты кэша, prometheus).
+/// Берёт `services::{monitoring,cache_service,METRICS}` из фундамента. Шим: `pub use ts_render_tauri::metrics;`.
+pub mod metrics;
+
+/// Wave 2: группа команд `service` (статус сервисов, задачи рендера, health).
+/// Берёт `VideoCompilerState`/`services::*`/`core::{schema,renderer,cache}` из фундамента.
+/// Шим: `pub use ts_render_tauri::service;`.
+pub mod service;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

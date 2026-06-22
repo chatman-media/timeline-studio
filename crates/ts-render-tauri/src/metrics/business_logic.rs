@@ -1,11 +1,11 @@
 //! Бизнес-логика для работы с метриками
 
 use super::types::*;
-use crate::video_compiler::services::cache_service::{
+use ts_render_services::services::cache_service::{
   AlertSeverity, CacheAlert, CacheAlertThresholds, CacheAlertType, CachePerformanceMetrics,
   SlowCacheOperation,
 };
-use crate::video_compiler::services::monitoring::MetricsSummary;
+use ts_render_services::services::monitoring::MetricsSummary;
 
 /// Подсчитать активные операции из сводок
 pub fn count_active_operations(

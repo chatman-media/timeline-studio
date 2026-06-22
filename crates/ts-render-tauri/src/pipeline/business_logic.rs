@@ -1,8 +1,8 @@
 //! Бизнес-логика для работы с конвейером рендеринга
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
-use crate::video_compiler::VideoCompilerState;
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
+use ts_render_services::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
@@ -416,7 +416,7 @@ pub async fn check_should_use_hardware_acceleration_for_codec(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<bool> {
   // Используем оригинальный метод EncodingStage::should_use_hardware_acceleration
-  use crate::video_compiler::core::stages::encoding::EncodingStage;
+  use ts_render::video_compiler::core::stages::encoding::EncodingStage;
 
   // Создаем экземпляр EncodingStage для вызова метода
   let encoding_stage = EncodingStage::new();
@@ -434,8 +434,8 @@ pub async fn set_pipeline_user_data_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<bool> {
   // Используем оригинальный метод PipelineContext::set_user_data
-  use crate::video_compiler::core::stages::PipelineContext;
-  use crate::video_compiler::schema::ProjectSchema;
+  use ts_render::video_compiler::core::stages::PipelineContext;
+  use ts_render::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 
   // Создаем новый контекст для демонстрации использования метода
@@ -459,8 +459,8 @@ pub async fn get_pipeline_user_data_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<Option<serde_json::Value>> {
   // Используем оригинальный метод PipelineContext::get_user_data
-  use crate::video_compiler::core::stages::PipelineContext;
-  use crate::video_compiler::schema::ProjectSchema;
+  use ts_render::video_compiler::core::stages::PipelineContext;
+  use ts_render::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 
   // Создаем новый контекст для демонстрации использования метода
@@ -486,9 +486,9 @@ pub async fn generate_noise_clip_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
   // Используем оригинальный метод PreprocessingStage::generate_noise_clip
-  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
-  use crate::video_compiler::core::stages::PipelineContext;
-  use crate::video_compiler::schema::ProjectSchema;
+  use ts_render::video_compiler::core::stages::preprocessing::PreprocessingStage;
+  use ts_render::video_compiler::core::stages::PipelineContext;
+  use ts_render::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 
   // Создаем необходимые компоненты
@@ -528,9 +528,9 @@ pub async fn generate_gradient_clip_direct(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
   // Используем оригинальный метод PreprocessingStage::generate_gradient_clip
-  use crate::video_compiler::core::stages::preprocessing::PreprocessingStage;
-  use crate::video_compiler::core::stages::PipelineContext;
-  use crate::video_compiler::schema::ProjectSchema;
+  use ts_render::video_compiler::core::stages::preprocessing::PreprocessingStage;
+  use ts_render::video_compiler::core::stages::PipelineContext;
+  use ts_render::video_compiler::schema::ProjectSchema;
   use std::path::PathBuf;
 
   // Создаем необходимые компоненты
@@ -638,8 +638,8 @@ mod tests {
 
   #[test]
   fn test_pipeline_context_creation() {
-    use crate::video_compiler::core::stages::PipelineContext;
-    use crate::video_compiler::schema::ProjectSchema;
+    use ts_render::video_compiler::core::stages::PipelineContext;
+    use ts_render::video_compiler::schema::ProjectSchema;
     use std::path::PathBuf;
 
     // Тест создания контекста
