@@ -1,7 +1,7 @@
 //! Бизнес-логика для пакетных операций
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use chrono::Utc;
 use std::collections::HashMap;
 use uuid::Uuid;
@@ -100,7 +100,7 @@ pub fn calculate_batch_statistics(jobs: &[BatchJobInfo]) -> BatchStatistics {
   for job in jobs {
     for result in &job.results {
       if let Ok(batch_result) = serde_json::from_value::<
-        crate::video_compiler::commands::batch::BatchClipResult,
+        crate::batch::BatchClipResult,
       >(result.1.clone())
       {
         clip_times.push(batch_result.processing_time_ms);

@@ -28,5 +28,5 @@ pub struct ExportedCacheStats {
 }
 
 // Re-export типов из других модулей для удобства
-pub use crate::video_compiler::core::cache::MediaMetadata;
-pub use crate::video_compiler::services::cache_service::CacheStats;
+pub use ts_render::video_compiler::core::cache::MediaMetadata;
+pub use ts_render_services::services::cache_service::CacheStats;

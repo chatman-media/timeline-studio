@@ -1,5 +1,5 @@
-use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
-use crate::video_compiler::schema::ProjectSchema;
+use ts_render::video_compiler::ffmpeg_executor::FFmpegExecutor;
+use ts_render::video_compiler::schema::ProjectSchema;
 use base64::{engine::general_purpose::STANDARD, Engine as _};
 use std::path::{Path, PathBuf};
 use tokio::fs;
@@ -90,7 +90,7 @@ pub fn get_video_path_by_clip_id(project: &ProjectSchema, clip_id: &str) -> Resu
     for clip in &track.clips {
       if clip.id == clip_id {
         return match &clip.source {
-          crate::video_compiler::schema::timeline::ClipSource::File(path) => Ok(path.clone()),
+          ts_render::video_compiler::schema::timeline::ClipSource::File(path) => Ok(path.clone()),
           _ => Err(format!("Клип '{clip_id}' не является файлом")),
         };
       }

@@ -8717,6 +8717,7 @@ dependencies = [
  "chrono",
  "log",
  "num_cpus",
+ "once_cell",
  "os_info",
  "serde",
  "serde_json",

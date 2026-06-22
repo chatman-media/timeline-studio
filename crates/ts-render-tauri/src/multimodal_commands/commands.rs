@@ -1,5 +1,5 @@
-use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
-use crate::video_compiler::schema::ProjectSchema;
+use ts_render::video_compiler::ffmpeg_executor::FFmpegExecutor;
+use ts_render::video_compiler::schema::ProjectSchema;
 use std::path::Path;
 use tokio::fs;
 

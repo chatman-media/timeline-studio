@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod batch_tests {
   use super::super::*;
-  use crate::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::error::VideoCompilerError;
   use std::collections::HashMap;
 
   #[test]

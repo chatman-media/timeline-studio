@@ -70,6 +70,25 @@ pub mod prerender;
 /// `ts-render-services`. Шим: `pub use ts_render_tauri::project;`.
 pub mod project;
 
+/// Wave 2: группа команд `batch` (пакетная обработка задач рендеринга, реестр задач).
+/// Берёт `error`/`VideoCompilerState` из фундамента, `once_cell::Lazy` для реестра.
+/// Шим: `pub use ts_render_tauri::batch;`.
+pub mod batch;
+
+/// Wave 2: группа команд `cache` (управление кэшем рендера/превью/метаданных).
+/// Берёт `core::cache`/`services::cache_service` из фундамента. Шим: `pub use ts_render_tauri::cache;`.
+pub mod cache;
+
+/// Wave 2: группа команд `schema` (создание элементов схемы: клипы/эффекты/фильтры/
+/// субтитры/шаблоны/разрешения). Берёт `core::schema::*` (=ts_schema) из `ts-render`.
+/// Шим: `pub use ts_render_tauri::schema;`.
+pub mod schema;
+
+/// Wave 2: группа команд `multimodal_commands` (извлечение кадров для мультимодального
+/// анализа, коллажи, image->base64). Берёт `core::{ffmpeg_executor,schema}` из `ts-render`.
+/// Шим: `pub use ts_render_tauri::multimodal_commands;`.
+pub mod multimodal_commands;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

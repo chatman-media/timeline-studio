@@ -2,8 +2,8 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::VideoCompilerState;
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -42,7 +42,7 @@ pub async fn create_batch_job(
         },
       )
       .map_err(|e| {
-        crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+        ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
           "Failed to access batch jobs: {}",
           e
         ))
@@ -71,14 +71,14 @@ pub async fn get_batch_job_info(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
     })?;
 
   jobs.get(&job_id).cloned().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
       "Batch job {} not found",
       job_id
     ))
@@ -100,7 +100,7 @@ pub async fn cancel_batch_job(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -116,7 +116,7 @@ pub async fn cancel_batch_job(
     }
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Batch job {} not found",
         job_id
       )),
@@ -139,7 +139,7 @@ pub async fn list_batch_jobs(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -169,7 +169,7 @@ pub async fn get_batch_statistics(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -194,14 +194,14 @@ pub async fn get_batch_progress(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
     })?;
 
   let job = jobs.get(&job_id).ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
       "Batch job {} not found",
       job_id
     ))
@@ -222,7 +222,7 @@ pub async fn clear_completed_batch_jobs(_state: State<'_, VideoCompilerState>) -
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -266,7 +266,7 @@ pub async fn update_batch_clip_result(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -288,7 +288,7 @@ pub async fn update_batch_clip_result(
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Batch job {} not found",
         job_id
       )),
@@ -310,7 +310,7 @@ pub async fn get_batch_processing_stats(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -335,7 +335,7 @@ pub async fn cleanup_batch_jobs(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -381,7 +381,7 @@ pub async fn set_batch_job_status(
       },
     )
     .map_err(|e| {
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Failed to access batch jobs: {}",
         e
       ))
@@ -392,7 +392,7 @@ pub async fn set_batch_job_status(
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
         "Batch job {} not found",
         job_id
       )),

@@ -3,9 +3,9 @@
 #[cfg(test)]
 mod cache_tests {
   use super::super::*;
-  use crate::video_compiler::cache::RenderCache;
-  use crate::video_compiler::core::cache::{PreviewKey, RenderCacheData};
-  use crate::video_compiler::services::{CacheService, CacheServiceImpl, ServiceContainer};
+  use ts_render::video_compiler::cache::RenderCache;
+  use ts_render::video_compiler::core::cache::{PreviewKey, RenderCacheData};
+  use ts_render_services::services::{CacheService, CacheServiceImpl, ServiceContainer};
   use std::path::PathBuf;
   use std::sync::Arc;
   use std::time::SystemTime;
@@ -275,14 +275,14 @@ mod cache_tests {
 
   #[test]
   fn test_error_messages() {
-    let error = crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+    let error = ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
       "ID проекта не может быть пустым".to_string(),
     );
     assert!(error
       .to_string()
       .contains("ID проекта не может быть пустым"));
 
-    let error = crate::video_compiler::error::VideoCompilerError::CacheError(
+    let error = ts_render::video_compiler::error::VideoCompilerError::CacheError(
       "Не удалось очистить кэш".to_string(),
     );
     assert!(error.to_string().contains("Не удалось очистить кэш"));

@@ -1,7 +1,7 @@
 //! Tauri команды для работы со схемой
 
 use super::{business_logic, types::*};
-use crate::video_compiler::{
+use ts_render::video_compiler::{
   error::Result,
   schema::{timeline::Clip, Effect, Filter, StyleTemplate, Subtitle, Template},
 };
@@ -12,8 +12,8 @@ use std::collections::HashMap;
 pub async fn add_clip_to_track(
   track_id: String,
   clip: Clip,
-  mut project_schema: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   business_logic::add_clip_to_track_by_id(&mut project_schema, &track_id, clip)?;
   Ok(project_schema)
 }
@@ -159,8 +159,8 @@ pub async fn create_subtitle_animation(
   subtitle_id: String,
   animation_type: String,
   duration: f64,
-  mut project: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   let params = SubtitleAnimationParams {
     animation_type,
     duration,
@@ -180,7 +180,7 @@ pub async fn create_subtitle_animation(
 #[tauri::command]
 pub async fn create_subtitle_animation_with_params(
   params: SubtitleAnimationParams,
-) -> Result<crate::video_compiler::schema::subtitles::SubtitleAnimation> {
+) -> Result<ts_render::video_compiler::schema::subtitles::SubtitleAnimation> {
   Ok(business_logic::create_subtitle_animation_with_params(
     &params,
   ))
@@ -193,7 +193,7 @@ pub async fn create_subtitle_animation_new(
   duration: f64,
   delay: Option<f64>,
   easing: Option<String>,
-) -> Result<crate::video_compiler::schema::subtitles::SubtitleAnimation> {
+) -> Result<ts_render::video_compiler::schema::subtitles::SubtitleAnimation> {
   let params = SubtitleAnimationParams {
     animation_type,
     duration,
@@ -215,7 +215,7 @@ pub async fn create_style_template_new(
   category: String,
   style: Option<String>,
   duration: Option<f64>,
-) -> Result<crate::video_compiler::schema::templates::StyleTemplate> {
+) -> Result<ts_render::video_compiler::schema::templates::StyleTemplate> {
   let params = StyleTemplateCreationParams {
     name,
     category,
@@ -265,8 +265,8 @@ pub async fn create_template_with_params(params: TemplateCreationParams) -> Resu
 pub async fn create_track(
   name: String,
   track_type: String,
-  mut project: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   let params = TrackCreationParams {
     name,
     track_type,
@@ -285,8 +285,8 @@ pub async fn create_track(
 #[tauri::command]
 pub async fn create_track_with_params(
   params: TrackCreationParams,
-  mut project: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   let track = business_logic::create_track_with_params(&params);
   project.tracks.push(track);
 
@@ -378,22 +378,22 @@ pub async fn create_schema_objects(
 pub async fn create_resolution(
   width: u32,
   height: u32,
-) -> Result<crate::video_compiler::schema::common::Resolution> {
-  use crate::video_compiler::schema::common::Resolution;
+) -> Result<ts_render::video_compiler::schema::common::Resolution> {
+  use ts_render::video_compiler::schema::common::Resolution;
   Ok(Resolution::new(width, height))
 }
 
 /// Получить стандартное HD разрешение (использование Resolution::hd)
 #[tauri::command]
-pub async fn get_hd_resolution() -> Result<crate::video_compiler::schema::common::Resolution> {
-  use crate::video_compiler::schema::common::Resolution;
+pub async fn get_hd_resolution() -> Result<ts_render::video_compiler::schema::common::Resolution> {
+  use ts_render::video_compiler::schema::common::Resolution;
   Ok(Resolution::hd())
 }
 
 /// Получить стандартное 4K разрешение (использование Resolution::uhd_4k)
 #[tauri::command]
-pub async fn get_uhd_4k_resolution() -> Result<crate::video_compiler::schema::common::Resolution> {
-  use crate::video_compiler::schema::common::Resolution;
+pub async fn get_uhd_4k_resolution() -> Result<ts_render::video_compiler::schema::common::Resolution> {
+  use ts_render::video_compiler::schema::common::Resolution;
   Ok(Resolution::uhd_4k())
 }
 
@@ -407,14 +407,14 @@ pub async fn get_preset_resolutions() -> Result<Vec<serde_json::Value>> {
 #[tauri::command]
 pub async fn create_resolution_for_format(
   format: String,
-) -> Result<crate::video_compiler::schema::common::Resolution> {
+) -> Result<ts_render::video_compiler::schema::common::Resolution> {
   Ok(business_logic::create_resolution_for_format(&format))
 }
 
 /// Получить статистику элементов схемы
 #[tauri::command]
 pub async fn get_schema_element_stats(
-  project: crate::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<SchemaElementStats> {
   Ok(business_logic::get_schema_element_stats(&project))
 }
@@ -422,7 +422,7 @@ pub async fn get_schema_element_stats(
 /// Валидировать схему проекта (структуру элементов)
 #[tauri::command]
 pub async fn validate_schema_structure(
-  project: crate::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<SchemaValidationInfo> {
   Ok(business_logic::validate_project_schema(&project))
 }
@@ -432,8 +432,8 @@ pub async fn validate_schema_structure(
 pub async fn add_effect_to_clip(
   clip_id: String,
   effect_id: String,
-  mut project_schema: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   business_logic::add_effect_to_clip(&mut project_schema, &clip_id, &effect_id)?;
   Ok(project_schema)
 }
@@ -443,8 +443,8 @@ pub async fn add_effect_to_clip(
 pub async fn add_filter_to_clip(
   clip_id: String,
   filter_id: String,
-  mut project_schema: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   business_logic::add_filter_to_clip(&mut project_schema, &clip_id, &filter_id)?;
   Ok(project_schema)
 }
@@ -454,8 +454,8 @@ pub async fn add_filter_to_clip(
 pub async fn remove_effect_from_clip(
   clip_id: String,
   effect_id: String,
-  mut project_schema: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   business_logic::remove_effect_from_clip(&mut project_schema, &clip_id, &effect_id)?;
   Ok(project_schema)
 }
@@ -465,8 +465,8 @@ pub async fn remove_effect_from_clip(
 pub async fn remove_filter_from_clip(
   clip_id: String,
   filter_id: String,
-  mut project_schema: crate::video_compiler::schema::ProjectSchema,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   business_logic::remove_filter_from_clip(&mut project_schema, &clip_id, &filter_id)?;
   Ok(project_schema)
 }

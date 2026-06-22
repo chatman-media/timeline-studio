@@ -1,7 +1,7 @@
 //! Бизнес-логика для команд работы со схемой
 
 use super::types::*;
-use crate::video_compiler::{
+use ts_render::video_compiler::{
   error::{Result, VideoCompilerError},
   schema::{
     timeline::{Clip, ClipProperties, ClipSource},
@@ -39,7 +39,7 @@ pub fn create_clip_with_params(params: &ClipCreationParams) -> Clip {
 
 /// Создать эффект с параметрами
 pub fn create_effect_with_params(params: &EffectCreationParams) -> Effect {
-  use crate::video_compiler::schema::effects::EffectType;
+  use ts_render::video_compiler::schema::effects::EffectType;
 
   let effect_type_enum = match params.effect_type.as_str() {
     "blur" => EffectType::Blur,
@@ -80,7 +80,7 @@ pub fn create_effect_with_params(params: &EffectCreationParams) -> Effect {
 
 /// Создать фильтр с параметрами
 pub fn create_filter_with_params(params: &FilterCreationParams) -> Filter {
-  use crate::video_compiler::schema::effects::FilterType;
+  use ts_render::video_compiler::schema::effects::FilterType;
 
   let filter_type_enum = match params.filter_type.as_str() {
     "brightness" => FilterType::Brightness,
@@ -113,7 +113,7 @@ pub fn create_filter_with_params(params: &FilterCreationParams) -> Filter {
 
 /// Создать стилевой шаблон с параметрами
 pub fn create_style_template_with_params(params: &StyleTemplateCreationParams) -> StyleTemplate {
-  use crate::video_compiler::schema::templates::{StyleTemplateCategory, StyleTemplateStyle};
+  use ts_render::video_compiler::schema::templates::{StyleTemplateCategory, StyleTemplateStyle};
 
   let template_category = match params.category.as_str() {
     "intro" => StyleTemplateCategory::Intro,
@@ -159,8 +159,8 @@ pub fn create_subtitle_with_params(params: &SubtitleCreationParams) -> Subtitle 
     text: params.text.clone(),
     start_time: params.start_time,
     end_time: params.end_time,
-    position: crate::video_compiler::schema::subtitles::SubtitlePosition::default(),
-    style: crate::video_compiler::schema::subtitles::SubtitleStyle::default(),
+    position: ts_render::video_compiler::schema::subtitles::SubtitlePosition::default(),
+    style: ts_render::video_compiler::schema::subtitles::SubtitleStyle::default(),
     enabled: true,
     animations: vec![],
     font_family: params
@@ -173,7 +173,7 @@ pub fn create_subtitle_with_params(params: &SubtitleCreationParams) -> Subtitle 
       .clone()
       .unwrap_or_else(|| "#FFFFFF".to_string()),
     opacity: 1.0,
-    font_weight: crate::video_compiler::schema::subtitles::SubtitleFontWeight::Normal,
+    font_weight: ts_render::video_compiler::schema::subtitles::SubtitleFontWeight::Normal,
     shadow: true,
     outline: true,
     duration,
@@ -183,8 +183,8 @@ pub fn create_subtitle_with_params(params: &SubtitleCreationParams) -> Subtitle 
 /// Создать анимацию субтитров с параметрами
 pub fn create_subtitle_animation_with_params(
   params: &SubtitleAnimationParams,
-) -> crate::video_compiler::schema::subtitles::SubtitleAnimation {
-  use crate::video_compiler::schema::subtitles::{
+) -> ts_render::video_compiler::schema::subtitles::SubtitleAnimation {
+  use ts_render::video_compiler::schema::subtitles::{
     SubtitleAnimation, SubtitleAnimationType, SubtitleEasing,
   };
 
@@ -248,7 +248,7 @@ pub fn create_track_with_params(params: &TrackCreationParams) -> Track {
 
 /// Создать шаблон с параметрами
 pub fn create_template_with_params(params: &TemplateCreationParams) -> Template {
-  use crate::video_compiler::schema::templates::TemplateType;
+  use ts_render::video_compiler::schema::templates::TemplateType;
 
   let template_type = match params.template_type.as_str() {
     "vertical" => TemplateType::Vertical,
@@ -394,7 +394,7 @@ pub fn remove_filter_from_clip(
 pub fn add_animation_to_subtitle(
   project: &mut ProjectSchema,
   subtitle_id: &str,
-  animation: crate::video_compiler::schema::subtitles::SubtitleAnimation,
+  animation: ts_render::video_compiler::schema::subtitles::SubtitleAnimation,
 ) -> Result<()> {
   for subtitle in &mut project.subtitles {
     if subtitle.id == subtitle_id {
@@ -471,8 +471,8 @@ pub fn validate_project_schema(project: &ProjectSchema) -> SchemaValidationInfo 
 /// Создать разрешение для формата
 pub fn create_resolution_for_format(
   format: &str,
-) -> crate::video_compiler::schema::common::Resolution {
-  use crate::video_compiler::schema::common::Resolution;
+) -> ts_render::video_compiler::schema::common::Resolution {
+  use ts_render::video_compiler::schema::common::Resolution;
 
   match format {
     "hd" | "720p" => Resolution::hd(),
@@ -487,7 +487,7 @@ pub fn create_resolution_for_format(
 
 /// Получить предустановленные разрешения
 pub fn get_preset_resolutions() -> Vec<serde_json::Value> {
-  use crate::video_compiler::schema::common::Resolution;
+  use ts_render::video_compiler::schema::common::Resolution;
 
   vec![
     serde_json::json!({
@@ -516,9 +516,9 @@ pub fn get_preset_resolutions() -> Vec<serde_json::Value> {
 /// Конвертирует JSON значения в параметры эффектов
 pub fn convert_json_to_effect_parameters(
   params: &std::collections::HashMap<String, serde_json::Value>,
-) -> std::collections::HashMap<String, crate::video_compiler::core::schema::effects::EffectParameter>
+) -> std::collections::HashMap<String, ts_render::video_compiler::core::schema::effects::EffectParameter>
 {
-  use crate::video_compiler::core::schema::effects::EffectParameter;
+  use ts_render::video_compiler::core::schema::effects::EffectParameter;
 
   let mut result = HashMap::new();
 

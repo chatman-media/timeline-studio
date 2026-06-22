@@ -3,7 +3,7 @@
 #[cfg(test)]
 mod schema_tests {
   use super::super::*;
-  use crate::video_compiler::schema::{
+  use ts_render::video_compiler::schema::{
     common::AspectRatio,
     effects::{EffectType, FilterType},
     subtitles::{SubtitleAnimationType, SubtitleEasing},
@@ -16,7 +16,7 @@ mod schema_tests {
   fn create_test_project() -> ProjectSchema {
     ProjectSchema {
       version: "1.0.0".to_string(),
-      metadata: crate::video_compiler::schema::ProjectMetadata {
+      metadata: ts_render::video_compiler::schema::ProjectMetadata {
         name: "Test Project".to_string(),
         description: Some("Test Description".to_string()),
         created_at: chrono::Utc::now(),
@@ -47,7 +47,7 @@ mod schema_tests {
       templates: vec![],
       style_templates: vec![],
       subtitles: vec![],
-      settings: crate::video_compiler::schema::export::ProjectSettings::default(),
+      settings: ts_render::video_compiler::schema::export::ProjectSettings::default(),
     }
   }
 
@@ -362,7 +362,7 @@ mod schema_tests {
 
   #[test]
   fn test_create_resolution_for_format() {
-    use crate::video_compiler::schema::common::Resolution;
+    use ts_render::video_compiler::schema::common::Resolution;
 
     let hd = business_logic::create_resolution_for_format("hd");
     assert_eq!(hd, Resolution::hd());

@@ -1,8 +1,8 @@
 //! Бизнес-логика для работы с кэшем
 
 use super::types::*;
-use crate::video_compiler::cache::RenderCache;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::cache::RenderCache;
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 
 /// Валидировать ID проекта
 pub fn validate_project_id(project_id: &str) -> Result<()> {
