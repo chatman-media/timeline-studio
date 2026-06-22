@@ -107,6 +107,12 @@ pub mod metrics;
 /// Шим: `pub use ts_render_tauri::service;`.
 pub mod service;
 
+/// Wave 2: группа команд `ffmpeg_advanced` (расширенные ffmpeg-операции:
+/// фильтры, concat, gif/subtitle превью, проба медиа). Берёт
+/// `core::{ffmpeg_builder,ffmpeg_executor,progress,schema,error}` из `ts-render`.
+/// Шим: `pub use ts_render_tauri::ffmpeg_advanced;`.
+pub mod ffmpeg_advanced;
+
 /// Wave 2: группа команд `ffmpeg_builder` (построение ffmpeg-команд из схемы).
 /// Берёт `core::{renderer,ffmpeg_builder,ffmpeg_executor,progress,schema}` из `ts-render`.
 /// Шим: `pub use ts_render_tauri::ffmpeg_builder;`.

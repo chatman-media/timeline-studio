@@ -2,12 +2,16 @@
 
 #[cfg(test)]
 mod ffmpeg_advanced_tests {
+  // FS-тесты пишут/удаляют общие пути в /tmp; сериализуем их, т.к. крейтовый
+  // cargo test многопоточный (в монолите спасал RUST_TEST_THREADS=1). #91 Wave 2.
+  static FS_TEST_GUARD: std::sync::Mutex<()> = std::sync::Mutex::new(());
   use super::super::business_logic;
   use super::super::types::*;
-  use crate::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::error::VideoCompilerError;
 
   #[test]
   fn test_validate_video_preview_params_valid() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = VideoPreviewParams {
       input_path: "/tmp/test.mp4".to_string(),
       output_path: "/tmp/preview.mp4".to_string(),
@@ -28,6 +32,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_video_preview_params_invalid_duration() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = VideoPreviewParams {
       input_path: "/tmp/test.mp4".to_string(),
       output_path: "/tmp/preview.mp4".to_string(),
@@ -54,6 +59,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_video_preview_params_invalid_resolution() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let input_file = "/tmp/test_video_invalid_res.mp4";
     let params = VideoPreviewParams {
       input_path: input_file.to_string(),
@@ -81,6 +87,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_gif_preview_params_valid() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = GifPreviewParams {
       input_path: "/tmp/test.mp4".to_string(),
       output_path: "/tmp/output.gif".to_string(),
@@ -102,6 +109,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_gif_preview_params_invalid_fps() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let input_file = "/tmp/test_gif_invalid_fps.mp4";
     let params = GifPreviewParams {
       input_path: input_file.to_string(),
@@ -130,6 +138,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_concat_params_valid() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = ConcatVideosParams {
       input_paths: vec!["/tmp/video1.mp4".to_string(), "/tmp/video2.mp4".to_string()],
       output_path: "/tmp/concat.mp4".to_string(),
@@ -149,6 +158,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_concat_params_empty_input() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = ConcatVideosParams {
       input_paths: vec![],
       output_path: "/tmp/concat.mp4".to_string(),
@@ -166,6 +176,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_filter_params_valid() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = VideoFilterParams {
       input_path: "/tmp/test.mp4".to_string(),
       output_path: "/tmp/filtered.mp4".to_string(),
@@ -185,6 +196,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_filter_params_empty_filter() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = VideoFilterParams {
       input_path: "/tmp/test.mp4".to_string(),
       output_path: "/tmp/filtered.mp4".to_string(),
@@ -210,6 +222,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_input_path() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     // Test empty path
     let result = business_logic::validate_input_path("");
     assert!(result.is_err());
@@ -227,6 +240,7 @@ mod ffmpeg_advanced_tests {
 
   #[test]
   fn test_validate_output_path() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     // Test empty path
     let result = business_logic::validate_output_path("");
     assert!(result.is_err());
@@ -365,7 +379,7 @@ libavformat    59. 27.100 / 59. 27.100"#;
 
   #[test]
   fn test_create_execution_result() {
-    use crate::video_compiler::progress::{RenderProgress, RenderStatus};
+    use ts_render::video_compiler::progress::{RenderProgress, RenderStatus};
     use std::time::Duration;
 
     let progress = RenderProgress {
@@ -481,6 +495,7 @@ libavformat    59. 27.100 / 59. 27.100"#;
 
   #[test]
   fn test_validate_subtitle_preview_params() {
+    let _fs_guard = FS_TEST_GUARD.lock().unwrap_or_else(|e| e.into_inner());
     let params = SubtitlePreviewParams {
       video_path: "/tmp/video.mp4".to_string(),
       subtitle_path: "/tmp/subs.srt".to_string(),
