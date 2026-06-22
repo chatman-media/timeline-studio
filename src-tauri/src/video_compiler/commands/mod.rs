@@ -41,7 +41,10 @@ pub mod service_container;
 pub mod state;
 pub mod video_analysis;
 pub mod whisper_commands;
-pub mod workflow;
+// `workflow` вынесена в крейт `ts-render-tauri` (Option B, эпик #91/#92).
+// Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::workflow::*`
+// и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
+pub use ts_render_tauri::workflow;
 // pub mod workflow_commands; // Заменено на модуль workflow
 
 // Re-export всех команд для удобства использования

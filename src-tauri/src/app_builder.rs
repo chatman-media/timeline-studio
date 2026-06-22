@@ -386,13 +386,16 @@ pub fn build_app<R: Runtime>() -> Builder<R> {
     // Compiler settings commands
     crate::video_compiler::commands::get_compiler_settings_advanced,
     crate::video_compiler::commands::update_compiler_settings_advanced,
-    // Workflow automation commands
-    crate::video_compiler::commands::create_directory,
-    crate::video_compiler::commands::create_timeline_project,
-    crate::video_compiler::commands::compile_workflow_video,
-    crate::video_compiler::commands::analyze_workflow_video_quality,
-    crate::video_compiler::commands::create_workflow_preview,
-    crate::video_compiler::commands::cleanup_workflow_temp_files,
+    // Workflow automation commands — вынесены в крейт ts-render-tauri (#91).
+    // Путь квалифицирован подмодулем `workflow::`, чтобы tauri::generate_handler!
+    // нашёл сгенерированный макросом сосед `__cmd__<fn>` (glob `pub use ...::*`
+    // НЕ протаскивает скрытый __cmd__-item через ре-экспорт самой функции).
+    crate::video_compiler::commands::workflow::create_directory,
+    crate::video_compiler::commands::workflow::create_timeline_project,
+    crate::video_compiler::commands::workflow::compile_workflow_video,
+    crate::video_compiler::commands::workflow::analyze_workflow_video_quality,
+    crate::video_compiler::commands::workflow::create_workflow_preview,
+    crate::video_compiler::commands::workflow::cleanup_workflow_temp_files,
     // FFmpeg builder commands
     crate::video_compiler::commands::add_segment_inputs_to_builder,
     crate::video_compiler::commands::create_ffmpeg_with_prerender_settings,
