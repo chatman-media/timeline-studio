@@ -1,6 +1,7 @@
 import type { ProjectSchema } from "@/types/contracts/project-schema"
 
 import type { BotEditRevision, BotRenderJobDestination, BotRenderJobMediaInput } from "../types"
+import type { ScriptDraft } from "./script-generator.port"
 
 export type BotFirstCutProvider = "llm-plan" | "montage-plan" | "deterministic-fallback"
 
@@ -14,6 +15,12 @@ export interface BotFirstCutGeneratorRequest {
   targetDurationSeconds?: number
   style?: string
   sceneSampleCount?: number
+  /**
+   * Optional storyboard derived from the user's idea. When present it guides
+   * deterministic assembly (title/hook/scene count) and is carried into the
+   * project so downstream steps can render captions or narration.
+   */
+  script?: ScriptDraft
   metadata?: Record<string, unknown>
 }
 

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import type { IBotFirstCutPlanner } from "@timeline-studio/core"
+import type { IBotFirstCutPlanner, IScriptGenerator } from "@timeline-studio/core"
 import { createBotProjectSchemaFromRenderJob, DefaultBotFirstCutGenerator } from "../index"
 import {
   FIRST_CUT_PLANNER_INVALID_FIXTURES,
@@ -184,3 +184,93 @@ function createProject() {
   if (!project) throw new Error("Expected project")
   return project
 }
+
+describe("DefaultBotFirstCutGenerator — script generator integration", () => {
+  const MEDIA = [{ type: "file" as const, value: "/tmp/input.mp4", name: "input.mp4" }]
+
+  it("calls scriptGenerator with goal when request has no script", async () => {
+    const scriptGenerator: IScriptGenerator = {
+      generateScript: vi.fn(async () => ({
+        script: {
+          title: "Promo",
+          hook: "Watch this!",
+          scenes: [{ index: 0, shot: "product close-up", voiceover: "Meet our product." }],
+        },
+        provider: "llm-script" as const,
+        summary: "LLM storyboard",
+        diagnostics: [],
+      })),
+    }
+    const generator = new DefaultBotFirstCutGenerator({ scriptGenerator })
+
+    const result = await generator.generateFirstCut({ sourceMedia: MEDIA, goal: "create a promo" })
+
+    expect(scriptGenerator.generateScript).toHaveBeenCalledOnce()
+    expect(result.provider).toBe("deterministic-fallback")
+  })
+
+  it("skips scriptGenerator when request already has script", async () => {
+    const scriptGenerator: IScriptGenerator = {
+      generateScript: vi.fn(async () => {
+        throw new Error("should not be called")
+      }),
+    }
+    const generator = new DefaultBotFirstCutGenerator({ scriptGenerator })
+
+    const existingScript = {
+      scenes: [{ index: 0, shot: "existing", voiceover: "already there" }],
+    }
+
+    await generator.generateFirstCut({ sourceMedia: MEDIA, goal: "ignored", script: existingScript })
+
+    expect(scriptGenerator.generateScript).not.toHaveBeenCalled()
+  })
+
+  it("skips scriptGenerator when goal is absent", async () => {
+    const scriptGenerator: IScriptGenerator = {
+      generateScript: vi.fn(),
+    }
+    const generator = new DefaultBotFirstCutGenerator({ scriptGenerator })
+
+    await generator.generateFirstCut({ sourceMedia: MEDIA })
+
+    expect(scriptGenerator.generateScript).not.toHaveBeenCalled()
+  })
+
+  it("carries on without script when scriptGenerator fails", async () => {
+    const scriptGenerator: IScriptGenerator = {
+      generateScript: vi.fn(async () => {
+        throw new Error("LLM error")
+      }),
+    }
+    const generator = new DefaultBotFirstCutGenerator({ scriptGenerator })
+
+    const result = await generator.generateFirstCut({ sourceMedia: MEDIA, goal: "some idea" })
+
+    expect(result.provider).toBe("deterministic-fallback")
+    expect(result.diagnostics.some((d) => d.includes("storyboard"))).toBe(true)
+  })
+
+  it("stores script in project params when script is present", async () => {
+    const scriptGenerator: IScriptGenerator = {
+      generateScript: vi.fn(async () => ({
+        script: {
+          title: "My Reel",
+          hook: "Check this out",
+          scenes: [{ index: 0, shot: "wide shot", voiceover: "Here we go." }],
+        },
+        provider: "deterministic-fallback" as const,
+        summary: "",
+        diagnostics: [],
+      })),
+    }
+    const generator = new DefaultBotFirstCutGenerator({ scriptGenerator })
+
+    const result = await generator.generateFirstCut({ sourceMedia: MEDIA, goal: "My Reel idea" })
+
+    const params = (result.projectSchema as { settings?: { custom?: { bot?: { params?: Record<string, unknown> } } } })
+      ?.settings?.custom?.bot?.params
+    expect(params?.script).toBeDefined()
+    expect(params?.hook).toBe("Check this out")
+  })
+})
