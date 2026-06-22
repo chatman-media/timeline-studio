@@ -11,6 +11,9 @@ import type {
 const DEFAULT_CLIP_DURATION_SECONDS = 5
 const DEFAULT_FPS = 30
 const DEFAULT_SAMPLE_RATE = 48000
+const MAX_TRACK_VOLUME = 2
+const FULL_MUSIC_VOLUME = 1
+const DUCKED_MUSIC_VOLUME = 0.3
 
 type MediaKind = "video" | "image" | "audio"
 
@@ -54,11 +57,13 @@ export function createBotProjectSchemaFromRenderJob(
   // (video + image) stays on the Video track and lays out sequentially.
   const visualClips: Clip[] = []
   const audioClips: Clip[] = []
+  let hasVideo = false
   media.forEach((item, index) => {
     const kind = detectMediaKind(item)
     if (kind === "audio") {
       audioClips.push(createClip(item, index, audioClips.length, kind, request, clipDuration))
     } else {
+      if (kind === "video") hasVideo = true
       visualClips.push(createClip(item, index, visualClips.length, kind, request, clipDuration))
     }
   })
@@ -83,7 +88,7 @@ export function createBotProjectSchemaFromRenderJob(
       track_type: "Audio",
       name: "Bot Audio",
       enabled: true,
-      volume: 1,
+      volume: resolveMusicVolume(request, options, hasVideo),
       locked: false,
       clips: audioClips,
       effects: [],
@@ -225,6 +230,31 @@ function fileExtension(pathOrName: string): string {
 
 function resolveMediaDuration(media: BotRenderJobMediaInput, fallback: number): number {
   return positiveNumber(media.metadata?.duration) ?? fallback
+}
+
+function resolveMusicVolume(
+  request: BotRenderJobRequest,
+  options: BotProjectAssemblyOptions,
+  hasVideo: boolean,
+): number {
+  // Explicit overrides win; otherwise duck the music under video (which may carry
+  // speech) and keep full volume for an image-only slideshow.
+  return (
+    clampVolume(options.musicVolume) ??
+    clampVolume(request.params?.musicVolume) ??
+    (hasVideo ? DUCKED_MUSIC_VOLUME : FULL_MUSIC_VOLUME)
+  )
+}
+
+function clampVolume(value: unknown): number | undefined {
+  const parsed =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && value.trim().length > 0
+        ? Number.parseFloat(value)
+        : Number.NaN
+  if (!Number.isFinite(parsed) || parsed < 0) return undefined
+  return Math.min(parsed, MAX_TRACK_VOLUME)
 }
 
 function createClipSource(media: BotRenderJobMediaInput): Clip["source"] {

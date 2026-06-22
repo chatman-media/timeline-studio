@@ -286,6 +286,12 @@ export interface BotProjectAssemblyOptions {
   fps?: number
   sampleRate?: number
   resolution?: BotProjectAssemblyResolution
+  /**
+   * Громкость аудио-трека с фоновой музыкой (0.0–2.0). По умолчанию музыка
+   * приглушается, если в проекте есть видео (чтобы не перекрывать речь), и
+   * звучит на полной громкости для слайдшоу из изображений.
+   */
+  musicVolume?: number
   now?: () => string
 }
 
