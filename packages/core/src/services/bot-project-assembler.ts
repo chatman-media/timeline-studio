@@ -12,6 +12,11 @@ const DEFAULT_CLIP_DURATION_SECONDS = 5
 const DEFAULT_FPS = 30
 const DEFAULT_SAMPLE_RATE = 48000
 
+type MediaKind = "video" | "image" | "audio"
+
+const AUDIO_EXTENSIONS = new Set(["mp3", "wav", "aac", "m4a", "flac", "ogg"])
+const IMAGE_EXTENSIONS = new Set(["jpg", "jpeg", "png", "bmp", "webp"])
+
 export function withBotProjectSchema(
   request: BotRenderJobRequest,
   options: BotProjectAssemblyOptions = {},
@@ -43,18 +48,47 @@ export function createBotProjectSchemaFromRenderJob(
   const aspectRatio = resolveAspectRatio(resolution)
   const fps = options.fps ?? DEFAULT_FPS
   const sampleRate = options.sampleRate ?? DEFAULT_SAMPLE_RATE
-  const clips = media.map((item, index) => createClip(item, index, request, clipDuration))
-  const duration = Math.max(...clips.map((clip) => clip.end_time), clipDuration)
-  const track: Track = {
-    id: "bot-video-track",
-    track_type: "Video",
-    name: "Bot Video",
-    enabled: true,
-    volume: 1,
-    locked: false,
-    clips,
-    effects: [],
-    filters: [],
+
+  // Audio/music media must live on a dedicated Audio track, otherwise the Rust
+  // renderer treats it as a video input on the no-AI fallback path. Visual media
+  // (video + image) stays on the Video track and lays out sequentially.
+  const visualClips: Clip[] = []
+  const audioClips: Clip[] = []
+  media.forEach((item, index) => {
+    const kind = detectMediaKind(item)
+    if (kind === "audio") {
+      audioClips.push(createClip(item, index, audioClips.length, kind, request, clipDuration))
+    } else {
+      visualClips.push(createClip(item, index, visualClips.length, kind, request, clipDuration))
+    }
+  })
+
+  const duration = Math.max(...[...visualClips, ...audioClips].map((clip) => clip.end_time), clipDuration)
+  const tracks: Track[] = [
+    {
+      id: "bot-video-track",
+      track_type: "Video",
+      name: "Bot Video",
+      enabled: true,
+      volume: 1,
+      locked: false,
+      clips: visualClips,
+      effects: [],
+      filters: [],
+    },
+  ]
+  if (audioClips.length > 0) {
+    tracks.push({
+      id: "bot-audio-track",
+      track_type: "Audio",
+      name: "Bot Audio",
+      enabled: true,
+      volume: 1,
+      locked: false,
+      clips: audioClips,
+      effects: [],
+      filters: [],
+    })
   }
 
   return {
@@ -73,7 +107,7 @@ export function createBotProjectSchemaFromRenderJob(
       sample_rate: sampleRate,
       aspect_ratio: aspectRatio,
     },
-    tracks: [track],
+    tracks,
     effects: [],
     transitions: [],
     filters: [],
@@ -123,12 +157,19 @@ export function createBotProjectSchemaFromRenderJob(
 function createClip(
   media: BotRenderJobMediaInput,
   index: number,
+  position: number,
+  kind: MediaKind,
   request: BotRenderJobRequest,
-  duration: number,
+  clipDuration: number,
 ): Clip {
-  const start = index * duration
+  const isAudio = kind === "audio"
+  // Audio clips span the whole track from 0 for the music length; visual clips
+  // lay out sequentially by their position on the Video track.
+  const duration = isAudio ? resolveMediaDuration(media, clipDuration) : clipDuration
+  const start = isAudio ? 0 : position * clipDuration
   const customMetadata: Record<string, unknown> = {
     source: "bot",
+    mediaType: kind,
   }
 
   if (media.name) customMetadata.name = media.name
@@ -146,8 +187,8 @@ function createClip(
     opacity: 1,
     effects: [],
     filters: [],
-    template_id: request.templateId ?? null,
-    template_position: request.templateId ? index : null,
+    template_id: isAudio ? null : (request.templateId ?? null),
+    template_position: !isAudio && request.templateId ? position : null,
     color_correction: null,
     crop: null,
     transform: null,
@@ -158,6 +199,32 @@ function createClip(
       custom_metadata: customMetadata,
     },
   }
+}
+
+function detectMediaKind(media: BotRenderJobMediaInput): MediaKind {
+  const mimeType = media.mimeType?.toLowerCase().trim()
+  if (mimeType) {
+    if (mimeType.startsWith("audio/")) return "audio"
+    if (mimeType.startsWith("image/")) return "image"
+    if (mimeType.startsWith("video/")) return "video"
+  }
+
+  const extension = fileExtension(media.name ?? media.value)
+  if (AUDIO_EXTENSIONS.has(extension)) return "audio"
+  if (IMAGE_EXTENSIONS.has(extension)) return "image"
+
+  return "video"
+}
+
+function fileExtension(pathOrName: string): string {
+  const withoutQuery = pathOrName.split(/[?#]/, 1)[0]
+  const base = withoutQuery.slice(Math.max(withoutQuery.lastIndexOf("/"), withoutQuery.lastIndexOf("\\")) + 1)
+  const dot = base.lastIndexOf(".")
+  return dot >= 0 ? base.slice(dot + 1).toLowerCase() : ""
+}
+
+function resolveMediaDuration(media: BotRenderJobMediaInput, fallback: number): number {
+  return positiveNumber(media.metadata?.duration) ?? fallback
 }
 
 function createClipSource(media: BotRenderJobMediaInput): Clip["source"] {
