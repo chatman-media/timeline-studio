@@ -104,36 +104,85 @@ describe("bot project assembler", () => {
     })
   })
 
-  it("puts audio media on a separate Audio track (photo + music)", () => {
+  it("splits audio media onto a dedicated Audio track and keeps the image on the Video track", () => {
     const request: BotRenderJobRequest = {
       source: "bot",
       media: [
-        { type: "file", value: "/tmp/photo.jpg", name: "photo.jpg", mimeType: "image/jpeg" },
-        { type: "file", value: "/tmp/music.mp3", name: "music.mp3", mimeType: "audio/mpeg" },
-        // без mimeType — определяется по расширению
-        { type: "file", value: "/tmp/track.flac" },
+        {
+          type: "file",
+          value: "/tmp/photo.jpg",
+          name: "photo.jpg",
+          mimeType: "image/jpeg",
+        },
+        {
+          type: "file",
+          value: "/tmp/music.mp3",
+          name: "music.mp3",
+          mimeType: "audio/mpeg",
+          metadata: { duration: 30 },
+        },
+      ],
+      params: { clipDurationSeconds: "5" },
+      output: { format: "mp4" },
+    }
+
+    const schema = createBotProjectSchemaFromRenderJob(request, {
+      now: () => "2026-06-08T00:00:00.000Z",
+    })
+
+    expect(schema?.tracks).toHaveLength(2)
+
+    const videoTrack = schema?.tracks[0]
+    expect(videoTrack).toMatchObject({ id: "bot-video-track", track_type: "Video" })
+    expect(videoTrack?.clips).toHaveLength(1)
+    expect(videoTrack?.clips[0]).toMatchObject({
+      source: { File: "/tmp/photo.jpg" },
+      start_time: 0,
+      end_time: 5,
+      source_start: 0,
+      source_end: 5,
+      properties: { custom_metadata: { mediaType: "image" } },
+    })
+
+    const audioTrack = schema?.tracks[1]
+    expect(audioTrack).toMatchObject({ id: "bot-audio-track", track_type: "Audio" })
+    expect(audioTrack?.clips).toHaveLength(1)
+    expect(audioTrack?.clips[0]).toMatchObject({
+      source: { File: "/tmp/music.mp3" },
+      start_time: 0,
+      source_start: 0,
+      source_end: 30,
+      end_time: 30,
+      template_id: null,
+      template_position: null,
+      properties: { custom_metadata: { mediaType: "audio" } },
+    })
+
+    // Timeline spans the longer music clip so the looping image is fully scored.
+    expect(schema?.timeline.duration).toBe(30)
+  })
+
+  it("detects audio media by file extension when no mimeType is provided", () => {
+    const request: BotRenderJobRequest = {
+      source: "bot",
+      media: [
+        { type: "file", value: "/tmp/slide.png" },
+        { type: "url", value: "https://cdn.example.com/score.wav?token=abc" },
       ],
       output: { format: "mp4" },
-      params: { clipDurationSeconds: "5" },
     }
 
     const schema = createBotProjectSchemaFromRenderJob(request)
-    expect(schema).not.toBeNull()
 
-    const videoTrack = schema!.tracks.find((t) => t.track_type === "Video")
-    const audioTrack = schema!.tracks.find((t) => t.track_type === "Audio")
-
-    expect(videoTrack?.id).toBe("bot-video-track")
-    expect(videoTrack?.clips).toHaveLength(1)
-    expect(videoTrack?.clips[0]?.source).toEqual({ File: "/tmp/photo.jpg" })
-
-    expect(audioTrack?.id).toBe("bot-audio-track")
-    expect(audioTrack?.clips).toHaveLength(2)
-    expect(audioTrack?.clips[0]?.source).toEqual({ File: "/tmp/music.mp3" })
-    expect(audioTrack?.clips[1]?.source).toEqual({ File: "/tmp/track.flac" })
-    // аудио-клипы нумеруются независимо (последовательно внутри своего трека)
-    expect(audioTrack?.clips[0]?.start_time).toBe(0)
-    expect(audioTrack?.clips[1]?.start_time).toBe(5)
+    expect(schema?.tracks).toHaveLength(2)
+    expect(schema?.tracks[0].track_type).toBe("Video")
+    expect(schema?.tracks[0].clips).toHaveLength(1)
+    expect(schema?.tracks[1].track_type).toBe("Audio")
+    expect(schema?.tracks[1].clips).toHaveLength(1)
+    expect(schema?.tracks[1].clips[0]).toMatchObject({
+      source: { Stream: "https://cdn.example.com/score.wav?token=abc" },
+      start_time: 0,
+    })
   })
 
   it("hydrates render jobs without an explicit project", () => {
