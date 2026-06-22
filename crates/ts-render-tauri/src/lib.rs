@@ -22,3 +22,33 @@
 /// возвращают `Result<_, String>` и шелятся в `ffmpeg`/`ffprobe` через `std::process::Command`
 /// — никакой линковки libav, никакого общего состояния.
 pub mod workflow;
+
+/// Сервисный слой Video Compiler (Wave 1, эпик #91): DI-контейнер `ServiceContainer`
+/// + 8 сервисов (cache/ffmpeg/gpu/monitoring/preview/project/render/transition).
+/// Обёртывают движок `ts-render` для работающего приложения и держат общее состояние.
+///
+/// В монолите `video_compiler/services/mod.rs` оставлен ре-экспорт-шим
+/// (`pub use ts_render_tauri::services::*;`), чтобы путь
+/// `crate::video_compiler::services::*` у ~26 групп команд резолвился без правок.
+pub mod services;
+
+/// Состояние Video Compiler для Tauri (Wave 1): `VideoCompilerState`
+/// (handler-стейт через `tauri::State<VideoCompilerState>`), `ActiveRenderJob`,
+/// `RenderJobMetadata`, `RenderJob`.
+///
+/// КРИТИЧНО (B2): тип, инжектируемый в `tauri::Builder::manage(...)`, ДОЛЖЕН быть ровно
+/// этот тип. В монолите `video_compiler/commands/state.rs` оставлен ре-экспорт-шим, а
+/// `video_compiler/mod.rs` продолжает `pub use commands::VideoCompilerState;` — так что
+/// `crate::video_compiler::VideoCompilerState` и `::commands::state::*` остаются валидны.
+pub mod state;
+
+/// FFmpeg-командный примитив, нужный сервисному слою (`preview_service`).
+///
+/// Извлечён из монолитного `core/ffmpeg/mod.rs` БЕЗ изменения логики (волна 1 не может
+/// переехать без него). Анализное поддерево `core/ffmpeg/` остаётся в монолите и видит
+/// эти символы через ре-экспорт-шим `pub use ts_render_tauri::ffmpeg_command::*;`.
+pub mod ffmpeg_command;
+
+/// Re-export фундамента под именами, ожидаемыми монолитом и будущими волнами.
+pub use services::ServiceContainer;
+pub use state::VideoCompilerState;

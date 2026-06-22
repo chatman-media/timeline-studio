@@ -1,12 +1,12 @@
 //! Сервис генерации превью
 
-use crate::video_compiler::{
+use crate::services::{FfmpegService, Service};
+use ts_render::video_compiler::core::{
   error::{Result, VideoCompilerError},
   ffmpeg_builder::FFmpegBuilder,
   ffmpeg_executor::FFmpegExecutor,
   preview::PreviewGenerator,
   schema::{Clip, ProjectSchema},
-  services::{FfmpegService, Service},
 };
 use async_trait::async_trait;
 use std::{
@@ -110,7 +110,7 @@ pub trait PreviewService: Service + Send + Sync {
     project: &ProjectSchema,
     timestamp: f64,
     output_path: &str,
-    options: Option<crate::video_compiler::core::preview::PreviewOptions>,
+    options: Option<ts_render::video_compiler::core::preview::PreviewOptions>,
   ) -> Result<()>;
 
   /// Пакетная генерация превью для файла
@@ -336,7 +336,7 @@ impl PreviewService for PreviewServiceImpl {
     }
 
     // Генерируем превью
-    let cache = Arc::new(RwLock::new(crate::video_compiler::cache::RenderCache::new()));
+    let cache = Arc::new(RwLock::new(ts_render::video_compiler::core::cache::RenderCache::new()));
     let generator = PreviewGenerator::new(cache);
 
     let preview_data = generator
@@ -463,7 +463,7 @@ impl PreviewService for PreviewServiceImpl {
     let mut thumbnails = Vec::new();
     for i in (0..clips.len()).step_by(step).take(total_thumbnails) {
       let clip = clips[i];
-      if let crate::video_compiler::schema::timeline::ClipSource::File(path) = &clip.source {
+      if let ts_render::video_compiler::core::schema::timeline::ClipSource::File(path) = &clip.source {
         let preview = self
           .generate_frame_preview(Path::new(path), clip.source_start, Some(thumbnail_size))
           .await?;
@@ -559,7 +559,7 @@ impl PreviewService for PreviewServiceImpl {
     pixels_per_second: u32,
     bits: u8,
   ) -> Result<String> {
-    use super::super::core::ffmpeg::FFmpegCommand;
+    use crate::ffmpeg_command::FFmpegCommand;
     use std::process::Stdio;
     use tokio::io::AsyncReadExt;
     use tokio::process::Command;
@@ -853,7 +853,7 @@ impl PreviewService for PreviewServiceImpl {
     project: &ProjectSchema,
     timestamp: f64,
     output_path: &str,
-    options: Option<crate::video_compiler::core::preview::PreviewOptions>,
+    options: Option<ts_render::video_compiler::core::preview::PreviewOptions>,
   ) -> Result<()> {
     log::debug!(
       "Генерация кадра проекта {} на {}",
@@ -862,7 +862,7 @@ impl PreviewService for PreviewServiceImpl {
     );
 
     // Используем опции по умолчанию или переданные
-    let opts = options.unwrap_or_else(|| crate::video_compiler::core::preview::PreviewOptions {
+    let opts = options.unwrap_or_else(|| ts_render::video_compiler::core::preview::PreviewOptions {
       width: Some(1280),
       height: Some(720),
       format: "jpeg".to_string(),
@@ -876,7 +876,7 @@ impl PreviewService for PreviewServiceImpl {
     for track in &project.tracks {
       for clip in &track.clips {
         if clip.start_time <= timestamp && timestamp <= clip.end_time {
-          if let crate::video_compiler::schema::timeline::ClipSource::File(path) = &clip.source {
+          if let ts_render::video_compiler::core::schema::timeline::ClipSource::File(path) = &clip.source {
             source_file = Some(path.clone());
             clip_offset = timestamp - clip.start_time + clip.source_start;
             break;

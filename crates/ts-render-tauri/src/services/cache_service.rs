@@ -1,11 +1,9 @@
 //! Сервис управления кэшем
 
-use crate::video_compiler::{
-  core::{
-    cache::RenderCache,
-    error::{Result, VideoCompilerError},
-  },
-  services::Service,
+use crate::services::Service;
+use ts_render::video_compiler::core::{
+  cache::RenderCache,
+  error::{Result, VideoCompilerError},
 };
 use async_trait::async_trait;
 use std::{

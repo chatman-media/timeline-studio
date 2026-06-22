@@ -1,11 +1,9 @@
 //! Сервис работы с GPU
 
-use crate::video_compiler::{
-  core::{
-    error::{Result, VideoCompilerError},
-    gpu::{GpuDetector, GpuEncoder, GpuInfo},
-  },
-  services::Service,
+use crate::services::Service;
+use ts_render::video_compiler::core::{
+  error::{Result, VideoCompilerError},
+  gpu::{GpuDetector, GpuEncoder, GpuInfo},
 };
 use async_trait::async_trait;
 use std::sync::Arc;
@@ -355,7 +353,7 @@ impl GpuService for GpuServiceImpl {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::core::gpu::GpuInfo;
+  use ts_render::video_compiler::core::gpu::GpuInfo;
   use std::sync::atomic::{AtomicBool, Ordering};
 
   /// Mock GPU сервис для тестирования

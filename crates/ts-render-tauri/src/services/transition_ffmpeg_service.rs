@@ -1,9 +1,7 @@
 //! Сервис для работы с переходами через FFmpeg
 
-use crate::video_compiler::{
-  error::{Result, VideoCompilerError},
-  services::{ffmpeg_service::FfmpegService, Service},
-};
+use crate::services::{ffmpeg_service::FfmpegService, Service};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, path::Path, sync::Arc};
@@ -575,7 +573,7 @@ impl TransitionFFmpegService for TransitionFFmpegServiceImpl {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::services::ffmpeg_service::FfmpegServiceImpl;
+  use crate::services::ffmpeg_service::FfmpegServiceImpl;
   use std::sync::Arc;
 
   #[tokio::test]

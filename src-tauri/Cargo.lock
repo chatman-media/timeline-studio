@@ -8696,9 +8696,17 @@ dependencies = [
 name = "ts-render-tauri"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "chrono",
+ "log",
+ "once_cell",
  "serde",
  "serde_json",
  "tauri",
+ "tokio",
+ "ts-render",
+ "ts-schema",
+ "uuid",
 ]
 
 [[package]]

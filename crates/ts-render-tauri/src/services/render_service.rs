@@ -1,11 +1,11 @@
 //! Сервис рендеринга видео
 
-use crate::video_compiler::{
+use crate::services::{CacheService, FfmpegService, Service};
+use ts_render::video_compiler::core::{
   error::{Result, VideoCompilerError},
   progress::RenderProgress,
   renderer::VideoRenderer,
   schema::ProjectSchema,
-  services::{CacheService, FfmpegService, Service},
 };
 use async_trait::async_trait;
 use std::{collections::HashMap, path::PathBuf, sync::Arc};
@@ -212,13 +212,13 @@ impl RenderService for RenderServiceImpl {
 
     // Создаем временные настройки для рендерера
     let settings = Arc::new(RwLock::new(
-      crate::video_compiler::CompilerSettings::default(),
+      ts_render::video_compiler::CompilerSettings::default(),
     ));
 
     // Создаем кэш для рендера (интегрирован с CacheService)
     // Note: VideoRenderer использует локальный RenderCache, но CacheService
     // используется для операций кэширования на более высоком уровне
-    let cache = Arc::new(RwLock::new(crate::video_compiler::cache::RenderCache::new()));
+    let cache = Arc::new(RwLock::new(ts_render::video_compiler::core::cache::RenderCache::new()));
 
     // Создаем рендерер
     let renderer = VideoRenderer::new(project.clone(), settings, cache, progress_sender).await?;
@@ -346,7 +346,7 @@ mod render_service_tests;
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::services::{CacheServiceImpl, FfmpegServiceImpl};
+  use crate::services::{CacheServiceImpl, FfmpegServiceImpl};
 
   #[tokio::test]
   async fn test_render_service_creation() {
@@ -507,7 +507,7 @@ mod tests {
 
   #[tokio::test]
   async fn test_job_status_transitions() {
-    use crate::video_compiler::schema::ProjectSchema;
+    use ts_render::video_compiler::core::schema::ProjectSchema;
 
     let ffmpeg_service = Arc::new(FfmpegServiceImpl::new("ffmpeg".to_string()));
     let cache_service = Arc::new(CacheServiceImpl::new(std::env::temp_dir()));
@@ -560,7 +560,7 @@ mod tests {
 
   #[tokio::test]
   async fn test_job_progress_update() {
-    use crate::video_compiler::progress::{RenderProgress, RenderStatus};
+    use ts_render::video_compiler::core::progress::{RenderProgress, RenderStatus};
     use std::time::Duration;
 
     let ffmpeg_service = Arc::new(FfmpegServiceImpl::new("ffmpeg".to_string()));

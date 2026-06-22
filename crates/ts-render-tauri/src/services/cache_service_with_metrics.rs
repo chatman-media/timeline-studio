@@ -2,10 +2,8 @@
 //!
 //! Этот файл демонстрирует как интегрировать мониторинг в сервисы
 
-use crate::video_compiler::{
-  error::Result,
-  services::{CacheService, Service, ServiceMetrics},
-};
+use crate::services::{CacheService, Service, ServiceMetrics};
+use ts_render::video_compiler::core::error::Result;
 use async_trait::async_trait;
 use std::{path::PathBuf, sync::Arc};
 
@@ -375,7 +373,7 @@ pub fn wrap_with_metrics(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::services::{CacheServiceImpl, ServiceMetrics};
+  use crate::services::{CacheServiceImpl, ServiceMetrics};
   use tempfile::TempDir;
 
   #[tokio::test]

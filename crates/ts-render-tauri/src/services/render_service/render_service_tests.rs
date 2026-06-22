@@ -3,10 +3,10 @@
 //! Этот файл содержит расширенные тесты для увеличения покрытия render_service.rs
 
 use super::*;
-use crate::video_compiler::schema::{
+use ts_render::video_compiler::core::schema::{
   Clip, ClipSource, ExportSettings, OutputFormat, ProjectSchema, Timeline, Track, TrackType,
 };
-use crate::video_compiler::services::{CacheServiceImpl, FfmpegServiceImpl};
+use crate::services::{CacheServiceImpl, FfmpegServiceImpl};
 use std::sync::Arc;
 use tempfile::TempDir;
 
@@ -20,7 +20,7 @@ fn create_test_project_with_content(name: &str) -> ProjectSchema {
     fps: 30,
     resolution: (1920, 1080),
     sample_rate: 48000,
-    aspect_ratio: crate::video_compiler::schema::AspectRatio::default(),
+    aspect_ratio: ts_render::video_compiler::core::schema::AspectRatio::default(),
   };
 
   // Настройка экспорта
@@ -67,7 +67,7 @@ fn create_test_project_with_content(name: &str) -> ProjectSchema {
     crop: None,
     transform: None,
     audio_track_index: None,
-    properties: crate::video_compiler::schema::ClipProperties::default(),
+    properties: ts_render::video_compiler::core::schema::ClipProperties::default(),
   });
 
   let mut audio_track = Track::new(TrackType::Audio, "Test Audio Track".to_string());
@@ -88,7 +88,7 @@ fn create_test_project_with_content(name: &str) -> ProjectSchema {
     crop: None,
     transform: None,
     audio_track_index: None,
-    properties: crate::video_compiler::schema::ClipProperties::default(),
+    properties: ts_render::video_compiler::core::schema::ClipProperties::default(),
   });
 
   project.tracks.push(video_track);
@@ -198,7 +198,7 @@ mod error_handling_tests {
     let cache_service = Arc::new(CacheServiceImpl::new(temp_dir.path().to_path_buf()));
     let service = RenderServiceImpl::new(ffmpeg_service, 2, cache_service);
 
-    let progress = crate::video_compiler::progress::RenderProgress::default();
+    let progress = ts_render::video_compiler::core::progress::RenderProgress::default();
     let result = service
       .update_job_progress("nonexistent_job", progress)
       .await;

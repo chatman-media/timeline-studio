@@ -3,7 +3,7 @@
 //! This module provides validation and sanitization for FFmpeg commands
 //! to prevent command injection and other security vulnerabilities.
 
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use std::path::PathBuf;
 
 /// Maximum allowed output file size (10GB)

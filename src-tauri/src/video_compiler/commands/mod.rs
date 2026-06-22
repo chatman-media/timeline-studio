@@ -52,6 +52,10 @@ pub use ts_render_tauri::workflow;
 pub use ai_api_proxy::*;
 #[allow(ambiguous_glob_reexports)]
 pub use batch::*;
+// `CacheStats` приходит и из `cache::*` (рендер-кэш, теперь тип крейта ts-render-tauri),
+// и из `ai_api_proxy::*` (AI-кэш) — это разные типы. Флэтовый `commands::CacheStats`
+// нигде не используется (все пути квалифицированы), поэтому глушим как и соседние строки.
+#[allow(ambiguous_glob_reexports)]
 pub use cache::*;
 #[allow(ambiguous_glob_reexports, hidden_glob_reexports)]
 pub use compiler_settings_commands::*;

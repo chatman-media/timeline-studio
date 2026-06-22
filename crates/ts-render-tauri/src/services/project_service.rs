@@ -1,9 +1,9 @@
 //! Сервис управления проектами
 
-use crate::video_compiler::{
-  core::error::{Result, VideoCompilerError},
+use crate::services::Service;
+use ts_render::video_compiler::core::{
+  error::{Result, VideoCompilerError},
   schema::{ClipSource, ProjectMetadata, ProjectSchema, Timeline},
-  services::Service,
 };
 use async_trait::async_trait;
 use std::path::{Path, PathBuf};

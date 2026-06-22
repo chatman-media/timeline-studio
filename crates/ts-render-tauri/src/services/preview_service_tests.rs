@@ -1,8 +1,6 @@
 use super::*;
-use crate::video_compiler::{
-  schema::{timeline::ClipSource, Track},
-  services::FfmpegServiceImpl,
-};
+use crate::services::FfmpegServiceImpl;
+use ts_render::video_compiler::core::schema::{timeline::ClipSource, Track};
 use std::path::PathBuf;
 use tempfile::TempDir;
 
@@ -19,7 +17,7 @@ fn create_test_project_with_clips() -> ProjectSchema {
   let mut track = Track {
     id: "track1".to_string(),
     name: "Video Track".to_string(),
-    track_type: crate::video_compiler::schema::timeline::TrackType::Video,
+    track_type: ts_render::video_compiler::core::schema::timeline::TrackType::Video,
     enabled: true,
     locked: false,
     clips: vec![],
@@ -263,7 +261,7 @@ mod frame_generation_tests {
     let temp_dir = TempDir::new().unwrap();
     let output_path = temp_dir.path().join("frame.jpg");
 
-    let options = crate::video_compiler::core::preview::PreviewOptions {
+    let options = ts_render::video_compiler::core::preview::PreviewOptions {
       width: Some(640),
       height: Some(360),
       format: "png".to_string(),
