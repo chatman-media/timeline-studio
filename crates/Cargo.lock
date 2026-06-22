@@ -5512,7 +5512,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ts-render-tauri"
+name = "ts-render-services"
 version = "0.1.0"
 dependencies = [
  "async-trait",
@@ -5523,12 +5523,22 @@ dependencies = [
  "once_cell",
  "serde",
  "serde_json",
- "tauri",
  "tempfile",
  "tokio",
  "ts-render",
  "ts-schema",
  "uuid",
+]
+
+[[package]]
+name = "ts-render-tauri"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tempfile",
+ "ts-render-services",
 ]
 
 [[package]]
