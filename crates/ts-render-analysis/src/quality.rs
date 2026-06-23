@@ -1,8 +1,8 @@
 //! Модуль для анализа качества видео с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::QualityAnalysisResult;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use crate::types::QualityAnalysisResult;
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use regex::Regex;
 use std::path::Path;
 

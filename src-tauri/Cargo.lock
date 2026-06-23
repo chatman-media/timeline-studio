@@ -8064,6 +8064,7 @@ dependencies = [
  "ts-platform",
  "ts-recognition",
  "ts-render",
+ "ts-render-analysis",
  "ts-render-services",
  "ts-render-tauri",
  "ts-schema",
@@ -8710,6 +8711,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-render-analysis"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "regex",
+ "serde",
+ "serde_json",
+ "tokio",
+ "ts-analysis",
+ "ts-render",
+ "ts-render-services",
+]
+
+[[package]]
 name = "ts-render-services"
 version = "0.1.0"
 dependencies = [
@@ -8759,6 +8774,7 @@ dependencies = [
  "ts-platform",
  "ts-recognition",
  "ts-render",
+ "ts-render-analysis",
  "ts-render-services",
  "ts-secure-storage",
  "uuid",

@@ -1,8 +1,8 @@
 //! Модуль для анализа видео с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::VideoMetadata;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use crate::types::VideoMetadata;
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use serde_json::Value;
 use std::path::Path;
 

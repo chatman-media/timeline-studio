@@ -124,9 +124,9 @@ pub async fn calculate_quality_metrics_async(
   sample_rate: f64,
   enable_noise_detection: bool,
   enable_stability_check: bool,
-) -> crate::video_compiler::error::Result<QualityAnalysisResult> {
+) -> ts_render::video_compiler::error::Result<QualityAnalysisResult> {
   // Используем реальный анализ качества из ffmpeg модуля
-  crate::video_compiler::core::ffmpeg::quality::analyze_video_quality(
+  ts_render_analysis::quality::analyze_video_quality(
     video_path,
     sample_rate,
     enable_noise_detection,

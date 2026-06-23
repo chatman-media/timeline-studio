@@ -1,8 +1,8 @@
 //! Модуль для детекции сцен в видео с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::{Scene, SceneDetectionResult};
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use crate::types::{Scene, SceneDetectionResult};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use regex::Regex;
 use std::path::Path;
 

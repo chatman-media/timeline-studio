@@ -49,6 +49,8 @@ ts-secure-storage = { path = "../ts-secure-storage" }
 # типы/логику платформо-оптимизации тянет из ts-platform (дедуп #121).
 ts-analysis = { path = "../ts-analysis" }
 ts-platform = { path = "../ts-platform" }
+# video_analysis (#91): ffmpeg-анализ (scene/motion/quality/...) + типы результатов.
+ts-render-analysis = { path = "../ts-render-analysis" }
 # ai_api_proxy внешние: HTTP, rate-limit, кэш(sqlite), хэш, ретраи, specta-типы.
 anyhow = "1.0"
 futures = "0.3"

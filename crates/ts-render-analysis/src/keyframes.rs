@@ -1,8 +1,8 @@
 //! Модуль для извлечения ключевых кадров из видео
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::{KeyFrame, KeyFrameExtractionResult};
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use crate::types::{KeyFrame, KeyFrameExtractionResult};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use std::path::Path;
 
 /// Извлечение ключевых кадров из видео

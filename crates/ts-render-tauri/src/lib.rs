@@ -156,6 +156,11 @@ pub mod ai_api_proxy;
 /// `AIProvider` из соседней группы `ai_api_proxy`. specta-пути квалифицированы — шим валиден.
 pub mod platform_optimization;
 
+/// группа команд `video_analysis` (ffmpeg-анализ: метаданные/сцены/тишина/движение/
+/// качество/аудио/кадры). Разблокирована выносом анализного поддерева `core::ffmpeg` в
+/// крейт `ts-render-analysis` (туда же переехали типы-результаты — разрыв цикла движок<->группа).
+pub mod video_analysis;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.
