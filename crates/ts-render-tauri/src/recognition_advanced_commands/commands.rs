@@ -1,8 +1,8 @@
 //! Tauri команды для продвинутого распознавания - тонкий слой команд
 
 use super::{business_logic::*, types::*};
-use crate::video_compiler::commands::state::VideoCompilerState;
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render_services::VideoCompilerState;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use tauri::State;
 
 /// Получить имена классов из процессора кадров
@@ -173,7 +173,7 @@ pub async fn check_yolo_model_is_face_model(
   log::debug!("Проверка типа YOLO модели (face): {model_name}");
 
   // Используем реальную логику распознавания типа модели
-  use crate::recognition::model_manager::YoloModel;
+  use ts_recognition::recognition::model_manager::YoloModel;
 
   let is_face = if model_name.to_lowercase().contains("yolov11")
     && model_name.to_lowercase().contains("face")
@@ -208,7 +208,7 @@ pub async fn check_yolo_model_is_segmentation_model(
   log::debug!("Проверка типа YOLO модели (segmentation): {model_name}");
 
   // Используем реальную логику распознавания типа модели
-  use crate::recognition::model_manager::YoloModel;
+  use ts_recognition::recognition::model_manager::YoloModel;
 
   let is_segmentation =
     if model_name.to_lowercase().contains("yolov11") && model_name.to_lowercase().contains("seg") {
@@ -241,7 +241,7 @@ pub async fn get_yolo_model_info_extended(
 
   log::debug!("Получение расширенной информации о YOLO модели: {model_name}");
 
-  use crate::recognition::model_manager::YoloModel;
+  use ts_recognition::recognition::model_manager::YoloModel;
 
   // Определяем тип модели по названию
   let (model, model_type) = if model_name.to_lowercase().contains("yolov11") {
@@ -290,7 +290,7 @@ pub async fn get_model_session_info(model_type: String) -> Result<serde_json::Va
   log::debug!("Получение информации о сессии модели: {model_type}");
 
   // Создаем ModelManager для проверки
-  use crate::recognition::model_manager::{ModelManager, YoloModel};
+  use ts_recognition::recognition::model_manager::{ModelManager, YoloModel};
 
   let yolo_model = match model_type.as_str() {
     "yolo11_detection" => YoloModel::YoloV11Detection,
@@ -350,7 +350,7 @@ pub async fn get_loaded_model_type(model_type: String) -> Result<serde_json::Val
   log::debug!("Получение типа загруженной модели: {model_type}");
 
   // Создаем ModelManager для проверки
-  use crate::recognition::model_manager::{ModelManager, YoloModel};
+  use ts_recognition::recognition::model_manager::{ModelManager, YoloModel};
 
   let yolo_model = match model_type.as_str() {
     "yolo11_detection" => YoloModel::YoloV11Detection,
@@ -405,7 +405,7 @@ pub async fn check_model_is_loaded(model_type: String) -> Result<serde_json::Val
   log::debug!("Проверка загружена ли модель: {model_type}");
 
   // Создаем ModelManager для проверки
-  use crate::recognition::model_manager::{ModelManager, YoloModel};
+  use ts_recognition::recognition::model_manager::{ModelManager, YoloModel};
 
   let yolo_model = match model_type.as_str() {
     "yolo11_detection" => YoloModel::YoloV11Detection,
