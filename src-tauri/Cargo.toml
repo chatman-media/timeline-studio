@@ -91,6 +91,7 @@ ts-agent = { path = "../crates/ts-agent" }
 ts-platform = { path = "../crates/ts-platform" }
 ts-analysis = { path = "../crates/ts-analysis" }
 ts-events = { path = "../crates/ts-events" }
+ts-secure-storage = { path = "../crates/ts-secure-storage" }
 ts-render = { path = "../crates/ts-render" }
 ts-render-services = { path = "../crates/ts-render-services" }
 ts-render-tauri = { path = "../crates/ts-render-tauri" }

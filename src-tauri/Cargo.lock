@@ -8067,6 +8067,7 @@ dependencies = [
  "ts-render-services",
  "ts-render-tauri",
  "ts-schema",
+ "ts-secure-storage",
  "ts-state",
  "ts-subtitles",
  "url",
@@ -8762,6 +8763,21 @@ dependencies = [
  "serde_json",
  "specta",
  "uuid",
+]
+
+[[package]]
+name = "ts-secure-storage"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "anyhow",
+ "chrono",
+ "dirs",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin-store",
 ]
 
 [[package]]

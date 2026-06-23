@@ -1,0 +1,24 @@
+[package]
+name = "ts-secure-storage"
+version = "0.1.0"
+edition = "2021"
+description = "Зашифрованное хранилище API-ключей Timeline Studio (SecureStorage/ApiKeyType, AES-GCM поверх tauri-plugin-store). Вынесено из монолита src-tauri/security/secure_storage.rs (#91). Self-contained, без crate::-зависимостей."
+
+[lib]
+name = "ts_secure_storage"
+path = "src/lib.rs"
+
+[dependencies]
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+tauri-plugin-store = "2.4"
+aes-gcm = "0.10"
+anyhow = "1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+dirs = "6.0.0"
+
+[dev-dependencies]
+tempfile = "3"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
