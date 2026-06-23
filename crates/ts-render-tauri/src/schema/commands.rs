@@ -1,10 +1,11 @@
 //! Tauri команды для работы со схемой
 
-use super::{business_logic, types::*};
 use ts_render::video_compiler::{
   error::Result,
   schema::{timeline::Clip, Effect, Filter, StyleTemplate, Subtitle, Template},
 };
+use ts_render_services::schema::commands_impl as impl_;
+use ts_render_services::schema::types::*;
 use std::collections::HashMap;
 
 /// Добавить клип в трек
@@ -12,30 +13,21 @@ use std::collections::HashMap;
 pub async fn add_clip_to_track(
   track_id: String,
   clip: Clip,
-  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  business_logic::add_clip_to_track_by_id(&mut project_schema, &track_id, clip)?;
-  Ok(project_schema)
+  impl_::add_clip_to_track(track_id, clip, project_schema).await
 }
 
 /// Создать клип
 #[tauri::command]
 pub async fn create_clip(source_path: String, start_time: f64, end_time: f64) -> Result<Clip> {
-  let params = ClipCreationParams {
-    source_path,
-    start_time,
-    end_time,
-    speed: None,
-    opacity: None,
-  };
-
-  Ok(business_logic::create_clip_with_params(&params))
+  impl_::create_clip(source_path, start_time, end_time).await
 }
 
 /// Создать клип с параметрами
 #[tauri::command]
 pub async fn create_clip_with_params(params: ClipCreationParams) -> Result<Clip> {
-  Ok(business_logic::create_clip_with_params(&params))
+  impl_::create_clip_with_params(params).await
 }
 
 /// Создать эффект
@@ -44,20 +36,13 @@ pub async fn create_effect(
   effect_type: String,
   parameters: HashMap<String, serde_json::Value>,
 ) -> Result<Effect> {
-  let params = EffectCreationParams {
-    effect_type,
-    name: None,
-    parameters,
-    enabled: None,
-  };
-
-  Ok(business_logic::create_effect_with_params(&params))
+  impl_::create_effect(effect_type, parameters).await
 }
 
 /// Создать эффект с параметрами
 #[tauri::command]
 pub async fn create_effect_with_params(params: EffectCreationParams) -> Result<Effect> {
-  Ok(business_logic::create_effect_with_params(&params))
+  impl_::create_effect_with_params(params).await
 }
 
 /// Создать фильтр
@@ -66,21 +51,13 @@ pub async fn create_filter(
   filter_type: String,
   parameters: HashMap<String, serde_json::Value>,
 ) -> Result<Filter> {
-  let params = FilterCreationParams {
-    filter_type,
-    name: None,
-    parameters,
-    intensity: None,
-    enabled: None,
-  };
-
-  Ok(business_logic::create_filter_with_params(&params))
+  impl_::create_filter(filter_type, parameters).await
 }
 
 /// Создать фильтр с параметрами
 #[tauri::command]
 pub async fn create_filter_with_params(params: FilterCreationParams) -> Result<Filter> {
-  Ok(business_logic::create_filter_with_params(&params))
+  impl_::create_filter_with_params(params).await
 }
 
 /// Создать стилевой шаблон
@@ -90,21 +67,7 @@ pub async fn create_style_template(
   category: String,
   properties: HashMap<String, serde_json::Value>,
 ) -> Result<StyleTemplate> {
-  let params = StyleTemplateCreationParams {
-    name,
-    category,
-    style: properties
-      .get("style")
-      .and_then(|v| v.as_str())
-      .map(|s| s.to_string()),
-    duration: properties.get("duration").and_then(|v| v.as_f64()),
-    background_color: properties
-      .get("background_color")
-      .and_then(|v| v.as_str())
-      .map(|s| s.to_string()),
-  };
-
-  Ok(business_logic::create_style_template_with_params(&params))
+  impl_::create_style_template(name, category, properties).await
 }
 
 /// Создать стилевой шаблон с параметрами
@@ -112,7 +75,7 @@ pub async fn create_style_template(
 pub async fn create_style_template_with_params(
   params: StyleTemplateCreationParams,
 ) -> Result<StyleTemplate> {
-  Ok(business_logic::create_style_template_with_params(&params))
+  impl_::create_style_template_with_params(params).await
 }
 
 /// Создать субтитр
@@ -123,34 +86,13 @@ pub async fn create_subtitle(
   end_time: f64,
   style: Option<HashMap<String, serde_json::Value>>,
 ) -> Result<Subtitle> {
-  let params = SubtitleCreationParams {
-    text,
-    start_time,
-    end_time,
-    font_family: style
-      .as_ref()
-      .and_then(|s| s.get("font_family"))
-      .and_then(|v| v.as_str())
-      .map(|s| s.to_string()),
-    font_size: style
-      .as_ref()
-      .and_then(|s| s.get("font_size"))
-      .and_then(|v| v.as_f64()),
-    color: style
-      .as_ref()
-      .and_then(|s| s.get("color"))
-      .and_then(|v| v.as_str())
-      .map(|s| s.to_string()),
-    style,
-  };
-
-  Ok(business_logic::create_subtitle_with_params(&params))
+  impl_::create_subtitle(text, start_time, end_time, style).await
 }
 
 /// Создать субтитр с параметрами
 #[tauri::command]
 pub async fn create_subtitle_with_params(params: SubtitleCreationParams) -> Result<Subtitle> {
-  Ok(business_logic::create_subtitle_with_params(&params))
+  impl_::create_subtitle_with_params(params).await
 }
 
 /// Создать анимацию субтитров
@@ -159,21 +101,9 @@ pub async fn create_subtitle_animation(
   subtitle_id: String,
   animation_type: String,
   duration: f64,
-  mut project: ts_render::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  let params = SubtitleAnimationParams {
-    animation_type,
-    duration,
-    delay: None,
-    easing: None,
-    direction: None,
-    properties: None,
-  };
-
-  let animation = business_logic::create_subtitle_animation_with_params(&params);
-  business_logic::add_animation_to_subtitle(&mut project, &subtitle_id, animation)?;
-
-  Ok(project)
+  impl_::create_subtitle_animation(subtitle_id, animation_type, duration, project).await
 }
 
 /// Создать анимацию субтитров с параметрами
@@ -181,9 +111,7 @@ pub async fn create_subtitle_animation(
 pub async fn create_subtitle_animation_with_params(
   params: SubtitleAnimationParams,
 ) -> Result<ts_render::video_compiler::schema::subtitles::SubtitleAnimation> {
-  Ok(business_logic::create_subtitle_animation_with_params(
-    &params,
-  ))
+  impl_::create_subtitle_animation_with_params(params).await
 }
 
 /// Создать новую анимацию субтитров (использование SubtitleAnimation::new)
@@ -194,21 +122,10 @@ pub async fn create_subtitle_animation_new(
   delay: Option<f64>,
   easing: Option<String>,
 ) -> Result<ts_render::video_compiler::schema::subtitles::SubtitleAnimation> {
-  let params = SubtitleAnimationParams {
-    animation_type,
-    duration,
-    delay,
-    easing,
-    direction: None,
-    properties: None,
-  };
-
-  Ok(business_logic::create_subtitle_animation_with_params(
-    &params,
-  ))
+  impl_::create_subtitle_animation_new(animation_type, duration, delay, easing).await
 }
 
-/// Создать новый стилевой шаблон (использование StyleTemplate::new)  
+/// Создать новый стилевой шаблон (использование StyleTemplate::new)
 #[tauri::command]
 pub async fn create_style_template_new(
   name: String,
@@ -216,15 +133,7 @@ pub async fn create_style_template_new(
   style: Option<String>,
   duration: Option<f64>,
 ) -> Result<ts_render::video_compiler::schema::templates::StyleTemplate> {
-  let params = StyleTemplateCreationParams {
-    name,
-    category,
-    style,
-    duration,
-    background_color: None,
-  };
-
-  Ok(business_logic::create_style_template_with_params(&params))
+  impl_::create_style_template_new(name, category, style, duration).await
 }
 
 /// Создать шаблон
@@ -234,30 +143,13 @@ pub async fn create_template(
   layout_type: String,
   properties: HashMap<String, serde_json::Value>,
 ) -> Result<Template> {
-  let params = TemplateCreationParams {
-    name,
-    template_type: layout_type,
-    screens: properties
-      .get("screens")
-      .and_then(|v| v.as_u64())
-      .unwrap_or(2) as usize,
-    width: properties
-      .get("width")
-      .and_then(|v| v.as_u64())
-      .map(|v| v as u32),
-    height: properties
-      .get("height")
-      .and_then(|v| v.as_u64())
-      .map(|v| v as u32),
-  };
-
-  Ok(business_logic::create_template_with_params(&params))
+  impl_::create_template(name, layout_type, properties).await
 }
 
 /// Создать шаблон с параметрами
 #[tauri::command]
 pub async fn create_template_with_params(params: TemplateCreationParams) -> Result<Template> {
-  Ok(business_logic::create_template_with_params(&params))
+  impl_::create_template_with_params(params).await
 }
 
 /// Создать трек
@@ -265,32 +157,18 @@ pub async fn create_template_with_params(params: TemplateCreationParams) -> Resu
 pub async fn create_track(
   name: String,
   track_type: String,
-  mut project: ts_render::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  let params = TrackCreationParams {
-    name,
-    track_type,
-    enabled: None,
-    volume: None,
-    muted: None,
-  };
-
-  let track = business_logic::create_track_with_params(&params);
-  project.tracks.push(track);
-
-  Ok(project)
+  impl_::create_track(name, track_type, project).await
 }
 
 /// Создать трек с параметрами
 #[tauri::command]
 pub async fn create_track_with_params(
   params: TrackCreationParams,
-  mut project: ts_render::video_compiler::schema::ProjectSchema,
+  project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  let track = business_logic::create_track_with_params(&params);
-  project.tracks.push(track);
-
-  Ok(project)
+  impl_::create_track_with_params(params, project).await
 }
 
 /// Создать объекты схемы (множественное создание)
@@ -300,77 +178,7 @@ pub async fn create_schema_objects(
   count: usize,
   base_properties: HashMap<String, serde_json::Value>,
 ) -> Result<Vec<serde_json::Value>> {
-  let mut objects = Vec::new();
-
-  for i in 0..count {
-    let mut props = base_properties.clone();
-    props.insert("index".to_string(), serde_json::json!(i));
-
-    let obj = match object_type.as_str() {
-      "clip" => {
-        let params = ClipCreationParams {
-          source_path: props
-            .get("source_path")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string(),
-          start_time: props
-            .get("start_time")
-            .and_then(|v| v.as_f64())
-            .unwrap_or(0.0),
-          end_time: props
-            .get("end_time")
-            .and_then(|v| v.as_f64())
-            .unwrap_or(10.0),
-          speed: None,
-          opacity: None,
-        };
-        let clip = business_logic::create_clip_with_params(&params);
-        serde_json::to_value(clip).unwrap()
-      }
-      "effect" => {
-        let params = EffectCreationParams {
-          effect_type: props
-            .get("effect_type")
-            .and_then(|v| v.as_str())
-            .unwrap_or("blur")
-            .to_string(),
-          name: None,
-          parameters: HashMap::new(),
-          enabled: None,
-        };
-        let effect = business_logic::create_effect_with_params(&params);
-        serde_json::to_value(effect).unwrap()
-      }
-      "filter" => {
-        let params = FilterCreationParams {
-          filter_type: props
-            .get("filter_type")
-            .and_then(|v| v.as_str())
-            .unwrap_or("brightness")
-            .to_string(),
-          name: None,
-          parameters: HashMap::new(),
-          intensity: None,
-          enabled: None,
-        };
-        let filter = business_logic::create_filter_with_params(&params);
-        serde_json::to_value(filter).unwrap()
-      }
-      "resolution" => {
-        serde_json::json!({
-            "width": props.get("width").and_then(|v| v.as_u64()).unwrap_or(1920),
-            "height": props.get("height").and_then(|v| v.as_u64()).unwrap_or(1080),
-            "index": i
-        })
-      }
-      _ => serde_json::json!({}),
-    };
-
-    objects.push(obj);
-  }
-
-  Ok(objects)
+  impl_::create_schema_objects(object_type, count, base_properties).await
 }
 
 /// Создать разрешение с заданными параметрами (использование Resolution::new)
@@ -379,28 +187,25 @@ pub async fn create_resolution(
   width: u32,
   height: u32,
 ) -> Result<ts_render::video_compiler::schema::common::Resolution> {
-  use ts_render::video_compiler::schema::common::Resolution;
-  Ok(Resolution::new(width, height))
+  impl_::create_resolution(width, height).await
 }
 
 /// Получить стандартное HD разрешение (использование Resolution::hd)
 #[tauri::command]
 pub async fn get_hd_resolution() -> Result<ts_render::video_compiler::schema::common::Resolution> {
-  use ts_render::video_compiler::schema::common::Resolution;
-  Ok(Resolution::hd())
+  impl_::get_hd_resolution().await
 }
 
 /// Получить стандартное 4K разрешение (использование Resolution::uhd_4k)
 #[tauri::command]
 pub async fn get_uhd_4k_resolution() -> Result<ts_render::video_compiler::schema::common::Resolution> {
-  use ts_render::video_compiler::schema::common::Resolution;
-  Ok(Resolution::uhd_4k())
+  impl_::get_uhd_4k_resolution().await
 }
 
 /// Получить список предустановленных разрешений
 #[tauri::command]
 pub async fn get_preset_resolutions() -> Result<Vec<serde_json::Value>> {
-  Ok(business_logic::get_preset_resolutions())
+  impl_::get_preset_resolutions().await
 }
 
 /// Создать разрешение для определенного формата
@@ -408,7 +213,7 @@ pub async fn get_preset_resolutions() -> Result<Vec<serde_json::Value>> {
 pub async fn create_resolution_for_format(
   format: String,
 ) -> Result<ts_render::video_compiler::schema::common::Resolution> {
-  Ok(business_logic::create_resolution_for_format(&format))
+  impl_::create_resolution_for_format(format).await
 }
 
 /// Получить статистику элементов схемы
@@ -416,7 +221,7 @@ pub async fn create_resolution_for_format(
 pub async fn get_schema_element_stats(
   project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<SchemaElementStats> {
-  Ok(business_logic::get_schema_element_stats(&project))
+  impl_::get_schema_element_stats(project).await
 }
 
 /// Валидировать схему проекта (структуру элементов)
@@ -424,7 +229,7 @@ pub async fn get_schema_element_stats(
 pub async fn validate_schema_structure(
   project: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<SchemaValidationInfo> {
-  Ok(business_logic::validate_project_schema(&project))
+  impl_::validate_schema_structure(project).await
 }
 
 /// Добавить эффект к клипу
@@ -432,10 +237,9 @@ pub async fn validate_schema_structure(
 pub async fn add_effect_to_clip(
   clip_id: String,
   effect_id: String,
-  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  business_logic::add_effect_to_clip(&mut project_schema, &clip_id, &effect_id)?;
-  Ok(project_schema)
+  impl_::add_effect_to_clip(clip_id, effect_id, project_schema).await
 }
 
 /// Добавить фильтр к клипу
@@ -443,10 +247,9 @@ pub async fn add_effect_to_clip(
 pub async fn add_filter_to_clip(
   clip_id: String,
   filter_id: String,
-  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  business_logic::add_filter_to_clip(&mut project_schema, &clip_id, &filter_id)?;
-  Ok(project_schema)
+  impl_::add_filter_to_clip(clip_id, filter_id, project_schema).await
 }
 
 /// Удалить эффект из клипа
@@ -454,10 +257,9 @@ pub async fn add_filter_to_clip(
 pub async fn remove_effect_from_clip(
   clip_id: String,
   effect_id: String,
-  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  business_logic::remove_effect_from_clip(&mut project_schema, &clip_id, &effect_id)?;
-  Ok(project_schema)
+  impl_::remove_effect_from_clip(clip_id, effect_id, project_schema).await
 }
 
 /// Удалить фильтр из клипа
@@ -465,8 +267,7 @@ pub async fn remove_effect_from_clip(
 pub async fn remove_filter_from_clip(
   clip_id: String,
   filter_id: String,
-  mut project_schema: ts_render::video_compiler::schema::ProjectSchema,
+  project_schema: ts_render::video_compiler::schema::ProjectSchema,
 ) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
-  business_logic::remove_filter_from_clip(&mut project_schema, &clip_id, &filter_id)?;
-  Ok(project_schema)
+  impl_::remove_filter_from_clip(clip_id, filter_id, project_schema).await
 }

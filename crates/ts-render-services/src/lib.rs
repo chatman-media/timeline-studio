@@ -58,3 +58,18 @@ pub mod gpu;
 pub mod cache;
 pub mod preview_advanced;
 pub mod info;
+
+/// D2 thin-shell: 13 groups migrated from ts-render-tauri.
+pub mod schema;
+pub mod ffmpeg_advanced;
+pub mod project;
+pub mod ffmpeg_builder;
+pub mod prerender;
+pub mod frame_extraction;
+pub mod metrics;
+pub mod monitoring;
+pub mod batch;
+pub mod preview;
+pub mod pipeline;
+pub mod misc;
+pub mod rendering;
