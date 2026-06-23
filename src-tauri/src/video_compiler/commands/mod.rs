@@ -50,7 +50,9 @@ pub use ts_render_tauri::preview;
 pub use ts_render_tauri::preview_advanced;
 // `project` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::project;
-pub mod recognition_advanced_commands;
+// `recognition_advanced_commands` вынесена в крейт `ts-render-tauri` (#91) — ре-экспорт-шим.
+// Пути в app_builder уже квалифицированы подмодулем, поэтому остаются валидны.
+pub use ts_render_tauri::recognition_advanced_commands;
 // `rendering` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::rendering;
 // `schema` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.

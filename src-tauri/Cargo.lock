@@ -8726,6 +8726,7 @@ dependencies = [
  "sysinfo",
  "tauri",
  "tokio",
+ "ts-recognition",
  "ts-render",
  "ts-render-services",
  "uuid",

@@ -138,6 +138,13 @@ pub mod frame_extraction;
 /// Шим: `pub use ts_render_tauri::misc;`.
 pub mod misc;
 
+/// Wave 3: группа команд `recognition_advanced_commands` (запросы/форматирование
+/// результатов распознавания, статус YOLO-моделей). Использует `model_manager::YoloModel`
+/// (enum) из крейта `ts-recognition` (#96) + `VideoCompilerState` из `ts-render-services`.
+/// Шим: `pub use ts_render_tauri::recognition_advanced_commands;` (пути в app_builder уже
+/// квалифицированы подмодулем). НЕ экспортируется в bindings.ts (specta не затронут).
+pub mod recognition_advanced_commands;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

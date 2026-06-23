@@ -39,6 +39,9 @@ ts-render-services = { path = "../ts-render-services" }
 # Движок рендера (#90): перенесённые группы команд (Wave 2+) ссылаются на
 # core::{gpu,error,...} и CompilerSettings напрямую из ts-render.
 ts-render = { path = "../ts-render" }
+# Движок распознавания (#96): группа recognition_advanced_commands использует
+# model_manager::YoloModel (enum). Корректное направление зависимости command->engine.
+ts-recognition = { path = "../ts-recognition" }
 
 [dev-dependencies]
 # Используется в тестах группы workflow.
