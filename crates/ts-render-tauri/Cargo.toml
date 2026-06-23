@@ -45,6 +45,10 @@ ts-recognition = { path = "../ts-recognition" }
 # ai_api_proxy (#91): события (AppEvent) + защищённое хранилище API-ключей.
 ts-events = { path = "../ts-events" }
 ts-secure-storage = { path = "../ts-secure-storage" }
+# platform_optimization (#91): UnifiedAnalysisResult из ts-analysis (command->engine);
+# типы/логику платформо-оптимизации тянет из ts-platform (дедуп #121).
+ts-analysis = { path = "../ts-analysis" }
+ts-platform = { path = "../ts-platform" }
 # ai_api_proxy внешние: HTTP, rate-limit, кэш(sqlite), хэш, ретраи, specta-типы.
 anyhow = "1.0"
 futures = "0.3"

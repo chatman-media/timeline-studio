@@ -8,8 +8,8 @@ use log::info;
 
 use super::ai_metadata_types::*;
 use super::types::PlatformType;
-use crate::analysis::types::unified_types::UnifiedAnalysisResult;
-use crate::video_compiler::commands::ai_api_proxy::{
+use ts_analysis::analysis::types::unified_types::UnifiedAnalysisResult;
+use crate::ai_api_proxy::{
   AIMessage, AIProvider, AIProviderManager, UnifiedAIRequest, UnifiedAIResponse,
 };
 

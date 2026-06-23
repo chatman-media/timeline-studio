@@ -43,7 +43,9 @@ pub use ts_render_tauri::monitoring;
 pub use ts_render_tauri::multimodal_commands;
 // `pipeline` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::pipeline;
-pub mod platform_optimization;
+// `platform_optimization` вынесена в крейт `ts-render-tauri` (#91) — ре-экспорт-шим.
+// specta_export-пути квалифицированы подмодулем, остаются валидны.
+pub use ts_render_tauri::platform_optimization;
 // `prerender` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::prerender;
 // `preview` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.

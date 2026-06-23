@@ -151,6 +151,11 @@ pub mod recognition_advanced_commands;
 /// Шим в монолите; пути в app_builder/specta уже квалифицированы подмодулем.
 pub mod ai_api_proxy;
 
+/// группа команд `platform_optimization` (AI-генерация метаданных под платформы:
+/// title/description/теги). Использует `UnifiedAnalysisResult` из `ts-analysis` и
+/// `AIProvider` из соседней группы `ai_api_proxy`. specta-пути квалифицированы — шим валиден.
+pub mod platform_optimization;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

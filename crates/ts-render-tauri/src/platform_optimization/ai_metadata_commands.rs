@@ -2,8 +2,8 @@
 //!
 //! Tauri команды для генерации AI-powered метаданных для платформ
 
-use crate::analysis::types::unified_types::UnifiedAnalysisResult;
-use crate::video_compiler::commands::ai_api_proxy::AIProvider;
+use ts_analysis::analysis::types::unified_types::UnifiedAnalysisResult;
+use crate::ai_api_proxy::AIProvider;
 
 use super::ai_metadata_generator::AIMetadataGenerator;
 use super::ai_metadata_types::*;
