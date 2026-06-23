@@ -26,7 +26,6 @@ pub use core::{
   progress, renderer, schema,
 };
 
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -37,26 +36,10 @@ use crate::video_compiler::services::ServiceContainer;
 /// Настройки компилятора видео — из крейта `ts-render` (#90 dedup; унификация типа с движком).
 pub use ts_render::video_compiler::CompilerSettings;
 
-/// События Video Compiler для WebSocket
-#[derive(Serialize, Debug, Clone)]
-#[serde(tag = "type")]
-pub enum VideoCompilerEvent {
-  /// Рендеринг начат
-  RenderStarted { job_id: String },
-  /// Прогресс рендеринга обновлен
-  RenderProgress {
-    job_id: String,
-    progress: RenderProgress,
-  },
-  /// Рендеринг завершен успешно
-  RenderCompleted { job_id: String, output_path: String },
-  /// Рендеринг завершился с ошибкой
-  RenderFailed { job_id: String, error: String },
-  /// Превью сгенерировано
-  PreviewGenerated { timestamp: f64, image_data: Vec<u8> },
-  /// Кэш обновлен
-  CacheUpdated { cache_size_mb: f64 },
-}
+/// События Video Compiler для WebSocket — определение вынесено в крейт
+/// `ts-render-services` (Wave 2, #91), чтобы группа команд `rendering` могла
+/// эмитить их из крейта `ts-render-tauri`. Здесь оставлен ре-экспорт-шим.
+pub use ts_render_services::VideoCompilerEvent;
 
 /// Проверка зависимостей Video Compiler и возврат пути к FFmpeg
 pub async fn check_dependencies() -> Result<String> {

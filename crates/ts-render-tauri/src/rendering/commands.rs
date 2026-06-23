@@ -4,11 +4,11 @@
 
 use tauri::{Emitter, State};
 
-use crate::video_compiler::error::Result;
-use crate::video_compiler::schema::ProjectSchema;
-use crate::video_compiler::VideoCompilerEvent;
+use ts_render::video_compiler::error::Result;
+use ts_render::video_compiler::schema::ProjectSchema;
+use ts_render_services::state::{RenderJob, VideoCompilerState};
+use ts_render_services::VideoCompilerEvent;
 
-use super::super::state::{RenderJob, VideoCompilerState};
 use super::business_logic;
 use super::types::*;
 
@@ -25,7 +25,7 @@ pub async fn compile_video<R: tauri::Runtime>(
 
   // Используем RenderService из контейнера сервисов
   let render_service = state.services.get_render_service().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
+    ts_render::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
   })?;
 
   // Запускаем рендеринг через сервис
@@ -50,7 +50,7 @@ pub async fn cancel_render(job_id: String, state: State<'_, VideoCompilerState>)
   business_logic::validate_job_id(&job_id)?;
 
   let render_service = state.services.get_render_service().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
+    ts_render::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
   })?;
 
   render_service.cancel_render(&job_id).await
@@ -60,7 +60,7 @@ pub async fn cancel_render(job_id: String, state: State<'_, VideoCompilerState>)
 #[tauri::command]
 pub async fn get_active_render_jobs(state: State<'_, VideoCompilerState>) -> Result<Vec<String>> {
   let render_service = state.services.get_render_service().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
+    ts_render::video_compiler::error::VideoCompilerError::validation("RenderService не найден")
   })?;
 
   let job_ids = render_service.get_active_jobs().await?;
@@ -80,9 +80,9 @@ pub async fn get_render_job(
   if let Some(active_job) = jobs.get(&job_id) {
     let progress = active_job.renderer.get_progress().await;
     let status = if progress.is_some() {
-      crate::video_compiler::progress::RenderStatus::Processing
+      ts_render::video_compiler::progress::RenderStatus::Processing
     } else {
-      crate::video_compiler::progress::RenderStatus::Queued
+      ts_render::video_compiler::progress::RenderStatus::Queued
     };
 
     Ok(Some(RenderJob {
@@ -111,7 +111,7 @@ pub async fn pause_render(job_id: String, state: State<'_, VideoCompilerState>) 
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Render job '{job_id}' not found"
       )),
     )
@@ -130,7 +130,7 @@ pub async fn resume_render(job_id: String, state: State<'_, VideoCompilerState>)
     Ok(())
   } else {
     Err(
-      crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+      ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
         "Render job '{job_id}' not found"
       )),
     )
@@ -172,13 +172,13 @@ pub async fn get_render_pipeline_statistics(
 
   let active_jobs = state.active_jobs.read().await;
   let job = active_jobs.get(&job_id).ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
       "Render job {job_id} not found"
     ))
   })?;
 
   let stats = job.renderer.get_render_statistics().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InternalError(
+    ts_render::video_compiler::error::VideoCompilerError::InternalError(
       "No pipeline statistics available".to_string(),
     )
   })?;
@@ -232,14 +232,14 @@ pub async fn build_render_command_with_settings(
   let custom_settings = business_logic::parse_custom_render_settings(&settings);
   let ffmpeg_path = state.ffmpeg_path.read().await.clone();
 
-  let builder_settings = crate::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings {
+  let builder_settings = ts_render::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings {
     ffmpeg_path: ffmpeg_path.clone(),
     use_hardware_acceleration: custom_settings.use_hardware_acceleration,
     hardware_acceleration_type: custom_settings.hardware_acceleration_type,
     global_options: custom_settings.global_options,
   };
 
-  let builder = crate::video_compiler::ffmpeg_builder::FFmpegBuilder::with_settings(
+  let builder = ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder::with_settings(
     project_schema,
     builder_settings,
   );
@@ -258,8 +258,8 @@ pub async fn extract_frames_for_clip(
   _timestamps: Vec<f64>,
   state: State<'_, VideoCompilerState>,
 ) -> Result<FrameExtractionCacheInfo> {
-  use crate::video_compiler::core::frame_extraction::FrameExtractionManager;
-  use crate::video_compiler::schema::Clip;
+  use ts_render::video_compiler::core::frame_extraction::FrameExtractionManager;
+  use ts_render::video_compiler::schema::Clip;
   use std::path::PathBuf;
 
   // Создаем тестовый клип
@@ -285,8 +285,8 @@ pub async fn extract_frames_for_subtitles(
   video_path: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<FrameExtractionCacheInfo> {
-  use crate::video_compiler::core::frame_extraction::FrameExtractionManager;
-  use crate::video_compiler::schema::Subtitle;
+  use ts_render::video_compiler::core::frame_extraction::FrameExtractionManager;
+  use ts_render::video_compiler::schema::Subtitle;
 
   // Создаем тестовые субтитры
   let subtitles: Vec<Subtitle> = subtitle_timestamps
@@ -318,7 +318,7 @@ pub async fn build_preview_command(
 ) -> Result<Vec<String>> {
   business_logic::validate_output_path(&output_path)?;
 
-  let builder = crate::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema.clone());
+  let builder = ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema.clone());
   let input_path = business_logic::get_first_input_path(&project_schema);
 
   let command = builder
@@ -339,7 +339,7 @@ pub async fn get_ffmpeg_builder_settings(
   project_schema: ProjectSchema,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<FFmpegBuilderInfo> {
-  let builder = crate::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema);
+  let builder = ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema);
   let settings = builder.settings();
 
   Ok(business_logic::create_ffmpeg_builder_info(
@@ -356,7 +356,7 @@ pub async fn get_ffmpeg_builder_project_info(
   project_schema: ProjectSchema,
   _state: State<'_, VideoCompilerState>,
 ) -> Result<FFmpegProjectInfo> {
-  let builder = crate::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema.clone());
+  let builder = ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project_schema.clone());
   Ok(business_logic::create_project_info(builder.project()))
 }
 
@@ -379,7 +379,7 @@ pub async fn build_segment_render_command(
 
   if !validation.is_valid {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
         validation
           .warnings
           .unwrap_or_else(|| "Invalid segment timestamps".to_string()),
@@ -387,12 +387,12 @@ pub async fn build_segment_render_command(
     );
   }
 
-  use crate::video_compiler::ffmpeg_builder::{
+  use ts_render::video_compiler::ffmpeg_builder::{
     filters::FilterBuilder, inputs::InputBuilder, outputs::OutputBuilder, FFmpegBuilder,
   };
   use tokio::process::Command;
 
-  let settings = crate::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings {
+  let settings = ts_render::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings {
     ffmpeg_path: state.ffmpeg_path.read().await.clone(),
     use_hardware_acceleration: state.settings.read().await.hardware_acceleration,
     hardware_acceleration_type: None,
@@ -430,7 +430,7 @@ pub async fn get_segment_filters_info(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<SegmentFiltersInfo> {
   let filter_builder =
-    crate::video_compiler::ffmpeg_builder::filters::FilterBuilder::new(&project_schema);
+    ts_render::video_compiler::ffmpeg_builder::filters::FilterBuilder::new(&project_schema);
 
   Ok(business_logic::create_segment_filters_info(
     start_time,
@@ -460,7 +460,7 @@ pub async fn validate_segment_timestamps(
 pub async fn get_frame_extraction_cache(
   state: State<'_, VideoCompilerState>,
 ) -> Result<FrameExtractionCacheInfo> {
-  use crate::video_compiler::core::frame_extraction::FrameExtractionManager;
+  use ts_render::video_compiler::core::frame_extraction::FrameExtractionManager;
 
   // Создаем менеджер извлечения кадров
   let extraction_manager = FrameExtractionManager::new(state.cache_manager.clone());
@@ -479,7 +479,7 @@ pub async fn get_clip_input_index(
   _state: State<'_, VideoCompilerState>,
 ) -> Result<ClipInputIndexInfo> {
   let input_builder =
-    crate::video_compiler::ffmpeg_builder::inputs::InputBuilder::new(&project_schema);
+    ts_render::video_compiler::ffmpeg_builder::inputs::InputBuilder::new(&project_schema);
   let input_index = input_builder.get_clip_input_index(&clip_id);
 
   Ok(business_logic::create_clip_input_index_info(
@@ -498,13 +498,13 @@ pub async fn get_render_memory_usage(
 
   let active_jobs = state.active_jobs.read().await;
   let job = active_jobs.get(&job_id).ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
       "Render job {job_id} not found"
     ))
   })?;
 
   let stats = job.renderer.get_render_statistics().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InternalError(
+    ts_render::video_compiler::error::VideoCompilerError::InternalError(
       "No statistics available".to_string(),
     )
   })?;
@@ -522,13 +522,13 @@ pub async fn get_render_total_processing_time(
 
   let active_jobs = state.active_jobs.read().await;
   let job = active_jobs.get(&job_id).ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(format!(
       "Render job {job_id} not found"
     ))
   })?;
 
   let stats = job.renderer.get_render_statistics().ok_or_else(|| {
-    crate::video_compiler::error::VideoCompilerError::InternalError(
+    ts_render::video_compiler::error::VideoCompilerError::InternalError(
       "No statistics available".to_string(),
     )
   })?;

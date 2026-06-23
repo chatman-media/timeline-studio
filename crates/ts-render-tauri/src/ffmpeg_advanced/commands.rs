@@ -2,13 +2,13 @@
 
 use super::business_logic;
 use super::types::*;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
-use crate::video_compiler::ffmpeg_executor::{
+use ts_render::video_compiler::error::Result;
+use ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder;
+use ts_render::video_compiler::ffmpeg_executor::{
   check_ffmpeg_available, get_available_codecs, get_available_formats, FFmpegExecutor,
 };
-use crate::video_compiler::progress::ProgressUpdate;
-use crate::video_compiler::schema::ProjectSchema;
+use ts_render::video_compiler::progress::ProgressUpdate;
+use ts_render::video_compiler::schema::ProjectSchema;
 use std::path::Path;
 use tokio::sync::mpsc;
 
@@ -261,7 +261,7 @@ pub async fn execute_ffmpeg_with_progress(
 ) -> Result<FFmpegExecutionResult> {
   if command_args.is_empty() {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
         "Command arguments cannot be empty".to_string(),
       ),
     );
@@ -330,13 +330,13 @@ pub async fn execute_ffmpeg_with_progress(
 
   // Ждем завершения выполнения
   let result = handle.await.map_err(|e| {
-    crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
       "Task execution failed: {e}"
     ))
   })??;
 
   let final_progress = progress_handle.await.map_err(|e| {
-    crate::video_compiler::error::VideoCompilerError::InternalError(format!(
+    ts_render::video_compiler::error::VideoCompilerError::InternalError(format!(
       "Progress tracking failed: {e}"
     ))
   })?;
@@ -361,7 +361,7 @@ pub async fn execute_ffmpeg_with_progress(
 pub async fn execute_ffmpeg_simple(command_args: Vec<String>) -> Result<Vec<u8>> {
   if command_args.is_empty() {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
         "Command arguments cannot be empty".to_string(),
       ),
     );
@@ -386,7 +386,7 @@ pub async fn execute_ffmpeg_simple(command_args: Vec<String>) -> Result<Vec<u8>>
 pub async fn get_ffmpeg_execution_info(command_args: Vec<String>) -> Result<FFmpegExecutionResult> {
   if command_args.is_empty() {
     return Err(
-      crate::video_compiler::error::VideoCompilerError::InvalidParameter(
+      ts_render::video_compiler::error::VideoCompilerError::InvalidParameter(
         "Command arguments cannot be empty".to_string(),
       ),
     );

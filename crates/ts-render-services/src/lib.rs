@@ -48,4 +48,4 @@ pub mod ffmpeg_command;
 
 /// Re-export фундамента под именами, ожидаемыми монолитом и будущими волнами.
 pub use services::ServiceContainer;
-pub use state::VideoCompilerState;
+pub use state::{VideoCompilerEvent, VideoCompilerState};

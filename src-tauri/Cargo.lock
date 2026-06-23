@@ -8715,10 +8715,12 @@ version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
  "chrono",
+ "dirs",
  "log",
  "num_cpus",
  "once_cell",
  "os_info",
+ "reqwest",
  "serde",
  "serde_json",
  "sysinfo",
@@ -8727,6 +8729,7 @@ dependencies = [
  "ts-render",
  "ts-render-services",
  "uuid",
+ "which",
 ]
 
 [[package]]

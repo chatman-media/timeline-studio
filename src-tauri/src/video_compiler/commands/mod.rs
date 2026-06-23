@@ -21,9 +21,10 @@ pub use ts_render_tauri::batch;
 pub use ts_render_tauri::cache;
 // `compiler_settings_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::compiler_settings_commands;
-pub mod ffmpeg_advanced;
-pub mod ffmpeg_builder;
-pub mod frame_extraction;
+// `ffmpeg_advanced`/`ffmpeg_builder`/`frame_extraction` вынесены в крейт ts-render-tauri (Wave 2) — ре-экспорт-шимы.
+pub use ts_render_tauri::ffmpeg_advanced;
+pub use ts_render_tauri::ffmpeg_builder;
+pub use ts_render_tauri::frame_extraction;
 // `gpu` вынесена в крейт `ts-render-tauri` (Wave 2, эпик #91/#92).
 // Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::gpu::*`
 // и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
@@ -32,7 +33,8 @@ pub use ts_render_tauri::gpu;
 pub use ts_render_tauri::info;
 // `metrics` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::metrics;
-pub mod misc;
+// `misc` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::misc;
 // `monitoring` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::monitoring;
 // `multimodal_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
@@ -49,7 +51,8 @@ pub use ts_render_tauri::preview_advanced;
 // `project` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::project;
 pub mod recognition_advanced_commands;
-pub mod rendering;
+// `rendering` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::rendering;
 // `schema` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::schema;
 // `service` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
@@ -58,7 +61,8 @@ pub use ts_render_tauri::service;
 pub use ts_render_tauri::service_container;
 pub mod state;
 pub mod video_analysis;
-pub mod whisper_commands;
+// `whisper_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
+pub use ts_render_tauri::whisper_commands;
 // `workflow` вынесена в крейт `ts-render-tauri` (Option B, эпик #91/#92).
 // Ре-экспорт сохраняет плоский путь `crate::video_compiler::commands::workflow::*`
 // и записи в `app_builder.rs::generate_handler!` валидными байт-в-байт.
@@ -85,6 +89,9 @@ pub use frame_extraction::*;
 pub use gpu::*;
 pub use info::*;
 pub use metrics::*;
+// `CacheConfig` приходит и из misc::*, и из ai_api_proxy::* — разные типы; флэтовый
+// commands::CacheConfig нигде не используется (все пути квалифицированы). #91 Wave 2.
+#[allow(ambiguous_glob_reexports)]
 pub use misc::*;
 #[allow(ambiguous_glob_reexports)]
 pub use monitoring::*;

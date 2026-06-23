@@ -2,9 +2,9 @@
 
 #![allow(clippy::explicit_auto_deref)]
 
-use super::super::state::VideoCompilerState;
+use ts_render_services::VideoCompilerState;
 use super::business_logic;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use tauri::State;
 
 /// Кэшировать метаданные медиафайла
@@ -139,7 +139,7 @@ pub async fn create_new_project(
   name: String,
   resolution: (u32, u32),
   fps: u32,
-) -> Result<crate::video_compiler::schema::ProjectSchema> {
+) -> Result<ts_render::video_compiler::schema::ProjectSchema> {
   Ok(business_logic::create_project_schema(name, resolution, fps))
 }
 
@@ -172,11 +172,11 @@ pub async fn get_cached_metadata(
 #[tauri::command]
 pub async fn get_current_gpu_info(
   state: State<'_, VideoCompilerState>,
-) -> Result<Option<crate::video_compiler::gpu::GpuInfo>> {
+) -> Result<Option<ts_render::video_compiler::gpu::GpuInfo>> {
   let settings = state.settings.read().await;
   if settings.hardware_acceleration {
     let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-    let detector = crate::video_compiler::gpu::GpuDetector::new(ffmpeg_path);
+    let detector = ts_render::video_compiler::gpu::GpuDetector::new(ffmpeg_path);
     let encoder = detector.get_recommended_encoder().await?;
 
     Ok(encoder.map(business_logic::create_gpu_info_from_encoder))
@@ -189,8 +189,8 @@ pub async fn get_current_gpu_info(
 #[tauri::command]
 pub async fn get_gpu_info(
   state: State<'_, VideoCompilerState>,
-) -> Result<Vec<crate::video_compiler::gpu::GpuInfo>> {
-  super::super::gpu::detect_gpus(state).await
+) -> Result<Vec<ts_render::video_compiler::gpu::GpuInfo>> {
+  crate::gpu::detect_gpus(state).await
 }
 
 /// Получить рекомендуемый GPU кодировщик
@@ -199,7 +199,7 @@ pub async fn get_recommended_gpu_encoder(
   state: State<'_, VideoCompilerState>,
 ) -> Result<Option<String>> {
   let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-  let detector = crate::video_compiler::gpu::GpuDetector::new(ffmpeg_path);
+  let detector = ts_render::video_compiler::gpu::GpuDetector::new(ffmpeg_path);
   let encoder = detector.get_recommended_encoder().await?;
   Ok(encoder.map(|e| format!("{e:?}")))
 }

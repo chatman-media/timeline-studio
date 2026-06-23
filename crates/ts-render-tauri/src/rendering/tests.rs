@@ -4,8 +4,8 @@
 mod rendering_tests {
   use super::super::business_logic;
   use super::super::types::*;
-  use crate::video_compiler::error::VideoCompilerError;
-  use crate::video_compiler::schema::{Clip, OutputFormat, ProjectSchema, Track, TrackType};
+  use ts_render::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::schema::{Clip, OutputFormat, ProjectSchema, Track, TrackType};
 
   fn create_test_project() -> ProjectSchema {
     let mut project = ProjectSchema::new("Test Project".to_string());

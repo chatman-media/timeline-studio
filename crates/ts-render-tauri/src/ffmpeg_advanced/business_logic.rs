@@ -1,7 +1,7 @@
 //! Бизнес-логика для продвинутых команд FFmpeg
 
 use super::types::*;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use std::path::Path;
 
 /// Валидирует параметры превью видео
@@ -350,7 +350,7 @@ pub fn create_execution_result(
   stdout: String,
   stderr: String,
   duration_ms: u64,
-  final_progress: Option<crate::video_compiler::progress::RenderProgress>,
+  final_progress: Option<ts_render::video_compiler::progress::RenderProgress>,
 ) -> FFmpegExecutionResult {
   FFmpegExecutionResult {
     exit_code,

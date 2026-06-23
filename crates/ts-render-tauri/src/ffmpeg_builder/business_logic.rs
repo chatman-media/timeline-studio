@@ -1,13 +1,13 @@
 //! Бизнес-логика для команд FFmpeg builder
 
 use super::types::*;
-use crate::video_compiler::{
+use serde::{Deserialize, Serialize};
+use ts_render::video_compiler::{
   error::Result,
   ffmpeg_builder::{inputs::InputBuilder, outputs::OutputBuilder, FFmpegBuilder},
   schema::ProjectSchema,
-  VideoCompilerState,
 };
-use serde::{Deserialize, Serialize};
+use ts_render_services::VideoCompilerState;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri::State;
@@ -57,7 +57,7 @@ pub async fn add_segment_inputs_to_builder_logic(
 pub async fn create_ffmpeg_with_prerender_settings_logic(
   params: &PrerenderSettingsParams,
 ) -> Result<String> {
-  use crate::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings;
+  use ts_render::video_compiler::ffmpeg_builder::builder::FFmpegBuilderSettings;
   use tokio::process::Command;
 
   // Создаем builder с проектом
@@ -137,7 +137,7 @@ pub fn get_ffmpeg_builder_info_logic() -> BuilderInfo {
 
 /// Валидировать параметры пререндеринга
 pub fn validate_prerender_params(params: &PrerenderSettingsParams) -> Result<()> {
-  use crate::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::error::VideoCompilerError;
 
   if params.width == 0 {
     return Err(VideoCompilerError::InvalidParameter(
@@ -180,7 +180,7 @@ pub fn validate_prerender_params(params: &PrerenderSettingsParams) -> Result<()>
 
 /// Валидировать параметры сегментных входов
 pub fn validate_segment_input_params(params: &SegmentInputParams) -> Result<()> {
-  use crate::video_compiler::error::VideoCompilerError;
+  use ts_render::video_compiler::error::VideoCompilerError;
 
   if params.temp_dir.is_empty() {
     return Err(VideoCompilerError::InvalidParameter(
@@ -197,9 +197,9 @@ pub fn validate_segment_input_params(params: &SegmentInputParams) -> Result<()> 
   Ok(())
 }
 /// FFmpeg Executor Commands - команды для работы с FFmpeg executor
-use crate::video_compiler::core::renderer::RenderSettings;
-use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
-use crate::video_compiler::progress::ProgressUpdate;
+use ts_render::video_compiler::core::renderer::RenderSettings;
+use ts_render::video_compiler::ffmpeg_executor::FFmpegExecutor;
+use ts_render::video_compiler::progress::ProgressUpdate;
 use std::sync::Arc;
 use tokio::process::Command;
 use tokio::sync::mpsc;
@@ -268,7 +268,7 @@ pub async fn execute_ffmpeg_with_progress_tracking(
 
   // Ждем завершения
   let result = execution_task.await.map_err(|e| {
-    crate::video_compiler::error::VideoCompilerError::FFmpegError {
+    ts_render::video_compiler::error::VideoCompilerError::FFmpegError {
       exit_code: None,
       stderr: format!("Task join error: {e}"),
       command: "ffmpeg".to_string(),
@@ -624,7 +624,7 @@ pub async fn build_prerender_segment_command_advanced(
 ) -> Result<PrerenderCommandResult> {
   // Заглушка для build_prerender_segment_command из FFmpegBuilder
 
-  use crate::video_compiler::ffmpeg_builder::FFmpegBuilder;
+  use ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder;
 
   let ffmpeg_path = state.ffmpeg_path.read().await.clone();
 
@@ -637,13 +637,13 @@ pub async fn build_prerender_segment_command_advanced(
     .project
     .tracks
     .iter()
-    .filter(|track| track.track_type == crate::video_compiler::schema::TrackType::Video)
+    .filter(|track| track.track_type == ts_render::video_compiler::schema::TrackType::Video)
     .count();
   let audio_tracks = params
     .project
     .tracks
     .iter()
-    .filter(|track| track.track_type == crate::video_compiler::schema::TrackType::Audio)
+    .filter(|track| track.track_type == ts_render::video_compiler::schema::TrackType::Audio)
     .count();
 
   // Оценочный размер файла (в мегабайтах)
@@ -774,12 +774,12 @@ pub async fn validate_prerender_segment_params(
     .project
     .tracks
     .iter()
-    .any(|track| track.track_type == crate::video_compiler::schema::TrackType::Video);
+    .any(|track| track.track_type == ts_render::video_compiler::schema::TrackType::Video);
   let has_audio = params
     .project
     .tracks
     .iter()
-    .any(|track| track.track_type == crate::video_compiler::schema::TrackType::Audio);
+    .any(|track| track.track_type == ts_render::video_compiler::schema::TrackType::Audio);
 
   if !has_video && !has_audio {
     errors.push("Project has no video or audio content".to_string());
@@ -868,10 +868,10 @@ pub async fn build_prerender_segment_direct(
 ) -> Result<Vec<String>> {
   // Десериализуем проект из JSON
   let project: ProjectSchema = serde_json::from_str(&project_json)
-    .map_err(|e| crate::video_compiler::error::VideoCompilerError::validation(e.to_string()))?;
+    .map_err(|e| ts_render::video_compiler::error::VideoCompilerError::validation(e.to_string()))?;
 
   // Создаем FFmpeg Builder
-  let builder = crate::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project);
+  let builder = ts_render::video_compiler::ffmpeg_builder::FFmpegBuilder::new(project);
 
   // Используем оригинальный метод build_prerender_segment_command
   let output_path_buf = std::path::PathBuf::from(&output_path);

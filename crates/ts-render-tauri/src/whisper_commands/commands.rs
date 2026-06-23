@@ -3,8 +3,8 @@
 //! Тонкие команды, которые делегируют всю бизнес-логику в модуль business_logic
 
 use super::{business_logic::*, types::*};
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
-use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::ffmpeg_executor::FFmpegExecutor;
 use reqwest::multipart::{Form, Part};
 use std::path::Path;
 use tokio::fs;

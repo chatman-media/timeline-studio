@@ -1,13 +1,13 @@
 //! Бизнес-логика для извлечения кадров
 
 use super::types::*;
-use crate::video_compiler::{
+use serde::{Deserialize, Serialize};
+use ts_render::video_compiler::{
   core::schema::{Clip, Subtitle},
   core::{cache::RenderCache, frame_extraction::FrameExtractionManager},
   error::{Result, VideoCompilerError},
-  VideoCompilerState,
 };
-use serde::{Deserialize, Serialize};
+use ts_render_services::VideoCompilerState;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::State;
@@ -154,7 +154,7 @@ pub fn generate_keyframe_timestamps(duration: f64, keyframe_count: usize) -> Vec
 /// Извлекает настройки превью из JSON
 pub fn extract_preview_options(
   settings: &serde_json::Value,
-) -> crate::video_compiler::preview::PreviewOptions {
+) -> ts_render::video_compiler::preview::PreviewOptions {
   let width = settings
     .get("width")
     .and_then(|v| v.as_u64())
@@ -173,7 +173,7 @@ pub fn extract_preview_options(
     .unwrap_or("png")
     .to_string();
 
-  crate::video_compiler::preview::PreviewOptions {
+  ts_render::video_compiler::preview::PreviewOptions {
     width: Some(width),
     height: Some(height),
     quality,
@@ -196,7 +196,7 @@ pub fn generate_cache_info(
 }
 /// Frame Extraction Advanced Commands - расширенные команды для извлечения кадров
 // Импорты закомментированы, так как функции имеют другие сигнатуры
-// use crate::video_compiler::commands::frame_extraction_commands::{
+// use ts_render::video_compiler::commands::frame_extraction_commands::{
 //   extract_subtitle_frames, extract_timeline_frames, extract_video_frame,
 //   extract_video_frames_batch, generate_preview, generate_preview_batch,
 //   generate_preview_with_settings, get_frame_extraction_cache_info, get_video_thumbnails,
@@ -657,7 +657,7 @@ pub async fn get_frame_extraction_cache_info_command(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::video_compiler::schema::ClipSource;
+  use ts_render::video_compiler::schema::ClipSource;
 
   #[test]
   fn test_timeline_frames_params_serialization() {
@@ -710,7 +710,7 @@ mod tests {
       crop: None,
       transform: None,
       audio_track_index: None,
-      properties: crate::video_compiler::schema::timeline::ClipProperties::default(),
+      properties: ts_render::video_compiler::schema::timeline::ClipProperties::default(),
     };
 
     let params = ExtractFramesForClipParams {
