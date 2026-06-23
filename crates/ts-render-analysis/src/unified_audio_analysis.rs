@@ -3,13 +3,13 @@
 //! Заменяет старый audio_analysis.rs и использует unified type system
 
 use super::FFmpegCommand;
-use crate::analysis::types::{
+use ts_analysis::analysis::types::{
   AudioBasicMetrics, AudioDuration, AudioFFmpegAnalysis, AudioFloat, AudioFrequency,
   AudioIssueSeverity, AudioIssueType, AudioQualityIssue, AudioSampleRate, AudioVolume,
   FrequencyDistribution, UnifiedDynamicsAnalysis, UnifiedFrequencyAnalysis, UnifiedQualityAnalysis,
   UnifiedVolumeAnalysis, VolumeHistogramBin,
 };
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use log::info;
 use regex::Regex;
 use std::path::Path;

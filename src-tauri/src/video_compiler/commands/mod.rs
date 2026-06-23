@@ -66,7 +66,8 @@ pub use ts_render_tauri::service;
 // `service_container` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::service_container;
 pub mod state;
-pub mod video_analysis;
+// `video_analysis` вынесена в крейт `ts-render-tauri` (#91) — ре-экспорт-шим.
+pub use ts_render_tauri::video_analysis;
 // `whisper_commands` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::whisper_commands;
 // `workflow` вынесена в крейт `ts-render-tauri` (Option B, эпик #91/#92).

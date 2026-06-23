@@ -1,9 +1,9 @@
 //! Tauri команды для анализа видео
 
 use super::{business_logic::*, types::*};
-use crate::video_compiler::commands::state::VideoCompilerState;
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
-use crate::video_compiler::ffmpeg_executor::FFmpegExecutor;
+use ts_render_services::VideoCompilerState;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::ffmpeg_executor::FFmpegExecutor;
 use std::path::Path;
 use tauri::State;
 
@@ -110,7 +110,7 @@ pub async fn ffmpeg_detect_scenes(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::scene_detection::detect_scenes(
+  ts_render_analysis::scene_detection::detect_scenes(
     path,
     threshold,
     min_scene_length,
@@ -129,7 +129,7 @@ pub async fn ffmpeg_analyze_quality(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::quality::analyze_video_quality(
+  ts_render_analysis::quality::analyze_video_quality(
     path,
     sample_rate,
     enable_noise_detection,
@@ -160,7 +160,7 @@ pub async fn ffmpeg_analyze_quality_enhanced(
   );
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::quality::analyze_video_quality(
+  ts_render_analysis::quality::analyze_video_quality(
     path,
     sample_rate,
     enable_noise_detection,
@@ -179,7 +179,7 @@ pub async fn ffmpeg_detect_silence(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::silence_detection::detect_silence(
+  ts_render_analysis::silence_detection::detect_silence(
     path,
     threshold,
     min_duration,
@@ -196,7 +196,7 @@ pub async fn ffmpeg_analyze_motion(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::motion_analysis::analyze_motion(path, sensitivity).await
+  ts_render_analysis::motion_analysis::analyze_motion(path, sensitivity).await
 }
 
 /// Извлечение ключевых кадров
@@ -209,7 +209,7 @@ pub async fn ffmpeg_extract_keyframes(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::keyframes::extract_keyframes(path, interval, max_frames)
+  ts_render_analysis::keyframes::extract_keyframes(path, interval, max_frames)
     .await
 }
 
@@ -222,7 +222,7 @@ pub async fn ffmpeg_analyze_audio(
   let path = Path::new(&file_path);
 
   // Используем реальную FFmpeg реализацию
-  crate::video_compiler::core::ffmpeg::audio_analysis::analyze_audio(path, sample_rate).await
+  ts_render_analysis::audio_analysis::analyze_audio(path, sample_rate).await
 }
 
 /// Быстрый анализ видео
@@ -231,10 +231,10 @@ pub async fn ffmpeg_quick_analysis(file_path: String) -> Result<serde_json::Valu
   let path = Path::new(&file_path);
 
   // Используем несколько FFmpeg функций для быстрого анализа
-  let metadata = crate::video_compiler::core::ffmpeg::analysis::get_video_metadata(path).await?;
+  let metadata = ts_render_analysis::analysis::get_video_metadata(path).await?;
 
   // Базовый анализ качества с минимальным sample rate
-  let quality = crate::video_compiler::core::ffmpeg::quality::analyze_video_quality(
+  let quality = ts_render_analysis::quality::analyze_video_quality(
     path, 0.5,   // Низкий sample rate для быстрого анализа
     false, // Без детекции шума
     false, // Без проверки стабильности

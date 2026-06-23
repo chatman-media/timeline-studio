@@ -1,0 +1,19 @@
+[package]
+name = "ts-render-analysis"
+version = "0.1.0"
+edition = "2021"
+description = "FFmpeg-анализ видео/аудио Timeline Studio (сцены/тишина/движение/качество/аудио/кадры). Вынесено из монолита core/ffmpeg/ (#91). Зависит на ts-render/ts-render-services/ts-analysis."
+
+[lib]
+name = "ts_render_analysis"
+path = "src/lib.rs"
+
+[dependencies]
+ts-render = { path = "../ts-render" }
+ts-render-services = { path = "../ts-render-services" }
+ts-analysis = { path = "../ts-analysis" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+regex = "1"
+tokio = { version = "1", features = ["full"] }

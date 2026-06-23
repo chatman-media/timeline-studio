@@ -1,8 +1,8 @@
 //! Модуль для детекции тишины в аудио с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::{SilenceDetectionResult, SilenceSegment};
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use crate::types::{SilenceDetectionResult, SilenceSegment};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use regex::Regex;
 use std::path::Path;
 

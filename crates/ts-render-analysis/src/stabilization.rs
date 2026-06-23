@@ -1,7 +1,7 @@
 //! Модуль для стабилизации видео с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::{Result, VideoCompilerError};
 use std::path::Path;
 
 /// Параметры стабилизации видео

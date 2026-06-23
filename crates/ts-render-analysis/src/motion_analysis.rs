@@ -1,10 +1,10 @@
 //! Модуль для анализа движения в видео с помощью FFmpeg
 
 use super::FFmpegCommand;
-use crate::video_compiler::commands::video_analysis::{
+use crate::types::{
   CameraMovement, MotionAnalysisResult, MotionPoint,
 };
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use regex::Regex;
 use std::path::Path;
 

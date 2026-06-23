@@ -94,6 +94,7 @@ ts-events = { path = "../crates/ts-events" }
 ts-secure-storage = { path = "../crates/ts-secure-storage" }
 ts-render = { path = "../crates/ts-render" }
 ts-render-services = { path = "../crates/ts-render-services" }
+ts-render-analysis = { path = "../crates/ts-render-analysis" }
 ts-render-tauri = { path = "../crates/ts-render-tauri" }
 ts-montage = { path = "../crates/ts-montage" }
 ts-subtitles = { path = "../crates/ts-subtitles" }
