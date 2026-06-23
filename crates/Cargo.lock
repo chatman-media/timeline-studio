@@ -5492,6 +5492,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-events"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tokio",
+ "ts-render",
+]
+
+[[package]]
 name = "ts-media"
 version = "0.1.0"
 dependencies = [

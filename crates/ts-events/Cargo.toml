@@ -1,0 +1,19 @@
+[package]
+name = "ts-events"
+version = "0.1.0"
+edition = "2021"
+description = "Event-driven фундамент Timeline Studio (AppEvent/EventBus/EventHandler). Вынесен из монолита src-tauri/core/events.rs (#91). Headless: serde/specta/tokio/async-trait + ts-render только ради типа ошибки."
+
+[lib]
+name = "ts_events"
+path = "src/lib.rs"
+
+[dependencies]
+ts-render = { path = "../ts-render" }
+serde = { version = "1", features = ["derive"] }
+specta = { version = "2.0.0-rc.21", features = ["derive", "serde", "chrono", "uuid", "serde_json"] }
+async-trait = "0.1"
+tokio = { version = "1", features = ["sync", "rt", "macros"] }
+serde_json = "1"
+log = "0.4"
+chrono = { version = "0.4", features = ["serde"] }

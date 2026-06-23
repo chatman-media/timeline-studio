@@ -8058,6 +8058,7 @@ dependencies = [
  "ts-agent",
  "ts-analysis",
  "ts-core-types",
+ "ts-events",
  "ts-media",
  "ts-montage",
  "ts-platform",
@@ -8594,6 +8595,20 @@ dependencies = [
  "thiserror 1.0.69",
  "tokio",
  "uuid",
+]
+
+[[package]]
+name = "ts-events"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tokio",
+ "ts-render",
 ]
 
 [[package]]
