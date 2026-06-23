@@ -1,59 +1,46 @@
 //! Tauri команды для управления проектами
 
-use super::{business_logic, types::*};
+use super::types::*;
 use std::collections::HashMap;
 use tauri::State;
 use ts_render::video_compiler::core::{
-  error::{Result, VideoCompilerError},
+  error::Result,
   schema::{Clip, ProjectSchema, Subtitle, Track},
 };
 use ts_render_services::VideoCompilerState;
+use ts_render_services::project::commands_impl as impl_;
 
 /// Валидировать схему проекта
 #[tauri::command]
 pub async fn validate_project_schema(
   project_schema: ProjectSchema,
-  _state: State<'_, VideoCompilerState>,
+  state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
-  // Базовая валидация схемы
-  match project_schema.validate() {
-    Ok(_) => {
-      let result = business_logic::create_validation_result(true, None);
-      Ok(serde_json::to_value(result)?)
-    }
-    Err(e) => {
-      let result = business_logic::create_validation_result(false, Some(e.to_string()));
-      Ok(serde_json::to_value(result)?)
-    }
-  }
+  impl_::validate_project_schema(project_schema, &state).await
 }
 
 /// Оптимизировать схему проекта
 #[tauri::command]
 pub async fn optimize_project_schema(
-  mut project_schema: ProjectSchema,
-  _state: State<'_, VideoCompilerState>,
+  project_schema: ProjectSchema,
+  state: State<'_, VideoCompilerState>,
 ) -> Result<ProjectSchema> {
-  business_logic::optimize_project_tracks(&mut project_schema);
-  business_logic::optimize_export_settings(&mut project_schema);
-  Ok(project_schema)
+  impl_::optimize_project_schema(project_schema, &state).await
 }
 
 /// Анализировать проект и получить статистику
 #[tauri::command]
 pub async fn analyze_project(
   project_schema: ProjectSchema,
-  _state: State<'_, VideoCompilerState>,
+  state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
-  let stats = business_logic::analyze_project_statistics(&project_schema);
-  Ok(serde_json::to_value(stats)?)
+  impl_::analyze_project(project_schema, &state).await
 }
 
 /// Получить список медиафайлов в проекте
 #[tauri::command]
 pub async fn get_project_media_files(project_schema: ProjectSchema) -> Result<Vec<String>> {
-  let media_files = business_logic::extract_media_files(&project_schema);
-  Ok(media_files)
+  impl_::get_project_media_files(project_schema).await
 }
 
 /// Проверить доступность медиафайлов проекта
@@ -61,29 +48,25 @@ pub async fn get_project_media_files(project_schema: ProjectSchema) -> Result<Ve
 pub async fn check_project_media_availability(
   project_schema: ProjectSchema,
 ) -> Result<HashMap<String, bool>> {
-  let media_files = business_logic::extract_media_files(&project_schema);
-  let availability = business_logic::check_media_availability(media_files);
-  Ok(availability)
+  impl_::check_project_media_availability(project_schema).await
 }
 
 /// Обновить пути медиафайлов в проекте
 #[tauri::command]
 pub async fn update_project_media_paths(
-  mut project_schema: ProjectSchema,
+  project_schema: ProjectSchema,
   path_mapping: HashMap<String, String>,
 ) -> Result<ProjectSchema> {
-  business_logic::update_media_paths(&mut project_schema, &path_mapping);
-  Ok(project_schema)
+  impl_::update_project_media_paths(project_schema, path_mapping).await
 }
 
 /// Добавить субтитры в проект
 #[tauri::command]
 pub async fn add_subtitles_to_project(
-  mut project_schema: ProjectSchema,
+  project_schema: ProjectSchema,
   subtitles: Vec<Subtitle>,
 ) -> Result<ProjectSchema> {
-  business_logic::add_and_sort_subtitles(&mut project_schema, subtitles);
-  Ok(project_schema)
+  impl_::add_subtitles_to_project(project_schema, subtitles).await
 }
 
 /// Извлечь субтитры из проекта
@@ -92,34 +75,23 @@ pub async fn extract_project_subtitles(
   project_schema: ProjectSchema,
   format: String,
 ) -> Result<String> {
-  let subtitle_format = SubtitleFormat::from_string(&format).ok_or_else(|| {
-    VideoCompilerError::InvalidParameter(format!("Unsupported subtitle format: {format}"))
-  })?;
-
-  let subtitles_content =
-    business_logic::export_subtitles(&project_schema.subtitles, subtitle_format);
-  Ok(subtitles_content)
+  impl_::extract_project_subtitles(project_schema, format).await
 }
 
 /// Создать резервную копию проекта
 #[tauri::command]
 pub async fn backup_project(project_schema: ProjectSchema, backup_path: String) -> Result<String> {
-  let json = business_logic::create_project_backup(&project_schema)?;
-
-  std::fs::write(&backup_path, json).map_err(|e| VideoCompilerError::Io(e.to_string()))?;
-
-  Ok(backup_path)
+  impl_::backup_project(project_schema, backup_path).await
 }
 
 /// Объединить два проекта
 #[tauri::command]
 pub async fn merge_projects(
-  mut base_project: ProjectSchema,
+  base_project: ProjectSchema,
   append_project: ProjectSchema,
   time_offset: f64,
 ) -> Result<ProjectSchema> {
-  business_logic::merge_projects_with_offset(&mut base_project, append_project, time_offset);
-  Ok(base_project)
+  impl_::merge_projects(base_project, append_project, time_offset).await
 }
 
 /// Разделить проект на части
@@ -128,73 +100,33 @@ pub async fn split_project(
   project_schema: ProjectSchema,
   split_points: Vec<f64>,
 ) -> Result<Vec<ProjectSchema>> {
-  let projects = business_logic::split_project_at_points(&project_schema, &split_points);
-  Ok(projects)
+  impl_::split_project(project_schema, split_points).await
 }
 
 /// Операции с треками
 #[tauri::command]
 pub async fn track_operations(
-  mut track: Track,
+  track: Track,
   operation: String,
   params: serde_json::Value,
 ) -> Result<Track> {
-  match operation.as_str() {
-    "add_clip" => {
-      if let Ok(clip) = serde_json::from_value::<Clip>(params) {
-        business_logic::add_clip_to_track(&mut track, clip);
-      }
-    }
-    "remove_clip" => {
-      if let Some(clip_id) = params.get("clip_id").and_then(|v| v.as_str()) {
-        business_logic::remove_clip_from_track(&mut track, clip_id);
-      }
-    }
-    _ => {
-      return Err(VideoCompilerError::InvalidParameter(format!(
-        "Unknown operation: {operation}"
-      )));
-    }
-  }
-
-  Ok(track)
+  impl_::track_operations(track, operation, params).await
 }
 
 /// Информация о клипе
 #[tauri::command]
 pub async fn get_clip_info(clip: Clip, info_type: String) -> Result<serde_json::Value> {
-  let clip_info_type = ClipInfoType::from_string(&info_type).ok_or_else(|| {
-    VideoCompilerError::InvalidParameter(format!("Unknown info type: {info_type}"))
-  })?;
-
-  match clip_info_type {
-    ClipInfoType::TimelineDuration => {
-      let duration = business_logic::get_clip_timeline_duration(&clip);
-      Ok(serde_json::json!({
-          "duration": duration
-      }))
-    }
-    ClipInfoType::ContainsTime => {
-      // Получаем время из параметров (нужно было бы передать как отдельный параметр)
-      let time = 0.0; // Временное значение
-      let contains = business_logic::check_clip_contains_time(&clip, time);
-      Ok(serde_json::json!({
-          "contains": contains
-      }))
-    }
-  }
+  impl_::get_clip_info(clip, info_type).await
 }
 
 /// Валидация субтитров
 #[tauri::command]
 pub async fn validate_subtitle(subtitle: Subtitle) -> Result<serde_json::Value> {
-  let result = business_logic::validate_subtitle_and_get_result(&subtitle);
-  Ok(serde_json::to_value(result)?)
+  impl_::validate_subtitle(subtitle).await
 }
 
 /// Обновить время доступа к проекту в схеме
 #[tauri::command]
-pub async fn touch_project_schema(mut project: ProjectSchema) -> Result<ProjectSchema> {
-  business_logic::touch_project(&mut project);
-  Ok(project)
+pub async fn touch_project_schema(project: ProjectSchema) -> Result<ProjectSchema> {
+  impl_::touch_project_schema(project).await
 }
