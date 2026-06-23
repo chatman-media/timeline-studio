@@ -49,3 +49,12 @@ pub mod ffmpeg_command;
 /// Re-export фундамента под именами, ожидаемыми монолитом и будущими волнами.
 pub use services::ServiceContainer;
 pub use state::{VideoCompilerEvent, VideoCompilerState};
+
+/// D1 thin-shell: leaf state-reader groups migrated from ts-render-tauri.
+pub mod service_container;
+pub mod compiler_settings_commands;
+pub mod service;
+pub mod gpu;
+pub mod cache;
+pub mod preview_advanced;
+pub mod info;
