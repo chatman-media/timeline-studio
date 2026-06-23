@@ -1,9 +1,10 @@
 //! Tauri команды для расширенных функций превью
 
-use super::{business_logic, types::*};
+use super::types::*;
 use tauri::State;
 use ts_render::video_compiler::core::error::Result;
 use ts_render_services::VideoCompilerState;
+use ts_render_services::preview_advanced::commands_impl as impl_;
 
 /// Создать генератор превью с кастомным путем к FFmpeg
 #[tauri::command]
@@ -11,16 +12,7 @@ pub async fn create_preview_generator_with_ffmpeg(
   ffmpeg_path: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<String> {
-  let generator_id =
-    business_logic::create_preview_generator_with_ffmpeg_logic(ffmpeg_path.clone())?;
-
-  // Обновляем путь к FFmpeg в состоянии
-  {
-    let mut ffmpeg_path_state = state.ffmpeg_path.write().await;
-    *ffmpeg_path_state = ffmpeg_path;
-  }
-
-  Ok(generator_id)
+  impl_::create_preview_generator_with_ffmpeg(&state, ffmpeg_path).await
 }
 
 /// Установить путь к FFmpeg для существующего генератора (расширенная версия)
@@ -29,16 +21,7 @@ pub async fn set_preview_generator_ffmpeg_path_advanced(
   new_path: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  // Обновляем путь к FFmpeg в состоянии
-  {
-    let mut ffmpeg_path_state = state.ffmpeg_path.write().await;
-    *ffmpeg_path_state = new_path.clone();
-  }
-
-  // В реальной реализации здесь бы обновлялся путь в конкретном генераторе
-  log::info!("FFmpeg path updated to: {new_path}");
-
-  Ok(())
+  impl_::set_preview_generator_ffmpeg_path_advanced(&state, new_path).await
 }
 
 /// Генерировать превью для пакета видео
@@ -47,10 +30,7 @@ pub async fn generate_preview_batch_advanced(
   params: BatchPreviewParams,
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<PreviewResult>> {
-  // Получаем путь к FFmpeg
-  let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-
-  business_logic::generate_preview_batch_advanced_logic(&params, &ffmpeg_path).await
+  impl_::generate_preview_batch_advanced(&state, params).await
 }
 
 /// Генерировать отдельный кадр из видео
@@ -63,17 +43,7 @@ pub async fn generate_single_frame_preview(
   height: Option<u32>,
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<u8>> {
-  // Получаем путь к FFmpeg
-  let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-
-  business_logic::generate_single_frame_preview_logic(
-    video_path,
-    timestamp,
-    width,
-    height,
-    &ffmpeg_path,
-  )
-  .await
+  impl_::generate_single_frame_preview(&state, video_path, timestamp, width, height).await
 }
 
 /// Получить информацию о генераторе превью
@@ -81,11 +51,7 @@ pub async fn generate_single_frame_preview(
 pub async fn get_preview_generator_info(
   state: State<'_, VideoCompilerState>,
 ) -> Result<PreviewGeneratorInfo> {
-  let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-
-  Ok(business_logic::get_preview_generator_info_logic(
-    &ffmpeg_path,
-  ))
+  impl_::get_preview_generator_info(&state).await
 }
 
 /// Генерировать превью с расширенными опциями
@@ -96,8 +62,5 @@ pub async fn generate_preview_with_options(
   options: AdvancedPreviewOptions,
   state: State<'_, VideoCompilerState>,
 ) -> Result<PreviewResult> {
-  let ffmpeg_path = state.ffmpeg_path.read().await.clone();
-
-  business_logic::generate_preview_with_options_logic(video_path, timestamp, &options, &ffmpeg_path)
-    .await
+  impl_::generate_preview_with_options(&state, video_path, timestamp, options).await
 }

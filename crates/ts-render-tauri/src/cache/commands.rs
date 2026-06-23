@@ -1,34 +1,17 @@
 //! Tauri команды для работы с кэшем
 
-use super::business_logic;
 use super::types::*;
-use ts_render::video_compiler::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::error::Result;
 use ts_render_services::VideoCompilerState;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri::State;
+use ts_render_services::cache::commands_impl as impl_;
 
 /// Очистить весь кэш рендеринга
 #[tauri::command]
 pub async fn clear_render_cache(state: State<'_, VideoCompilerState>) -> Result<()> {
-  let cache_service = state.services.get_cache_service().ok_or_else(|| {
-    VideoCompilerError::InternalError("CacheService не инициализирован".to_string())
-  })?;
-
-  cache_service.clear_render_cache().await.map_err(|e| {
-    log::error!("Ошибка очистки кэша рендеринга: {e}");
-    VideoCompilerError::CacheError(business_logic::format_cache_error_message(
-      "очистить",
-      None,
-      &e.to_string(),
-    ))
-  })?;
-
-  log::info!(
-    "{}",
-    business_logic::format_cache_cleared_message("рендеринга", None)
-  );
-  Ok(())
+  impl_::clear_render_cache(&state).await
 }
 
 /// Очистить кэш конкретного проекта
@@ -37,53 +20,21 @@ pub async fn clear_project_cache(
   project_id: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  // Валидируем project_id
-  business_logic::validate_project_id(&project_id)?;
-
-  let cache_service = state.services.get_cache_service().ok_or_else(|| {
-    VideoCompilerError::InternalError("CacheService не инициализирован".to_string())
-  })?;
-
-  cache_service
-    .clear_project_cache(&project_id)
-    .await
-    .map_err(|e| {
-      log::error!("Ошибка очистки кэша проекта {project_id}: {e}");
-      VideoCompilerError::CacheError(business_logic::format_cache_error_message(
-        "очистить",
-        Some(&project_id),
-        &e.to_string(),
-      ))
-    })?;
-
-  log::info!(
-    "{}",
-    business_logic::format_cache_cleared_message("", Some(&project_id))
-  );
-  Ok(())
+  impl_::clear_project_cache(&state, &project_id).await
 }
 
 /// Получить размер кэша
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn get_cache_size(state: State<'_, VideoCompilerState>) -> Result<u64> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  let stats = cache_service.get_cache_stats().await?;
-  Ok(business_logic::mb_to_bytes(stats.total_size_mb))
+  impl_::get_cache_size(&state).await
 }
 
 /// Получить статистику использования кэша
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn get_cache_stats(state: State<'_, VideoCompilerState>) -> Result<CacheStats> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  cache_service.get_cache_stats().await
+  impl_::get_cache_stats(&state).await
 }
 
 /// Получить расширенную статистику кэша
@@ -92,9 +43,7 @@ pub async fn get_cache_stats(state: State<'_, VideoCompilerState>) -> Result<Cac
 pub async fn get_cache_stats_detailed(
   state: State<'_, VideoCompilerState>,
 ) -> Result<serde_json::Value> {
-  let cache = state.cache_manager.read().await;
-  let stats = business_logic::create_detailed_cache_stats(&cache);
-  Ok(serde_json::to_value(stats)?)
+  impl_::get_cache_stats_detailed(&state).await
 }
 
 /// Очистить устаревшие записи кэша
@@ -104,31 +53,14 @@ pub async fn clean_old_cache(
   max_age_days: u32,
   state: State<'_, VideoCompilerState>,
 ) -> Result<u64> {
-  // Валидируем параметр
-  business_logic::validate_max_age_days(max_age_days)?;
-
-  let cache_service = state.services.get_cache_service().ok_or_else(|| {
-    VideoCompilerError::InternalError("CacheService не инициализирован".to_string())
-  })?;
-
-  let cleaned_files = cache_service
-    .optimize_cache(max_age_days)
-    .await
-    .map_err(|e| {
-      log::error!("Ошибка очистки устаревшего кэша: {e}");
-      VideoCompilerError::CacheError(format!("Не удалось очистить устаревший кэш: {e}"))
-    })?;
-
-  log::info!("Очищено {cleaned_files} файлов старше {max_age_days} дней");
-  Ok(cleaned_files as u64)
+  impl_::clean_old_cache(&state, max_age_days).await
 }
 
 /// Получить список закэшированных проектов
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn get_cached_projects(state: State<'_, VideoCompilerState>) -> Result<Vec<String>> {
-  let cache = state.cache_manager.read().await;
-  Ok(cache.get_cached_projects())
+  impl_::get_cached_projects(&state).await
 }
 
 /// Проверить наличие кэша для проекта
@@ -138,8 +70,7 @@ pub async fn has_project_cache(
   project_id: String,
   state: State<'_, VideoCompilerState>,
 ) -> Result<bool> {
-  let cache = state.cache_manager.read().await;
-  Ok(cache.has_project_cache(&project_id))
+  impl_::has_project_cache(&state, &project_id).await
 }
 
 /// Получить метаданные закэшированных медиафайлов
@@ -148,41 +79,27 @@ pub async fn has_project_cache(
 pub async fn get_cached_media_metadata(
   state: State<'_, VideoCompilerState>,
 ) -> Result<HashMap<String, MediaMetadata>> {
-  let cache = state.cache_manager.read().await;
-  Ok(cache.get_all_cached_metadata())
+  impl_::get_cached_media_metadata(&state).await
 }
 
 /// Очистить кэш метаданных медиафайлов
 #[tauri::command]
 pub async fn clear_media_metadata_cache(state: State<'_, VideoCompilerState>) -> Result<()> {
-  let mut render_cache = state.cache_manager.write().await;
-  // Очищаем все кэши (включая метаданные)
-  render_cache.clear_all().await;
-  Ok(())
+  impl_::clear_media_metadata_cache(&state).await
 }
 
 /// Оптимизировать кэш (дефрагментация и удаление неиспользуемых данных)
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn optimize_cache(state: State<'_, VideoCompilerState>) -> Result<usize> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  cache_service.optimize_cache(30).await // 30 дней по умолчанию
+  impl_::optimize_cache(&state).await
 }
 
 /// Экспортировать статистику кэша в JSON
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn export_cache_stats(state: State<'_, VideoCompilerState>) -> Result<serde_json::Value> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  let stats = cache_service.get_cache_stats().await?;
-  let exported = business_logic::create_exported_cache_stats(&stats);
-  Ok(serde_json::to_value(exported)?)
+  impl_::export_cache_stats(&state).await
 }
 
 /// Установить максимальный размер кэша
@@ -192,21 +109,14 @@ pub async fn set_cache_size_limit(
   size_mb: u64,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  let mut cache = state.cache_manager.write().await;
-  let (preview, metadata, render) = business_logic::calculate_cache_limits(size_mb);
-  cache.set_cache_limits(preview, metadata, render);
-  Ok(())
+  impl_::set_cache_size_limit(&state, size_mb).await
 }
 
 /// Получить текущий лимит размера кэша
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn get_cache_size_limit(state: State<'_, VideoCompilerState>) -> Result<u64> {
-  let cache = state.cache_manager.read().await;
-  let (preview, metadata, render) = cache.get_cache_limits();
-  Ok(business_logic::cache_limits_to_mb(
-    preview, metadata, render,
-  ))
+  impl_::get_cache_size_limit(&state).await
 }
 
 /// Предварительно загрузить медиафайлы в кэш
@@ -216,50 +126,26 @@ pub async fn preload_media_to_cache(
   _file_paths: Vec<String>,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  let _cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-
-  // Упрощенная реализация - метод не реализован
-  Ok(())
+  impl_::preload_media_to_cache(&state).await
 }
 
 /// Очистить весь кэш
 #[tauri::command]
 pub async fn clear_all_cache(state: State<'_, VideoCompilerState>) -> Result<()> {
-  // Очищаем через CacheService
-  if let Some(cache_service) = state.services.get_cache_service() {
-    cache_service.clear_all().await?;
-  }
-
-  // Также очищаем in-memory RenderCache
-  let mut render_cache = state.cache_manager.write().await;
-  render_cache.clear_all().await;
-
-  log::info!("All caches cleared successfully");
-  Ok(())
+  impl_::clear_all_cache(&state).await
 }
 
 /// Очистить кэш превью
 #[tauri::command]
 pub async fn clear_preview_cache(state: State<'_, VideoCompilerState>) -> Result<()> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  cache_service.clear_preview_cache().await
+  impl_::clear_preview_cache(&state).await
 }
 
 /// Получить путь к каталогу кэша
 #[tauri::command]
 #[allow(dead_code)]
 pub async fn get_cache_path(state: State<'_, VideoCompilerState>) -> Result<PathBuf> {
-  let cache_service = state
-    .services
-    .get_cache_service()
-    .ok_or_else(|| VideoCompilerError::validation("CacheService не найден"))?;
-  cache_service.get_cache_path().await
+  impl_::get_cache_path(&state).await
 }
 
 /// Получить рекомендации по оптимизации кэша
@@ -267,8 +153,7 @@ pub async fn get_cache_path(state: State<'_, VideoCompilerState>) -> Result<Path
 pub async fn get_cache_optimization_recommendations(
   state: State<'_, VideoCompilerState>,
 ) -> Result<Vec<String>> {
-  let cache = state.cache_manager.read().await;
-  Ok(cache.get_optimization_recommendations())
+  impl_::get_cache_optimization_recommendations(&state).await
 }
 
 /// Предзагрузить превью для видео
@@ -280,30 +165,11 @@ pub async fn preload_video_previews(
   quality: Option<u8>,
   state: State<'_, VideoCompilerState>,
 ) -> Result<()> {
-  let mut cache = state.cache_manager.write().await;
-  let cache_arc = state.cache_manager.clone();
-
-  let resolution = resolution.unwrap_or((320, 180));
-  let quality = quality.unwrap_or(75);
-
-  cache
-    .preload_video_previews(&video_path, &timestamps, resolution, quality, cache_arc)
-    .await?;
-
-  log::info!(
-    "Предзагружено {} превью для {}",
-    timestamps.len(),
-    video_path
-  );
-  Ok(())
+  impl_::preload_video_previews(&state, video_path, timestamps, resolution, quality).await
 }
 
 /// Оптимизировать кэш на основе статистики
 #[tauri::command]
 pub async fn optimize_cache_by_stats(state: State<'_, VideoCompilerState>) -> Result<()> {
-  let mut cache = state.cache_manager.write().await;
-  cache.optimize_cache().await?;
-
-  log::info!("Кэш оптимизирован на основе статистики использования");
-  Ok(())
+  impl_::optimize_cache_by_stats(&state).await
 }

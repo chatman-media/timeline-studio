@@ -8698,11 +8698,15 @@ name = "ts-render-services"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "base64 0.22.1",
  "chrono",
  "log",
+ "num_cpus",
  "once_cell",
+ "os_info",
  "serde",
  "serde_json",
+ "sysinfo",
  "tokio",
  "ts-render",
  "ts-schema",

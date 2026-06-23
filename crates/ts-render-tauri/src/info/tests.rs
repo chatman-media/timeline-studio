@@ -332,7 +332,7 @@ Codecs:
 
   #[test]
   fn test_create_system_info() {
-    let system_info = business_logic::create_system_info();
+    let system_info = business_logic::create_system_info(tauri::VERSION);
 
     // Basic validation
     assert!(!system_info.os.os_type.is_empty());
