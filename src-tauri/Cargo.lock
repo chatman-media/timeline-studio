@@ -8058,6 +8058,7 @@ dependencies = [
  "ts-agent",
  "ts-analysis",
  "ts-core-types",
+ "ts-events",
  "ts-media",
  "ts-montage",
  "ts-platform",
@@ -8066,6 +8067,7 @@ dependencies = [
  "ts-render-services",
  "ts-render-tauri",
  "ts-schema",
+ "ts-secure-storage",
  "ts-state",
  "ts-subtitles",
  "url",
@@ -8597,6 +8599,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-events"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tokio",
+ "ts-render",
+]
+
+[[package]]
 name = "ts-media"
 version = "0.1.0"
 dependencies = [
@@ -8717,22 +8733,34 @@ dependencies = [
 name = "ts-render-tauri"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "base64 0.22.1",
  "chrono",
  "dirs",
+ "futures",
+ "governor",
  "log",
+ "nonzero_ext",
  "num_cpus",
  "once_cell",
  "os_info",
  "reqwest",
+ "rusqlite",
  "serde",
  "serde_json",
+ "sha2",
+ "specta",
  "sysinfo",
  "tauri",
  "tokio",
+ "tokio-retry",
+ "ts-analysis",
+ "ts-events",
+ "ts-platform",
  "ts-recognition",
  "ts-render",
  "ts-render-services",
+ "ts-secure-storage",
  "uuid",
  "which",
 ]
@@ -8747,6 +8775,21 @@ dependencies = [
  "serde_json",
  "specta",
  "uuid",
+]
+
+[[package]]
+name = "ts-secure-storage"
+version = "0.1.0"
+dependencies = [
+ "aes-gcm",
+ "anyhow",
+ "chrono",
+ "dirs",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin-store",
 ]
 
 [[package]]

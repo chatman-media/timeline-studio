@@ -42,6 +42,22 @@ ts-render = { path = "../ts-render" }
 # Движок распознавания (#96): группа recognition_advanced_commands использует
 # model_manager::YoloModel (enum). Корректное направление зависимости command->engine.
 ts-recognition = { path = "../ts-recognition" }
+# ai_api_proxy (#91): события (AppEvent) + защищённое хранилище API-ключей.
+ts-events = { path = "../ts-events" }
+ts-secure-storage = { path = "../ts-secure-storage" }
+# platform_optimization (#91): UnifiedAnalysisResult из ts-analysis (command->engine);
+# типы/логику платформо-оптимизации тянет из ts-platform (дедуп #121).
+ts-analysis = { path = "../ts-analysis" }
+ts-platform = { path = "../ts-platform" }
+# ai_api_proxy внешние: HTTP, rate-limit, кэш(sqlite), хэш, ретраи, specta-типы.
+anyhow = "1.0"
+futures = "0.3"
+governor = "0.10.4"
+nonzero_ext = "0.3"
+rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] }
+sha2 = "0.10"
+tokio-retry = "0.3"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
 
 [dev-dependencies]
 # Используется в тестах группы workflow.
