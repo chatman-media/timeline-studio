@@ -145,6 +145,12 @@ pub mod misc;
 /// квалифицированы подмодулем). НЕ экспортируется в bindings.ts (specta не затронут).
 pub mod recognition_advanced_commands;
 
+/// группа команд `ai_api_proxy` (прокси к AI-провайдерам: Claude/OpenAI/..., стриминг,
+/// secure-запросы, кэш ответов). Разблокирована выносом `core::events`→`ts-events`
+/// (AppEvent) и `security/secure_storage`→`ts-secure-storage` (SecureStorage/ApiKeyType).
+/// Шим в монолите; пути в app_builder/specta уже квалифицированы подмодулем.
+pub mod ai_api_proxy;
+
 /// Re-export Tauri-free фундамента из `ts-render-services` под именами, которые
 /// исторически жили в этом крейте, — чтобы потребители, ссылавшиеся на
 /// `ts_render_tauri::{VideoCompilerState, ServiceContainer}`, продолжали резолвиться.

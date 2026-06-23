@@ -4,8 +4,8 @@
 //! Поддерживает Claude, OpenAI, DeepSeek, Ollama с автоматическим fallback.
 
 use super::types::*;
-use crate::core::events::AppEvent;
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_events::AppEvent;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use futures::StreamExt;
 use governor::{DefaultDirectRateLimiter, Quota, RateLimiter};
 use nonzero_ext::nonzero;

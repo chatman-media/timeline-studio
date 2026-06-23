@@ -1,5 +1,5 @@
 use super::types::*;
-use crate::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
 use reqwest::Client;
 use serde_json::Value;
 

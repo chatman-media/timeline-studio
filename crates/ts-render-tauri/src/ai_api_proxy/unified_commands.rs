@@ -6,7 +6,7 @@
 use super::cache::{AICacheManager, CacheStats};
 use super::provider_manager::AIProviderManager;
 use super::types::*;
-use crate::security::{ApiKeyType, SecureStorage};
+use ts_secure_storage::{ApiKeyType, SecureStorage};
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 use tokio::sync::Mutex;

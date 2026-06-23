@@ -14,7 +14,9 @@
 //! - `ai_api_proxy` - Команды для проксирования AI API запросов (Claude, OpenAI и др.)
 //! - `misc` - Дополнительные команды
 
-pub mod ai_api_proxy;
+// `ai_api_proxy` вынесена в крейт `ts-render-tauri` (#91) — ре-экспорт-шим.
+// Пути в app_builder/specta_export уже квалифицированы подмодулем, остаются валидны.
+pub use ts_render_tauri::ai_api_proxy;
 // `batch` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.
 pub use ts_render_tauri::batch;
 // `cache` вынесена в крейт `ts-render-tauri` (Wave 2, #91/#92) — ре-экспорт-шим.

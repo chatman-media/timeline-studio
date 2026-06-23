@@ -1,6 +1,6 @@
 use super::business_logic::*;
 use super::types::*;
-use crate::video_compiler::core::error::Result;
+use ts_render::video_compiler::core::error::Result;
 
 /// Отправляет запрос к Claude API через backend proxy
 #[tauri::command]
