@@ -80,23 +80,8 @@ use security::secure_storage::SecureStorage;
 pub mod state;
 use state::StateManager;
 
-// Application state for analysis system
-#[derive(Clone)]
-pub struct AppState {
-  pub analysis_db: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
-  pub person_db: Option<std::sync::Arc<crate::recognition::person_database::PersonDatabase>>,
-  pub project_manager: std::sync::Arc<tokio::sync::RwLock<Option<String>>>,
-}
-
-impl Default for AppState {
-  fn default() -> Self {
-    Self {
-      analysis_db: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
-      person_db: None,
-      project_manager: std::sync::Arc::new(tokio::sync::RwLock::new(None)),
-    }
-  }
-}
+// Application state for analysis system — определение вынесено в ts-analysis-tauri (#356).
+pub use ts_analysis_tauri::AppState;
 
 // Модуль экспорта типов
 pub mod types_export;

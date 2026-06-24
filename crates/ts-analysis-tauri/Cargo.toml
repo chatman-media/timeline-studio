@@ -1,0 +1,42 @@
+[package]
+name = "ts-analysis-tauri"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri-слой анализа Timeline Studio (#354/#356/#358): команды/сервисы/движки/адаптеры/БД анализа + montage_planner (объединены из-за взаимного цикла). Движок-типы — в ts-analysis."
+
+[lib]
+name = "ts_analysis_tauri"
+path = "src/lib.rs"
+
+[dependencies]
+ts-analysis = { path = "../ts-analysis" }
+ts-recognition = { path = "../ts-recognition" }
+ts-recognition-tauri = { path = "../ts-recognition-tauri" }
+ts-render = { path = "../ts-render" }
+ts-render-services = { path = "../ts-render-services" }
+ts-render-tauri = { path = "../ts-render-tauri" }
+ts-state-tauri = { path = "../ts-state-tauri" }
+ts-security = { path = "../ts-security" }
+ts-core = { path = "../ts-core" }
+ts-events = { path = "../ts-events" }
+ts-schema = { path = "../ts-schema" }
+ts-render-analysis = { path = "../ts-render-analysis" }
+ts-montage = { path = "../ts-montage" }
+ts-command-registry = { path = "../ts-command-registry" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
+anyhow = "1.0"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+futures = "0.3"
+log = "0.4"
+num_cpus = "1.17"
+image = "0.25"
+rusqlite = { version = "0.32", features = ["bundled", "vtab", "load_extension"] }
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[dev-dependencies]
+tempfile = "3"

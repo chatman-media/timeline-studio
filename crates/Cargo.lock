@@ -6440,6 +6440,41 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-analysis-tauri"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "chrono",
+ "futures",
+ "image",
+ "log",
+ "num_cpus",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tempfile",
+ "tokio",
+ "ts-analysis",
+ "ts-command-registry",
+ "ts-core",
+ "ts-events",
+ "ts-montage",
+ "ts-recognition",
+ "ts-recognition-tauri",
+ "ts-render",
+ "ts-render-analysis",
+ "ts-render-services",
+ "ts-render-tauri",
+ "ts-schema",
+ "ts-security",
+ "ts-state-tauri",
+ "uuid",
+]
+
+[[package]]
 name = "ts-cli"
 version = "0.1.0"
 dependencies = [
