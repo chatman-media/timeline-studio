@@ -5773,6 +5773,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-command-registry"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tokio",
+]
+
+[[package]]
 name = "ts-core-types"
 version = "0.1.0"
 dependencies = [

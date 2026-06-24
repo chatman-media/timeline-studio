@@ -8057,6 +8057,7 @@ dependencies = [
  "tracing-subscriber",
  "ts-agent",
  "ts-analysis",
+ "ts-command-registry",
  "ts-core-types",
  "ts-events",
  "ts-media",
@@ -8585,6 +8586,13 @@ dependencies = [
  "ts-recognition",
  "ts-schema",
  "uuid",
+]
+
+[[package]]
+name = "ts-command-registry"
+version = "0.1.0"
+dependencies = [
+ "tauri",
 ]
 
 [[package]]
