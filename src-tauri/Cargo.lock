@@ -8610,6 +8610,7 @@ dependencies = [
  "serde",
  "serde_json",
  "specta",
+ "symphonia",
  "tauri",
  "tokio",
  "ts-analysis",

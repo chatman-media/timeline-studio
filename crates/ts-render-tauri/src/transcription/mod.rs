@@ -359,7 +359,7 @@ pub async fn prepare_audio_for_whisper(
   input_path: String,
   output_format: String,
 ) -> Result<String, String> {
-  use crate::video_compiler::commands::extract_audio_for_whisper as extract_audio;
+  use crate::whisper_commands::extract_audio_for_whisper as extract_audio;
 
   // Generate output path
   let input = Path::new(&input_path);

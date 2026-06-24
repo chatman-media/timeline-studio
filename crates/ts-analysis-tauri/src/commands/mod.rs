@@ -1,5 +1,7 @@
 // Analysis commands module
 
+pub mod audio_analysis;
+pub mod audio_correlation;
 pub mod real_analysis_commands;
 // pub mod frame_integration_commands;  // Временно отключено - зависит от services
 // pub mod audio_integration_commands; // Commented out due to compilation issues

@@ -97,12 +97,12 @@ mod models_config;
 // Модуль обновлений приложения
 pub mod updates;
 
-// Модуль команд
+// Модуль команд — листовые команды вынесены в доменные крейты (#354/#363).
+// Ре-экспорт-шимы сохраняют пути `crate::commands::<mod>::<fn>` в app_builder валидными.
 pub mod commands {
-  pub mod audio_analysis;
-  pub mod audio_correlation;
-  pub mod init_yolo;
-  pub mod transcription; // Legacy init_yolo_processor command
+  pub use ts_analysis_tauri::commands::{audio_analysis, audio_correlation};
+  pub use ts_recognition_tauri::init_yolo;
+  pub use ts_render_tauri::transcription;
 }
 
 // Модуль команд для эффектов
