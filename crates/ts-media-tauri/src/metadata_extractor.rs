@@ -1,7 +1,7 @@
 //! Metadata Extractor - Извлечение метаданных из медиафайлов
 
-use crate::media::metadata::get_media_metadata;
-use crate::media::types::MediaFile;
+use ts_media::media::metadata::get_media_metadata;
+use ts_media::media::types::MediaFile;
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 use tauri::{AppHandle, Emitter};
@@ -96,7 +96,7 @@ impl MetadataExtractor {
       .and_then(|ext| ext.to_str())
       .map(|ext| {
         let ext_lower = ext.to_lowercase();
-        crate::media::types::SUPPORTED_EXTENSIONS.contains(&ext_lower.as_str())
+        ts_media::media::types::SUPPORTED_EXTENSIONS.contains(&ext_lower.as_str())
       })
       .unwrap_or(false)
   }
@@ -183,7 +183,7 @@ mod tests {
 
   #[test]
   fn test_metadata_event_serialization() {
-    use crate::media::types::{FfprobeFormat, MediaFile, ProbeData};
+    use ts_media::media::types::{FfprobeFormat, MediaFile, ProbeData};
 
     let event = MetadataEvent::MetadataReady {
       file_id: "test-id".to_string(),
@@ -269,7 +269,7 @@ mod tests {
   #[test]
   fn test_supported_extensions_constants() {
     // Проверяем, что используемая константа существует
-    use crate::media::types::SUPPORTED_EXTENSIONS;
+    use ts_media::media::types::SUPPORTED_EXTENSIONS;
 
     assert!(SUPPORTED_EXTENSIONS.contains(&"mp4"));
     assert!(SUPPORTED_EXTENSIONS.contains(&"jpg"));

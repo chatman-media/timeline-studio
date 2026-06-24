@@ -8,9 +8,9 @@ use super::preview_data::{
   BasicVideoMetadata, MediaPreviewData, RecognitionFrame, ThumbnailData, TimelinePreview,
 };
 use super::thumbnail::{generate_thumbnail, generate_thumbnail_fast};
-use crate::video_compiler::cache::RenderCache;
-use crate::video_compiler::frame_extraction::{ExtractionPurpose, FrameExtractionManager};
-use crate::video_compiler::preview::PreviewGenerator;
+use ts_render::video_compiler::cache::RenderCache;
+use ts_render::video_compiler::frame_extraction::{ExtractionPurpose, FrameExtractionManager};
+use ts_render::video_compiler::preview::PreviewGenerator;
 
 /// Единый менеджер для всех данных превью
 pub struct PreviewDataManager {
@@ -466,7 +466,7 @@ impl PreviewDataManager {
   pub async fn save_timeline_frames(
     &self,
     file_id: String,
-    frames: Vec<crate::media::commands::TimelineFrame>,
+    frames: Vec<crate::commands::TimelineFrame>,
   ) -> Result<()> {
     use super::preview_data::TimelinePreview;
     use base64::{engine::general_purpose::STANDARD, Engine as _};
@@ -513,14 +513,14 @@ impl PreviewDataManager {
   pub async fn get_timeline_frames(
     &self,
     file_id: &str,
-  ) -> Result<Vec<crate::media::commands::TimelineFrame>> {
+  ) -> Result<Vec<crate::commands::TimelineFrame>> {
     let data = self.data.read().await;
 
     if let Some(preview_data) = data.get(file_id) {
       let mut frames = Vec::new();
 
       for preview in &preview_data.timeline_previews {
-        let frame = crate::media::commands::TimelineFrame {
+        let frame = crate::commands::TimelineFrame {
           timestamp: preview.timestamp,
           base64_data: preview.base64_data.clone().unwrap_or_default(),
           is_keyframe: self.is_keyframe_by_timestamp(preview.timestamp), // Определение keyframe по временной метке
@@ -820,12 +820,12 @@ mod tests {
     let base64_data = STANDARD.encode(&test_image_data);
 
     let frames = vec![
-      crate::media::commands::TimelineFrame {
+      crate::commands::TimelineFrame {
         timestamp: 1.0,
         base64_data: base64_data.clone(),
         is_keyframe: true,
       },
-      crate::media::commands::TimelineFrame {
+      crate::commands::TimelineFrame {
         timestamp: 2.0,
         base64_data: base64_data.clone(),
         is_keyframe: false,
@@ -853,7 +853,7 @@ mod tests {
     let test_image_data = vec![255, 0, 0, 255];
     let base64_data = STANDARD.encode(&test_image_data);
 
-    let frames = vec![crate::media::commands::TimelineFrame {
+    let frames = vec![crate::commands::TimelineFrame {
       timestamp: 1.5,
       base64_data: base64_data.clone(),
       is_keyframe: true,
@@ -889,7 +889,7 @@ mod tests {
     let manager = create_test_manager().await;
     let file_id = "test_video".to_string();
 
-    let frames = vec![crate::media::commands::TimelineFrame {
+    let frames = vec![crate::commands::TimelineFrame {
       timestamp: 1.0,
       base64_data: "invalid_base64_data!!!".to_string(),
       is_keyframe: true,
@@ -1042,12 +1042,12 @@ mod tests {
 
     // Сохраняем первый набор frames
     let frames1 = vec![
-      crate::media::commands::TimelineFrame {
+      crate::commands::TimelineFrame {
         timestamp: 1.0,
         base64_data: base64_data.clone(),
         is_keyframe: true,
       },
-      crate::media::commands::TimelineFrame {
+      crate::commands::TimelineFrame {
         timestamp: 2.0,
         base64_data: base64_data.clone(),
         is_keyframe: false,
@@ -1059,7 +1059,7 @@ mod tests {
       .unwrap();
 
     // Сохраняем второй набор frames (должен перезаписать первый)
-    let frames2 = vec![crate::media::commands::TimelineFrame {
+    let frames2 = vec![crate::commands::TimelineFrame {
       timestamp: 3.0,
       base64_data: base64_data.clone(),
       is_keyframe: true,
@@ -1086,7 +1086,7 @@ mod tests {
     let test_data = vec![255, 0, 0, 255];
     let base64_data = STANDARD.encode(&test_data);
 
-    let frames = vec![crate::media::commands::TimelineFrame {
+    let frames = vec![crate::commands::TimelineFrame {
       timestamp: 1.0,
       base64_data: base64_data.clone(),
       is_keyframe: true,
@@ -1342,7 +1342,7 @@ mod tests {
           let data = vec![255, 0, 0, 255];
           let base64 = STANDARD.encode(&data);
 
-          let frames = vec![crate::media::commands::TimelineFrame {
+          let frames = vec![crate::commands::TimelineFrame {
             timestamp: i as f64,
             base64_data: base64,
             is_keyframe: true,
@@ -1401,12 +1401,12 @@ mod tests {
       let base64_data = STANDARD.encode(&test_data);
 
       let frames = vec![
-        crate::media::commands::TimelineFrame {
+        crate::commands::TimelineFrame {
           timestamp: 0.0,
           base64_data: base64_data.clone(),
           is_keyframe: true,
         },
-        crate::media::commands::TimelineFrame {
+        crate::commands::TimelineFrame {
           timestamp: 1.0,
           base64_data: base64_data.clone(),
           is_keyframe: false,
@@ -1458,7 +1458,7 @@ mod tests {
         let data = vec![255, 255, 255, 255];
         let base64 = STANDARD.encode(&data);
 
-        let frames = vec![crate::media::commands::TimelineFrame {
+        let frames = vec![crate::commands::TimelineFrame {
           timestamp: 5.0,
           base64_data: base64,
           is_keyframe: false,

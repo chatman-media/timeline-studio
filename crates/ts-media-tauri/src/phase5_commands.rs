@@ -135,7 +135,7 @@ pub async fn ffmpeg_extract_frame(
   let temp_path_str = temp_path.to_string_lossy().to_string();
 
   // Извлекаем кадр через FFmpeg
-  crate::media::ffmpeg::extract_frame(&file_path, &temp_path_str, timestamp)
+  ts_media::media::ffmpeg::extract_frame(&file_path, &temp_path_str, timestamp)
     .map_err(|e| format!("Failed to extract frame: {}", e))?;
 
   Ok(ExtractedFrameInfo {

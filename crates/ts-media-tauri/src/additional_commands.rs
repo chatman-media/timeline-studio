@@ -1,9 +1,9 @@
 //! Additional Media Commands - дополнительные команды для работы с медиа
 
-use crate::media::files::get_media_files;
-use crate::video_compiler::commands::ffmpeg_advanced::probe_media_file;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
+use ts_media::media::files::get_media_files;
+use ts_render_tauri::ffmpeg_advanced::probe_media_file;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use tauri::State;
@@ -43,7 +43,7 @@ pub async fn get_media_files_in_directory(
   });
 
   let files = get_media_files(params.directory.clone()).map_err(|e| {
-    crate::video_compiler::error::VideoCompilerError::validation(format!(
+    ts_render::video_compiler::error::VideoCompilerError::validation(format!(
       "Failed to get media files: {e}"
     ))
   })?;

@@ -5826,6 +5826,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-media-tauri"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "chrono",
+ "dirs",
+ "futures",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tempfile",
+ "tokio",
+ "ts-command-registry",
+ "ts-media",
+ "ts-render",
+ "ts-render-services",
+ "ts-render-tauri",
+ "uuid",
+]
+
+[[package]]
 name = "ts-montage"
 version = "0.1.0"
 dependencies = [

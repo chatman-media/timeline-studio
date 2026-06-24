@@ -1,6 +1,6 @@
 //! Thumbnail Generator - Генерация миниатюр для медиафайлов
 
-use crate::media::ffmpeg::extract_frame;
+use ts_media::media::ffmpeg::extract_frame;
 use base64::Engine;
 use image::{DynamicImage, GenericImageView, ImageFormat};
 use serde::{Deserialize, Serialize};
