@@ -4,6 +4,7 @@ pub use ts_recognition::recognition::*;
 
 pub mod commands;
 pub mod vision_service;
+pub mod init_yolo;
 
 pub use commands::person_commands;
 pub use commands::RecognitionState;

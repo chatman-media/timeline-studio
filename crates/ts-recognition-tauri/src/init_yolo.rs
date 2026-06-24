@@ -2,9 +2,9 @@
 //!
 //! Standalone command for initializing YOLO processor from legacy yolo_commands module.
 
-use crate::recognition::frame_processor::ProcessingConfig;
-use crate::recognition::yolo_processor_refactored::ProcessorConfig;
-use crate::recognition::{YoloModel, YoloProcessor};
+use crate::frame_processor::ProcessingConfig;
+use crate::yolo_processor_refactored::ProcessorConfig;
+use crate::{YoloModel, YoloProcessor};
 use tauri::State;
 use tokio::sync::Mutex;
 

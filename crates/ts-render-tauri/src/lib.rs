@@ -127,6 +127,7 @@ pub mod rendering;
 /// Берёт `core::{error,ffmpeg_executor}` из `ts-render`, reqwest для OpenAI API.
 /// Шим: `pub use ts_render_tauri::whisper_commands;`.
 pub mod whisper_commands;
+pub mod transcription;
 
 /// Wave 2: группа команд `frame_extraction` (извлечение кадров/субтитров/распознавания).
 /// Берёт `core::{frame_extraction,...}` из `ts-render`. Шим: `pub use ts_render_tauri::frame_extraction;`.
