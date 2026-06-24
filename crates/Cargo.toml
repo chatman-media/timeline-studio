@@ -9,4 +9,4 @@ members = [
   "ts-cli",
   "ts-agent",
   "ts-platform", "ts-publish",
-  "ts-events", "ts-secure-storage", "ts-command-registry", "ts-schema", "ts-render", "ts-render-services", "ts-render-analysis", "ts-render-tauri", "ts-recognition", "ts-subtitles", "ts-media", "ts-media-tauri", "ts-montage", "ts-analysis"]
+  "ts-core", "ts-events", "ts-secure-storage", "ts-command-registry", "ts-schema", "ts-render", "ts-render-services", "ts-render-analysis", "ts-render-tauri", "ts-recognition", "ts-subtitles", "ts-media", "ts-media-tauri", "ts-montage", "ts-analysis"]
