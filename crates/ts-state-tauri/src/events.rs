@@ -1,6 +1,6 @@
 use super::browser::BrowserEvent;
 use super::chat::ChatEvent;
-use crate::state::commands::types::{SystemNotification, UpdateInfo};
+use crate::commands::types::{SystemNotification, UpdateInfo};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use specta::Type;

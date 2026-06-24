@@ -1,6 +1,6 @@
-use crate::state::browser::{BrowserTab, SortOrder, ViewMode};
-use crate::state::chat::ChatCommand;
-use crate::state::project_state::{Keyframe, MediaType, ProjectSettings, Resolution, TrackType};
+use crate::browser::{BrowserTab, SortOrder, ViewMode};
+use crate::chat::ChatCommand;
+use crate::project_state::{Keyframe, MediaType, ProjectSettings, Resolution, TrackType};
 use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 use chrono;
 use serde::{Deserialize, Serialize};

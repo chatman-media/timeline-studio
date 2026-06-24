@@ -1,5 +1,5 @@
 use super::types::CommandResult;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -65,7 +65,7 @@ impl TransitionsCommands {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,

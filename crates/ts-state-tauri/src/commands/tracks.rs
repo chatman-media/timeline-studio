@@ -1,5 +1,5 @@
 use super::types::CommandResult;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::{EventBus, ProjectEvent, ProjectState};
 use crate::types_export::TrackUpdates;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -18,10 +18,10 @@ impl TracksCommands {
   pub async fn add_track(
     &self,
     name: String,
-    track_type: crate::state::project_state::TrackType,
+    track_type: crate::project_state::TrackType,
     index: Option<usize>,
   ) -> CommandResult {
-    use crate::state::project_state::Track;
+    use crate::project_state::Track;
     use uuid::Uuid;
 
     log::info!(
@@ -73,7 +73,7 @@ impl TracksCommands {
       .event_bus
       .publish(
         ProjectEvent::TrackAdded {
-          track: crate::state::events::TrackData {
+          track: crate::events::TrackData {
             id: track_id.clone(),
             name,
             track_type: format!("{:?}", track_type),
@@ -171,7 +171,7 @@ impl TracksCommands {
           .publish(
             ProjectEvent::TrackUpdated {
               track_id: track_id.clone(),
-              changes: crate::state::events::TrackChanges {
+              changes: crate::events::TrackChanges {
                 name: track_name_change,
                 enabled: updates.enabled,
                 locked: updates.locked,

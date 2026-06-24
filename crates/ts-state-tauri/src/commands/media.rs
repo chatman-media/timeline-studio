@@ -1,8 +1,8 @@
 use super::types::CommandResult;
-use crate::state::project_state::*;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::project_state::*;
+use crate::{EventBus, ProjectEvent, ProjectState};
 use crate::types_export::MediaUpdates;
-use crate::video_compiler::core::ffmpeg::analysis::get_video_metadata;
+use ts_render_analysis::analysis::get_video_metadata;
 use std::path::Path;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -135,7 +135,7 @@ impl MediaCommands {
       .event_bus
       .publish(
         ProjectEvent::MediaAdded {
-          media: crate::state::events::MediaData {
+          media: crate::events::MediaData {
             id: media_id.clone(),
             path: path.clone(),
             name: file_name.clone(),
@@ -222,7 +222,7 @@ impl MediaCommands {
       .publish(
         ProjectEvent::MediaUpdated {
           media_id: media_id.clone(),
-          changes: crate::state::events::MediaChanges {
+          changes: crate::events::MediaChanges {
             name: updated_name,
             thumbnail: None, // Not updating thumbnail in this command
           },
@@ -267,7 +267,7 @@ impl MediaCommands {
       .publish(
         ProjectEvent::MediaUpdated {
           media_id: media_id.clone(),
-          changes: crate::state::events::MediaChanges {
+          changes: crate::events::MediaChanges {
             name: None,
             thumbnail: None,
           },

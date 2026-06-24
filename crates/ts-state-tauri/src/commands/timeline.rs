@@ -1,6 +1,6 @@
 use super::types::CommandResult;
-use crate::state::project_state::*;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::project_state::*;
+use crate::{EventBus, ProjectEvent, ProjectState};
 use crate::types_export::ClipUpdates;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -75,7 +75,7 @@ impl TimelineCommands {
       .publish(
         ProjectEvent::ClipAdded {
           track_id,
-          clip: crate::state::events::ClipData {
+          clip: crate::events::ClipData {
             id: clip_id.clone(),
             media_id,
             name: clip.name,
@@ -314,7 +314,7 @@ impl TimelineCommands {
       .publish(
         ProjectEvent::ClipSplit {
           original_clip_id: clip_id.clone(),
-          left_clip: crate::state::events::ClipData {
+          left_clip: crate::events::ClipData {
             id: left_clip.id.clone(),
             media_id: left_clip.media_id.clone(),
             name: left_clip.name.clone(),
@@ -323,7 +323,7 @@ impl TimelineCommands {
             source_in: left_clip.source_in,
             source_out: left_clip.source_out,
           },
-          right_clip: crate::state::events::ClipData {
+          right_clip: crate::events::ClipData {
             id: right_clip.id.clone(),
             media_id: right_clip.media_id.clone(),
             name: right_clip.name.clone(),
@@ -474,7 +474,7 @@ impl TimelineCommands {
     }
 
     // Store in clipboard
-    state.clipboard = Some(crate::state::project_state::ClipboardData {
+    state.clipboard = Some(crate::project_state::ClipboardData {
       clips: clips_to_copy.clone(),
       copied_at: chrono::Utc::now(),
       original_track_ids: track_ids.clone(),
@@ -562,7 +562,7 @@ impl TimelineCommands {
         .publish(
           ProjectEvent::ClipAdded {
             track_id: track_id.clone(),
-            clip: crate::state::events::ClipData {
+            clip: crate::events::ClipData {
               id: clip_id.clone(),
               media_id: String::new(), // Will be filled from actual clip
               name: String::new(),
@@ -626,7 +626,7 @@ impl TimelineCommands {
         .publish(
           ProjectEvent::ClipUpdated {
             clip_id: clip_id.clone(),
-            changes: crate::state::events::ClipChanges {
+            changes: crate::events::ClipChanges {
               name: clip_name_change,
               playback_rate: updates.playback_rate,
               volume: None,  // Not in updates

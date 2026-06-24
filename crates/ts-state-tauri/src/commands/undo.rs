@@ -1,5 +1,5 @@
 use super::types::CommandResult;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::{EventBus, ProjectEvent, ProjectState};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use specta::Type;

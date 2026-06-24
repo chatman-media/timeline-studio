@@ -1,4 +1,5 @@
 pub mod browser;
+pub mod types_export;
 pub mod chat;
 pub mod commands;
 pub mod commands_api;
@@ -43,12 +44,12 @@ impl StateManager {
 
     // Initialize AI Provider Manager
     let ai_manager = Arc::new(
-      crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager::new(),
+      ts_render_tauri::ai_api_proxy::provider_manager::AIProviderManager::new(),
     );
 
     // Initialize Secure Storage for API keys
     let secure_storage = Arc::new(tokio::sync::Mutex::new(
-      crate::security::SecureStorage::new(app_handle.clone())
+      ts_security::SecureStorage::new(app_handle.clone())
         .map_err(|e| format!("Failed to initialize secure storage: {}", e))?,
     ));
 
