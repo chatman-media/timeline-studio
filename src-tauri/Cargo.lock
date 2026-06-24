@@ -8072,6 +8072,7 @@ dependencies = [
  "ts-render-tauri",
  "ts-schema",
  "ts-secure-storage",
+ "ts-security",
  "ts-state",
  "ts-subtitles",
  "url",
@@ -8872,6 +8873,28 @@ dependencies = [
  "serde_json",
  "tauri",
  "tauri-plugin-store",
+]
+
+[[package]]
+name = "ts-security"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "chrono",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tokio",
+ "ts-command-registry",
+ "ts-core",
+ "ts-render",
+ "ts-render-services",
+ "ts-secure-storage",
+ "url",
+ "uuid",
 ]
 
 [[package]]

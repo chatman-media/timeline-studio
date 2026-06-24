@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-  use crate::command_registry::CommandRegistry;
-  use crate::security::registry::SecurityCommandRegistry;
+  use ts_command_registry::CommandRegistry;
+  use crate::registry::SecurityCommandRegistry;
 
   #[test]
   fn test_security_command_registry_trait_implementation() {

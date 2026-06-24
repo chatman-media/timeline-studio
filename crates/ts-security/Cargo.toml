@@ -1,0 +1,32 @@
+[package]
+name = "ts-security"
+version = "0.1.0"
+edition = "2021"
+description = "Подсистема безопасности Timeline Studio (#354/#359): API-валидаторы, OAuth, импорт .env, registry. Хранилище ключей — в ts-secure-storage."
+
+[lib]
+name = "ts_security"
+path = "src/lib.rs"
+
+[dependencies]
+ts-core = { path = "../ts-core" }
+ts-render = { path = "../ts-render" }
+ts-secure-storage = { path = "../ts-secure-storage" }
+ts-command-registry = { path = "../ts-command-registry" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1.0"
+reqwest = { version = "0.12", features = ["json", "multipart", "stream"] }
+url = "2.5"
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+async-trait = "0.1"
+ts-render-services = { path = "../ts-render-services" }
+
+[dev-dependencies]
+tempfile = "3"
+mockito = "1.7"
+httpmock = "0.8.2"

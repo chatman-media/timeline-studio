@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::security::commands::*;
+  use crate::commands::*;
   use serde_json::json;
 
   #[test]
