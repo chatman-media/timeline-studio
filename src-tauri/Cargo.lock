@@ -8062,6 +8062,7 @@ dependencies = [
  "ts-core",
  "ts-core-types",
  "ts-events",
+ "ts-mcp",
  "ts-media",
  "ts-media-tauri",
  "ts-montage",
@@ -8692,6 +8693,23 @@ dependencies = [
  "specta",
  "tokio",
  "ts-render",
+]
+
+[[package]]
+name = "ts-mcp"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tokio",
+ "ts-analysis-tauri",
+ "ts-command-registry",
+ "ts-state-tauri",
 ]
 
 [[package]]

@@ -2,7 +2,7 @@
 
 use super::tools::VideoTools;
 use super::types::{MCPConfig, MCPToolRequest, MCPToolResult};
-use crate::state::{EventBus, ProjectState};
+use ts_state_tauri::{EventBus, ProjectState};
 use anyhow::Result;
 use log::{debug, error, info};
 use serde::{Deserialize, Serialize};

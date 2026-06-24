@@ -1,0 +1,22 @@
+[package]
+name = "ts-mcp"
+version = "0.1.0"
+edition = "2021"
+description = "MCP-сервер VideoTools Timeline Studio (#354/#362): tools/server/command_registry поверх ts-state-tauri/ts-analysis-tauri."
+
+[lib]
+name = "ts_mcp"
+path = "src/lib.rs"
+
+[dependencies]
+ts-state-tauri = { path = "../ts-state-tauri" }
+ts-analysis-tauri = { path = "../ts-analysis-tauri" }
+ts-command-registry = { path = "../ts-command-registry" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1.0"
+log = "0.4"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
