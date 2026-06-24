@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::security::commands::*;
+  use crate::commands::*;
 
   #[test]
   fn test_generate_oauth_url() {

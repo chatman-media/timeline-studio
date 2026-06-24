@@ -1,8 +1,8 @@
 //! Additional Security Commands - дополнительные команды безопасности
 
-use crate::security::secure_storage::SecureStorage;
-use crate::video_compiler::error::Result;
-use crate::video_compiler::VideoCompilerState;
+use crate::secure_storage::SecureStorage;
+use ts_render::video_compiler::error::Result;
+use ts_render_services::VideoCompilerState;
 use serde::{Deserialize, Serialize};
 use tauri::State;
 

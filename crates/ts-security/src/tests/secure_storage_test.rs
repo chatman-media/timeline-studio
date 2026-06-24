@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::security::secure_storage::*;
+  use crate::secure_storage::*;
   use std::str::FromStr;
 
   #[test]

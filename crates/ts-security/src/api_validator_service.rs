@@ -2,10 +2,10 @@
 //!
 //! Этот модуль демонстрирует как использовать DI Container для сервисов
 
-use crate::core::{AppEvent, EventBus, Service};
-use crate::security::api_validator::ApiValidator;
-use crate::security::ApiKeyType;
-use crate::video_compiler::error::Result;
+use ts_core::{AppEvent, EventBus, Service};
+use crate::api_validator::ApiValidator;
+use crate::ApiKeyType;
+use ts_render::video_compiler::error::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -66,7 +66,7 @@ impl ApiValidatorService {
     // Конвертируем ValidationResult в bool
     match result {
       Ok(validation_result) => Ok(validation_result.is_valid),
-      Err(e) => Err(crate::video_compiler::error::VideoCompilerError::InternalError(e.to_string())),
+      Err(e) => Err(ts_render::video_compiler::error::VideoCompilerError::InternalError(e.to_string())),
     }
   }
 

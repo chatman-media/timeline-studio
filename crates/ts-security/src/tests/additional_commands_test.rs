@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::security::additional_commands::*;
+  use crate::additional_commands::*;
 
   // Поскольку команды требуют Tauri State, которое сложно мокировать в юнит-тестах,
   // мы тестируем только сериализацию структур данных
