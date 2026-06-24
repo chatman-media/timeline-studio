@@ -7,7 +7,7 @@ use std::sync::Arc;
 use tauri::State;
 use tokio::sync::Mutex;
 
-use crate::recognition::mediapipe_processor::{
+use crate::mediapipe_processor::{
   BlazeFaceDetection, FaceMeshLandmarks, FacialExpressions, MediaPipeModel, MediaPipeProcessor,
 };
 
@@ -416,12 +416,12 @@ impl From<FacialExpressions> for FaceExpressionsResponse {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::recognition::mediapipe_processor::Point2D;
+  use crate::mediapipe_processor::Point2D;
 
   #[tokio::test]
   async fn test_blazeface_detection_response_conversion() {
     let detection = BlazeFaceDetection {
-      bbox: crate::recognition::mediapipe_processor::BoundingBox {
+      bbox: crate::mediapipe_processor::BoundingBox {
         x1: 10.0,
         y1: 20.0,
         x2: 100.0,

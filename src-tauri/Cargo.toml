@@ -103,6 +103,7 @@ ts-render-tauri = { path = "../crates/ts-render-tauri" }
 ts-montage = { path = "../crates/ts-montage" }
 ts-subtitles = { path = "../crates/ts-subtitles" }
 ts-recognition = { path = "../crates/ts-recognition" }
+ts-recognition-tauri = { path = "../crates/ts-recognition-tauri" }
 ts-media = { path = "../crates/ts-media" }
 ts-media-tauri = { path = "../crates/ts-media-tauri" }
 ffmpeg-next = "8"

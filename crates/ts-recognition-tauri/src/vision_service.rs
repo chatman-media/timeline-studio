@@ -14,7 +14,7 @@ use super::retinaface_processor::{RetinaFaceModel, RetinaFaceProcessor};
 // Use refactored YOLO implementation
 use super::model_manager::YoloModel;
 use super::yolo_processor_refactored::{ProcessorConfig, YoloProcessor};
-use crate::analysis::types::{
+use ts_analysis::analysis::types::{
   BoundingBox, BrightnessLevel, Color, ColorAnalysis, ColorTemperature, FaceDetection,
   ObjectDetection, SaturationLevel, TextDetection,
 };

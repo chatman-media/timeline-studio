@@ -7,7 +7,7 @@ use uuid::Uuid;
 #[tauri::command]
 pub async fn init_advanced_tracking(
   config: AdvancedTrackingConfig,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<String, String> {
   log::info!("Initializing advanced tracking with config: {:?}", config);
 
@@ -22,7 +22,7 @@ pub async fn init_advanced_tracking(
 pub async fn start_person_tracking(
   video_path: String,
   _tracking_options: PersonTrackingOptions,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<TrackingSession, String> {
   log::info!("Starting person tracking for video: {}", video_path);
 
@@ -42,7 +42,7 @@ pub async fn assign_person_to_track(
   track_id: String,
   person_id: String,
   confidence: f32,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!(
     "Assigning person {} to track {} with confidence {}",
@@ -61,7 +61,7 @@ pub async fn merge_tracks(
   primary_track_id: String,
   secondary_track_id: String,
   merge_strategy: MergeStrategy,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<TrackMergeResult, String> {
   log::info!(
     "Merging tracks {} and {} with strategy {:?}",
@@ -83,7 +83,7 @@ pub async fn merge_tracks(
 #[tauri::command]
 pub async fn stop_person_tracking(
   session_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<TrackingResults, String> {
   log::info!("Stopping person tracking session: {}", session_id);
 
@@ -103,7 +103,7 @@ pub async fn stop_person_tracking(
 pub async fn update_tracking_config(
   session_id: String,
   _config_updates: AdvancedTrackingConfig,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("Updating tracking config for session: {}", session_id);
 
@@ -116,7 +116,7 @@ pub async fn update_tracking_config(
 pub async fn cleanup_tracking(
   _session_id: Option<String>,
   older_than_days: Option<u32>,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<CleanupResult, String> {
   let days = older_than_days.unwrap_or(30);
   log::info!("Cleaning up tracking data older than {} days", days);

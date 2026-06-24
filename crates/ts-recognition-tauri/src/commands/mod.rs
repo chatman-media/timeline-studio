@@ -14,8 +14,8 @@ use serde_json::Value;
 use std::path::PathBuf;
 use tauri::{AppHandle, Emitter, State};
 
-use crate::recognition::recognition_service::{RecognitionEvent, RecognitionService};
-use crate::recognition::types::RecognitionResults;
+use crate::recognition_service::{RecognitionEvent, RecognitionService};
+use crate::types::RecognitionResults;
 
 /// State для сервиса распознавания
 pub struct RecognitionState {
@@ -248,7 +248,7 @@ pub async fn get_yolo_class_names(
 pub async fn process_yolo_batch(
   image_paths: Vec<String>,
   state: State<'_, RecognitionState>,
-) -> Result<Vec<Vec<crate::recognition::Detection>>, String> {
+) -> Result<Vec<Vec<crate::Detection>>, String> {
   let paths: Vec<std::path::PathBuf> = image_paths.iter().map(std::path::PathBuf::from).collect();
 
   state

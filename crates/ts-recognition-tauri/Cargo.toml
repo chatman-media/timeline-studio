@@ -1,0 +1,29 @@
+[package]
+name = "ts-recognition-tauri"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri-командный слой распознавания Timeline Studio (#354/#355): YOLO/FaceNet/RetinaFace/MediaPipe/privacy/clustering команды + vision_service. Движок — в ts-recognition."
+
+[lib]
+name = "ts_recognition_tauri"
+path = "src/lib.rs"
+
+[dependencies]
+ts-recognition = { path = "../ts-recognition" }
+ts-state-tauri = { path = "../ts-state-tauri" }
+ts-analysis = { path = "../ts-analysis" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
+anyhow = "1.0"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+image = "0.25"
+log = "0.4"
+dirs = "6.0.0"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+[dev-dependencies]
+tempfile = "3"

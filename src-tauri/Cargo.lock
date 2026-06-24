@@ -8066,6 +8066,7 @@ dependencies = [
  "ts-montage",
  "ts-platform",
  "ts-recognition",
+ "ts-recognition-tauri",
  "ts-render",
  "ts-render-analysis",
  "ts-render-services",
@@ -8754,6 +8755,27 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "ts-recognition-tauri"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "chrono",
+ "dirs",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tokio",
+ "ts-analysis",
+ "ts-recognition",
+ "ts-state-tauri",
  "uuid",
 ]
 

@@ -1,8 +1,8 @@
 // Removed unused imports
-use crate::recognition::person_database::{PersonProfile, SimilaritySearchResult};
-use crate::recognition::types::FaceEmbedding;
-use crate::state::project_state::{ProjectState, SubtitleResource};
-use crate::state::ProjectEvent;
+use crate::person_database::{PersonProfile, SimilaritySearchResult};
+use crate::types::FaceEmbedding;
+use ts_state_tauri::project_state::{ProjectState, SubtitleResource};
+use ts_state_tauri::ProjectEvent;
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value};
@@ -10,7 +10,7 @@ use tauri::State;
 
 #[tauri::command]
 pub async fn get_all_persons(
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<PersonProfile>, String> {
   // TODO: Implement get_all_persons functionality
   Ok(vec![])
@@ -19,7 +19,7 @@ pub async fn get_all_persons(
 #[tauri::command]
 pub async fn get_person(
   _person_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Option<PersonProfile>, String> {
   // TODO: Implement get_person functionality
   Ok(None)
@@ -29,7 +29,7 @@ pub async fn get_person(
 pub async fn update_person(
   _person_id: String,
   profile: PersonProfile,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<PersonProfile, String> {
   // TODO: Implement update_person functionality
   Ok(profile)
@@ -38,7 +38,7 @@ pub async fn update_person(
 #[tauri::command]
 pub async fn delete_person(
   _person_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement delete_person functionality
   Ok(())
@@ -47,7 +47,7 @@ pub async fn delete_person(
 #[tauri::command]
 pub async fn get_video_persons(
   _clip_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<PersonProfile>, String> {
   // TODO: Implement get_video_persons functionality
   Ok(vec![])
@@ -57,7 +57,7 @@ pub async fn get_video_persons(
 pub async fn search_similar_persons(
   _embedding: Vec<f32>,
   _limit: usize,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<SimilaritySearchResult>, String> {
   // TODO: Implement search_similar_persons functionality
   Ok(vec![])
@@ -65,7 +65,7 @@ pub async fn search_similar_persons(
 
 #[tauri::command]
 pub async fn initialize_recognition_services(
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement initialize_recognition_services functionality
   Ok(())
@@ -74,7 +74,7 @@ pub async fn initialize_recognition_services(
 #[tauri::command]
 pub async fn create_person(
   profile: PersonProfile,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<PersonProfile, String> {
   // TODO: Implement create_person functionality
   Ok(profile)
@@ -84,7 +84,7 @@ pub async fn create_person(
 pub async fn add_face_embedding(
   _person_id: String,
   _embedding: FaceEmbedding,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement add_face_embedding functionality
   Ok(())
@@ -94,7 +94,7 @@ pub async fn add_face_embedding(
 pub async fn add_person_appearance(
   _person_id: String,
   _appearance_data: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement add_person_appearance functionality
   Ok(())
@@ -104,7 +104,7 @@ pub async fn add_person_appearance(
 pub async fn add_person_thumbnail(
   _person_id: String,
   _thumbnail_path: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement add_person_thumbnail functionality
   Ok(())
@@ -112,7 +112,7 @@ pub async fn add_person_thumbnail(
 
 #[tauri::command]
 pub async fn get_person_database_stats(
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<String, String> {
   // TODO: Implement get_person_database_stats functionality
   Ok("{\"total_persons\": 0, \"total_embeddings\": 0}".to_string())
@@ -121,7 +121,7 @@ pub async fn get_person_database_stats(
 #[tauri::command]
 pub async fn set_similarity_threshold(
   _threshold: f32,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   // TODO: Implement set_similarity_threshold functionality
   Ok(())
@@ -131,7 +131,7 @@ pub async fn set_similarity_threshold(
 #[tauri::command]
 pub async fn init_person_database(
   database_path: Option<String>,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<String, String> {
   let db_path = match database_path {
     Some(path) => path,
@@ -225,7 +225,7 @@ pub async fn ffmpeg_generate_thumbnail(
 /// Update timeline subtitles
 #[tauri::command]
 pub async fn update_timeline_subtitles(
-  state_manager: State<'_, crate::state::StateManager>,
+  state_manager: State<'_, ts_state_tauri::StateManager>,
   track_id: String,
   subtitles: Vec<SubtitleEntry>,
 ) -> Result<SubtitleUpdateSummary, String> {
@@ -405,7 +405,7 @@ fn normalize_subtitle_entry(index: usize, subtitle: SubtitleEntry) -> Result<Val
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::state::project_state::{ProjectSettings, Resolution};
+  use ts_state_tauri::project_state::{ProjectSettings, Resolution};
 
   fn project_state_with_project() -> ProjectState {
     let mut state = ProjectState::default();

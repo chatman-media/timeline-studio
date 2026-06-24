@@ -7,7 +7,7 @@ use std::sync::Arc;
 use tauri::State;
 use tokio::sync::Mutex;
 
-use crate::recognition::facenet_processor::{FaceNetModel, FaceNetProcessor};
+use crate::facenet_processor::{FaceNetModel, FaceNetProcessor};
 
 /// Состояние FaceNet процессора
 pub struct FaceNetProcessorState(pub Mutex<Option<Arc<FaceNetProcessor>>>);
