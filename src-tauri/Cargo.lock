@@ -8074,6 +8074,7 @@ dependencies = [
  "ts-secure-storage",
  "ts-security",
  "ts-state",
+ "ts-state-tauri",
  "ts-subtitles",
  "url",
  "urlencoding",
@@ -8910,6 +8911,33 @@ dependencies = [
  "tokio",
  "ts-core-types",
  "ts-schema",
+ "uuid",
+]
+
+[[package]]
+name = "ts-state-tauri"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "chrono",
+ "dirs",
+ "ffmpeg-next",
+ "image",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tokio",
+ "ts-core",
+ "ts-media-tauri",
+ "ts-render",
+ "ts-render-analysis",
+ "ts-render-services",
+ "ts-render-tauri",
+ "ts-schema",
+ "ts-security",
  "uuid",
 ]
 

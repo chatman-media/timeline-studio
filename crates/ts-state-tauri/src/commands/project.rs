@@ -1,7 +1,7 @@
 use super::types::CommandResult;
-use crate::state::persistence::PersistenceService;
-use crate::state::project_state::*;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::persistence::PersistenceService;
+use crate::project_state::*;
+use crate::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 

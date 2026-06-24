@@ -1,6 +1,6 @@
 use super::types::CommandResult;
-use crate::state::project_state::*;
-use crate::state::{EventBus, ProjectEvent, ProjectState};
+use crate::project_state::*;
+use crate::{EventBus, ProjectEvent, ProjectState};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -103,7 +103,7 @@ impl ImportedMediaCommands {
       .publish(
         ProjectEvent::MediaUpdated {
           media_id: media_id.clone(),
-          changes: crate::state::events::MediaChanges {
+          changes: crate::events::MediaChanges {
             name: None,
             thumbnail: None,
           },

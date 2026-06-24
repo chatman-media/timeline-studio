@@ -1,0 +1,36 @@
+[package]
+name = "ts-state-tauri"
+version = "0.1.0"
+edition = "2021"
+description = "Рантайм состояния приложения Timeline Studio (#354/#360): ProjectState/EventBus/CommandHandler/persistence + browser/chat/workspace + commands_api. Tauri-командный слой состояния. (Headless-ядро ts-state #100 — параллельно, реконсиляция отдельно.)"
+
+[lib]
+name = "ts_state_tauri"
+path = "src/lib.rs"
+
+[dependencies]
+ts-render = { path = "../ts-render" }
+ts-render-services = { path = "../ts-render-services" }
+ts-render-tauri = { path = "../ts-render-tauri" }
+ts-media-tauri = { path = "../ts-media-tauri" }
+ts-security = { path = "../ts-security" }
+ts-core = { path = "../ts-core" }
+ts-schema = { path = "../ts-schema" }
+ts-render-analysis = { path = "../ts-render-analysis" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+log = "0.4"
+async-trait = "0.1"
+ffmpeg-next = "8"
+reqwest = { version = "0.12", features = ["json", "multipart", "stream"] }
+dirs = "6.0.0"
+image = "0.25"
+
+[dev-dependencies]
+tempfile = "3"
+futures = "0.3"

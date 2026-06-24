@@ -96,6 +96,7 @@ ts-security = { path = "../crates/ts-security" }
 ts-render = { path = "../crates/ts-render" }
 ts-render-services = { path = "../crates/ts-render-services" }
 ts-render-analysis = { path = "../crates/ts-render-analysis" }
+ts-state-tauri = { path = "../crates/ts-state-tauri" }
 ts-core = { path = "../crates/ts-core" }
 ts-command-registry = { path = "../crates/ts-command-registry" }
 ts-render-tauri = { path = "../crates/ts-render-tauri" }

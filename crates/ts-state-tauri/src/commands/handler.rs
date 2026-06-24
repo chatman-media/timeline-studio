@@ -1,7 +1,7 @@
-use crate::state::browser::{BrowserEvent, BrowserTab, SortOrder, ViewMode};
-use crate::state::chat::{ChatCommand, ChatEvent, ChatSession};
-use crate::state::project_state::{Clip, MediaType, ProjectSettings, Resolution, Track, TrackType};
-use crate::state::{EventBus, PersistenceService, ProjectEvent, ProjectState};
+use crate::browser::{BrowserEvent, BrowserTab, SortOrder, ViewMode};
+use crate::chat::{ChatCommand, ChatEvent, ChatSession};
+use crate::project_state::{Clip, MediaType, ProjectSettings, Resolution, Track, TrackType};
+use crate::{EventBus, PersistenceService, ProjectEvent, ProjectState};
 use crate::types_export::{ClipBatchUpdate, ClipUpdates, MediaUpdates, TrackUpdates};
 use chrono;
 use std::collections::HashMap;
@@ -45,8 +45,8 @@ pub struct CommandHandler {
   color_grading_commands: ColorGradingCommands,
   // AI and security
   ai_manager:
-    Arc<crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager>,
-  secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
+    Arc<ts_render_tauri::ai_api_proxy::provider_manager::AIProviderManager>,
+  secure_storage: Arc<tokio::sync::Mutex<ts_security::SecureStorage>>,
 }
 
 #[allow(dead_code)]
@@ -57,9 +57,9 @@ impl CommandHandler {
     persistence: Arc<PersistenceService>,
     app_handle: tauri::AppHandle,
     ai_manager: Arc<
-      crate::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager,
+      ts_render_tauri::ai_api_proxy::provider_manager::AIProviderManager,
     >,
-    secure_storage: Arc<tokio::sync::Mutex<crate::security::SecureStorage>>,
+    secure_storage: Arc<tokio::sync::Mutex<ts_security::SecureStorage>>,
   ) -> Self {
     // Initialize modular command handlers
     let media_commands = MediaCommands::new(state.clone(), event_bus.clone());
@@ -1265,7 +1265,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipAdded {
           track_id,
-          clip: crate::state::events::ClipData {
+          clip: crate::events::ClipData {
             id: clip_id.clone(),
             media_id,
             name: clip.name,
@@ -1555,7 +1555,7 @@ impl CommandHandler {
   ) -> CommandResult {
     let mut state = self.state.write().await;
 
-    let applied_effect = crate::state::project_state::AppliedEffect {
+    let applied_effect = crate::project_state::AppliedEffect {
       id: uuid::Uuid::new_v4().to_string(),
       effect_id: effect_id.clone(),
       params,
@@ -1591,7 +1591,7 @@ impl CommandHandler {
   ) -> CommandResult {
     let mut state = self.state.write().await;
 
-    let applied_filter = crate::state::project_state::AppliedFilter {
+    let applied_filter = crate::project_state::AppliedFilter {
       id: uuid::Uuid::new_v4().to_string(),
       filter_id: filter_id.clone(),
       params,
@@ -1627,7 +1627,7 @@ impl CommandHandler {
   ) -> CommandResult {
     let mut state = self.state.write().await;
 
-    let applied_template = crate::state::project_state::AppliedTemplate {
+    let applied_template = crate::project_state::AppliedTemplate {
       id: uuid::Uuid::new_v4().to_string(),
       template_id: template_id.clone(),
       media_ids: media_ids.clone(),
@@ -1708,7 +1708,7 @@ impl CommandHandler {
   }
 
   async fn add_media(&self, path: String, media_type: MediaType) -> CommandResult {
-    use crate::state::project_state::{MediaItem, MediaMetadata};
+    use crate::project_state::{MediaItem, MediaMetadata};
     use std::path::Path;
 
     let mut state = self.state.write().await;
@@ -1771,7 +1771,7 @@ impl CommandHandler {
       .event_bus
       .publish(
         ProjectEvent::MediaAdded {
-          media: crate::state::events::MediaData {
+          media: crate::events::MediaData {
             id: media_id.clone(),
             path: path.clone(),
             name: file_name.clone(),
@@ -1858,7 +1858,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::MediaUpdated {
           media_id: media_id.clone(),
-          changes: crate::state::events::MediaChanges {
+          changes: crate::events::MediaChanges {
             name: updated_name,
             thumbnail: None, // Not updating thumbnail in this command
           },
@@ -3100,7 +3100,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipSplit {
           original_clip_id: clip_id.clone(),
-          left_clip: crate::state::events::ClipData {
+          left_clip: crate::events::ClipData {
             id: left_clip.id.clone(),
             media_id: left_clip.media_id.clone(),
             name: left_clip.name.clone(),
@@ -3109,7 +3109,7 @@ impl CommandHandler {
             source_in: left_clip.source_in,
             source_out: left_clip.source_out,
           },
-          right_clip: crate::state::events::ClipData {
+          right_clip: crate::events::ClipData {
             id: right_clip.id.clone(),
             media_id: right_clip.media_id.clone(),
             name: right_clip.name.clone(),
@@ -3174,7 +3174,7 @@ impl CommandHandler {
     }
 
     // Store in clipboard
-    state.clipboard = Some(crate::state::project_state::ClipboardData {
+    state.clipboard = Some(crate::project_state::ClipboardData {
       clips: clips_to_copy.clone(),
       copied_at: chrono::Utc::now(),
       original_track_ids: track_ids.clone(),
@@ -3272,7 +3272,7 @@ impl CommandHandler {
         .publish(
           ProjectEvent::ClipAdded {
             track_id: track_id.clone(),
-            clip: crate::state::events::ClipData {
+            clip: crate::events::ClipData {
               id: clip_id.clone(),
               media_id: String::new(), // Will be filled from actual clip
               name: String::new(),
@@ -3356,7 +3356,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3423,7 +3423,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3492,7 +3492,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3559,7 +3559,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3641,7 +3641,7 @@ impl CommandHandler {
             // Add new transition
             clip
               .transitions
-              .push(crate::state::project_state::Transition {
+              .push(crate::project_state::Transition {
                 id: transition_id.clone(),
                 transition_type: transition_type.clone(),
                 duration,
@@ -3670,7 +3670,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3744,7 +3744,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -3883,7 +3883,7 @@ impl CommandHandler {
 
   /// Helper method to get API key for a provider from secure storage
   async fn get_api_key_for_provider(&self, provider: &str) -> Result<String, String> {
-    use crate::security::ApiKeyType;
+    use ts_security::ApiKeyType;
     use std::str::FromStr;
 
     let key_type = ApiKeyType::from_str(provider).map_err(|_| {
@@ -3915,7 +3915,7 @@ impl CommandHandler {
     provider: String,
     project_context: Option<serde_json::Value>,
   ) -> CommandResult {
-    use crate::video_compiler::commands::ai_api_proxy::types::{
+    use ts_render_tauri::ai_api_proxy::types::{
       AIMessage, AIProvider, UnifiedAIRequest,
     };
 
@@ -3990,7 +3990,7 @@ impl CommandHandler {
     provider: String,
     project_context: Option<serde_json::Value>,
   ) -> CommandResult {
-    use crate::video_compiler::commands::ai_api_proxy::types::{
+    use ts_render_tauri::ai_api_proxy::types::{
       AIMessage, AIProvider, UnifiedAIRequest,
     };
 
@@ -4192,7 +4192,7 @@ impl CommandHandler {
   }
 
   async fn validate_ai_api_key(&self, provider: String, api_key: String) -> CommandResult {
-    use crate::video_compiler::commands::ai_api_proxy::commands::claude_validate_api_key;
+    use ts_render_tauri::ai_api_proxy::commands::claude_validate_api_key;
 
     log::info!("Validating API key for provider: {}", provider);
 
@@ -4477,7 +4477,7 @@ impl CommandHandler {
       .event_bus
       .publish(
         ProjectEvent::TrackAdded {
-          track: crate::state::events::TrackData {
+          track: crate::events::TrackData {
             id: track_id.clone(),
             name: track_name,
             track_type: track_type_str,
@@ -4575,7 +4575,7 @@ impl CommandHandler {
           .publish(
             ProjectEvent::TrackUpdated {
               track_id: track_id.clone(),
-              changes: crate::state::events::TrackChanges {
+              changes: crate::events::TrackChanges {
                 name: track_name_change,
                 enabled: updates.enabled,
                 locked: updates.locked,
@@ -4772,7 +4772,7 @@ impl CommandHandler {
         .publish(
           ProjectEvent::ClipUpdated {
             clip_id: clip_id.clone(),
-            changes: crate::state::events::ClipChanges {
+            changes: crate::events::ClipChanges {
               name: clip_name_change,
               playback_rate: updates.playback_rate,
               volume: None,  // Not in updates
@@ -4862,13 +4862,13 @@ impl CommandHandler {
       // Determine media type based on extension
       let media_type = match file_extension.as_str() {
         "mp4" | "mov" | "avi" | "mkv" | "webm" | "mxf" | "r3d" | "braw" => {
-          crate::state::project_state::MediaType::Video
+          crate::project_state::MediaType::Video
         }
         "mp3" | "wav" | "aiff" | "flac" | "ogg" | "m4a" | "aac" => {
-          crate::state::project_state::MediaType::Audio
+          crate::project_state::MediaType::Audio
         }
         "jpg" | "jpeg" | "png" | "gif" | "webp" | "tiff" | "raw" | "dng" | "heic" => {
-          crate::state::project_state::MediaType::Image
+          crate::project_state::MediaType::Image
         }
         _ => {
           errors.push(format!("Unsupported file format: {}", path));
@@ -4878,13 +4878,13 @@ impl CommandHandler {
 
       // Create media item
       let media_id = uuid::Uuid::new_v4().to_string();
-      let media_item = crate::state::project_state::MediaItem {
+      let media_item = crate::project_state::MediaItem {
         id: media_id.clone(),
         name: file_name,
         path: path.clone(),
         media_type,
         duration: None, // Will be filled by metadata extraction
-        metadata: crate::state::project_state::MediaMetadata {
+        metadata: crate::project_state::MediaMetadata {
           format: file_extension.clone(),
           codec: None,
           resolution: None,
@@ -4910,7 +4910,7 @@ impl CommandHandler {
       if let Some(project) = &mut state.project {
         let is_video = matches!(
           media_item.media_type,
-          crate::state::project_state::MediaType::Video
+          crate::project_state::MediaType::Video
         );
         project
           .media_pool
@@ -4930,7 +4930,7 @@ impl CommandHandler {
           tokio::spawn(async move {
             // Получаем PreviewDataManager из state
             if let Some(preview_state) =
-              app_handle.try_state::<crate::media::commands::PreviewManagerState>()
+              app_handle.try_state::<ts_media_tauri::commands::PreviewManagerState>()
             {
               match preview_state
                 .manager
@@ -4973,7 +4973,7 @@ impl CommandHandler {
     self
       .event_bus
       .publish(
-        crate::state::ProjectEvent::MediaImported {
+        crate::ProjectEvent::MediaImported {
           file_paths: imported_files.clone(),
         },
         "command_handler".to_string(),
@@ -6680,7 +6680,7 @@ impl CommandHandler {
 
             if let Err(e) = event_bus
               .publish(
-                crate::state::ProjectEvent::StreamingChunk { data: chunk_event },
+                crate::ProjectEvent::StreamingChunk { data: chunk_event },
                 "ai_streaming".to_string(),
                 1,
               )
@@ -6715,7 +6715,7 @@ impl CommandHandler {
 
       if let Err(e) = event_bus
         .publish(
-          crate::state::ProjectEvent::StreamingComplete {
+          crate::ProjectEvent::StreamingComplete {
             data: completion_event,
           },
           "ai_streaming".to_string(),
@@ -7972,7 +7972,7 @@ impl CommandHandler {
     self
       .event_bus
       .publish(
-        crate::state::ProjectEvent::PlayerTemplateApplied {
+        crate::ProjectEvent::PlayerTemplateApplied {
           template_id: template_id.clone(),
           media_ids: media_ids.clone(),
         },
@@ -8907,7 +8907,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -8925,7 +8925,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: adjacent_clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -9015,7 +9015,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: clip_id.clone(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -9214,7 +9214,7 @@ impl CommandHandler {
           .publish(
             ProjectEvent::ClipUpdated {
               clip_id: updated_id.clone(),
-              changes: crate::state::events::ClipChanges {
+              changes: crate::events::ClipChanges {
                 name: None,
                 playback_rate: None,
                 volume: None,
@@ -9261,10 +9261,10 @@ impl CommandHandler {
 
     // Parse marker type
     let parsed_marker_type = match marker_type.as_str() {
-      "chapter" => crate::state::project_state::MarkerType::Chapter,
-      "section" => crate::state::project_state::MarkerType::Section,
-      "note" => crate::state::project_state::MarkerType::Note,
-      "export" => crate::state::project_state::MarkerType::Export,
+      "chapter" => crate::project_state::MarkerType::Chapter,
+      "section" => crate::project_state::MarkerType::Section,
+      "note" => crate::project_state::MarkerType::Note,
+      "export" => crate::project_state::MarkerType::Export,
       _ => return CommandResult::error(format!("Invalid marker type: {}", marker_type)),
     };
 
@@ -9273,7 +9273,7 @@ impl CommandHandler {
 
     // Create marker
     let now = chrono::Utc::now().to_rfc3339();
-    let marker = crate::state::project_state::Marker {
+    let marker = crate::project_state::Marker {
       id: marker_id.clone(),
       name: name.clone(),
       time,
@@ -9304,7 +9304,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: "timeline".to_string(), // Marker is timeline-level, not clip-level
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -9351,7 +9351,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: "timeline".to_string(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
@@ -9439,7 +9439,7 @@ impl CommandHandler {
       .publish(
         ProjectEvent::ClipUpdated {
           clip_id: "timeline".to_string(),
-          changes: crate::state::events::ClipChanges {
+          changes: crate::events::ClipChanges {
             name: None,
             playback_rate: None,
             volume: None,
