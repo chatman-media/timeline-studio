@@ -1,0 +1,41 @@
+[package]
+name = "ts-core"
+version = "0.1.0"
+edition = "2021"
+description = "Core-инфраструктура Timeline Studio (#354/#361): DI (Service/ServiceContainer), система плагинов, телеметрия (opentelemetry/prometheus), валидация, perf, serde-хелперы. Вынесено из монолита src-tauri/src/core."
+
+[lib]
+name = "ts_core"
+path = "src/lib.rs"
+
+[dependencies]
+ts-render = { path = "../ts-render" }
+ts-render-services = { path = "../ts-render-services" }
+ts-events = { path = "../ts-events" }
+async-trait = "0.1"
+axum = { version = "0.8", features = ["tokio", "http2"] }
+opentelemetry = { version = "0.31.0", features = ["trace", "metrics"] }
+opentelemetry_sdk = { version = "0.31.0", features = ["rt-tokio", "trace", "metrics"] }
+opentelemetry-otlp = { version = "0.31.0", features = ["tonic", "metrics", "trace"] }
+opentelemetry-semantic-conventions = "0.31.0"
+opentelemetry-prometheus = "0.31.0"
+prometheus = "0.14"
+tracing = "0.1"
+tracing-opentelemetry = "0.32.0"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.21", features = ["derive", "serde", "chrono", "uuid", "serde_json"] }
+sysinfo = "0.37.2"
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+tempfile = "3.23"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+log = "0.4"
+num_cpus = "1.17"
+regex = "1.12"
+dirs = "6.0.0"
+
+[dev-dependencies]
+futures = "0.3"

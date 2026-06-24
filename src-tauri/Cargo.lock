@@ -8058,6 +8058,7 @@ dependencies = [
  "ts-agent",
  "ts-analysis",
  "ts-command-registry",
+ "ts-core",
  "ts-core-types",
  "ts-events",
  "ts-media",
@@ -8594,6 +8595,39 @@ name = "ts-command-registry"
 version = "0.1.0"
 dependencies = [
  "tauri",
+]
+
+[[package]]
+name = "ts-core"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "axum",
+ "chrono",
+ "dirs",
+ "log",
+ "num_cpus",
+ "opentelemetry",
+ "opentelemetry-otlp",
+ "opentelemetry-prometheus",
+ "opentelemetry-semantic-conventions",
+ "opentelemetry_sdk",
+ "prometheus",
+ "regex",
+ "serde",
+ "serde_json",
+ "specta",
+ "sysinfo",
+ "tauri",
+ "tempfile",
+ "tokio",
+ "tracing",
+ "tracing-opentelemetry",
+ "tracing-subscriber",
+ "ts-events",
+ "ts-render",
+ "ts-render-services",
+ "uuid",
 ]
 
 [[package]]
