@@ -2,7 +2,7 @@
 
 use super::server::MCPServer;
 use super::types::{MCPConfig, MCPToolRequest, MCPToolResult};
-use crate::state::StateManager;
+use ts_state_tauri::StateManager;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tauri::State;

@@ -6567,6 +6567,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-mcp"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "log",
+ "reqwest 0.12.28",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tokio",
+ "ts-analysis-tauri",
+ "ts-command-registry",
+ "ts-state-tauri",
+]
+
+[[package]]
 name = "ts-media"
 version = "0.1.0"
 dependencies = [

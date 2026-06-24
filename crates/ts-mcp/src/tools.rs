@@ -1,10 +1,10 @@
 //! MCP инструменты для работы с видео
 
 use super::types::{MCPContext, MCPTool, MCPToolResult};
-use crate::analysis::services::ai_director::{AIDirector, AIDirectorConfig};
-use crate::analysis::services::scene_detector::SceneDetector;
-use crate::state::commands::timeline::TimelineCommands;
-use crate::state::{EventBus, ProjectState};
+use ts_analysis_tauri::services::ai_director::{AIDirector, AIDirectorConfig};
+use ts_analysis_tauri::services::scene_detector::SceneDetector;
+use ts_state_tauri::commands::timeline::TimelineCommands;
+use ts_state_tauri::{EventBus, ProjectState};
 use serde_json::{json, Value};
 use std::path::Path;
 use std::sync::Arc;
@@ -1190,15 +1190,15 @@ impl VideoTools {
           .filter(|item| match filter_type {
             "video" => matches!(
               item.media_type,
-              crate::state::project_state::MediaType::Video
+              ts_state_tauri::project_state::MediaType::Video
             ),
             "audio" => matches!(
               item.media_type,
-              crate::state::project_state::MediaType::Audio
+              ts_state_tauri::project_state::MediaType::Audio
             ),
             "image" => matches!(
               item.media_type,
-              crate::state::project_state::MediaType::Image
+              ts_state_tauri::project_state::MediaType::Image
             ),
             _ => true, // "all"
           })

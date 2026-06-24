@@ -1,6 +1,6 @@
 //! Command registry implementation for MCP module
 
-use crate::CommandRegistry;
+use ts_command_registry::CommandRegistry;
 use tauri::{Builder, Runtime};
 
 /// Implementation of CommandRegistry for MCP commands
