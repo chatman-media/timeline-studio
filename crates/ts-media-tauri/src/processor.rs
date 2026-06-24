@@ -1,8 +1,8 @@
 // Модуль для асинхронной обработки медиафайлов
 
-use crate::media::ffmpeg::extract_frame;
-use crate::media::metadata::get_media_metadata;
-use crate::media::types::{MediaFile, SUPPORTED_EXTENSIONS};
+use ts_media::media::ffmpeg::extract_frame;
+use ts_media::media::metadata::get_media_metadata;
+use ts_media::media::types::{MediaFile, SUPPORTED_EXTENSIONS};
 use base64::Engine;
 use image::{DynamicImage, GenericImageView, ImageFormat};
 use serde::{Deserialize, Serialize};
@@ -360,7 +360,7 @@ mod tests {
   use image::{ImageBuffer, Rgb};
 
   fn create_test_media_file() -> MediaFile {
-    use crate::media::types::{FfprobeFormat, ProbeData};
+    use ts_media::media::types::{FfprobeFormat, ProbeData};
 
     MediaFile {
       id: "test-id".to_string(),
@@ -708,7 +708,7 @@ mod tests {
 
   #[test]
   fn test_supported_file_filtering_logic() {
-    use crate::media::types::SUPPORTED_EXTENSIONS;
+    use ts_media::media::types::SUPPORTED_EXTENSIONS;
 
     // Test the logic used in scan_folder for filtering supported files
     let test_files = vec![

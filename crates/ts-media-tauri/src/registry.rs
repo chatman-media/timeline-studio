@@ -1,6 +1,6 @@
 use super::additional_commands::*;
 use super::commands::*;
-use crate::command_registry::CommandRegistry;
+use ts_command_registry::CommandRegistry;
 use tauri::{Builder, Runtime};
 
 /// Media module command registry

@@ -1,6 +1,6 @@
 //! File Scanner - Сканирование и обнаружение медиафайлов
 
-use crate::media::types::SUPPORTED_EXTENSIONS;
+use ts_media::media::types::SUPPORTED_EXTENSIONS;
 use serde::{Deserialize, Serialize};
 use std::future::Future;
 use std::path::{Path, PathBuf};

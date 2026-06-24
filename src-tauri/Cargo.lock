@@ -8061,6 +8061,7 @@ dependencies = [
  "ts-core-types",
  "ts-events",
  "ts-media",
+ "ts-media-tauri",
  "ts-montage",
  "ts-platform",
  "ts-recognition",
@@ -8634,6 +8635,29 @@ dependencies = [
  "serde_json",
  "tempfile",
  "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "ts-media-tauri"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "chrono",
+ "dirs",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tokio",
+ "ts-command-registry",
+ "ts-media",
+ "ts-render",
+ "ts-render-services",
+ "ts-render-tauri",
  "uuid",
 ]
 

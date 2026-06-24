@@ -101,6 +101,7 @@ ts-montage = { path = "../crates/ts-montage" }
 ts-subtitles = { path = "../crates/ts-subtitles" }
 ts-recognition = { path = "../crates/ts-recognition" }
 ts-media = { path = "../crates/ts-media" }
+ts-media-tauri = { path = "../crates/ts-media-tauri" }
 ffmpeg-next = "8"
 uuid = { version = "1.18", features = ["serde", "v4"] }
 tokio = { version = "1.49", features = ["full"] }

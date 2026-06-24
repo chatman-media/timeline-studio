@@ -1,0 +1,32 @@
+[package]
+name = "ts-media-tauri"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri-командный слой медиа Timeline Studio (#354/#357): commands + AppHandle-файлы. Ядро — в ts-media."
+
+[lib]
+name = "ts_media_tauri"
+path = "src/lib.rs"
+
+[dependencies]
+ts-media = { path = "../ts-media" }
+ts-render = { path = "../ts-render" }
+ts-render-tauri = { path = "../ts-render-tauri" }
+ts-command-registry = { path = "../ts-command-registry" }
+ts-render-services = { path = "../ts-render-services" }
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = { version = "2.0.0-rc.21", features = ["derive", "function", "serde", "chrono", "uuid", "serde_json"] }
+anyhow = "1.0"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+image = "0.25"
+log = "0.4"
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+dirs = "6.0.0"
+
+[dev-dependencies]
+tempfile = "3"
+futures = "0.3"

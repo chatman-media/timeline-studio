@@ -543,7 +543,7 @@ async fn generate_thumbnail_for_file(
   if is_video {
     // Use FFmpeg to extract frame from video
     let time_offset = 1.0; // Extract frame at 1 second
-    crate::media::ffmpeg::extract_frame(file_path, &thumbnail_path_str, time_offset)
+    ts_media::media::ffmpeg::extract_frame(file_path, &thumbnail_path_str, time_offset)
       .map_err(|e| format!("Failed to extract video frame: {}", e))?;
   } else {
     // For images, just resize the existing image
