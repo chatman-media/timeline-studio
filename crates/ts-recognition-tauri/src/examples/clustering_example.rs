@@ -7,11 +7,11 @@
  * 3. Интеграция с PersonDatabase
  */
 
-use crate::recognition::person_database::PersonDatabase;
-use crate::recognition::person_clustering::PersonClusteringService;
-use crate::recognition::face_clustering::{DBSCANParams, FaceClusteringEngine};
-use crate::recognition::facenet_processor::FaceNetProcessor;
-use crate::recognition::retinaface_processor::RetinaFaceProcessor;
+use crate::person_database::PersonDatabase;
+use crate::person_clustering::PersonClusteringService;
+use crate::face_clustering::{DBSCANParams, FaceClusteringEngine};
+use crate::facenet_processor::FaceNetProcessor;
+use crate::retinaface_processor::RetinaFaceProcessor;
 use std::path::PathBuf;
 
 /// Пример полного пайплайна кластеризации
@@ -52,7 +52,7 @@ pub async fn run_clustering_pipeline(
     let params = DBSCANParams {
         eps: 0.45,           // Порог для видео
         min_samples: 5,      // Минимум 5 лиц для персоны
-        metric: crate::recognition::face_clustering::DistanceMetric::Cosine,
+        metric: crate::face_clustering::DistanceMetric::Cosine,
     };
     
     let clustering_engine = FaceClusteringEngine::new(params);
@@ -67,7 +67,7 @@ pub async fn run_clustering_pipeline(
     let mut db = PersonDatabase::new(db_path).await?;
     let clustering_service = PersonClusteringService::new(db.clone()).await?;
     
-    let metadata = crate::recognition::person_clustering::ClusterMetadata {
+    let metadata = crate::person_clustering::ClusterMetadata {
         file_id: "video_001".to_string(),
         timestamps,
         bboxes,

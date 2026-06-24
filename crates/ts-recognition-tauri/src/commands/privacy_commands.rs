@@ -6,10 +6,10 @@ use std::sync::Arc;
 use tauri::State;
 use tokio::sync::{Mutex, RwLock};
 
-use crate::recognition::privacy_processor::{
+use crate::privacy_processor::{
   BlurType, BoundingBox, PrivacyProcessor, PrivacySettings,
 };
-use crate::YoloProcessorState;
+use crate::commands::yolo_commands::YoloProcessorState;
 
 /// Состояние Privacy процессора
 pub struct PrivacyProcessorState(pub Mutex<Option<Arc<PrivacyProcessor>>>);
@@ -342,7 +342,7 @@ async fn process_single_frame(
   input_path: PathBuf,
   output_path: PathBuf,
   privacy_processor: Arc<PrivacyProcessor>,
-  yolo_processor: Option<Arc<RwLock<crate::recognition::yolo_processor_refactored::YoloProcessor>>>,
+  yolo_processor: Option<Arc<RwLock<crate::yolo_processor_refactored::YoloProcessor>>>,
 ) -> Result<usize, String> {
   if !input_path.exists() {
     return Err(format!("Frame not found: {}", input_path.display()));

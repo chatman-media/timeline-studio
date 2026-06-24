@@ -13,7 +13,7 @@ pub async fn detect_faces_advanced(
   return_embeddings: bool,
   return_cropped_faces: bool,
   min_confidence: f32,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<AdvancedFaceDetection>, String> {
   log::info!(
     "detect_faces_advanced called with min_confidence: {}, return_embeddings: {}, return_cropped_faces: {}",
@@ -31,7 +31,7 @@ pub async fn detect_faces_advanced(
 #[tauri::command]
 pub async fn analyze_face_quality(
   _face_image: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<FaceQualityAnalysis, String> {
   log::info!("analyze_face_quality called");
 
@@ -57,7 +57,7 @@ pub async fn process_tracking_frame(
   frame_number: u32,
   _timestamp: f64,
   _frame_image: Option<String>,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<TrackingFrameResult, String> {
   log::info!(
     "process_tracking_frame called for frame {} with {} detections",
@@ -87,7 +87,7 @@ pub async fn process_tracking_frame(
 #[tauri::command]
 pub async fn predict_track_positions(
   track_ids: Vec<String>,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<TrackPrediction>, String> {
   log::info!(
     "predict_track_positions called for {} tracks",
@@ -104,7 +104,7 @@ pub async fn interpolate_track_positions(
   track_id: String,
   start_frame: u32,
   end_frame: u32,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<InterpolatedPosition>, String> {
   log::info!(
     "interpolate_track_positions called for track {} from frame {} to {}",
@@ -121,7 +121,7 @@ pub async fn interpolate_track_positions(
 #[tauri::command]
 pub async fn load_yolo_data(
   video_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Option<String>, String> {
   log::info!("load_yolo_data called for video: {}", video_id);
 
@@ -134,7 +134,7 @@ pub async fn load_yolo_data(
 pub async fn save_yolo_data(
   video_id: String,
   _data: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<(), String> {
   log::info!("save_yolo_data called for video: {}", video_id);
 
@@ -146,7 +146,7 @@ pub async fn save_yolo_data(
 #[tauri::command]
 pub async fn analyze_video_with_yolo(
   request: VideoAnalysisRequest,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<VideoFrameDetection>, String> {
   log::info!(
     "analyze_video_with_yolo called for video: {} with confidence {}",

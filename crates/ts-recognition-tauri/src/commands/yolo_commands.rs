@@ -1,9 +1,9 @@
 //! YOLO commands - команды для работы с YOLO процессором
 
-use crate::recognition::frame_processor::ProcessingConfig;
-use crate::recognition::model_manager::YoloModel;
-use crate::recognition::result_aggregator::AggregatedResults;
-use crate::recognition::yolo_processor_refactored::{
+use crate::frame_processor::ProcessingConfig;
+use crate::model_manager::YoloModel;
+use crate::result_aggregator::AggregatedResults;
+use crate::yolo_processor_refactored::{
   OutputFormat, ProcessorBuilder, ProcessorConfig, YoloProcessor,
 };
 use anyhow::Result;

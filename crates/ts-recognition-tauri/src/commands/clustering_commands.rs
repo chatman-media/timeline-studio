@@ -1,8 +1,8 @@
-use crate::recognition::face_clustering::{
+use crate::face_clustering::{
   ClusteringStats, DBSCANParams as ClusteringConfig, FaceCluster, FaceClusteringEngine,
 };
 // Removed unused import
-use crate::recognition::types::IdentifiedPerson;
+use crate::types::IdentifiedPerson;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tauri::State;
@@ -46,7 +46,7 @@ pub struct SplitClusterRequest {
 
 #[tauri::command]
 pub async fn init_clustering_engine(
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -64,7 +64,7 @@ pub async fn init_clustering_engine(
 #[tauri::command]
 pub async fn cluster_faces(
   _request: ClusteringRequest,
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -86,7 +86,7 @@ pub async fn cluster_faces(
 
 #[tauri::command]
 pub async fn get_clustering_engine_info(
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -102,7 +102,7 @@ pub async fn get_clustering_engine_info(
 pub async fn find_nearest_cluster(
   _embedding: Vec<f32>,
   _max_distance: f64,
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Option<FaceCluster>, String> {
   let _service = &state.service;
 
@@ -112,7 +112,7 @@ pub async fn find_nearest_cluster(
 
 #[tauri::command]
 pub async fn integrate_clusters_with_db(
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -127,7 +127,7 @@ pub async fn integrate_clusters_with_db(
 #[tauri::command]
 pub async fn merge_clusters(
   _request: MergeClustersRequest,
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -142,7 +142,7 @@ pub async fn merge_clusters(
 #[tauri::command]
 pub async fn split_cluster(
   _request: SplitClusterRequest,
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   let _service = &state.service;
 
@@ -156,7 +156,7 @@ pub async fn split_cluster(
 
 #[tauri::command]
 pub async fn get_clustering_stats(
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringStats, String> {
   let _service = &state.service;
 
@@ -166,7 +166,7 @@ pub async fn get_clustering_stats(
 #[tauri::command]
 pub async fn get_cluster_persons(
   _cluster_id: String,
-  state: State<'_, crate::recognition::commands::RecognitionState>,
+  state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<Vec<IdentifiedPerson>, String> {
   let _service = &state.service;
 
@@ -176,7 +176,7 @@ pub async fn get_cluster_persons(
 #[tauri::command]
 pub async fn update_clustering_params(
   _params: ClusteringRequest,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   // TODO: Implement update_clustering_params functionality
   Ok(ClusteringResponse {
@@ -189,7 +189,7 @@ pub async fn update_clustering_params(
 
 #[tauri::command]
 pub async fn analyze_clustering_quality(
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   // TODO: Implement analyze_clustering_quality functionality
   Ok(ClusteringResponse {
@@ -203,7 +203,7 @@ pub async fn analyze_clustering_quality(
 #[tauri::command]
 pub async fn auto_cluster_video_faces(
   _video_id: String,
-  _state: State<'_, crate::recognition::commands::RecognitionState>,
+  _state: State<'_, crate::commands::RecognitionState>,
 ) -> Result<ClusteringResponse, String> {
   // TODO: Implement auto_cluster_video_faces functionality
   Ok(ClusteringResponse {

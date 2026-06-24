@@ -6634,6 +6634,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "ts-recognition-tauri"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "chrono",
+ "dirs",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "specta",
+ "tauri",
+ "tempfile",
+ "tokio",
+ "ts-analysis",
+ "ts-recognition",
+ "ts-state-tauri",
+ "uuid",
+]
+
+[[package]]
 name = "ts-render"
 version = "0.1.0"
 dependencies = [

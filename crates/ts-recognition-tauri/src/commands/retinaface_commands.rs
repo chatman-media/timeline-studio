@@ -7,7 +7,7 @@ use std::sync::Arc;
 use tauri::State;
 use tokio::sync::Mutex;
 
-use crate::recognition::retinaface_processor::{
+use crate::retinaface_processor::{
   FacialLandmarks, Point2D, RetinaFaceDetection, RetinaFaceModel, RetinaFaceProcessor,
 };
 
@@ -185,7 +185,7 @@ pub async fn get_aligned_face(
 
   // Клонируем landmarks для использования в двух местах
   let landmarks_for_alignment = landmarks.clone();
-  let landmarks_converted: crate::recognition::retinaface_processor::FacialLandmarks =
+  let landmarks_converted: crate::retinaface_processor::FacialLandmarks =
     landmarks.into();
 
   // Выполняем face alignment
@@ -498,7 +498,7 @@ impl From<FacialLandmarksRequest> for FacialLandmarks {
 /// Вычисляет оценку качества лица на основе различных факторов
 fn calculate_face_quality_score(
   face_image: &image::DynamicImage,
-  landmarks: &crate::recognition::retinaface_processor::FacialLandmarks,
+  landmarks: &crate::retinaface_processor::FacialLandmarks,
   face_size: u32,
 ) -> f32 {
   let mut quality_score = 0.0;
@@ -590,7 +590,7 @@ fn calculate_sharpness_score(image: &image::DynamicImage) -> f32 {
 
 /// Оценка качества landmarks на основе симметрии и правдоподобности позиций
 fn calculate_landmarks_quality_score(
-  landmarks: &crate::recognition::retinaface_processor::FacialLandmarks,
+  landmarks: &crate::retinaface_processor::FacialLandmarks,
   face_size: u32,
 ) -> f32 {
   let mut score = 0.0;
@@ -728,12 +728,12 @@ fn calculate_lighting_score(image: &image::DynamicImage) -> f32 {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use crate::recognition::retinaface_processor::HeadPose;
+  use crate::retinaface_processor::HeadPose;
 
   #[tokio::test]
   async fn test_retinaface_detection_response_conversion() {
     let detection = RetinaFaceDetection {
-      bbox: crate::recognition::retinaface_processor::BoundingBox {
+      bbox: crate::retinaface_processor::BoundingBox {
         x1: 10.0,
         y1: 20.0,
         x2: 100.0,
