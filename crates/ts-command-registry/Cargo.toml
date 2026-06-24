@@ -1,0 +1,17 @@
+[package]
+name = "ts-command-registry"
+version = "0.1.0"
+edition = "2021"
+description = "Trait CommandRegistry + макрос register_commands! для модульной регистрации Tauri-команд. Вынесено из монолита (#354). Только tauri."
+
+[lib]
+name = "ts_command_registry"
+path = "src/lib.rs"
+
+[dependencies]
+tauri = { version = "2.9", features = ["protocol-asset", "devtools"] }
+
+[dev-dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
