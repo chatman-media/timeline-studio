@@ -40,7 +40,7 @@ impl ProjectSchema {
   /// Создать новый пустой проект
   pub fn new(name: String) -> Self {
     Self {
-      version: "1.0.0".to_string(),
+      version: crate::versioning::SCHEMA_VERSION.to_string(),
       metadata: ProjectMetadata {
         name,
         description: None,
@@ -62,10 +62,8 @@ impl ProjectSchema {
 
   /// Валидация схемы проекта
   pub fn validate(&self) -> Result<(), String> {
-    // Проверка версии
-    if self.version.is_empty() {
-      return Err("Версия проекта не может быть пустой".to_string());
-    }
+    // Проверка версии: непустая, валидный semver и совместимый MAJOR (#375).
+    crate::versioning::check_compatibility(&self.version)?;
 
     // Проверка timeline
     if self.timeline.fps == 0 {
@@ -243,9 +241,26 @@ mod tests {
 
     let result = project.validate();
     assert!(result.is_err());
-    assert!(result
-      .unwrap_err()
-      .contains("Версия проекта не может быть пустой"));
+    assert!(result.unwrap_err().contains("не может быть пустой"));
+  }
+
+  #[test]
+  fn test_validate_incompatible_major_version() {
+    // Чужой MAJOR отвергается на валидации (#375).
+    let mut project = create_test_project();
+    let next_major = crate::versioning::current_major() + 1;
+    project.version = format!("{next_major}.0.0");
+
+    let result = project.validate();
+    assert!(result.is_err());
+    assert!(result.unwrap_err().contains("Несовместимая версия"));
+  }
+
+  #[test]
+  fn test_validate_non_semver_version() {
+    let mut project = create_test_project();
+    project.version = "not-a-version".to_string();
+    assert!(project.validate().is_err());
   }
 
   #[test]

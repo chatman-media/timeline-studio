@@ -19,9 +19,11 @@ pub mod subtitles;
 pub mod templates;
 pub mod timeline;
 pub mod constants;
+pub mod versioning;
 
 // Re-export всех основных типов для удобства использования
 pub use common::*;
+pub use versioning::{check_compatibility, is_compatible, parse_semver, SCHEMA_VERSION};
 pub use effects::*;
 pub use export::*;
 pub use project::*;
