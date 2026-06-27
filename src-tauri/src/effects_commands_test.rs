@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::video_compiler::schema::{ProjectSchema, Track, Clip, Effect, Filter};
-    use crate::video_compiler::schema::timeline::{TrackType, ClipSource};
-    use crate::video_compiler::schema::effects::{EffectType, FilterType};
+    use ts_schema::{ProjectSchema, Track, Clip, Effect, Filter};
+    use ts_schema::timeline::{TrackType, ClipSource};
+    use ts_schema::effects::{EffectType, FilterType};
     
     /// Создает тестовую схему проекта с треком и клипом
     fn create_test_project() -> ProjectSchema {
@@ -54,7 +54,7 @@ mod tests {
         let effect_id = project.effects[0].id.clone();
         
         // Добавляем эффект к клипу
-        let result = crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        let result = ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &clip_id,
             &effect_id
@@ -74,7 +74,7 @@ mod tests {
         let filter_id = project.filters[0].id.clone();
         
         // Добавляем фильтр к клипу
-        let result = crate::video_compiler::commands::schema::business_logic::add_filter_to_clip(
+        let result = ts_render_tauri::schema::business_logic::add_filter_to_clip(
             &mut project,
             &clip_id,
             &filter_id
@@ -94,14 +94,14 @@ mod tests {
         let effect_id = project.effects[0].id.clone();
         
         // Сначала добавляем эффект
-        crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &clip_id,
             &effect_id
         ).unwrap();
         
         // Затем удаляем
-        let result = crate::video_compiler::commands::schema::business_logic::remove_effect_from_clip(
+        let result = ts_render_tauri::schema::business_logic::remove_effect_from_clip(
             &mut project,
             &clip_id,
             &effect_id
@@ -121,7 +121,7 @@ mod tests {
         let fake_effect_id = "non-existent-effect".to_string();
         
         // Пытаемся добавить несуществующий эффект
-        let result = crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        let result = ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &clip_id,
             &fake_effect_id
@@ -138,7 +138,7 @@ mod tests {
         let fake_clip_id = "non-existent-clip".to_string();
         
         // Пытаемся добавить эффект к несуществующему клипу
-        let result = crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        let result = ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &fake_clip_id,
             &effect_id
@@ -155,14 +155,14 @@ mod tests {
         let effect_id = project.effects[0].id.clone();
         
         // Добавляем эффект первый раз
-        crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &clip_id,
             &effect_id
         ).unwrap();
         
         // Добавляем тот же эффект второй раз
-        let result = crate::video_compiler::commands::schema::business_logic::add_effect_to_clip(
+        let result = ts_render_tauri::schema::business_logic::add_effect_to_clip(
             &mut project,
             &clip_id,
             &effect_id

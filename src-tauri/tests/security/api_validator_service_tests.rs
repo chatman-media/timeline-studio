@@ -54,7 +54,7 @@ async fn test_service_initialize_with_event_bus() {
     async fn handle(
       &self,
       event: Self::Event,
-    ) -> Result<(), timeline_studio_lib::video_compiler::error::VideoCompilerError> {
+    ) -> Result<(), ts_render::video_compiler::VideoCompilerError> {
       if matches!(event, AppEvent::SystemStartup) {
         let _ = self.tx.send(true).await;
       }
@@ -103,7 +103,7 @@ async fn test_validate_key_with_event_bus() {
     async fn handle(
       &self,
       event: Self::Event,
-    ) -> Result<(), timeline_studio_lib::video_compiler::error::VideoCompilerError> {
+    ) -> Result<(), ts_render::video_compiler::VideoCompilerError> {
       if let AppEvent::ConfigChanged { key, value: _ } = event {
         let _ = self.tx.send(key).await;
       }
@@ -251,7 +251,7 @@ mod event_tests {
       async fn handle(
         &self,
         event: Self::Event,
-      ) -> Result<(), timeline_studio_lib::video_compiler::error::VideoCompilerError> {
+      ) -> Result<(), ts_render::video_compiler::VideoCompilerError> {
         if let AppEvent::ConfigChanged { key, value } = event {
           let _ = self.tx.send((key, value)).await;
         }
@@ -323,7 +323,7 @@ mod event_tests {
       async fn handle(
         &self,
         event: Self::Event,
-      ) -> Result<(), timeline_studio_lib::video_compiler::error::VideoCompilerError> {
+      ) -> Result<(), ts_render::video_compiler::VideoCompilerError> {
         if matches!(event, AppEvent::SystemStartup) {
           let _ = self.tx.send("startup").await;
         }

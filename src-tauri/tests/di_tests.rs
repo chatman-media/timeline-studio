@@ -4,7 +4,7 @@ use async_trait::async_trait;
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
 use timeline_studio_lib::core::{Service, ServiceContainer, ServiceProvider};
-use timeline_studio_lib::video_compiler::error::Result;
+use ts_render::video_compiler::Result;
 
 #[derive(Debug)]
 struct TestService {
@@ -139,7 +139,7 @@ async fn test_di_container_error_handling() {
 
   // Verify error type
   match result.unwrap_err() {
-    timeline_studio_lib::video_compiler::error::VideoCompilerError::ServiceNotFound(name) => {
+    ts_render::video_compiler::VideoCompilerError::ServiceNotFound(name) => {
       assert!(name.contains("TestService"));
     }
     _ => panic!("Expected ServiceNotFound error"),

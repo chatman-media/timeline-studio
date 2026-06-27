@@ -7,8 +7,8 @@ use mockito::{Mock, Server, ServerGuard};
 use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
-use timeline_studio_lib::video_compiler::commands::ai_api_proxy::provider_manager::AIProviderManager;
-use timeline_studio_lib::video_compiler::commands::ai_api_proxy::types::*;
+use ts_render_tauri::ai_api_proxy::provider_manager::AIProviderManager;
+use ts_render_tauri::ai_api_proxy::types::*;
 
 /// Load JSON mock response from fixtures
 fn load_mock_response(filename: &str) -> Value {
