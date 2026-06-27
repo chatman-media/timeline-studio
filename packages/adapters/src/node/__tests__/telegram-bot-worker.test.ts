@@ -350,7 +350,7 @@ describe("Telegram bot worker", () => {
     expect(transcribeFeedback).toHaveBeenCalledOnce()
     expect(result).toMatchObject({ skipped: false })
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
-    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0] as unknown as [{ text?: string }]
     expect(payloadArg).toMatchObject({ text: "make a 30s promo about my cafe" })
   })
 
@@ -365,7 +365,7 @@ describe("Telegram bot worker", () => {
     await worker.handleUpdate(voiceIdeaUpdate())
 
     expect(transcribeFeedback).not.toHaveBeenCalled()
-    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0] as unknown as [{ text?: string }]
     expect(payloadArg.text).toBeUndefined()
   })
 
@@ -384,7 +384,7 @@ describe("Telegram bot worker", () => {
 
     expect(transcribeFeedback).toHaveBeenCalledOnce()
     expect(result).toMatchObject({ skipped: false })
-    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0] as unknown as [{ text?: string }]
     expect(payloadArg.text).toBeUndefined()
   })
 
@@ -406,7 +406,10 @@ describe("Telegram bot worker", () => {
     await worker.handleUpdate(ideaTextUpdate(31))
 
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
-    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0]
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0] as unknown as [
+      unknown,
+      { approvalGate?: unknown } | undefined,
+    ]
     expect(workflowOptions).toMatchObject({
       approvalGate: { enabled: true, previewDestination: "telegram" },
     })
@@ -424,7 +427,10 @@ describe("Telegram bot worker", () => {
     await worker.handleUpdate(ideaTextUpdate(32))
 
     expect(runTelegramLikePayload).toHaveBeenCalledOnce()
-    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0]
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0] as unknown as [
+      unknown,
+      { approvalGate?: unknown } | undefined,
+    ]
     expect(workflowOptions?.approvalGate).toBeUndefined()
   })
 
