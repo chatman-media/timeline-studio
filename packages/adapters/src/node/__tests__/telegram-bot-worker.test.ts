@@ -320,6 +320,74 @@ describe("Telegram bot worker", () => {
     expect(onResult).toHaveBeenCalledWith(result)
   })
 
+  const voiceIdeaUpdate = (): TelegramBotUpdate => ({
+    update_id: 21,
+    message: {
+      message_id: "voice-idea-1",
+      chat: { id: "chat-1" },
+      from: { id: "user-1" },
+      voice: {
+        file_id: "voice-file-id",
+        file_unique_id: "unique-voice-1",
+        mime_type: "audio/ogg",
+        file_size: 4096,
+        duration: 9,
+      },
+    },
+  })
+
+  it("transcribes a fresh voice idea into the workflow goal when enabled (#326)", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const transcribeFeedback = vi.fn(async () => ({ text: "make a 30s promo about my cafe" }))
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      feedbackTranscriber: { transcribeFeedback } as unknown as IBotFeedbackTranscriber,
+      transcribeVoiceIdeas: true,
+    })
+
+    const result = await worker.handleUpdate(voiceIdeaUpdate())
+
+    expect(transcribeFeedback).toHaveBeenCalledOnce()
+    expect(result).toMatchObject({ skipped: false })
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    expect(payloadArg).toMatchObject({ text: "make a 30s promo about my cafe" })
+  })
+
+  it("does not transcribe voice ideas when the flag is off", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const transcribeFeedback = vi.fn(async () => ({ text: "should not run" }))
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      feedbackTranscriber: { transcribeFeedback } as unknown as IBotFeedbackTranscriber,
+    })
+
+    await worker.handleUpdate(voiceIdeaUpdate())
+
+    expect(transcribeFeedback).not.toHaveBeenCalled()
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    expect(payloadArg.text).toBeUndefined()
+  })
+
+  it("keeps the original message when voice-idea transcription fails", async () => {
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const transcribeFeedback = vi.fn(async () => {
+      throw new Error("whisper down")
+    })
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      feedbackTranscriber: { transcribeFeedback } as unknown as IBotFeedbackTranscriber,
+      transcribeVoiceIdeas: true,
+    })
+
+    const result = await worker.handleUpdate(voiceIdeaUpdate())
+
+    expect(transcribeFeedback).toHaveBeenCalledOnce()
+    expect(result).toMatchObject({ skipped: false })
+    const [payloadArg] = runTelegramLikePayload.mock.calls[0]
+    expect(payloadArg.text).toBeUndefined()
+  })
+
   it("queues workflow runs without waiting for render completion", async () => {
     let resolveWorkflow!: () => void
     const runTelegramLikePayload = vi.fn(
