@@ -1,3 +1,10 @@
+# [3.94.0](https://github.com/chatman-media/timeline-studio/compare/v3.93.0...v3.94.0) (2026-06-27)
+
+
+### Features
+
+* **bot:** transcribe a fresh voice idea into the goal before first-cut ([#326](https://github.com/chatman-media/timeline-studio/issues/326)) ([#379](https://github.com/chatman-media/timeline-studio/issues/379)) ([b639371](https://github.com/chatman-media/timeline-studio/commit/b63937132f17d5a1b4650f25698d8fa340a7e1a3))
+
 # [3.93.0](https://github.com/chatman-media/timeline-studio/compare/v3.92.2...v3.93.0) (2026-06-27)
 
 
