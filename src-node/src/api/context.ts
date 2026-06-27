@@ -1,6 +1,7 @@
-import type { BotEditSessionStore } from "@timeline-studio/core"
+import type { BotEditSessionStore, IPublishService } from "@timeline-studio/core"
 import {
   NodeBotEditSessionFileStore,
+  NodePublishService,
   NodeTelegramBotFileWorkflowJobStore,
   type NodeTelegramBotWorkflowJobStore,
 } from "@timeline-studio/adapters/node"
@@ -31,6 +32,8 @@ export interface Context {
   workflowJobStore?: NodeTelegramBotWorkflowJobStore
   /** Default poll interval (ms) for the render-status SSE stream. */
   renderStreamIntervalMs?: number
+  /** Publish service for delivery on approve, when opted in (#329). */
+  publishService?: IPublishService
 }
 
 // Edit-session store is a process singleton over the bot's shared directory.
@@ -53,6 +56,17 @@ function getWorkflowJobStore(): NodeTelegramBotWorkflowJobStore | undefined {
     workflowJobStore = new NodeTelegramBotFileWorkflowJobStore(config.TELEGRAM_BOT_JOB_STORE_FILE)
   }
   return workflowJobStore
+}
+
+// Publish service is built only when delivery-on-approve is opted in (#329),
+// reusing the bot token. Off → the gateway never publishes (no side effects).
+let publishService: IPublishService | undefined
+function getPublishService(): IPublishService | undefined {
+  if (!config.TELEGRAM_GATEWAY_PUBLISH_ON_APPROVE || !config.TELEGRAM_BOT_TOKEN) return undefined
+  if (!publishService) {
+    publishService = new NodePublishService({ telegram: { botToken: config.TELEGRAM_BOT_TOKEN } })
+  }
+  return publishService
 }
 
 type ContextServices = Pick<Context, "mediaService" | "cacheService" | "queueService">
@@ -104,5 +118,6 @@ export async function createContext(opts: CreateContextOptions = {}): Promise<Co
     editSessionStore: getEditSessionStore(),
     workflowJobStore: getWorkflowJobStore(),
     renderStreamIntervalMs: config.TELEGRAM_RENDER_STREAM_INTERVAL_MS,
+    publishService: getPublishService(),
   }
 }
