@@ -1,3 +1,15 @@
+# [3.93.0](https://github.com/chatman-media/timeline-studio/compare/v3.92.2...v3.93.0) (2026-06-27)
+
+
+### Bug Fixes
+
+* **render:** cross-platform font resolution for subtitle burn-in ([#374](https://github.com/chatman-media/timeline-studio/issues/374)) ([#377](https://github.com/chatman-media/timeline-studio/issues/377)) ([74c04ad](https://github.com/chatman-media/timeline-studio/commit/74c04ad6f194129c24c32e2ecbc70d3ade7d9133))
+
+
+### Features
+
+* **schema:** semver versioning + backward-compat policy for ProjectSchema ([#375](https://github.com/chatman-media/timeline-studio/issues/375)) ([#378](https://github.com/chatman-media/timeline-studio/issues/378)) ([9fb712c](https://github.com/chatman-media/timeline-studio/commit/9fb712c0479ab43351e6924b5c9bb40d753394a6))
+
 ## [3.92.2](https://github.com/chatman-media/timeline-studio/compare/v3.92.1...v3.92.2) (2026-06-11)
 
 
