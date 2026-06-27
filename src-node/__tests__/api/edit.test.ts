@@ -181,4 +181,30 @@ describe("Gateway edit router (#329)", () => {
     } as Context)
     await expect(caller.edit.approve({ id: "s1" })).rejects.toMatchObject({ code: "UNAUTHORIZED" })
   })
+
+  test("edit.cancel cancels an active session", async () => {
+    const store = mutableStore([makeSession("c1", "42", "preview_ready")])
+    const caller = appRouter.createCaller(ctxFor(42, store))
+    const result = await caller.edit.cancel({ id: "c1" })
+    expect(result.status).toBe("cancelled")
+    expect((await store.readSession("c1"))?.status).toBe("cancelled")
+  })
+
+  test("edit.cancel is idempotent on an already-cancelled session", async () => {
+    const store = mutableStore([makeSession("c2", "42", "cancelled")])
+    const caller = appRouter.createCaller(ctxFor(42, store))
+    expect((await caller.edit.cancel({ id: "c2" })).status).toBe("cancelled")
+  })
+
+  test("edit.cancel conflicts on a completed session", async () => {
+    const store = mutableStore([makeSession("c3", "42", "done")])
+    const caller = appRouter.createCaller(ctxFor(42, store))
+    await expect(caller.edit.cancel({ id: "c3" })).rejects.toMatchObject({ code: "CONFLICT" })
+  })
+
+  test("edit.cancel hides another user's session as NOT_FOUND", async () => {
+    const store = mutableStore([makeSession("c9", "99", "preview_ready")])
+    const caller = appRouter.createCaller(ctxFor(42, store))
+    await expect(caller.edit.cancel({ id: "c9" })).rejects.toMatchObject({ code: "NOT_FOUND" })
+  })
 })
