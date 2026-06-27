@@ -89,6 +89,18 @@ describe("extractInitData", () => {
     expect(extractInitData(req)).toBe("raw-init")
   })
 
+  test("reads the initData query param (for EventSource/SSE)", () => {
+    const req = new Request("http://x/trpc/render.events?initData=sse-init&batch=1")
+    expect(extractInitData(req)).toBe("sse-init")
+  })
+
+  test("prefers the Authorization header over the query param", () => {
+    const req = new Request("http://x/trpc?initData=from-query", {
+      headers: { authorization: "tma from-header" },
+    })
+    expect(extractInitData(req)).toBe("from-header")
+  })
+
   test("returns undefined when no init data header is present", () => {
     expect(extractInitData(new Request("http://x"))).toBeUndefined()
     expect(extractInitData(undefined)).toBeUndefined()
