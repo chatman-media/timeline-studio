@@ -1,3 +1,10 @@
+# [3.99.0](https://github.com/chatman-media/timeline-studio/compare/v3.98.0...v3.99.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** render status read + SSE stream over shared job store ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#384](https://github.com/chatman-media/timeline-studio/issues/384)) ([9d9a63b](https://github.com/chatman-media/timeline-studio/commit/9d9a63bffdae1f44b95517a36ab73740f98b1ba3))
+
 # [3.98.0](https://github.com/chatman-media/timeline-studio/compare/v3.97.0...v3.98.0) (2026-06-27)
 
 
