@@ -1,3 +1,10 @@
+# [3.105.0](https://github.com/chatman-media/timeline-studio/compare/v3.104.0...v3.105.0) (2026-06-27)
+
+
+### Features
+
+* **mini-app:** concierge actions (approve/revise/cancel) on sessions ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#392](https://github.com/chatman-media/timeline-studio/issues/392)) ([45a4d4a](https://github.com/chatman-media/timeline-studio/commit/45a4d4ac206d8267d956740b8749cb0651741b3c))
+
 # [3.104.0](https://github.com/chatman-media/timeline-studio/compare/v3.103.0...v3.104.0) (2026-06-27)
 
 
