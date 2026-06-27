@@ -21,7 +21,7 @@ export function createServer(port?: number) {
           headers: {
             "Access-Control-Allow-Origin": config.CORS_ORIGIN,
             "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Telegram-Init-Data",
           },
         })
       }
@@ -50,7 +50,7 @@ export function createServer(port?: number) {
             endpoint: "/trpc",
             req: request,
             router: appRouter,
-            createContext,
+            createContext: ({ req }) => createContext({ req }),
           })
 
           // Add CORS headers
