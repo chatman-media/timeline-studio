@@ -1,3 +1,17 @@
+# [3.102.0](https://github.com/chatman-media/timeline-studio/compare/v3.101.0...v3.102.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** edit.cancel mutation reusing the bot review logic ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#388](https://github.com/chatman-media/timeline-studio/issues/388)) ([bc6db2e](https://github.com/chatman-media/timeline-studio/commit/bc6db2e668334096a6f376e8390668e399327ee1))
+
+# [3.101.0](https://github.com/chatman-media/timeline-studio/compare/v3.100.0...v3.101.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** opt-in delivery on edit.approve via reused publish ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#387](https://github.com/chatman-media/timeline-studio/issues/387)) ([33eba16](https://github.com/chatman-media/timeline-studio/commit/33eba160f2a1f77efd204759be4209060760adab))
+
 # [3.100.0](https://github.com/chatman-media/timeline-studio/compare/v3.99.1...v3.100.0) (2026-06-27)
 
 
