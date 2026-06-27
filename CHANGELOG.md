@@ -1,3 +1,10 @@
+# [3.103.0](https://github.com/chatman-media/timeline-studio/compare/v3.102.0...v3.103.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** edit.revise mutation reusing the bot AI review logic ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#389](https://github.com/chatman-media/timeline-studio/issues/389)) ([a535cac](https://github.com/chatman-media/timeline-studio/commit/a535cac8edbb283e3fa3ef6f0d0214bf951cc8b8))
+
 # [3.102.0](https://github.com/chatman-media/timeline-studio/compare/v3.101.0...v3.102.0) (2026-06-27)
 
 
