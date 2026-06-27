@@ -34,11 +34,54 @@ body {
 
 .sessions li {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--tg-theme-secondary-bg-color, #f4f4f5);
+}
+
+.sessions .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--tg-theme-button-color, #2481cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.revise {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  min-width: 160px;
+}
+
+.revise input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 14px;
 }
 
 .status {
