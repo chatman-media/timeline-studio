@@ -1,3 +1,10 @@
+# [3.107.0](https://github.com/chatman-media/timeline-studio/compare/v3.106.0...v3.107.0) (2026-06-27)
+
+
+### Features
+
+* **gateway+mini-app:** live render status over SSE ([#329](https://github.com/chatman-media/timeline-studio/issues/329)/[#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#394](https://github.com/chatman-media/timeline-studio/issues/394)) ([9492ccf](https://github.com/chatman-media/timeline-studio/commit/9492ccff3af1a4a9781e823b29df2be0d2ec2b7b))
+
 # [3.106.0](https://github.com/chatman-media/timeline-studio/compare/v3.105.0...v3.106.0) (2026-06-27)
 
 
