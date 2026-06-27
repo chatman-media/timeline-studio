@@ -1,3 +1,10 @@
+## [3.99.1](https://github.com/chatman-media/timeline-studio/compare/v3.99.0...v3.99.1) (2026-06-27)
+
+
+### Bug Fixes
+
+* **ci:** type-safe mock.calls access in bot-worker tests ([#385](https://github.com/chatman-media/timeline-studio/issues/385)) ([56db0dc](https://github.com/chatman-media/timeline-studio/commit/56db0dca37ba67a5b4b7346559d6a4371784311d)), closes [326/#325](https://github.com/chatman-media/timeline-studio/issues/325)
+
 # [3.99.0](https://github.com/chatman-media/timeline-studio/compare/v3.98.0...v3.99.0) (2026-06-27)
 
 
