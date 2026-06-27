@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { gateway } from "./gateway"
+import { RenderJobs } from "./RenderJobs"
 import { type SessionSummary, SessionRow } from "./SessionRow"
 import { getInitData } from "./telegram"
 
@@ -74,6 +75,8 @@ export function App() {
           </ul>
         )}
       </section>
+
+      <RenderJobs />
     </main>
   )
 }
