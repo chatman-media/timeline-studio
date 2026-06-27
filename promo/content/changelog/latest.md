@@ -1,3 +1,10 @@
+# [3.98.0](https://github.com/chatman-media/timeline-studio/compare/v3.97.0...v3.98.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** owner-scoped session router over shared bot store ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#383](https://github.com/chatman-media/timeline-studio/issues/383)) ([b26010f](https://github.com/chatman-media/timeline-studio/commit/b26010fcd91b928a702def2fb8a33ed054de544c))
+
 # [3.97.0](https://github.com/chatman-media/timeline-studio/compare/v3.96.0...v3.97.0) (2026-06-27)
 
 
