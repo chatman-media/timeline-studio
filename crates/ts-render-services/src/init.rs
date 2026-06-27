@@ -1,45 +1,20 @@
-//! Video Compiler Module - Центральный модуль компиляции видео
+//! Headless-инициализация Video Compiler (#345, финал cutover).
 //!
-//! Этот модуль отвечает за компиляцию проектов Timeline Studio в финальное видео
-//! с использованием FFmpeg. Включает в себя:
-//! - Схему данных проекта (ProjectSchema)
-//! - Рендерер видео (VideoRenderer)
-//! - Генератор превью (PreviewGenerator)
-//! - Отслеживание прогресса (ProgressTracker)
-
-// Новая модульная структура
-pub mod commands;
-pub mod core;
-pub mod services;
-
-#[cfg(test)]
-pub mod tests;
-
-// Re-export основных типов для удобства использования
-pub use commands::VideoCompilerState;
-pub use core::error::{Result, VideoCompilerError};
-pub use core::progress::RenderProgress;
-
-// Re-export core modules that are used by other parts of the application
-pub use core::{
-  cache, error, ffmpeg_builder, ffmpeg_executor, frame_extraction, gpu, pipeline, preview,
-  progress, renderer, schema,
-};
+//! Перенесено из монолитного `src-tauri/src/video_compiler/mod.rs` без изменения логики.
+//! Обе функции Tauri-free (используют `tokio::process`, `ServiceContainer`,
+//! `RenderCache`, `CompilerSettings`), поэтому живут в этом крейте — движок драйвится
+//! CLI/агентом без Tauri-рантайма. `lib.rs` хоста вызывает `ts_render_services::initialize()`.
 
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-use crate::video_compiler::cache::RenderCache;
-use crate::video_compiler::services::ServiceContainer;
+use ts_render::video_compiler::core::cache::RenderCache;
+use ts_render::video_compiler::core::error::{Result, VideoCompilerError};
+use ts_render::video_compiler::CompilerSettings;
 
-/// Настройки компилятора видео — из крейта `ts-render` (#90 dedup; унификация типа с движком).
-pub use ts_render::video_compiler::CompilerSettings;
-
-/// События Video Compiler для WebSocket — определение вынесено в крейт
-/// `ts-render-services` (Wave 2, #91), чтобы группа команд `rendering` могла
-/// эмитить их из крейта `ts-render-tauri`. Здесь оставлен ре-экспорт-шим.
-pub use ts_render_services::VideoCompilerEvent;
+use crate::services::ServiceContainer;
+use crate::state::VideoCompilerState;
 
 /// Проверка зависимостей Video Compiler и возврат пути к FFmpeg
 pub async fn check_dependencies() -> Result<String> {

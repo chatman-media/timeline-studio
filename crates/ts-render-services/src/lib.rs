@@ -73,3 +73,9 @@ pub mod preview;
 pub mod pipeline;
 pub mod misc;
 pub mod rendering;
+
+/// Headless-инициализация (#345, финал cutover): `check_dependencies()` + `initialize()`,
+/// перенесённые из монолитного `video_compiler/mod.rs`. Хост вызывает
+/// `ts_render_services::initialize()` вместо `video_compiler::initialize()`.
+pub mod init;
+pub use init::{check_dependencies, initialize};

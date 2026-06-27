@@ -38,9 +38,9 @@ mod filesystem;
 // Модуль для работы с голосовыми записями
 mod voice_recording;
 
-// Модуль Video Compiler
-pub mod video_compiler;
-use video_compiler::VideoCompilerState;
+// Video Compiler — вынесен в крейты (#345, финал cutover): движок `ts-render`,
+// сервисный фундамент `ts-render-services`, командный слой `ts-render-tauri`.
+use ts_render_services::VideoCompilerState;
 
 // Модуль генерации прокси
 mod proxy_generator;
@@ -224,7 +224,7 @@ pub fn run() {
     })
     .setup(|app: &mut tauri::App<tauri::Wry>| {
       // Initialize Video Compiler
-      let video_compiler_state = tauri::async_runtime::block_on(video_compiler::initialize());
+      let video_compiler_state = tauri::async_runtime::block_on(ts_render_services::initialize());
       match video_compiler_state {
         Ok(state) => {
           app.manage(state);
@@ -334,12 +334,12 @@ pub fn run() {
       app.manage(content_engine_state);
 
       // Create AI Streaming State for real-time AI events
-      use video_compiler::commands::ai_api_proxy::AIStreamingState;
+      use ts_render_tauri::ai_api_proxy::AIStreamingState;
       let ai_streaming_state = AIStreamingState::new(app.handle().clone());
       app.manage(ai_streaming_state);
 
       // Create AI Cache State
-      use video_compiler::commands::ai_api_proxy::{AICacheManager, AICacheState, CacheConfig};
+      use ts_render_tauri::ai_api_proxy::{AICacheManager, AICacheState, CacheConfig};
       let cache_db_path = app
         .path()
         .app_cache_dir()
@@ -754,7 +754,7 @@ mod tests {
   #[tokio::test]
   async fn test_video_compiler_state_creation() {
     // Тестируем создание VideoCompilerState через команды
-    use video_compiler::commands::VideoCompilerState;
+    use ts_render_services::VideoCompilerState;
 
     let state = VideoCompilerState::new().await;
 
@@ -770,7 +770,7 @@ mod tests {
     use tokio::sync::RwLock;
 
     // Создаем RenderCache
-    let cache = Arc::new(RwLock::new(video_compiler::cache::RenderCache::new()));
+    let cache = Arc::new(RwLock::new(ts_render::video_compiler::core::cache::RenderCache::new()));
 
     // Добавляем некоторые данные в кэш
     {
@@ -778,7 +778,7 @@ mod tests {
       let _ = cache_guard
         .store_metadata(
           "test_path".to_string(),
-          video_compiler::cache::MediaMetadata {
+          ts_render::video_compiler::core::cache::MediaMetadata {
             file_path: "test_path".to_string(),
             file_size: 1000000,
             modified_time: std::time::SystemTime::now(),
