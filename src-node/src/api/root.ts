@@ -8,6 +8,7 @@ import { queueRouter } from "./routers/queue"
 import { authRouter } from "./routers/auth"
 import { sessionRouter } from "./routers/session"
 import { renderRouter } from "./routers/render"
+import { editRouter } from "./routers/edit"
 
 /**
  * Main tRPC app router
@@ -22,6 +23,7 @@ export const appRouter = router({
   auth: authRouter,
   session: sessionRouter,
   render: renderRouter,
+  edit: editRouter,
 })
 
 /**

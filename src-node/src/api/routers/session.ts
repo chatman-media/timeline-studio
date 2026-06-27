@@ -12,7 +12,7 @@ import { router, protectedProcedure } from "../trpc"
  */
 
 /** Client-safe projection — internal ProjectSchema/artifacts are not exposed. */
-function toSessionSummary(session: BotEditSession) {
+export function toSessionSummary(session: BotEditSession) {
   return {
     id: session.id,
     status: session.status,
