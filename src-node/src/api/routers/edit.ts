@@ -87,4 +87,48 @@ export const editRouter = router({
         message: `Session cannot be approved in its current state (${updated?.status ?? "missing"})`,
       })
     }),
+
+  /**
+   * Cancel (discard) the caller's review session, reusing the bot's
+   * cancelEditSession via a synthesized `/cancel`. Idempotent on an
+   * already-cancelled session; conflicts on a completed (done/failed) one.
+   */
+  cancel: protectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const store = requireStore(ctx.editSessionStore)
+      const session = await store.readSession(input.id)
+      if (!session || session.userId !== ctx.auth.userId) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Session not found" })
+      }
+      if (session.status === "cancelled") {
+        return toSessionSummary(session) // idempotent
+      }
+      if (session.status === "done" || session.status === "failed") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `Session cannot be cancelled in its current state (${session.status})`,
+        })
+      }
+
+      const worker = new NodeTelegramBotWorker({ workflow: stubWorkflow, editSessionStore: store })
+      await worker.handleUpdate({
+        update_id: 0,
+        message: {
+          message_id: `gateway-cancel-${input.id}`,
+          chat: { id: session.chatId ?? ctx.auth.userId },
+          from: { id: ctx.auth.userId },
+          text: "/cancel",
+        },
+      })
+
+      const updated = await store.readSession(input.id)
+      if (updated?.status !== "cancelled") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `Session could not be cancelled (${updated?.status ?? "missing"})`,
+        })
+      }
+      return toSessionSummary(updated)
+    }),
 })
