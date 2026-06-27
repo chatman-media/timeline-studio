@@ -1,9 +1,14 @@
 import path from "node:path"
 import { codecovVitePlugin } from "@codecov/vite-plugin"
 import react from "@vitejs/plugin-react"
+import type { PluginOption } from "vite"
 import { defineConfig } from "vitest/config"
 
 export default defineConfig({
+  // Cast to vite's PluginOption[]: @codecov/vite-plugin peers on vite 4-6 while the
+  // rest of the toolchain is on vite 7, so the plugins can resolve a different vite
+  // copy and their Plugin types stop matching defineConfig's. The cast keeps the
+  // config type-checking regardless of how the lockfile resolves vite (#330).
   plugins: [
     react(),
     // Put the Codecov vite plugin after all other plugins
@@ -22,7 +27,7 @@ export default defineConfig({
         },
       }),
     }),
-  ],
+  ] as PluginOption[],
   test: {
     environment: "jsdom",
     globals: true,

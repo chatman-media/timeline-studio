@@ -163,11 +163,28 @@
         "@timeline-studio/ui": "workspace:*",
       },
     },
+    "apps/telegram-mini-app": {
+      "name": "@timeline-studio/telegram-mini-app",
+      "version": "0.0.0",
+      "dependencies": {
+        "@trpc/client": "11.17.0",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+      },
+      "devDependencies": {
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^5.2.0",
+        "typescript": "~6.0.3",
+        "vite": "^7.0.0",
+      },
+    },
     "packages/adapters": {
       "name": "@timeline-studio/adapters",
       "version": "3.61.1",
       "dependencies": {
-        "@timeline-studio/core": "workspace:*",
+        "@timeline-studio/core": "3.61.1",
+        "@timeline-studio/domains": "3.61.1",
       },
     },
     "packages/core": {
@@ -178,7 +195,7 @@
       "name": "@timeline-studio/domains",
       "version": "3.61.1",
       "dependencies": {
-        "@timeline-studio/core": "workspace:*",
+        "@timeline-studio/core": "3.61.1",
       },
     },
     "packages/shared-types": {
@@ -1269,6 +1286,8 @@
     "@timeline-studio/desktop": ["@timeline-studio/desktop@workspace:apps/desktop"],
 
     "@timeline-studio/domains": ["@timeline-studio/domains@workspace:packages/domains"],
+
+    "@timeline-studio/telegram-mini-app": ["@timeline-studio/telegram-mini-app@workspace:apps/telegram-mini-app"],
 
     "@timeline-studio/ui": ["@timeline-studio/ui@workspace:packages/ui"],
 
