@@ -1,3 +1,10 @@
+# [3.96.0](https://github.com/chatman-media/timeline-studio/compare/v3.95.0...v3.96.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** verify Telegram Mini App initData -> userId/chatId ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#381](https://github.com/chatman-media/timeline-studio/issues/381)) ([b50dc63](https://github.com/chatman-media/timeline-studio/commit/b50dc636c9653598abdb36df02737acce5fc6240))
+
 # [3.95.0](https://github.com/chatman-media/timeline-studio/compare/v3.94.0...v3.95.0) (2026-06-27)
 
 
