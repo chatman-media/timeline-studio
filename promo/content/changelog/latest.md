@@ -1,3 +1,10 @@
+# [3.95.0](https://github.com/chatman-media/timeline-studio/compare/v3.94.0...v3.95.0) (2026-06-27)
+
+
+### Features
+
+* **bot:** concierge manual-approval toggle + operator decision log ([#325](https://github.com/chatman-media/timeline-studio/issues/325)) ([#380](https://github.com/chatman-media/timeline-studio/issues/380)) ([bdccb3e](https://github.com/chatman-media/timeline-studio/commit/bdccb3e4123b70e7c4e3a95252cb497b6c26b30d))
+
 # [3.94.0](https://github.com/chatman-media/timeline-studio/compare/v3.93.0...v3.94.0) (2026-06-27)
 
 
