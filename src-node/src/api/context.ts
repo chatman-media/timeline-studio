@@ -117,7 +117,17 @@ export function extractInitData(req: Request | undefined): string | undefined {
     const match = /^tma\s+(.+)$/i.exec(auth.trim())
     if (match) return match[1]
   }
-  return req.headers.get("x-telegram-init-data") ?? undefined
+  const header = req.headers.get("x-telegram-init-data")
+  if (header) return header
+  // EventSource (SSE subscriptions) can't send custom headers, so also accept
+  // initData via the `initData` query param (#330).
+  try {
+    const fromQuery = new URL(req.url).searchParams.get("initData")
+    if (fromQuery) return fromQuery
+  } catch {
+    // req.url may be relative/unparseable in some adapters — ignore.
+  }
+  return undefined
 }
 
 /**

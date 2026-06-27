@@ -3,13 +3,11 @@ import { gateway } from "./gateway"
 
 type RenderJob = Awaited<ReturnType<typeof gateway.render.list.query>>[number]
 
-const POLL_MS = 4000
-
 /**
- * The caller's render jobs (#330), polled for near-live status. A lightweight
- * stand-in for the `render.events` SSE stream — polling avoids the EventSource
- * auth nuance and is enough to show progress; the SSE view can replace it later.
- * Renders nothing until the first load and stays hidden when there are no jobs.
+ * The caller's render jobs (#330), streamed live over the gateway's
+ * `render.events` SSE subscription — an initial snapshot then a new one whenever
+ * a job changes status. Renders nothing until the first event and stays hidden
+ * when there are no jobs.
  */
 export function RenderJobs() {
   const [jobs, setJobs] = useState<RenderJob[]>([])
@@ -17,30 +15,18 @@ export function RenderJobs() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    let active = true
-    let timer: ReturnType<typeof setTimeout> | undefined
-
-    const poll = async () => {
-      try {
-        const list = await gateway.render.list.query()
-        if (!active) return
-        setJobs(list)
+    const subscription = gateway.render.events.subscribe(undefined, {
+      onData: (snapshot) => {
+        setJobs(snapshot.jobs)
         setError(null)
-      } catch (cause) {
-        if (active) setError(cause instanceof Error ? cause.message : "Failed to load renders")
-      } finally {
-        if (active) {
-          setLoaded(true)
-          timer = setTimeout(() => void poll(), POLL_MS)
-        }
-      }
-    }
-
-    void poll()
-    return () => {
-      active = false
-      if (timer) clearTimeout(timer)
-    }
+        setLoaded(true)
+      },
+      onError: (cause) => {
+        setError(cause.message)
+        setLoaded(true)
+      },
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   if (!loaded || (jobs.length === 0 && !error)) return null
