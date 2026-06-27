@@ -5,7 +5,8 @@
   "author": "Alexander Kireyev <ak.chatman.media@gmail.com>",
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "!apps/telegram-mini-app"
   ],
   "type": "module",
   "scripts": {

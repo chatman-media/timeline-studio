@@ -1,0 +1,25 @@
+{
+  "name": "@timeline-studio/telegram-mini-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Telegram Mini App front-end for the bot-first reels gateway (#330).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "check:type": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@trpc/client": "11.17.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "~6.0.3",
+    "vite": "^7.0.0"
+  }
+}

@@ -102,6 +102,7 @@
     "node_modules",
     "src-tauri/target/**/*",
     "src-node",
+    "apps/telegram-mini-app",
     "promo"
   ]
 }
