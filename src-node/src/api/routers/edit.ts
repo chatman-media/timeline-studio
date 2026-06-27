@@ -13,9 +13,10 @@ import { toSessionSummary } from "./session"
  * with a synthesized `/approve` update, scoped to the authenticated user. This
  * keeps approval semantics identical to the bot and writes to the same store.
  *
- * `approve` records the operator decision (status -> approved, approvedBy). It
- * intentionally does NOT publish: delivery needs a publish service and is a
- * follow-up, so this endpoint has no external side effects.
+ * `approve` records the operator decision (status -> approved, approvedBy). When
+ * delivery-on-approve is opted in (a publish service in context), the reused bot
+ * logic also publishes the result (status -> done/failed). Off by default, so the
+ * gateway has no external side effects unless explicitly configured.
  */
 
 // The approve path never touches the workflow service; a stub satisfies the type.
@@ -54,7 +55,11 @@ export const editRouter = router({
         throw new TRPCError({ code: "NOT_FOUND", message: "Session not found" })
       }
 
-      const worker = new NodeTelegramBotWorker({ workflow: stubWorkflow, editSessionStore: store })
+      const worker = new NodeTelegramBotWorker({
+        workflow: stubWorkflow,
+        editSessionStore: store,
+        ...(ctx.publishService ? { publishService: ctx.publishService } : {}),
+      })
       await worker.handleUpdate({
         update_id: 0,
         message: {
@@ -66,12 +71,20 @@ export const editRouter = router({
       })
 
       const updated = await store.readSession(input.id)
-      if (!updated || updated.status !== "approved") {
+      // "approved": recorded (no delivery). "done": approved + published.
+      if (updated && (updated.status === "approved" || updated.status === "done")) {
+        return toSessionSummary(updated)
+      }
+      // "failed" after our approve means delivery failed — surface it.
+      if (updated?.status === "failed") {
         throw new TRPCError({
-          code: "CONFLICT",
-          message: `Session cannot be approved in its current state (${updated?.status ?? "missing"})`,
+          code: "BAD_GATEWAY",
+          message: `Delivery failed: ${updated.failure ?? "unknown error"}`,
         })
       }
-      return toSessionSummary(updated)
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: `Session cannot be approved in its current state (${updated?.status ?? "missing"})`,
+      })
     }),
 })

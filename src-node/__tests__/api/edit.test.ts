@@ -81,14 +81,24 @@ function mutableStore(initial: BotEditSession[]): BotEditSessionStore {
   return store
 }
 
-function ctxFor(userId: number, store?: BotEditSessionStore): Context {
+function ctxFor(userId: number, store?: BotEditSessionStore, publishService?: unknown): Context {
   return {
     logger: createLogger("test"),
     botToken: BOT_TOKEN,
     initDataMaxAge: 0,
     initData: signInitData(userId),
     editSessionStore: store,
+    publishService,
   } as Context
+}
+
+/** A preview-ready session with a deliverable artifact, for publish-on-approve. */
+function publishableSession(id: string, userId: string): BotEditSession {
+  return {
+    ...makeSession(id, userId, "preview_ready"),
+    publishTarget: "telegram",
+    currentArtifact: { type: "file", path: "/tmp/out.mp4", destination: "telegram" },
+  }
 }
 
 describe("Gateway edit router (#329)", () => {
@@ -114,6 +124,41 @@ describe("Gateway edit router (#329)", () => {
     const store = mutableStore([makeSession("s2", "42", "draft" as BotEditSessionStatus)])
     const caller = appRouter.createCaller(ctxFor(42, store))
     await expect(caller.edit.approve({ id: "s2" })).rejects.toMatchObject({ code: "CONFLICT" })
+  })
+
+  test("edit.approve delivers via the publish service when opted in", async () => {
+    const store = mutableStore([publishableSession("p1", "42")])
+    const publish = {
+      canPublish: () => true,
+      publish: async (req: { destination: string }) => ({ destination: req.destination, status: "done" }),
+    }
+    const publishSpy = publish.publish
+    let published = false
+    publish.publish = async (req) => {
+      published = true
+      return publishSpy(req)
+    }
+    const caller = appRouter.createCaller(ctxFor(42, store, publish))
+
+    const result = await caller.edit.approve({ id: "p1" })
+
+    expect(published).toBe(true)
+    expect(result.status).toBe("done")
+    expect((await store.readSession("p1"))?.publishedAt).toBeTruthy()
+  })
+
+  test("edit.approve surfaces a delivery failure as BAD_GATEWAY", async () => {
+    const store = mutableStore([publishableSession("p2", "42")])
+    const publish = {
+      canPublish: () => true,
+      publish: async (req: { destination: string }) => ({
+        destination: req.destination,
+        status: "failed",
+        error: "telegram rejected",
+      }),
+    }
+    const caller = appRouter.createCaller(ctxFor(42, store, publish))
+    await expect(caller.edit.approve({ id: "p2" })).rejects.toMatchObject({ code: "BAD_GATEWAY" })
   })
 
   test("edit.approve is idempotent on an already-approved session", async () => {

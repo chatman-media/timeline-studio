@@ -40,6 +40,12 @@ const ConfigSchema = z.object({
   TELEGRAM_BOT_JOB_STORE_FILE: z.string().optional(),
   // Default poll interval (ms) for the render-status SSE stream.
   TELEGRAM_RENDER_STREAM_INTERVAL_MS: z.coerce.number().int().min(50).default(1000),
+  // Opt-in: deliver the result on edit.approve by publishing via the same bot
+  // token. Off by default so the gateway has no external side effects (#329).
+  TELEGRAM_GATEWAY_PUBLISH_ON_APPROVE: z
+    .string()
+    .optional()
+    .transform((v) => v === "true" || v === "1"),
 
   // Logging
   LOG_LEVEL: z
