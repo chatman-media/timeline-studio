@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { gateway } from "./gateway"
+import { type SessionSummary, SessionRow } from "./SessionRow"
 import { getInitData } from "./telegram"
 
 interface Me {
@@ -8,18 +9,23 @@ interface Me {
   username: string | null
 }
 
-type SessionSummary = Awaited<ReturnType<typeof gateway.session.list.query>>[number]
-
 /**
- * Home screen (#330): proves end-to-end auth + data over the gateway — shows the
- * verified identity and the caller's review sessions. Chat/preview screens and
- * the live render view follow.
+ * Home screen (#330): the verified identity and the caller's review sessions,
+ * each with concierge actions (approve/revise/cancel) over the gateway.
  */
 export function App() {
   const [me, setMe] = useState<Me | null>(null)
   const [sessions, setSessions] = useState<SessionSummary[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const refresh = useCallback(async () => {
+    try {
+      setSessions(await gateway.session.list.query())
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Failed to load sessions")
+    }
+  }, [])
 
   useEffect(() => {
     if (!getInitData()) {
@@ -30,10 +36,7 @@ export function App() {
     let cancelled = false
     ;(async () => {
       try {
-        const [identity, list] = await Promise.all([
-          gateway.auth.me.query(),
-          gateway.session.list.query(),
-        ])
+        const [identity, list] = await Promise.all([gateway.auth.me.query(), gateway.session.list.query()])
         if (cancelled) return
         setMe(identity)
         setSessions(list)
@@ -49,7 +52,7 @@ export function App() {
   }, [])
 
   if (loading) return <main className="screen">Loading…</main>
-  if (error) return <main className="screen error">{error}</main>
+  if (error && !me) return <main className="screen error">{error}</main>
 
   return (
     <main className="screen">
@@ -60,15 +63,13 @@ export function App() {
 
       <section>
         <h2>Your sessions</h2>
+        {error && <p className="error">{error}</p>}
         {sessions.length === 0 ? (
           <p className="muted">No review sessions yet. Send an idea to the bot to start.</p>
         ) : (
           <ul className="sessions">
             {sessions.map((session) => (
-              <li key={session.id}>
-                <span className={`status status-${session.status}`}>{session.status}</span>
-                <span className="goal">{session.goal ?? session.id}</span>
-              </li>
+              <SessionRow key={session.id} session={session} onChanged={() => void refresh()} />
             ))}
           </ul>
         )}
