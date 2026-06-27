@@ -1,3 +1,10 @@
+# [3.104.0](https://github.com/chatman-media/timeline-studio/compare/v3.103.0...v3.104.0) (2026-06-27)
+
+
+### Features
+
+* **mini-app:** scaffold Telegram Mini App over the gateway ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#390](https://github.com/chatman-media/timeline-studio/issues/390)) ([68f3b75](https://github.com/chatman-media/timeline-studio/commit/68f3b750845c0019c19db6e75cc9c15d5537e3c3))
+
 # [3.103.0](https://github.com/chatman-media/timeline-studio/compare/v3.102.0...v3.103.0) (2026-06-27)
 
 
