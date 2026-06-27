@@ -1,5 +1,9 @@
 import type { BotEditSessionStore } from "@timeline-studio/core"
-import { NodeBotEditSessionFileStore } from "@timeline-studio/adapters/node"
+import {
+  NodeBotEditSessionFileStore,
+  NodeTelegramBotFileWorkflowJobStore,
+  type NodeTelegramBotWorkflowJobStore,
+} from "@timeline-studio/adapters/node"
 import type { EnhancedMediaService } from "../services/media-service"
 import type { CacheService } from "../services/cache-service"
 import type { QueueService } from "../services/queue-service"
@@ -23,6 +27,10 @@ export interface Context {
   initDataMaxAge?: number
   /** Edit-session store shared read-only with the bot, when configured (#329). */
   editSessionStore?: BotEditSessionStore
+  /** Workflow job store shared read-only with the bot, when configured (#329). */
+  workflowJobStore?: NodeTelegramBotWorkflowJobStore
+  /** Default poll interval (ms) for the render-status SSE stream. */
+  renderStreamIntervalMs?: number
 }
 
 // Edit-session store is a process singleton over the bot's shared directory.
@@ -35,6 +43,16 @@ function getEditSessionStore(): BotEditSessionStore | undefined {
     })
   }
   return editSessionStore
+}
+
+// Workflow job store is a process singleton over the bot's shared job file.
+let workflowJobStore: NodeTelegramBotWorkflowJobStore | undefined
+function getWorkflowJobStore(): NodeTelegramBotWorkflowJobStore | undefined {
+  if (!config.TELEGRAM_BOT_JOB_STORE_FILE) return undefined
+  if (!workflowJobStore) {
+    workflowJobStore = new NodeTelegramBotFileWorkflowJobStore(config.TELEGRAM_BOT_JOB_STORE_FILE)
+  }
+  return workflowJobStore
 }
 
 type ContextServices = Pick<Context, "mediaService" | "cacheService" | "queueService">
@@ -84,5 +102,7 @@ export async function createContext(opts: CreateContextOptions = {}): Promise<Co
     botToken: config.TELEGRAM_BOT_TOKEN,
     initDataMaxAge: config.TELEGRAM_INIT_DATA_MAX_AGE,
     editSessionStore: getEditSessionStore(),
+    workflowJobStore: getWorkflowJobStore(),
+    renderStreamIntervalMs: config.TELEGRAM_RENDER_STREAM_INTERVAL_MS,
   }
 }

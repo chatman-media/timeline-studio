@@ -35,6 +35,11 @@ const ConfigSchema = z.object({
   // Directory of the bot's edit-session store, shared read-only with the gateway
   // so the Mini App can list/inspect the same sessions the bot writes (#329).
   TELEGRAM_BOT_EDIT_SESSION_DIR: z.string().optional(),
+  // The bot's workflow job-store file (TIMELINE_BOT_JOB_STORE_FILE), shared
+  // read-only so the gateway can report/stream render status (#329).
+  TELEGRAM_BOT_JOB_STORE_FILE: z.string().optional(),
+  // Default poll interval (ms) for the render-status SSE stream.
+  TELEGRAM_RENDER_STREAM_INTERVAL_MS: z.coerce.number().int().min(50).default(1000),
 
   // Logging
   LOG_LEVEL: z
