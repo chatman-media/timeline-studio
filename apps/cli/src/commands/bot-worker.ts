@@ -80,6 +80,7 @@ export interface BotWorkerCommandOptions {
   feedbackTranscriberProvider?: BotFeedbackTranscriptionProvider
   feedbackTranscriberModel?: string
   feedbackTranscriberLanguage?: string
+  transcribeVoiceIdeas?: boolean
   firstCutPlanner?: boolean
   firstCutPlannerCommand?: string
   firstCutPlannerKind?: NodeRustFirstCutPlannerKind
@@ -158,6 +159,10 @@ export const botWorkerCommand = new Command("bot-worker")
   )
   .option("--feedback-transcriber-model <model>", "Review voice transcription model")
   .option("--feedback-transcriber-language <language>", "Review voice transcription language hint")
+  .option(
+    "--transcribe-voice-ideas",
+    "Transcribe a fresh voice idea into the goal before first-cut (reuses the feedback transcriber)",
+  )
   .option("--first-cut-planner", "Enable Rust timeline montage-plan/llm-plan first-cut planning")
   .option("--first-cut-planner-command <path>", "Path/name for the Rust timeline first-cut planner command")
   .option("--first-cut-planner-kind <kind>", "Rust first-cut planner kind: auto, montage-plan, or llm-plan")
@@ -277,6 +282,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     aiProjectEditor: services.aiProjectEditor,
     aiProjectEditMaxRepairAttempts: parseOptionalNonNegativeInteger(resolvedOptions.aiEditorRepairAttempts) ?? 1,
     feedbackTranscriber: services.botFeedbackTranscriber,
+    transcribeVoiceIdeas: resolvedOptions.transcribeVoiceIdeas ?? false,
     previewRenderer: createBotReviewPreviewRenderer(services.renderJob, resolvedOptions),
     publishService: services.publish,
     previewResponder: services.botStatus,
@@ -383,6 +389,7 @@ export function resolveBotWorkerCommandOptions(
       options.feedbackTranscriberLanguage,
       env.TIMELINE_BOT_FEEDBACK_TRANSCRIBER_LANGUAGE,
     ),
+    transcribeVoiceIdeas: options.transcribeVoiceIdeas ?? parseBooleanEnv(env.TIMELINE_BOT_TRANSCRIBE_VOICE_IDEAS),
     firstCutPlanner: options.firstCutPlanner ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_PLANNER),
     firstCutPlannerCommand: firstConfigured(options.firstCutPlannerCommand, env.TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND),
     firstCutPlannerKind: firstConfigured(

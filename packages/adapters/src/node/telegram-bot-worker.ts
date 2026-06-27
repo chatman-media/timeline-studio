@@ -122,6 +122,14 @@ export interface NodeTelegramBotWorkerOptions {
   aiProjectEditor?: IAIProjectEditor
   aiProjectEditMaxRepairAttempts?: number
   feedbackTranscriber?: IBotFeedbackTranscriber
+  /**
+   * Transcribe a fresh voice/video-note idea into the workflow goal via
+   * {@link feedbackTranscriber} before draft/first-cut assembly (#326). When a
+   * new (non-review) message has no usable text but carries a voice idea, its
+   * transcription becomes the idea text that feeds the script generator.
+   * Requires {@link feedbackTranscriber}; off by default to preserve behavior.
+   */
+  transcribeVoiceIdeas?: boolean
   publishService?: IPublishService
   previewRenderer?: NodeTelegramBotReviewPreviewRenderer
   previewResponder?: NodeTelegramBotReviewPreviewResponder
@@ -673,13 +681,17 @@ export class NodeTelegramBotWorker {
     const reviewFeedbackResult = await this.handleReviewFeedbackUpdate(update, payload)
     if (reviewFeedbackResult) return reviewFeedbackResult
 
-    const draftResult = await this.handleDraftUpdate(update, payload, options)
+    // A fresh voice idea (not review feedback) is transcribed into the goal text
+    // so it flows through the draft / first-cut / script generator (#326).
+    const ideaPayload = await this.applyVoiceIdeaTranscription(payload)
+
+    const draftResult = await this.handleDraftUpdate(update, ideaPayload, options)
     if (draftResult) return draftResult
 
-    return this.runOrQueueWorkflow(update, payload, {
+    return this.runOrQueueWorkflow(update, ideaPayload, {
       run: (workflowOptions) =>
         this.options.workflow.runTelegramLikePayload(
-          payload,
+          ideaPayload,
           this.withReviewApprovalGate(
             mergeWorkflowOptions(mergeWorkflowOptions(this.workflowOptions, options.workflowOptions), workflowOptions),
           ),
@@ -1644,6 +1656,57 @@ export class NodeTelegramBotWorker {
       ...(observabilityPatch ? { metadata: mergeMetadataObservability(session.metadata, observabilityPatch) } : {}),
       updatedAt: timestamp,
     }
+  }
+
+  /**
+   * Return a copy of {@link payload} with its `text` set to the transcription of
+   * a voice idea, when {@link NodeTelegramBotWorkerOptions.transcribeVoiceIdeas}
+   * is enabled and the message carries a voice/video-note idea without text.
+   * Best-effort: a transcription failure leaves the original payload untouched
+   * so the user's message is never dropped (#326).
+   */
+  private async applyVoiceIdeaTranscription(
+    payload: TelegramLikeBotPayload,
+  ): Promise<TelegramLikeBotPayload> {
+    try {
+      const ideaText = await this.resolveVoiceIdeaText(payload)
+      return ideaText ? { ...payload, text: ideaText } : payload
+    } catch {
+      return payload
+    }
+  }
+
+  private async resolveVoiceIdeaText(
+    payload: TelegramLikeBotPayload,
+  ): Promise<string | undefined> {
+    if (!this.options.transcribeVoiceIdeas || !this.options.feedbackTranscriber) {
+      return undefined
+    }
+
+    // Already has usable, non-command text — nothing to transcribe.
+    const text = normalizedTelegramText(payload.text ?? payload.caption)
+    if (text && !text.startsWith("/")) {
+      return undefined
+    }
+
+    const workflow = createTelegramLikeBotWorkflow(payload)
+    const media = workflow.media?.find((item) => getFeedbackMediaKind(item) !== undefined)
+    if (!media) return undefined
+
+    const kind = getFeedbackMediaKind(media)
+    if (!kind) return undefined
+
+    const transcription = await this.options.feedbackTranscriber.transcribeFeedback({
+      workflow,
+      media,
+      kind,
+      payload,
+      metadata: {
+        purpose: "idea",
+      },
+    })
+
+    return normalizedTelegramText(transcription.text)
   }
 
   private async resolveReviewFeedbackText(
