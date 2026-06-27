@@ -28,6 +28,11 @@ const ConfigSchema = z.object({
   // CORS
   CORS_ORIGIN: z.string().default("http://localhost:3000"),
 
+  // Telegram Mini App gateway auth (#329). Token of the same bot the worker uses,
+  // for verifying initData. Max-age (seconds) gates replay; 0 disables the check.
+  TELEGRAM_BOT_TOKEN: z.string().optional(),
+  TELEGRAM_INIT_DATA_MAX_AGE: z.coerce.number().min(0).default(0),
+
   // Logging
   LOG_LEVEL: z
     .enum(["trace", "debug", "info", "warn", "error"])

@@ -5,6 +5,7 @@ import { waveformRouter } from "./routers/waveform"
 import { cacheRouter } from "./routers/cache"
 import { healthRouter } from "./routers/health"
 import { queueRouter } from "./routers/queue"
+import { authRouter } from "./routers/auth"
 
 /**
  * Main tRPC app router
@@ -16,6 +17,7 @@ export const appRouter = router({
   cache: cacheRouter,
   health: healthRouter,
   queue: queueRouter,
+  auth: authRouter,
 })
 
 /**
