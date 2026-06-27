@@ -5,8 +5,7 @@
   "author": "Alexander Kireyev <ak.chatman.media@gmail.com>",
   "workspaces": [
     "packages/*",
-    "apps/*",
-    "!apps/telegram-mini-app"
+    "apps/*"
   ],
   "type": "module",
   "scripts": {
@@ -30,7 +29,7 @@
     "fix:rust": "npm run format:rust && npm run lint:rust:fix",
     "check:type": "tsc --noEmit",
     "check:packages": "bun run --cwd packages/core check:type && bun run --cwd packages/domains check:type && bun run --cwd packages/adapters check:type && bun run --cwd packages/ui check:type",
-    "check:apps": "bun run --cwd apps/desktop check:type && bun run --cwd apps/cli check:type",
+    "check:apps": "bun run --cwd apps/desktop check:type && bun run --cwd apps/cli check:type && bun run --cwd apps/telegram-mini-app check:type",
     "check:workspaces": "bun run check:packages && bun run check:apps",
     "check:boundaries": "node scripts/check-package-boundaries.mjs",
     "check:boundaries:external": "node scripts/check-package-boundaries.mjs --external-contracts",
