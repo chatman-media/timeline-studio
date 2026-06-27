@@ -1,3 +1,10 @@
+# [3.106.0](https://github.com/chatman-media/timeline-studio/compare/v3.105.0...v3.106.0) (2026-06-27)
+
+
+### Features
+
+* **mini-app:** live render-status list on the home screen ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#393](https://github.com/chatman-media/timeline-studio/issues/393)) ([a7b507e](https://github.com/chatman-media/timeline-studio/commit/a7b507ee233a342b48b768fd8a67c6953017e555))
+
 # [3.105.0](https://github.com/chatman-media/timeline-studio/compare/v3.104.0...v3.105.0) (2026-06-27)
 
 
