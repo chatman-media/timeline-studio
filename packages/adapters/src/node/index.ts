@@ -189,6 +189,13 @@ export {
   type TelegramBotUpdate,
 } from "./telegram-bot-worker"
 export {
+  type TelegramInitDataUser,
+  type TelegramInitDataVerification,
+  verifyTelegramInitData,
+  type VerifiedTelegramInitData,
+  type VerifyTelegramInitDataOptions,
+} from "./telegram-init-data"
+export {
   NodeTelegramRenderJobReviewPreviewRenderer,
   type NodeTelegramRenderJobReviewPreviewRendererOptions,
 } from "./telegram-review-preview-renderer"
