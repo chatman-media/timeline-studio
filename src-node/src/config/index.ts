@@ -32,6 +32,9 @@ const ConfigSchema = z.object({
   // for verifying initData. Max-age (seconds) gates replay; 0 disables the check.
   TELEGRAM_BOT_TOKEN: z.string().optional(),
   TELEGRAM_INIT_DATA_MAX_AGE: z.coerce.number().min(0).default(0),
+  // Directory of the bot's edit-session store, shared read-only with the gateway
+  // so the Mini App can list/inspect the same sessions the bot writes (#329).
+  TELEGRAM_BOT_EDIT_SESSION_DIR: z.string().optional(),
 
   // Logging
   LOG_LEVEL: z

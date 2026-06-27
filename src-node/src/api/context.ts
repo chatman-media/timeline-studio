@@ -1,3 +1,5 @@
+import type { BotEditSessionStore } from "@timeline-studio/core"
+import { NodeBotEditSessionFileStore } from "@timeline-studio/adapters/node"
 import type { EnhancedMediaService } from "../services/media-service"
 import type { CacheService } from "../services/cache-service"
 import type { QueueService } from "../services/queue-service"
@@ -19,6 +21,20 @@ export interface Context {
   botToken?: string
   /** Max `initData` age in seconds; 0 disables the freshness check. */
   initDataMaxAge?: number
+  /** Edit-session store shared read-only with the bot, when configured (#329). */
+  editSessionStore?: BotEditSessionStore
+}
+
+// Edit-session store is a process singleton over the bot's shared directory.
+let editSessionStore: BotEditSessionStore | undefined
+function getEditSessionStore(): BotEditSessionStore | undefined {
+  if (!config.TELEGRAM_BOT_EDIT_SESSION_DIR) return undefined
+  if (!editSessionStore) {
+    editSessionStore = new NodeBotEditSessionFileStore({
+      directory: config.TELEGRAM_BOT_EDIT_SESSION_DIR,
+    })
+  }
+  return editSessionStore
 }
 
 type ContextServices = Pick<Context, "mediaService" | "cacheService" | "queueService">
@@ -67,5 +83,6 @@ export async function createContext(opts: CreateContextOptions = {}): Promise<Co
     initData: extractInitData(opts.req),
     botToken: config.TELEGRAM_BOT_TOKEN,
     initDataMaxAge: config.TELEGRAM_INIT_DATA_MAX_AGE,
+    editSessionStore: getEditSessionStore(),
   }
 }
