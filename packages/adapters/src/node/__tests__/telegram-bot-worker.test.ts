@@ -388,6 +388,67 @@ describe("Telegram bot worker", () => {
     expect(payloadArg.text).toBeUndefined()
   })
 
+  const ideaTextUpdate = (id: number): TelegramBotUpdate => ({
+    update_id: id,
+    message: {
+      message_id: `idea-${id}`,
+      chat: { id: "chat-1" },
+      from: { id: "user-1" },
+      text: "make a promo",
+    },
+  })
+
+  it("gates delivery behind operator approval by default (#325)", async () => {
+    const { store } = createEditSessionStore()
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store })
+
+    await worker.handleUpdate(ideaTextUpdate(31))
+
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0]
+    expect(workflowOptions).toMatchObject({
+      approvalGate: { enabled: true, previewDestination: "telegram" },
+    })
+  })
+
+  it("bypasses the approval gate when concierge approval is disabled (#325)", async () => {
+    const { store } = createEditSessionStore()
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({
+      workflow: service,
+      editSessionStore: store,
+      conciergeApproval: false,
+    })
+
+    await worker.handleUpdate(ideaTextUpdate(32))
+
+    expect(runTelegramLikePayload).toHaveBeenCalledOnce()
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0]
+    expect(workflowOptions?.approvalGate).toBeUndefined()
+  })
+
+  it("records the approving operator in the edit session (#325)", async () => {
+    const session = createReviewSession({ status: "preview_ready" })
+    const { store, records } = createEditSessionStore([session])
+    const { service } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store })
+
+    await worker.handleUpdate({
+      update_id: 33,
+      message: {
+        message_id: "approve-33",
+        chat: { id: "chat-1" },
+        from: { id: "user-1" },
+        text: "/approve",
+      },
+    })
+
+    const approved = records.get(session.id)
+    expect(approved?.status).toBe("approved")
+    expect(approved?.approvedBy).toBe("user-1")
+  })
+
   it("queues workflow runs without waiting for render completion", async () => {
     let resolveWorkflow!: () => void
     const runTelegramLikePayload = vi.fn(

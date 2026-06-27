@@ -140,6 +140,8 @@ export interface BotEditSession {
   approvedRevisionId?: string
   approvedAt?: string
   approvedMessageId?: string
+  /** Operator (Telegram user id) who approved the result, for the concierge decision log (#325). */
+  approvedBy?: string
   cancelledAt?: string
   failedAt?: string
   failure?: string

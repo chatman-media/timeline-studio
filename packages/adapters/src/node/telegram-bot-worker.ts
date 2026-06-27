@@ -130,6 +130,14 @@ export interface NodeTelegramBotWorkerOptions {
    * Requires {@link feedbackTranscriber}; off by default to preserve behavior.
    */
   transcribeVoiceIdeas?: boolean
+  /**
+   * Concierge approval toggle (#325). When `true` (default whenever an
+   * {@link editSessionStore} is configured), every result is gated behind an
+   * operator `/approve` before delivery/publish — a human in the loop. Set to
+   * `false` to bypass the gate and auto-deliver (self-serve mode), while keeping
+   * the edit-session store for other features.
+   */
+  conciergeApproval?: boolean
   publishService?: IPublishService
   previewRenderer?: NodeTelegramBotReviewPreviewRenderer
   previewResponder?: NodeTelegramBotReviewPreviewResponder
@@ -779,6 +787,8 @@ export class NodeTelegramBotWorker {
     options: NodeBotWorkflowServiceOptions | undefined,
   ): NodeBotWorkflowServiceOptions | undefined {
     if (!this.options.editSessionStore) return options
+    // Concierge toggle (#325): bypass the gate for auto-delivery when disabled.
+    if (this.options.conciergeApproval === false) return options
     const gatedOptions = mergeWorkflowOptions(options, {
       approvalGate: {
         enabled: true,
@@ -1241,12 +1251,14 @@ export class NodeTelegramBotWorker {
     }
 
     const timestamp = this.now()
+    const approvedBy = payload.from?.id === undefined ? undefined : String(payload.from.id)
     const approvedSession: BotEditSession = {
       ...session,
       status: "approved",
       approvedRevisionId: revision.id,
       approvedAt: timestamp,
       ...(payload.message_id !== undefined ? { approvedMessageId: String(payload.message_id) } : {}),
+      ...(approvedBy ? { approvedBy } : {}),
       updatedAt: timestamp,
     }
     await this.options.editSessionStore?.writeSession(approvedSession)

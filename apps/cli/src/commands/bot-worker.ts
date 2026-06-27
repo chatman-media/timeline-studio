@@ -81,6 +81,7 @@ export interface BotWorkerCommandOptions {
   feedbackTranscriberModel?: string
   feedbackTranscriberLanguage?: string
   transcribeVoiceIdeas?: boolean
+  conciergeApproval?: boolean
   firstCutPlanner?: boolean
   firstCutPlannerCommand?: string
   firstCutPlannerKind?: NodeRustFirstCutPlannerKind
@@ -162,6 +163,10 @@ export const botWorkerCommand = new Command("bot-worker")
   .option(
     "--transcribe-voice-ideas",
     "Transcribe a fresh voice idea into the goal before first-cut (reuses the feedback transcriber)",
+  )
+  .option(
+    "--no-concierge-approval",
+    "Disable the operator manual-approval gate and auto-deliver results (default: approval required)",
   )
   .option("--first-cut-planner", "Enable Rust timeline montage-plan/llm-plan first-cut planning")
   .option("--first-cut-planner-command <path>", "Path/name for the Rust timeline first-cut planner command")
@@ -283,6 +288,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     aiProjectEditMaxRepairAttempts: parseOptionalNonNegativeInteger(resolvedOptions.aiEditorRepairAttempts) ?? 1,
     feedbackTranscriber: services.botFeedbackTranscriber,
     transcribeVoiceIdeas: resolvedOptions.transcribeVoiceIdeas ?? false,
+    conciergeApproval: resolvedOptions.conciergeApproval ?? true,
     previewRenderer: createBotReviewPreviewRenderer(services.renderJob, resolvedOptions),
     publishService: services.publish,
     previewResponder: services.botStatus,
@@ -390,6 +396,10 @@ export function resolveBotWorkerCommandOptions(
       env.TIMELINE_BOT_FEEDBACK_TRANSCRIBER_LANGUAGE,
     ),
     transcribeVoiceIdeas: options.transcribeVoiceIdeas ?? parseBooleanEnv(env.TIMELINE_BOT_TRANSCRIBE_VOICE_IDEAS),
+    // Default ON (concierge). `--no-concierge-approval` sets options.conciergeApproval=false;
+    // otherwise the env can disable it, falling back to enabled.
+    conciergeApproval:
+      options.conciergeApproval === false ? false : (parseBooleanEnv(env.TIMELINE_BOT_CONCIERGE_APPROVAL) ?? true),
     firstCutPlanner: options.firstCutPlanner ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_PLANNER),
     firstCutPlannerCommand: firstConfigured(options.firstCutPlannerCommand, env.TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND),
     firstCutPlannerKind: firstConfigured(
