@@ -89,6 +89,57 @@ export const editRouter = router({
     }),
 
   /**
+   * Revise the caller's preview-ready session with a natural-language
+   * instruction, reusing the bot's applyReviewFeedback via a synthesized
+   * `/revise <instruction>`. Requires an AI project editor to be configured.
+   */
+  revise: protectedProcedure
+    .input(z.object({ id: z.string().min(1), instruction: z.string().trim().min(1).max(2000) }))
+    .mutation(async ({ ctx, input }) => {
+      const store = requireStore(ctx.editSessionStore)
+      if (!ctx.aiProjectEditor) {
+        throw new TRPCError({
+          code: "NOT_IMPLEMENTED",
+          message: "Revise is not enabled (GATEWAY_AI_EDITOR_API_KEY missing)",
+        })
+      }
+      const session = await store.readSession(input.id)
+      if (!session || session.userId !== ctx.auth.userId) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Session not found" })
+      }
+      if (session.status !== "preview_ready") {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `Session cannot be revised in its current state (${session.status})`,
+        })
+      }
+
+      const worker = new NodeTelegramBotWorker({
+        workflow: stubWorkflow,
+        editSessionStore: store,
+        aiProjectEditor: ctx.aiProjectEditor,
+      })
+      await worker.handleUpdate({
+        update_id: 0,
+        message: {
+          message_id: `gateway-revise-${input.id}`,
+          chat: { id: session.chatId ?? ctx.auth.userId },
+          from: { id: ctx.auth.userId },
+          text: `/revise ${input.instruction}`,
+        },
+      })
+
+      const updated = await store.readSession(input.id)
+      if (updated?.status === "preview_ready") {
+        return toSessionSummary(updated)
+      }
+      throw new TRPCError({
+        code: "BAD_GATEWAY",
+        message: `Revision failed: ${updated?.failure ?? `unexpected state ${updated?.status ?? "missing"}`}`,
+      })
+    }),
+
+  /**
    * Cancel (discard) the caller's review session, reusing the bot's
    * cancelEditSession via a synthesized `/cancel`. Idempotent on an
    * already-cancelled session; conflicts on a completed (done/failed) one.

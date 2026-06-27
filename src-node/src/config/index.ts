@@ -46,6 +46,12 @@ const ConfigSchema = z.object({
     .string()
     .optional()
     .transform((v) => v === "true" || v === "1"),
+  // Opt-in AI project editor for edit.revise (#329). Built only when an API key
+  // is present; otherwise edit.revise is disabled (no LLM calls from the gateway).
+  GATEWAY_AI_EDITOR_API_KEY: z.string().optional(),
+  GATEWAY_AI_EDITOR_API_URL: z.string().optional(),
+  GATEWAY_AI_EDITOR_PROVIDER: z.string().optional(),
+  GATEWAY_AI_EDITOR_MODEL: z.string().optional(),
 
   // Logging
   LOG_LEVEL: z

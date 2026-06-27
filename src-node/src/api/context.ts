@@ -1,5 +1,6 @@
-import type { BotEditSessionStore, IPublishService } from "@timeline-studio/core"
+import type { BotEditSessionStore, IAIProjectEditor, IPublishService } from "@timeline-studio/core"
 import {
+  NodeAIProjectEditor,
   NodeBotEditSessionFileStore,
   NodePublishService,
   NodeTelegramBotFileWorkflowJobStore,
@@ -34,6 +35,8 @@ export interface Context {
   renderStreamIntervalMs?: number
   /** Publish service for delivery on approve, when opted in (#329). */
   publishService?: IPublishService
+  /** AI project editor for edit.revise, when configured (#329). */
+  aiProjectEditor?: IAIProjectEditor
 }
 
 // Edit-session store is a process singleton over the bot's shared directory.
@@ -67,6 +70,22 @@ function getPublishService(): IPublishService | undefined {
     publishService = new NodePublishService({ telegram: { botToken: config.TELEGRAM_BOT_TOKEN } })
   }
   return publishService
+}
+
+// AI project editor is built only when an API key is configured (#329) —
+// otherwise edit.revise stays disabled and the gateway makes no LLM calls.
+let aiProjectEditor: IAIProjectEditor | undefined
+function getAIProjectEditor(): IAIProjectEditor | undefined {
+  if (!config.GATEWAY_AI_EDITOR_API_KEY) return undefined
+  if (!aiProjectEditor) {
+    aiProjectEditor = new NodeAIProjectEditor({
+      apiKey: config.GATEWAY_AI_EDITOR_API_KEY,
+      ...(config.GATEWAY_AI_EDITOR_API_URL ? { apiUrl: config.GATEWAY_AI_EDITOR_API_URL } : {}),
+      ...(config.GATEWAY_AI_EDITOR_PROVIDER ? { provider: config.GATEWAY_AI_EDITOR_PROVIDER } : {}),
+      ...(config.GATEWAY_AI_EDITOR_MODEL ? { model: config.GATEWAY_AI_EDITOR_MODEL } : {}),
+    })
+  }
+  return aiProjectEditor
 }
 
 type ContextServices = Pick<Context, "mediaService" | "cacheService" | "queueService">
@@ -119,5 +138,6 @@ export async function createContext(opts: CreateContextOptions = {}): Promise<Co
     workflowJobStore: getWorkflowJobStore(),
     renderStreamIntervalMs: config.TELEGRAM_RENDER_STREAM_INTERVAL_MS,
     publishService: getPublishService(),
+    aiProjectEditor: getAIProjectEditor(),
   }
 }

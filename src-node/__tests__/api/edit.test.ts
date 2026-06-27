@@ -11,6 +11,8 @@ import type {
   BotEditSessionQuery,
   BotEditSessionStatus,
 } from "@timeline-studio/core"
+import { createBotProjectSchemaFromRenderJob } from "@timeline-studio/core"
+import { MockAIProjectEditor } from "@timeline-studio/adapters/mock"
 import { appRouter } from "../../src/api/root"
 import type { Context } from "../../src/api/context"
 import { createLogger } from "../../src/utils/logger"
@@ -180,6 +182,41 @@ describe("Gateway edit router (#329)", () => {
       editSessionStore: mutableStore([makeSession("s1", "42", "preview_ready")]),
     } as Context)
     await expect(caller.edit.approve({ id: "s1" })).rejects.toMatchObject({ code: "UNAUTHORIZED" })
+  })
+
+  test("edit.revise applies an instruction and keeps the session preview-ready", async () => {
+    const project = createBotProjectSchemaFromRenderJob({
+      source: "bot",
+      media: [{ type: "file", value: "/tmp/in.mp4", name: "in.mp4" }],
+      output: { format: "mp4", destination: "telegram" },
+    })
+    const session: BotEditSession = {
+      ...makeSession("r1", "42", "preview_ready"),
+      currentProjectSchema: project,
+    }
+    const store = mutableStore([session])
+    const ctx = { ...ctxFor(42, store), aiProjectEditor: new MockAIProjectEditor() } as Context
+    const caller = appRouter.createCaller(ctx)
+
+    const result = await caller.edit.revise({ id: "r1", instruction: "make it punchier" })
+
+    expect(result.status).toBe("preview_ready")
+    expect((await store.readSession("r1"))?.revisions.length).toBeGreaterThan(1)
+  })
+
+  test("edit.revise is disabled without an AI editor (501)", async () => {
+    const store = mutableStore([makeSession("r2", "42", "preview_ready")])
+    const caller = appRouter.createCaller(ctxFor(42, store))
+    await expect(caller.edit.revise({ id: "r2", instruction: "x" })).rejects.toMatchObject({
+      code: "NOT_IMPLEMENTED",
+    })
+  })
+
+  test("edit.revise conflicts when the session is not preview-ready", async () => {
+    const store = mutableStore([makeSession("r3", "42", "approved")])
+    const ctx = { ...ctxFor(42, store), aiProjectEditor: new MockAIProjectEditor() } as Context
+    const caller = appRouter.createCaller(ctx)
+    await expect(caller.edit.revise({ id: "r3", instruction: "x" })).rejects.toMatchObject({ code: "CONFLICT" })
   })
 
   test("edit.cancel cancels an active session", async () => {
