@@ -410,16 +410,9 @@ impl<'a> SubtitleBuilder<'a> {
       .replace("\n", "\\n")
   }
 
-  /// Получить путь к шрифту
+  /// Получить путь к шрифту (кросс-платформенно: Linux/macOS/Windows + env-override, #374).
   fn get_font_path(&self, font_family: &str) -> String {
-    // Здесь можно добавить логику поиска системных шрифтов
-    // Пока используем дефолтный путь
-    match font_family {
-      "Arial" => "/System/Library/Fonts/Helvetica.ttc".to_string(),
-      "Times New Roman" => "/System/Library/Fonts/Times.ttc".to_string(),
-      "Courier New" => "/System/Library/Fonts/Courier.ttc".to_string(),
-      _ => "/System/Library/Fonts/Helvetica.ttc".to_string(), // Default
-    }
+    super::fonts::resolve_font_path(font_family)
   }
 
   /// Вычислить позицию субтитра
@@ -777,20 +770,28 @@ mod tests {
 
   #[test]
   fn test_get_font_path() {
+    // Кросс-платформенно (#374): не привязываемся к macOS-путям — проверяем форму.
     let project = create_minimal_project();
     let builder = SubtitleBuilder::new(&project);
 
-    let arial_path = builder.get_font_path("Arial");
-    assert!(arial_path.contains("Helvetica"));
+    for family in ["Arial", "Times New Roman", "Courier New", "Unknown Font"] {
+      let path = builder.get_font_path(family);
+      assert!(!path.is_empty(), "empty font path for {family}");
+      assert!(
+        path.ends_with(".ttf") || path.ends_with(".ttc") || path.ends_with(".otf"),
+        "unexpected font file for {family}: {path}"
+      );
+      assert!(
+        path.starts_with('/') || path.contains('\\'),
+        "font path not absolute for {family}: {path}"
+      );
+    }
 
-    let times_path = builder.get_font_path("Times New Roman");
-    assert!(times_path.contains("Times"));
-
-    let courier_path = builder.get_font_path("Courier New");
-    assert!(courier_path.contains("Courier"));
-
-    let unknown_path = builder.get_font_path("Unknown Font");
-    assert!(unknown_path.contains("Helvetica")); // Should fallback to default
+    // Неизвестное семейство откатывается на тот же дефолт, что и sans-serif.
+    assert_eq!(
+      builder.get_font_path("Unknown Font"),
+      builder.get_font_path("Arial")
+    );
   }
 
   #[test]

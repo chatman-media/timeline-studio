@@ -59,9 +59,15 @@ RUN cd crates && cargo build --release -p ts-cli
 FROM debian:bookworm-slim AS runtime
 
 # ffmpeg runtime + сертификаты для HTTPS (Telegram API + model download)
+# Шрифты (#374): нужны для прожига субтитров через drawtext на headless Linux.
+#   - fonts-liberation — метрически совместимы с Arial/Times/Courier (наши логические семейства)
+#   - fonts-dejavu-core — широкий fallback (юникод/кириллица)
+# Резолвер ts-render находит их в /usr/share/fonts/truetype/{liberation,dejavu}.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     ca-certificates \
+    fonts-liberation \
+    fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
 # ONNX Runtime shared lib
