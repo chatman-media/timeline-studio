@@ -1,3 +1,10 @@
+# [3.97.0](https://github.com/chatman-media/timeline-studio/compare/v3.96.0...v3.97.0) (2026-06-27)
+
+
+### Features
+
+* **gateway:** tRPC auth layer over Telegram initData ([#329](https://github.com/chatman-media/timeline-studio/issues/329)) ([#382](https://github.com/chatman-media/timeline-studio/issues/382)) ([dd66784](https://github.com/chatman-media/timeline-studio/commit/dd66784873a32a4c665898b8699447c3c9853526)), closes [#381](https://github.com/chatman-media/timeline-studio/issues/381)
+
 # [3.96.0](https://github.com/chatman-media/timeline-studio/compare/v3.95.0...v3.96.0) (2026-06-27)
 
 
