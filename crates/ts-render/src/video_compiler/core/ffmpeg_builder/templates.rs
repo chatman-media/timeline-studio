@@ -624,16 +624,9 @@ impl<'a> TemplateBuilder<'a> {
     Ok(String::new())
   }
 
-  /// Получить системный шрифт
+  /// Получить системный шрифт (кросс-платформенно: Linux/macOS/Windows + env-override, #374).
   fn get_system_font(&self, font_name: &str) -> String {
-    // Здесь должна быть логика поиска системных шрифтов
-    // Пока используем захардкоженные пути для macOS
-    match font_name {
-      "Arial" => "/System/Library/Fonts/Helvetica.ttc".to_string(),
-      "Times New Roman" => "/System/Library/Fonts/Times.ttc".to_string(),
-      "Courier New" => "/System/Library/Fonts/Courier.ttc".to_string(),
-      _ => "/System/Library/Fonts/Helvetica.ttc".to_string(),
-    }
+    super::fonts::resolve_font_path(font_name)
   }
 
   /// Найти шаблон по ID
@@ -703,22 +696,24 @@ mod tests {
 
   #[test]
   fn test_get_system_font() {
+    // Кросс-платформенно (#374): проверяем форму пути, не привязку к macOS.
     let project = create_minimal_project();
     let builder = TemplateBuilder::new(&project);
 
-    // Тестируем получение системных шрифтов
-    let arial_path = builder.get_system_font("Arial");
-    assert!(arial_path.contains("Helvetica") || arial_path.contains("Arial"));
+    for family in ["Arial", "Times New Roman", "Courier New", "Unknown Font"] {
+      let path = builder.get_system_font(family);
+      assert!(!path.is_empty(), "empty font path for {family}");
+      assert!(
+        path.ends_with(".ttf") || path.ends_with(".ttc") || path.ends_with(".otf"),
+        "unexpected font file for {family}: {path}"
+      );
+    }
 
-    let times_path = builder.get_system_font("Times New Roman");
-    assert!(times_path.contains("Times") || times_path.contains("Helvetica"));
-
-    let courier_path = builder.get_system_font("Courier New");
-    assert!(courier_path.contains("Courier") || courier_path.contains("Helvetica"));
-
-    // Неизвестный шрифт должен вернуть дефолтный
-    let unknown_path = builder.get_system_font("Unknown Font");
-    assert!(unknown_path.contains("Helvetica"));
+    // Неизвестный шрифт откатывается на дефолтный sans-serif.
+    assert_eq!(
+      builder.get_system_font("Unknown Font"),
+      builder.get_system_font("Arial")
+    );
   }
 
   #[tokio::test]

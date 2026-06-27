@@ -14,6 +14,7 @@ pub mod advanced;
 pub mod builder;
 pub mod effects;
 pub mod filters;
+pub mod fonts;
 pub mod inputs;
 pub mod outputs;
 pub mod subtitles;
