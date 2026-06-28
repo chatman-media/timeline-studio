@@ -9,6 +9,9 @@ export default defineConfig({
   // root's Next.js postcss.config.mjs, whose plugins aren't vite-compatible.
   css: { postcss: {} },
   server: {
+    // Allow any host so an HTTPS tunnel (cloudflared/ngrok) to Telegram works —
+    // the tunnel subdomain is dynamic. Dev-only server.
+    allowedHosts: true,
     proxy: {
       "/trpc": {
         target: process.env.GATEWAY_ORIGIN ?? "http://localhost:3001",
