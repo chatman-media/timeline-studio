@@ -493,7 +493,7 @@ export const analysisTaskBridge: AnalysisTaskBridge = new Proxy({} as AnalysisTa
   },
   set(_target, prop, value) {
     analysisTaskBridgeInstance ??= AnalysisTaskBridge.getInstance()
-    ;(analysisTaskBridgeInstance as Record<string | symbol, unknown>)[prop] = value
+    ;(analysisTaskBridgeInstance as unknown as Record<string | symbol, unknown>)[prop] = value
     return true
   },
 })
