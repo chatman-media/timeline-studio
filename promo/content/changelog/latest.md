@@ -1,3 +1,10 @@
+## [3.107.2](https://github.com/chatman-media/timeline-studio/compare/v3.107.1...v3.107.2) (2026-06-28)
+
+
+### Bug Fixes
+
+* **preview:** browser/preview-mode fixes + warning cleanups + regen bindings ([#397](https://github.com/chatman-media/timeline-studio/issues/397)) ([e9ca08a](https://github.com/chatman-media/timeline-studio/commit/e9ca08ad67291eaac6627e9141b7f79f5eaacf3b))
+
 ## [3.107.1](https://github.com/chatman-media/timeline-studio/compare/v3.107.0...v3.107.1) (2026-06-28)
 
 
