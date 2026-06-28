@@ -9,6 +9,7 @@ import { authRouter } from "./routers/auth"
 import { sessionRouter } from "./routers/session"
 import { renderRouter } from "./routers/render"
 import { editRouter } from "./routers/edit"
+import { ideaRouter } from "./routers/idea"
 
 /**
  * Main tRPC app router
@@ -24,6 +25,7 @@ export const appRouter = router({
   session: sessionRouter,
   render: renderRouter,
   edit: editRouter,
+  idea: ideaRouter,
 })
 
 /**
