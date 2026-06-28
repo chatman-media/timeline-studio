@@ -475,5 +475,25 @@ export class AnalysisTaskBridge {
   }
 }
 
-// Export singleton instance
-export const analysisTaskBridge = AnalysisTaskBridge.getInstance()
+// Export singleton instance (ЛЕНИВО).
+// Раньше инстанс создавался прямо на этапе загрузки модуля, а его конструктор в
+// setupEventListeners() сразу обращается к прокси-биндингам (eventBus / DOMAIN_EVENTS),
+// которые регистрируются позже — в MontagePlannerBindingsBootstrapProvider при рендере.
+// Поскольку этот модуль импортируется из barrel'а montage-planner ещё на этапе загрузки
+// (top-bar → montage-planner), доступ к биндингам происходил до их регистрации и валил
+// весь импорт ошибкой `binding "..." is not registered`. Ленивый прокси откладывает
+// создание инстанса (и подписку на события) до первого реального обращения в runtime,
+// когда биндинги уже зарегистрированы.
+let analysisTaskBridgeInstance: AnalysisTaskBridge | null = null
+export const analysisTaskBridge: AnalysisTaskBridge = new Proxy({} as AnalysisTaskBridge, {
+  get(_target, prop, receiver) {
+    analysisTaskBridgeInstance ??= AnalysisTaskBridge.getInstance()
+    const value = Reflect.get(analysisTaskBridgeInstance as object, prop, receiver)
+    return typeof value === "function" ? value.bind(analysisTaskBridgeInstance) : value
+  },
+  set(_target, prop, value) {
+    analysisTaskBridgeInstance ??= AnalysisTaskBridge.getInstance()
+    ;(analysisTaskBridgeInstance as unknown as Record<string | symbol, unknown>)[prop] = value
+    return true
+  },
+})

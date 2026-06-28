@@ -303,6 +303,7 @@ impl ModelsConfig {
   }
 
   /// Получить путь к FaceNet модели по типу
+  #[allow(dead_code)]
   pub fn get_facenet_model_path(&self, model_type: &str) -> Option<&PathBuf> {
     match model_type {
       "facenet-512d" => Some(&self.facenet_models.facenet_512d),
@@ -313,6 +314,7 @@ impl ModelsConfig {
   }
 
   /// Получить путь к RetinaFace модели по типу
+  #[allow(dead_code)]
   pub fn get_retinaface_model_path(&self, model_type: &str) -> Option<&PathBuf> {
     match model_type {
       "retinaface-r50" | "retinaface-resnet50" => Some(&self.retinaface_models.retinaface_r50),
@@ -327,6 +329,7 @@ impl ModelsConfig {
   }
 
   /// Получить путь к MediaPipe модели по типу
+  #[allow(dead_code)]
   pub fn get_mediapipe_model_path(&self, model_type: &str) -> Option<&PathBuf> {
     match model_type {
       "blazeface-short" | "blazeface_short" => Some(&self.mediapipe_models.blazeface_short),
@@ -371,7 +374,7 @@ pub fn initialize_models_config(app_dir: PathBuf) -> Result<(), String> {
 }
 
 /// Получить глобальную конфигурацию моделей
-#[allow(static_mut_refs)]
+#[allow(static_mut_refs, dead_code)]
 pub fn get_models_config() -> Result<&'static ModelsConfig, String> {
   unsafe {
     GLOBAL_MODELS_CONFIG
