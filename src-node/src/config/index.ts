@@ -53,6 +53,21 @@ const ConfigSchema = z.object({
   GATEWAY_AI_EDITOR_PROVIDER: z.string().optional(),
   GATEWAY_AI_EDITOR_MODEL: z.string().optional(),
 
+  // Opt-in LLM script/storyboard generator for idea.submit (#330): turns a fresh
+  // idea into a first-cut workflow. Built only when an API key is present;
+  // otherwise idea.submit is disabled (the gateway runs no workflows).
+  GATEWAY_SCRIPT_GENERATOR_API_KEY: z.string().optional(),
+  GATEWAY_SCRIPT_GENERATOR_API_URL: z.string().optional(),
+  GATEWAY_SCRIPT_GENERATOR_PROVIDER: z.string().optional(),
+  GATEWAY_SCRIPT_GENERATOR_MODEL: z.string().optional(),
+  // Use the Rust headless renderer for gateway-run first cuts (else ffmpeg CLI).
+  GATEWAY_RUST_RENDER: z
+    .string()
+    .optional()
+    .transform((v) => v === "true" || v === "1"),
+  // Concurrency for the gateway's in-process workflow queue (idea.submit).
+  GATEWAY_WORKFLOW_CONCURRENCY: z.coerce.number().int().min(1).default(1),
+
   // Logging
   LOG_LEVEL: z
     .enum(["trace", "debug", "info", "warn", "error"])

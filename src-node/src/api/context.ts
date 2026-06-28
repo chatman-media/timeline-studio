@@ -1,10 +1,14 @@
 import type { BotEditSessionStore, IAIProjectEditor, IPublishService } from "@timeline-studio/core"
 import {
+  createNodeServices,
   NodeAIProjectEditor,
   NodeBotEditSessionFileStore,
+  type NodeBotWorkflowService,
   NodePublishService,
   NodeTelegramBotFileWorkflowJobStore,
+  NodeTelegramBotInMemoryWorkflowQueue,
   type NodeTelegramBotWorkflowJobStore,
+  type NodeTelegramBotWorkflowQueue,
 } from "@timeline-studio/adapters/node"
 import type { EnhancedMediaService } from "../services/media-service"
 import type { CacheService } from "../services/cache-service"
@@ -37,6 +41,10 @@ export interface Context {
   publishService?: IPublishService
   /** AI project editor for edit.revise, when configured (#329). */
   aiProjectEditor?: IAIProjectEditor
+  /** Bot workflow runner for idea.submit (first cut), when configured (#330). */
+  botWorkflow?: NodeBotWorkflowService
+  /** In-process queue so idea.submit returns fast and renders async (#330). */
+  workflowQueue?: NodeTelegramBotWorkflowQueue
 }
 
 // Edit-session store is a process singleton over the bot's shared directory.
@@ -86,6 +94,41 @@ function getAIProjectEditor(): IAIProjectEditor | undefined {
     })
   }
   return aiProjectEditor
+}
+
+// Bot workflow runner is built only when a script-generator API key is present
+// (#330). It pulls in the full node service stack (video/render/first-cut) via
+// createNodeServices; lazy + gated so the gateway stays thin unless opted in.
+let botWorkflow: NodeBotWorkflowService | undefined
+let botWorkflowResolved = false
+function getBotWorkflow(): NodeBotWorkflowService | undefined {
+  if (botWorkflowResolved) return botWorkflow
+  botWorkflowResolved = true
+  if (!config.GATEWAY_SCRIPT_GENERATOR_API_KEY) return undefined
+  botWorkflow = createNodeServices({
+    botScriptGenerator: {
+      apiKey: config.GATEWAY_SCRIPT_GENERATOR_API_KEY,
+      ...(config.GATEWAY_SCRIPT_GENERATOR_API_URL ? { apiUrl: config.GATEWAY_SCRIPT_GENERATOR_API_URL } : {}),
+      ...(config.GATEWAY_SCRIPT_GENERATOR_PROVIDER ? { provider: config.GATEWAY_SCRIPT_GENERATOR_PROVIDER } : {}),
+      ...(config.GATEWAY_SCRIPT_GENERATOR_MODEL ? { model: config.GATEWAY_SCRIPT_GENERATOR_MODEL } : {}),
+    },
+    rustRender: config.GATEWAY_RUST_RENDER,
+    video: { ffmpegPath: config.FFMPEG_PATH, ffprobePath: config.FFPROBE_PATH },
+  }).botWorkflow
+  return botWorkflow
+}
+
+// In-process workflow queue so idea.submit enqueues and returns immediately,
+// rendering the first cut in the background. Only built alongside the workflow.
+let workflowQueue: NodeTelegramBotWorkflowQueue | undefined
+function getWorkflowQueue(): NodeTelegramBotWorkflowQueue | undefined {
+  if (!getBotWorkflow()) return undefined
+  if (!workflowQueue) {
+    workflowQueue = new NodeTelegramBotInMemoryWorkflowQueue({
+      concurrency: config.GATEWAY_WORKFLOW_CONCURRENCY,
+    })
+  }
+  return workflowQueue
 }
 
 type ContextServices = Pick<Context, "mediaService" | "cacheService" | "queueService">
@@ -149,5 +192,7 @@ export async function createContext(opts: CreateContextOptions = {}): Promise<Co
     renderStreamIntervalMs: config.TELEGRAM_RENDER_STREAM_INTERVAL_MS,
     publishService: getPublishService(),
     aiProjectEditor: getAIProjectEditor(),
+    botWorkflow: getBotWorkflow(),
+    workflowQueue: getWorkflowQueue(),
   }
 }
