@@ -16,6 +16,7 @@ const isTauri = () => {
 if (typeof window !== "undefined" && !(window as any).__TAURI_INTERNALS__) {
   const stubCallbacks = new Map<number, (data: any) => void>()
   ;(window as any).__TAURI_INTERNALS__ = {
+    __isMock: true,
     transformCallback: (cb: any) => {
       const id = Math.floor(Math.random() * 0xffffffff)
       stubCallbacks.set(id, cb)
@@ -63,6 +64,15 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
           },
         })
       }
+
+      // В реальном Tauri-webview __TAURI_INTERNALS__ — настоящий и доступен только для чтения.
+      // Мок нужен лишь в браузере/preview, где наш синхронный stub помечен флагом __isMock.
+      // Если internals настоящие (без флага) — выходим: иначе (1) краш "assign to readonly
+      // property" ниже и (2) подмена invoke сломала бы реальные команды к Rust-бэкенду.
+      if (isTauri() && !(window as any).__TAURI_INTERNALS__?.__isMock) {
+        return
+      }
+
       // Track if temp project has been created
       let tempProjectCreated = false
 
@@ -120,6 +130,7 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
       ;(window as any).__TAURI_EVENT_PLUGIN_INTERNALS__.unregisterListener = unregisterListener
 
       ;(window as any).__TAURI_INTERNALS__ = {
+        __isMock: true,
         transformCallback: registerCallback,
         unregisterCallback,
         callbacks,
