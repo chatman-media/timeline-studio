@@ -1,3 +1,10 @@
+## [3.107.1](https://github.com/chatman-media/timeline-studio/compare/v3.107.0...v3.107.1) (2026-06-28)
+
+
+### Bug Fixes
+
+* **mini-app:** scope PostCSS so vite build succeeds ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#395](https://github.com/chatman-media/timeline-studio/issues/395)) ([8dfd5ac](https://github.com/chatman-media/timeline-studio/commit/8dfd5ac1f86236dd73396625a705dd533d99969a))
+
 # [3.107.0](https://github.com/chatman-media/timeline-studio/compare/v3.106.0...v3.107.0) (2026-06-27)
 
 
