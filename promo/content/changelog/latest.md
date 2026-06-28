@@ -1,3 +1,10 @@
+# [3.110.0](https://github.com/chatman-media/timeline-studio/compare/v3.109.0...v3.110.0) (2026-06-28)
+
+
+### Features
+
+* **gateway:** idea.submit starts a first-cut workflow from the Mini App ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#400](https://github.com/chatman-media/timeline-studio/issues/400)) ([42cac74](https://github.com/chatman-media/timeline-studio/commit/42cac748895049ec72a8159bd74403a2ef9b7700))
+
 # [3.109.0](https://github.com/chatman-media/timeline-studio/compare/v3.108.0...v3.109.0) (2026-06-28)
 
 
