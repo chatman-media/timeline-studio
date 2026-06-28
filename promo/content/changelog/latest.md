@@ -1,3 +1,10 @@
+# [3.109.0](https://github.com/chatman-media/timeline-studio/compare/v3.108.0...v3.109.0) (2026-06-28)
+
+
+### Features
+
+* **mini-app:** native MainButton for Approve on detail screen ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#399](https://github.com/chatman-media/timeline-studio/issues/399)) ([2d0aa73](https://github.com/chatman-media/timeline-studio/commit/2d0aa732e3cee2b029e916573d2e8929a8fd4ada))
+
 # [3.108.0](https://github.com/chatman-media/timeline-studio/compare/v3.107.2...v3.108.0) (2026-06-28)
 
 
