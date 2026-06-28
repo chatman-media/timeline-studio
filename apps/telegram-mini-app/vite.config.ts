@@ -5,6 +5,9 @@ import react from "@vitejs/plugin-react"
 // API share an origin (matching production where they sit behind one host).
 export default defineConfig({
   plugins: [react()],
+  // Use an inline (empty) PostCSS config so vite doesn't walk up to the repo
+  // root's Next.js postcss.config.mjs, whose plugins aren't vite-compatible.
+  css: { postcss: {} },
   server: {
     proxy: {
       "/trpc": {
