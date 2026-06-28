@@ -1,3 +1,10 @@
+# [3.108.0](https://github.com/chatman-media/timeline-studio/compare/v3.107.2...v3.108.0) (2026-06-28)
+
+
+### Features
+
+* **mini-app:** session detail screen with BackButton + haptics ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#398](https://github.com/chatman-media/timeline-studio/issues/398)) ([d9c2e6f](https://github.com/chatman-media/timeline-studio/commit/d9c2e6ffcce6624e0fa38e450693a4f13d61f571))
+
 ## [3.107.2](https://github.com/chatman-media/timeline-studio/compare/v3.107.1...v3.107.2) (2026-06-28)
 
 
