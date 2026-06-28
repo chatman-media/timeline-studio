@@ -47,6 +47,48 @@ body {
   gap: 8px;
 }
 
+.session-open {
+  width: 100%;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.session-open .chevron {
+  margin-left: auto;
+  opacity: 0.4;
+  font-size: 20px;
+}
+
+.detail h2 {
+  margin: 8px 0 12px;
+}
+
+.detail .meta {
+  margin: 0 0 16px;
+  display: grid;
+  gap: 8px;
+}
+
+.detail .meta > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail .meta dt {
+  color: var(--tg-theme-hint-color, #888888);
+}
+
+.detail .meta dd {
+  margin: 0;
+  text-align: right;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
