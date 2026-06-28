@@ -434,6 +434,83 @@ describe("Telegram bot worker", () => {
     expect(workflowOptions?.approvalGate).toBeUndefined()
   })
 
+  // A gated workflow result that flows through upsertReviewEditSessionFromWorkflowResult
+  // to create a preview-ready session (#334 auto-approve fixture).
+  type RunWarning = { code: string; field?: string; message: string; userMessage?: string }
+  const gatedPreviewResult = (warnings: RunWarning[] = []): BotWorkflowRunResult => ({
+    ok: true,
+    workflow: { source: "telegram", chatId: "chat-1", userId: "user-1", messageId: "idea-auto" },
+    renderJob: {
+      source: "bot",
+      output: { format: "mp4", destination: "file" },
+      project: { type: "inline", schema: createProjectSchema() },
+    },
+    result: {
+      job: {
+        id: "job-auto-1",
+        status: "done",
+        progress: 1,
+        request: { source: "bot", output: { format: "mp4" } },
+        artifact: { type: "file", path: "/tmp/auto.mp4", destination: "file", mimeType: "video/mp4" },
+        createdAt: "2026-06-08T08:00:00.000Z",
+        updatedAt: "2026-06-08T08:00:01.000Z",
+        events: [],
+      },
+      events: [],
+    },
+    warnings,
+    approvalGate: { enabled: true, previewDestination: "telegram", publishTarget: "telegram" },
+  })
+
+  it("bypasses the approval gate under the 'never' policy (#334)", async () => {
+    const { store } = createEditSessionStore()
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store, approvalPolicy: "never" })
+
+    await worker.handleUpdate(ideaTextUpdate(34))
+
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0] as unknown as [unknown, { approvalGate?: unknown } | undefined]
+    expect(workflowOptions?.approvalGate).toBeUndefined()
+  })
+
+  it("gates under the 'auto' policy (#334)", async () => {
+    const { store } = createEditSessionStore()
+    const { service, runTelegramLikePayload } = createWorkflowService()
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store, approvalPolicy: "auto" })
+
+    await worker.handleUpdate(ideaTextUpdate(35))
+
+    const [, workflowOptions] = runTelegramLikePayload.mock.calls[0] as unknown as [unknown, { approvalGate?: { enabled?: boolean } } | undefined]
+    expect(workflowOptions?.approvalGate).toMatchObject({ enabled: true })
+  })
+
+  it("auto-approves a warning-free first cut under the 'auto' policy (#334)", async () => {
+    const { store, records } = createEditSessionStore()
+    const { service } = createWorkflowService(gatedPreviewResult([]))
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store, approvalPolicy: "auto" })
+
+    await worker.handleUpdate(ideaTextUpdate(36))
+
+    const session = records.get("edit:telegram:chat-1:user-1")
+    expect(session?.status).toBe("approved")
+    expect(session?.approvedBy).toBe("user-1")
+  })
+
+  it("leaves a warning'd first cut for manual approval under the 'auto' policy (#334)", async () => {
+    const { store, records } = createEditSessionStore()
+    const warned = gatedPreviewResult([
+      { code: "quality_warning", field: "render", message: "low confidence", userMessage: "Please review." },
+    ])
+    const { service } = createWorkflowService(warned)
+    const worker = new NodeTelegramBotWorker({ workflow: service, editSessionStore: store, approvalPolicy: "auto" })
+
+    await worker.handleUpdate(ideaTextUpdate(37))
+
+    const session = records.get("edit:telegram:chat-1:user-1")
+    expect(session?.status).toBe("preview_ready")
+    expect(session?.approvedBy).toBeUndefined()
+  })
+
   it("records the approving operator in the edit session (#325)", async () => {
     const session = createReviewSession({ status: "preview_ready" })
     const { store, records } = createEditSessionStore([session])

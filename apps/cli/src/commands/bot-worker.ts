@@ -31,6 +31,7 @@ import {
 } from "@timeline-studio/adapters/node"
 import type { BotFeedbackTranscriptionProvider } from "@timeline-studio/core/ports"
 import type {
+  BotApprovalPolicy,
   BotRenderJobDestination,
   BotWorkflowRunResult,
   BotWorkflowStatusOptions,
@@ -82,6 +83,7 @@ export interface BotWorkerCommandOptions {
   feedbackTranscriberLanguage?: string
   transcribeVoiceIdeas?: boolean
   conciergeApproval?: boolean
+  approvalPolicy?: BotApprovalPolicy
   firstCutPlanner?: boolean
   firstCutPlannerCommand?: string
   firstCutPlannerKind?: NodeRustFirstCutPlannerKind
@@ -167,6 +169,10 @@ export const botWorkerCommand = new Command("bot-worker")
   .option(
     "--no-concierge-approval",
     "Disable the operator manual-approval gate and auto-deliver results (default: approval required)",
+  )
+  .option(
+    "--approval-policy <policy>",
+    "Concierge approval policy: always (manual), never (self-serve), or auto (auto-approve clean first cuts)",
   )
   .option("--first-cut-planner", "Enable Rust timeline montage-plan/llm-plan first-cut planning")
   .option("--first-cut-planner-command <path>", "Path/name for the Rust timeline first-cut planner command")
@@ -289,6 +295,7 @@ export async function runBotWorker(options: BotWorkerCommandOptions = {}): Promi
     feedbackTranscriber: services.botFeedbackTranscriber,
     transcribeVoiceIdeas: resolvedOptions.transcribeVoiceIdeas ?? false,
     conciergeApproval: resolvedOptions.conciergeApproval ?? true,
+    ...(resolvedOptions.approvalPolicy ? { approvalPolicy: resolvedOptions.approvalPolicy } : {}),
     previewRenderer: createBotReviewPreviewRenderer(services.renderJob, resolvedOptions),
     publishService: services.publish,
     previewResponder: services.botStatus,
@@ -400,6 +407,7 @@ export function resolveBotWorkerCommandOptions(
     // otherwise the env can disable it, falling back to enabled.
     conciergeApproval:
       options.conciergeApproval === false ? false : (parseBooleanEnv(env.TIMELINE_BOT_CONCIERGE_APPROVAL) ?? true),
+    approvalPolicy: normalizeApprovalPolicy(firstConfigured(options.approvalPolicy, env.TIMELINE_BOT_APPROVAL_POLICY)),
     firstCutPlanner: options.firstCutPlanner ?? parseBooleanEnv(env.TIMELINE_BOT_FIRST_CUT_PLANNER),
     firstCutPlannerCommand: firstConfigured(options.firstCutPlannerCommand, env.TIMELINE_BOT_FIRST_CUT_PLANNER_COMMAND),
     firstCutPlannerKind: firstConfigured(
@@ -874,6 +882,17 @@ function normalizeFeedbackTranscriberProvider(value: string | undefined): BotFee
     case "local":
     case "faster-whisper":
       return value.trim() as BotFeedbackTranscriptionProvider
+    default:
+      return undefined
+  }
+}
+
+function normalizeApprovalPolicy(value: string | undefined): BotApprovalPolicy | undefined {
+  switch (value?.trim()) {
+    case "always":
+    case "never":
+    case "auto":
+      return value.trim() as BotApprovalPolicy
     default:
       return undefined
   }

@@ -12,7 +12,9 @@ import {
   runAIProjectEdit,
   validateBotDestinationCapability,
 } from "@timeline-studio/core/services"
+import { resolveBotApprovalDecision } from "@timeline-studio/core/types"
 import type {
+  BotApprovalPolicy,
   BotEditRevision,
   BotEditSession,
   BotEditSessionStore,
@@ -136,8 +138,18 @@ export interface NodeTelegramBotWorkerOptions {
    * operator `/approve` before delivery/publish — a human in the loop. Set to
    * `false` to bypass the gate and auto-deliver (self-serve mode), while keeping
    * the edit-session store for other features.
+   *
+   * Superseded by {@link approvalPolicy} when set; kept for back-compat
+   * (`true` → `"always"`, `false` → `"never"`).
    */
   conciergeApproval?: boolean
+  /**
+   * Concierge approval policy (#334). Generalizes {@link conciergeApproval}:
+   * `"always"` (manual `/approve`), `"never"` (self-serve auto-deliver), or
+   * `"auto"` (gate + auto-approve when the first cut renders warning-free, else
+   * manual). When unset, falls back to {@link conciergeApproval}.
+   */
+  approvalPolicy?: BotApprovalPolicy
   publishService?: IPublishService
   previewRenderer?: NodeTelegramBotReviewPreviewRenderer
   previewResponder?: NodeTelegramBotReviewPreviewResponder
@@ -783,12 +795,21 @@ export class NodeTelegramBotWorker {
     return this.options.now?.() ?? new Date().toISOString()
   }
 
+  /**
+   * Effective approval policy (#334): `approvalPolicy` wins; otherwise derive
+   * from the legacy {@link conciergeApproval} boolean (`false` → self-serve).
+   */
+  private resolveApprovalPolicy(): BotApprovalPolicy {
+    if (this.options.approvalPolicy) return this.options.approvalPolicy
+    return this.options.conciergeApproval === false ? "never" : "always"
+  }
+
   private withReviewApprovalGate(
     options: NodeBotWorkflowServiceOptions | undefined,
   ): NodeBotWorkflowServiceOptions | undefined {
     if (!this.options.editSessionStore) return options
-    // Concierge toggle (#325): bypass the gate for auto-delivery when disabled.
-    if (this.options.conciergeApproval === false) return options
+    // Policy (#334/#325): bypass the gate for auto-delivery in self-serve mode.
+    if (!resolveBotApprovalDecision(this.resolveApprovalPolicy(), 0).gateEnabled) return options
     const gatedOptions = mergeWorkflowOptions(options, {
       approvalGate: {
         enabled: true,
@@ -2078,6 +2099,32 @@ export class NodeTelegramBotWorker {
     })
 
     await store.writeSession(session)
+
+    // Policy "auto" (#334): when the first cut renders warning-free, approve it
+    // immediately instead of waiting for a manual /approve.
+    if (resolveBotApprovalDecision(this.resolveApprovalPolicy(), workflowResult.warnings.length).autoApprove) {
+      await this.autoApprovePreview(session, workflowResult.workflow)
+    }
+  }
+
+  /**
+   * Auto-approve a just-created preview session by replaying a synthesized
+   * `/approve` through the normal review path — identical semantics to an
+   * operator approval (records the decision, delivers when a publish service is
+   * configured). No-op without a chat to attribute the approval to.
+   */
+  private async autoApprovePreview(session: BotEditSession, workflow: BotWorkflowRequest): Promise<void> {
+    const chatId = session.chatId ?? workflow.chatId
+    if (chatId === undefined) return
+    await this.handleUpdate({
+      update_id: 0,
+      message: {
+        message_id: `auto-approve-${session.id}`,
+        chat: { id: chatId },
+        ...(workflow.userId ? { from: { id: workflow.userId } } : {}),
+        text: "/approve",
+      },
+    })
   }
 
   private async sendDraftResponse(draftId: string, payload: TelegramLikeBotPayload, text: string): Promise<void> {
