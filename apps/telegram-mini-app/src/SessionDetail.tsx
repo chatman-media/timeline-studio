@@ -1,7 +1,7 @@
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useEffect, useState } from "react"
 import { gateway } from "./gateway"
 import type { SessionSummary } from "./SessionRow"
-import { haptics } from "./telegram"
+import { getWebApp, haptics, setMainButtonBusy, showMainButton } from "./telegram"
 
 /**
  * Session detail screen (#330): the full review session plus concierge actions
@@ -14,6 +14,9 @@ export function SessionDetail({ session, onChanged }: { session: SessionSummary;
   const [instruction, setInstruction] = useState("")
 
   const canAct = session.status === "preview_ready"
+  // In Telegram, "Approve" is the native MainButton; show an in-screen button
+  // only as a fallback where MainButton is unavailable (e.g. browser dev).
+  const hasMainButton = Boolean(getWebApp()?.MainButton)
 
   async function run(action: () => Promise<unknown>): Promise<void> {
     setBusy(true)
@@ -29,6 +32,17 @@ export function SessionDetail({ session, onChanged }: { session: SessionSummary;
       setBusy(false)
     }
   }
+
+  // The native MainButton mirrors the primary "Approve" action while preview-ready.
+  useEffect(() => {
+    if (!canAct) return
+    return showMainButton("Approve ✓", () => run(() => gateway.edit.approve.mutate({ id: session.id })))
+  }, [canAct, session.id])
+
+  // Reflect in-flight state on the MainButton spinner.
+  useEffect(() => {
+    setMainButtonBusy(busy)
+  }, [busy])
 
   function onRevise(event: FormEvent): void {
     event.preventDefault()
@@ -76,9 +90,11 @@ export function SessionDetail({ session, onChanged }: { session: SessionSummary;
 
       {canAct ? (
         <div className="actions">
-          <button type="button" disabled={busy} onClick={() => run(() => gateway.edit.approve.mutate({ id: session.id }))}>
-            Approve
-          </button>
+          {!hasMainButton && (
+            <button type="button" disabled={busy} onClick={() => run(() => gateway.edit.approve.mutate({ id: session.id }))}>
+              Approve
+            </button>
+          )}
           <button type="button" disabled={busy} onClick={() => run(() => gateway.edit.cancel.mutate({ id: session.id }))}>
             Cancel
           </button>
