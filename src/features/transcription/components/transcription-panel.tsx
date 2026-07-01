@@ -192,7 +192,7 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
 
             {/* Задача */}
             <div className="space-y-2" data-oid="9ca:sj4">
-              <Label data-oid="gevbu3b">{t("transcription.task", "Задача")}</Label>
+              <Label data-oid="gevbu3b">{t("transcription.task.label")}</Label>
               <Select
                 value={options.task}
                 onValueChange={(value) =>

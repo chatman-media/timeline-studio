@@ -47,7 +47,10 @@ export type VlmModelType =
 export interface VlmModelInfo {
   id: VlmModelType
   displayName: string
+  /** Russian description */
   description: string
+  /** English description */
+  descriptionEn: string
   size: "small" | "medium" | "large" | "xlarge"
   /** Рекомендуемое количество фреймов */
   recommendedFrames: number
@@ -61,6 +64,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "moondream2",
     displayName: "Moondream 2",
     description: "Быстрая и легкая модель для базового анализа изображений",
+    descriptionEn: "Fast and lightweight model for basic image analysis",
     size: "small",
     recommendedFrames: 5,
     estimatedSpeed: 2.0,
@@ -69,6 +73,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llava",
     displayName: "LLaVA 7B",
     description: "Универсальная модель для анализа видео и изображений",
+    descriptionEn: "Versatile model for video and image analysis",
     size: "medium",
     recommendedFrames: 4,
     estimatedSpeed: 1.0,
@@ -77,6 +82,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llava:13b",
     displayName: "LLaVA 13B",
     description: "Улучшенная точность для детального анализа",
+    descriptionEn: "Improved accuracy for detailed analysis",
     size: "large",
     recommendedFrames: 3,
     estimatedSpeed: 0.5,
@@ -85,6 +91,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llava:34b",
     displayName: "LLaVA 34B",
     description: "Максимальная точность, требует мощный GPU",
+    descriptionEn: "Maximum accuracy, requires a powerful GPU",
     size: "xlarge",
     recommendedFrames: 2,
     estimatedSpeed: 0.2,
@@ -93,6 +100,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llama3.2-vision",
     displayName: "Llama 3.2 Vision",
     description: "Новейшая модель от Meta для vision-задач",
+    descriptionEn: "Meta's newest model for vision tasks",
     size: "medium",
     recommendedFrames: 4,
     estimatedSpeed: 1.2,
@@ -101,6 +109,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llama3.2-vision:11b",
     displayName: "Llama 3.2 Vision 11B",
     description: "Баланс скорости и качества",
+    descriptionEn: "Balance of speed and quality",
     size: "large",
     recommendedFrames: 3,
     estimatedSpeed: 0.6,
@@ -109,6 +118,7 @@ export const VLM_MODELS: Record<VlmModelType, VlmModelInfo> = {
     id: "llama3.2-vision:90b",
     displayName: "Llama 3.2 Vision 90B",
     description: "Максимальное качество, требует много VRAM",
+    descriptionEn: "Maximum quality, requires a lot of VRAM",
     size: "xlarge",
     recommendedFrames: 2,
     estimatedSpeed: 0.1,
@@ -131,7 +141,10 @@ export interface AnalyzerMetadata {
   type: AnalyzerType
   displayName: string
   category: "video" | "audio" | "content"
+  /** Russian description */
   description: string
+  /** English description */
+  descriptionEn: string
   estimatedDuration: number // в секундах
   icon?: string
 }
@@ -341,6 +354,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Scene Detection",
     category: "video",
     description: "Определение сцен и переходов",
+    descriptionEn: "Scene and transition detection",
     estimatedDuration: 30,
   },
   object_detection: {
@@ -348,6 +362,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Object Detection",
     category: "video",
     description: "Распознавание объектов (YOLO)",
+    descriptionEn: "Object recognition (YOLO)",
     estimatedDuration: 60,
   },
   face_detection: {
@@ -355,6 +370,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Face Detection",
     category: "video",
     description: "Детекция лиц",
+    descriptionEn: "Face detection",
     estimatedDuration: 45,
   },
   motion_analysis: {
@@ -362,6 +378,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Motion Analysis",
     category: "video",
     description: "Анализ движения",
+    descriptionEn: "Motion analysis",
     estimatedDuration: 40,
   },
   composition_analysis: {
@@ -369,6 +386,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Composition Analysis",
     category: "video",
     description: "Оценка композиции кадра",
+    descriptionEn: "Frame composition assessment",
     estimatedDuration: 35,
   },
   // Audio
@@ -377,6 +395,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Audio Quality",
     category: "audio",
     description: "Оценка качества звука",
+    descriptionEn: "Audio quality assessment",
     estimatedDuration: 20,
   },
   speech_recognition: {
@@ -384,6 +403,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Speech Recognition",
     category: "audio",
     description: "Распознавание речи (Whisper)",
+    descriptionEn: "Speech recognition (Whisper)",
     estimatedDuration: 90,
   },
   music_detection: {
@@ -391,6 +411,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Music Detection",
     category: "audio",
     description: "Детекция музыки",
+    descriptionEn: "Music detection",
     estimatedDuration: 25,
   },
   sound_events: {
@@ -398,6 +419,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Sound Events",
     category: "audio",
     description: "Определение звуковых событий",
+    descriptionEn: "Sound event detection",
     estimatedDuration: 30,
   },
   silence_detection: {
@@ -405,6 +427,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Silence Detection",
     category: "audio",
     description: "Детекция тишины",
+    descriptionEn: "Silence detection",
     estimatedDuration: 15,
   },
   speech_detection: {
@@ -412,6 +435,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Speech Detection",
     category: "audio",
     description: "Определение речевых сегментов",
+    descriptionEn: "Speech segment detection",
     estimatedDuration: 30,
   },
   // Content
@@ -420,6 +444,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Person Recognition",
     category: "video",
     description: "Распознавание персон",
+    descriptionEn: "Person recognition",
     estimatedDuration: 55,
   },
   visual_quality: {
@@ -427,6 +452,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Visual Quality",
     category: "video",
     description: "Оценка визуального качества",
+    descriptionEn: "Visual quality assessment",
     estimatedDuration: 30,
   },
   mood_analysis: {
@@ -434,6 +460,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Mood Analysis",
     category: "content",
     description: "Определение настроения",
+    descriptionEn: "Mood detection",
     estimatedDuration: 50,
   },
   content_classification: {
@@ -441,6 +468,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Content Classification",
     category: "content",
     description: "Классификация контента",
+    descriptionEn: "Content classification",
     estimatedDuration: 40,
   },
   quality_assessment: {
@@ -448,6 +476,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Quality Assessment",
     category: "content",
     description: "Общая оценка качества",
+    descriptionEn: "Overall quality assessment",
     estimatedDuration: 35,
   },
   moment_detection: {
@@ -455,6 +484,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "Moment Detection",
     category: "content",
     description: "Поиск ключевых моментов",
+    descriptionEn: "Key moment detection",
     estimatedDuration: 45,
   },
   vlm_analysis: {
@@ -462,6 +492,7 @@ export const ANALYZER_METADATA: Record<AnalyzerType, AnalyzerMetadata> = {
     displayName: "VLM Analysis",
     category: "content",
     description: "Vision Language Model (LLaVA/GPT-4V)",
+    descriptionEn: "Vision Language Model (LLaVA/GPT-4V)",
     estimatedDuration: 120,
   },
 }

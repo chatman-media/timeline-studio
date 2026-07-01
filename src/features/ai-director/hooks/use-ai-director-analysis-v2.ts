@@ -212,7 +212,11 @@ function simulateAnalyzerProgress(file: FileProgress, stage: string, overallProg
 }
 
 export function useAIDirectorAnalysisV2(): UseAIDirectorAnalysisV2Return {
-  logger.infoSync("[useAIDirectorAnalysisV2] Инициализация хука для пакетного AI Director анализа")
+  // Лог инициализации в useEffect, чтобы не спамить на каждый рендер
+  // (хук используется в нескольких местах, каждый рендер каждой инстанции иначе пишет в консоль).
+  useEffect(() => {
+    logger.infoSync("[useAIDirectorAnalysisV2] Инициализация хука для пакетного AI Director анализа")
+  }, [])
 
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [filesProgress, setFilesProgress] = useState<FileProgress[]>([])

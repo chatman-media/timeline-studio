@@ -77,7 +77,9 @@
     "averageScore": "Average Score",
     "detectionRate": "Detection Rate",
     "momentsDetected": "moments detected",
-    "momentTypes": "Moment Types"
+    "momentTypes": "Moment Types",
+    "pause": "Pause",
+    "play": "Play"
   },
   "app": {
     "connectingToBackend": "Connecting to application...",
@@ -222,6 +224,44 @@
     },
     "montagePlanner": {
       "title": "Smart Montage Planner"
+    },
+    "about": {
+      "title": "About"
+    },
+    "subtitleEditor": {
+      "titleEdit": "Edit Subtitle",
+      "titleAdd": "Add Subtitle"
+    },
+    "personForm": {
+      "titleEdit": "Edit Person",
+      "titleAdd": "Create Person"
+    },
+    "missingFiles": {
+      "title": "Missing Media Files"
+    },
+    "aiMarkerSettings": {
+      "title": "AI Marker Settings"
+    },
+    "subtitleAITools": {
+      "title": "Automatic Transcription"
+    },
+    "audioEffects": {
+      "title": "Audio Effects"
+    },
+    "midiLearn": {
+      "title": "MIDI Learn"
+    },
+    "midiMapping": {
+      "title": "MIDI Mapping Editor"
+    },
+    "midiConfiguration": {
+      "title": "MIDI Settings"
+    },
+    "effectDetail": {
+      "title": "Effect Details"
+    },
+    "colorGrading": {
+      "title": "Save Color Grading Preset"
     }
   },
   "dialogs": {
@@ -288,7 +328,12 @@
       "errorGettingDevices": "Failed to get device list",
       "browserNotSupported": "Your browser does not support camera recording",
       "mediaDevicesNotSupported": "Media devices are not supported in this browser",
-      "mediaDevicesError": "Error accessing media devices"
+      "mediaDevicesError": "Error accessing media devices",
+      "requestingPermissions": "Requesting permissions...",
+      "recordingSuccess": "Recording saved successfully",
+      "recordingError": "Error saving recording",
+      "notSupported": "Camera recording unavailable",
+      "notSupportedDescription": "Camera recording isn't supported in the desktop app. This feature is only available when using Timeline Studio in a web browser."
     },
     "cameraPreview": {
       "title": "Recording Preview",
@@ -331,7 +376,16 @@
       "hint": "Click the record button to start. The recording will be automatically added to the media library.",
       "browserNotSupported": "Your browser does not support audio recording",
       "mediaDevicesNotSupported": "Media devices are not supported in this browser",
-      "mediaDevicesError": "Error accessing media devices"
+      "mediaDevicesError": "Error accessing media devices",
+      "saveError": "Error saving audio recording",
+      "notSupported": "Audio recording unavailable",
+      "notSupportedDescription": "Audio recording isn't supported in the desktop app. This feature is only available when using Timeline Studio in a web browser.",
+      "unsupportedBrowser": "Your browser doesn't support audio recording. Please use a modern browser.",
+      "permissionsDenied": "Microphone access denied. Check your browser settings.",
+      "permissionCheckError": "Couldn't check permissions. Please try again.",
+      "errorGettingDevices": "Couldn't get the list of devices",
+      "recordingNotSupported": "Recording isn't supported by this browser",
+      "streamError": "Couldn't initialize the microphone"
     },
     "userSettings": {
       "title": "User Settings",
@@ -635,7 +689,46 @@
         "description": "The project will be automatically saved at the specified time interval"
       },
       "cancel": "Cancel",
-      "save": "OK"
+      "save": "OK",
+      "socialNetworksDescription": "Set up OAuth connections to automatically publish videos to social networks.",
+      "comingSoon": "Coming soon",
+      "socialNetworksComingSoon": "OAuth integration with social networks will be available in a future update. For now, API keys are stored encrypted.",
+      "currentImplementation": "Current implementation",
+      "currentImplementationText": "Secure API key storage is ready. OAuth integration and the social networks UI are still in development.",
+      "aiServicesDescription": "Set up API keys to integrate with AI assistants. Keys are stored securely on your device.",
+      "openAiDescription": "Used for ChatGPT integration and content generation. Get a key at platform.openai.com",
+      "getApiKey": "Get API key",
+      "claudeDescription": "Used for the Claude AI assistant and advanced content analysis. Get a key from the Anthropic Console",
+      "grokApiKey": "Grok API key",
+      "grokDescription": "Used for xAI's Grok models. Get a key at console.x.ai",
+      "deepSeekApiKey": "DeepSeek API key",
+      "deepSeekDescription": "Used for DeepSeek models. Get a key at platform.deepseek.com",
+      "mcpClaudeApiKey": "Claude API key for MCP",
+      "mcpDescription": "Model Context Protocol (MCP) — extended Claude integration for accessing video editing tools. Lets you use your Claude Code subscription right inside the editor.",
+      "learnAboutMcp": "Learn more about MCP",
+      "mcpFeatures": "MCP capabilities:",
+      "mcpFeature1": "Video and audio content analysis",
+      "mcpFeature2": "Timeline and clip management",
+      "mcpFeature3": "Applying effects and transitions",
+      "mcpFeature4": "Export and preview generation",
+      "mcpFeature5": "18 specialized tools",
+      "securityNote": "Security note",
+      "securityNoteText": "All API keys are encrypted and stored locally on your device. They are never shared with third parties.",
+      "developmentDescription": "Settings for development tools and analytics. Available only in development mode.",
+      "codecovDescription": "Token for uploading test coverage reports to Codecov. Used in the CI/CD pipeline.",
+      "getToken": "Get token",
+      "tauriAnalyticsDescription": "Key for Tauri app analytics. Used to collect performance metrics.",
+      "tauriDocs": "Tauri documentation",
+      "devModeNote": "Development mode",
+      "devModeNoteText": "This tab is only visible in development mode. Development settings are unavailable in production builds.",
+      "hideKey": "Hide key",
+      "showKey": "Show key",
+      "invalidKey": "Invalid API key or connection issue",
+      "validKey": "API key is working correctly",
+      "lastValidated": "Last validated",
+      "created": "Created",
+      "codecovToken": "Codecov Token",
+      "tauriAnalyticsKey": "Tauri Analytics Key"
     },
     "export": {
       "title": "Export",
@@ -695,6 +788,7 @@
       "video": "Video",
       "audio": "Audio",
       "file": "File",
+      "transitions": "Transitions",
       "exportVideo": "Export video",
       "exportAudio": "Export audio",
       "codecType": "Codec Type",
@@ -763,6 +857,25 @@
       "uploadProgress": "Upload Progress",
       "uploading": "Uploading",
       "uploadTo": "Upload to {{platform}}",
+      "social": {
+        "max": "Max",
+        "limitsAndValidation": "Limits & Validation",
+        "valid": "Valid",
+        "invalid": "Invalid",
+        "maxFileSize": "Max File Size",
+        "maxDuration": "Max Duration",
+        "maxResolution": "Max Resolution",
+        "titleLimit": "Title Limit",
+        "optimizationSuggestions": "Optimization suggestions:",
+        "categories": {
+          "peopleAndBlogs": "People & Blogs",
+          "entertainment": "Entertainment",
+          "newsAndPolitics": "News & Politics",
+          "howtoAndStyle": "Howto & Style",
+          "education": "Education",
+          "scienceAndTechnology": "Science & Technology"
+        }
+      },
       "batchTab": "Batch",
       "sectionsTab": "Sections",
       "batchSettings": "Batch Export Settings",
@@ -833,7 +946,9 @@
         "timeline": "Timeline",
         "markers-multicam": "Markers & Multicam",
         "miscellaneous": "Miscellaneous",
-        "other": "Other"
+        "other": "Other",
+        "marker": "Marker",
+        "multicam": "Multicam Editing"
       },
       "shortcuts": {
         "preferences": "Preferences",
@@ -1029,13 +1144,22 @@
         "volume-up": "Volume Up",
         "volume-down": "Volume Down",
         "help": "Help",
-        "export": "Export"
+        "export": "Export",
+        "adjust-bezier": "Adjust bezier curve"
       },
       "presets": {
         "timeline": "Timeline",
         "filmora": "Wondershare Filmora",
         "premiere": "Adobe Premier Pro"
-      }
+      },
+      "cheatSheet": "Keyboard Shortcuts Cheat Sheet",
+      "cheatSheetDescription": "All available keyboard shortcuts",
+      "print": "Print",
+      "conflictDetected": "Conflict detected",
+      "criticalConflict": "Critical conflict",
+      "potentialConflict": "Potential conflict",
+      "export": "Export",
+      "import": "Import"
     }
   },
   "developerTools": {
@@ -1043,7 +1167,8 @@
     "description": "Advanced tools for developers and content creators",
     "tabs": {
       "effectPreviews": "Effect Previews"
-    }
+    },
+    "openButton": "Open Developer Tools"
   },
   "templates": {
     "verticalSplit": "Vertical Split",
@@ -1273,6 +1398,83 @@
       "supportedVideoFormats": "Supported video formats: MP4, MOV, AVI, MKV, WEBM, INSV (360°)",
       "supportedAudioFormats": "Supported audio formats: MP3, WAV, AAC, ALAC, OGG, FLAC"
     },
+    "emptyState": {
+      "formatsLabel": "Supported formats:",
+      "media": {
+        "title": "No media files found",
+        "description": "Add video, audio, or photo files to work with the project",
+        "importText": "Import media files",
+        "folderText": "Or place files in the folder",
+        "formats": [
+          "Video: MP4, MOV, AVI, MKV, WEBM, INSV (360°)",
+          "Audio: MP3, WAV, AAC, ALAC, OGG, FLAC",
+          "Photo: JPG, PNG, GIF, WEBP, TIFF, BMP"
+        ]
+      },
+      "music": {
+        "title": "No music files found",
+        "description": "Add music and sound effects to score your project",
+        "importText": "Import music",
+        "folderText": "Or place music in the folder",
+        "formats": [
+          "MP3, WAV, AAC, ALAC, OGG, FLAC"
+        ]
+      },
+      "effects": {
+        "title": "No effects found",
+        "description": "Add video effects to enhance your clips",
+        "importText": "Import effects",
+        "folderText": "Or place effects in the folder",
+        "formats": [
+          "JSON files with effect definitions"
+        ]
+      },
+      "filters": {
+        "title": "No filters found",
+        "description": "Add color filters and correction for video",
+        "importText": "Import filters",
+        "folderText": "Or place filters in the folder",
+        "formats": [
+          "JSON files with filter settings"
+        ]
+      },
+      "transitions": {
+        "title": "No transitions found",
+        "description": "Add transitions between clips for smooth editing",
+        "importText": "Import transitions",
+        "folderText": "Or place transitions in the folder",
+        "formats": [
+          "JSON files with transition animations"
+        ]
+      },
+      "templates": {
+        "title": "No templates found",
+        "description": "Add ready-made templates for quick project creation",
+        "importText": "Import templates",
+        "folderText": "Or place templates in the folder",
+        "formats": [
+          "JSON files with template settings"
+        ]
+      },
+      "style_templates": {
+        "title": "No style templates found",
+        "description": "Add styled templates with ready-made designs",
+        "importText": "Import style templates",
+        "folderText": "Or place templates in the folder",
+        "formats": [
+          "JSON files with styles and settings"
+        ]
+      },
+      "subtitles": {
+        "title": "No subtitles found",
+        "description": "Add subtitle files or create new ones",
+        "importText": "Import subtitles",
+        "folderText": "Or place subtitles in the folder",
+        "formats": [
+          "SRT, VTT, ASS, SSA subtitle files"
+        ]
+      }
+    },
     "subtitles": {
       "search": "Search...",
       "dragHint": "Drag subtitle to timeline to add it to your project",
@@ -1465,7 +1667,13 @@
     "workspace": {
       "timeline": "Timeline",
       "audioMixer": "Audio Mixer",
-      "analysis": "Analysis"
+      "analysis": "Analysis",
+      "script": "Script"
+    },
+    "analysisPanel": {
+      "results": "Analysis results",
+      "newAnalysis": "New analysis",
+      "newAnalysisSettings": "New analysis settings"
     },
     "audioMixer": {
       "title": "Audio Mixer",
@@ -1628,7 +1836,8 @@
       "copy": "Copy",
       "loading_models": "Loading models...",
       "no_models": "No available models",
-      "no_tool_models": "No models with tool support"
+      "no_tool_models": "No models with tool support",
+      "error": "An error occurred while sending the message. Please check your API key settings."
     },
     "title": "Timeline",
     "noTracks": "No tracks",
@@ -1638,7 +1847,27 @@
     "fitToScreen": "Fit to screen",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
-    "scale": "Scale"
+    "scale": "Scale",
+    "clip": {
+      "copy": "Copy",
+      "cut": "Cut",
+      "split": "Split",
+      "properties": "Properties",
+      "effects": "Effects",
+      "transitions": "Transitions",
+      "filters": "Filters",
+      "volume": "Volume",
+      "delete": "Delete"
+    },
+    "effects": {
+      "title": "Clip Effects",
+      "noClipSelected": "Select a clip to manage effects",
+      "add": "Add",
+      "selectEffect": "Select effect",
+      "selectEffectDescription": "Select an effect to add to the clip",
+      "noEffects": "No effects",
+      "selectEffectToEdit": "Select an effect to edit"
+    }
   },
   "titles": {
     "add": "Titles",
@@ -1760,7 +1989,9 @@
       "parameters": "Parameters",
       "tags": "Tags",
       "applyFilter": "Apply Filter"
-    }
+    },
+    "resetParams": "Reset to Default",
+    "previewNote": "Changes are applied in real-time to the preview"
   },
   "transitions": {
     "add": "Add transition",
@@ -1943,8 +2174,56 @@
       "parameters": "Parameters",
       "presets": "Presets",
       "ffmpegCommand": "FFmpeg Command",
-      "applyEffect": "Apply Effect"
-    }
+      "applyEffect": "Apply Effect",
+      "resetToDefault": "Reset to default",
+      "exportEffect": "Export effect",
+      "savePreset": "Save as preset",
+      "currentValues": "Current values"
+    },
+    "loading": "Loading effects...",
+    "error": "Failed to load effects",
+    "search": "Search effects...",
+    "scope": {
+      "all": "All",
+      "clip": "Clip",
+      "track": "Track",
+      "global": "Global"
+    },
+    "import": "Import",
+    "apply": "Apply",
+    "comparisonTab": "Comparison",
+    "comparison": {
+      "original": "Original",
+      "withEffect": "With effect",
+      "position": "Position"
+    },
+    "customPreset": "Custom preset",
+    "deletePreset": "Delete preset",
+    "noParameters": "No parameters",
+    "createdAt": "Created",
+    "enterExportName": "Enter a file name for export:",
+    "preview": {
+      "generator": {
+        "title": "Effect Preview Generator",
+        "description": "Generate preview videos for all effects using the prerender system",
+        "totalEffects": "Total Effects",
+        "completed": "Completed",
+        "failed": "Failed",
+        "progress": "Progress",
+        "current": "Current",
+        "sourceVideo": "Source Video",
+        "sourceVideoHelp": "Path to the video file to apply effects to",
+        "duration": "Duration (seconds)",
+        "quality": "Quality (0-100)",
+        "outputDir": "Output Directory",
+        "generate": "Generate Previews",
+        "cancel": "Cancel Generation",
+        "info1": "This will generate preview videos for all effects using the Rust prerender backend.",
+        "info2": "Generated videos will be saved to the output directory and used for effect previews.",
+        "warning": "Warning: This process may take several minutes depending on the number of effects."
+      }
+    },
+    "enterPresetName": "Enter a preset name:"
   },
   "project": {
     "untitledProject": "Untitled #{{number}}",
@@ -2013,7 +2292,46 @@
   "ai": {
     "suggestions": {
       "whatCanDo": "What can I do",
-      "emptyHint": "Add videos to media browser or use AI to help with import"
+      "emptyHint": "Add videos to media browser or use AI to help with import",
+      "music": "music",
+      "analysisComplete": "Analysis complete",
+      "detected": "Detected"
+    },
+    "actionPreview": {
+      "riskHigh": "High risk",
+      "riskMedium": "Medium risk",
+      "riskLow": "Low risk",
+      "riskUnknown": "Unknown",
+      "title": "AI plans to perform the following actions",
+      "parameters": "Parameters",
+      "cancel": "Cancel",
+      "confirm": "Run"
+    },
+    "cache": {
+      "entries": "Cache",
+      "hits": "Hits",
+      "expired": "Expired",
+      "refresh": "Refresh",
+      "title": "AI Request Cache",
+      "description": "Automatic caching of AI responses",
+      "disabled": "Caching disabled",
+      "totalEntries": "Total entries",
+      "totalHits": "Total hits",
+      "maxEntries": "Max entries",
+      "expiredWarning": "Expired entries: {{count}}",
+      "refreshTooltip": "Refresh cache stats",
+      "cleanup": "Clear expired",
+      "cleanupTooltip": "Remove expired entries from the cache",
+      "clear": "Clear entire cache",
+      "clearTooltip": "Remove all entries from the cache",
+      "info": "The cache is stored locally in a SQLite database. Entries are automatically deleted after 24 hours.",
+      "hitRate": "Hit Rate"
+    },
+    "processing": {
+      "analyzing": "Analyzing project context...",
+      "preparingTools": "Preparing tools...",
+      "generating": "Generating response...",
+      "processing": "Processing..."
     }
   },
   "source": {
@@ -2187,7 +2505,10 @@
       "maintainDuration": "Maintain Duration",
       "frameInterpolation": "Frame Interpolation",
       "interpolationMethod": "Interpolation Method",
-      "smoothnessLevel": "Smoothness Level"
+      "smoothnessLevel": "Smoothness Level",
+      "smoothPlayback": "Smooth Playback",
+      "performance": "Performance",
+      "quality": "Quality"
     },
     "info": {
       "title": "Media File Info",
@@ -2411,7 +2732,8 @@
         "videotoolboxCodec": "Use H.265/HEVC for better compression",
         "lowMemory": "Low video memory, avoid 4K rendering",
         "highMemory": "Sufficient memory for 4K rendering"
-      }
+      },
+      "appleMetalError": "Apple Metal/VideoToolbox initialization error. This is usually temporary."
     },
     "cache": {
       "statistics": "Cache Statistics",
@@ -2579,6 +2901,40 @@
       "selectFile": "Select file",
       "selectFileDesc": "Select audio or video file for transcription",
       "noMedia": "Add video or audio files to project for transcription"
+    },
+    "enhanced": {
+      "success": "Subtitles created",
+      "successDesc": "Processed {{count}} subtitles with {{confidence}}% confidence",
+      "error": "Failed to create subtitles",
+      "cancelled": "Operation cancelled"
+    },
+    "trackName": "Subtitles",
+    "autoSync": {
+      "selectAudio": "Select an audio track",
+      "noSubtitles": "No subtitles to sync",
+      "analyzing": "Analyzing audio...",
+      "detectingSpeech": "Detecting speech...",
+      "noSpeechDetected": "No speech detected",
+      "matching": "Matching subtitles...",
+      "success": "Sync complete",
+      "successDesc": "Synced {{synced}} of {{total}} subtitles ({{confident}} high-confidence)",
+      "error": "Sync error",
+      "errorDesc": "Failed to complete automatic sync",
+      "title": "Auto Sync",
+      "description": "Sync subtitles to audio based on speech analysis",
+      "audioSource": "Audio source",
+      "selectAudioPlaceholder": "Select an audio track or file",
+      "tracksSection": "Timeline tracks",
+      "filesSection": "Media files",
+      "mode": "Sync mode",
+      "voiceDetection": "Voice detection",
+      "silenceDetection": "Silence detection",
+      "beatDetection": "Beat sync",
+      "sensitivity": "Sensitivity",
+      "progress": "Progress",
+      "syncing": "Syncing...",
+      "start": "Start sync",
+      "hint": "The algorithm analyzes the audio waveform to detect where speech begins and automatically aligns subtitles"
     }
   },
   "export": {
@@ -2596,8 +2952,11 @@
       "qualityPreset": "Quality Preset",
       "qualityPresetDescription": "Choose export quality for sections",
       "preview": "Preview Quality",
+      "previewDescription": "720p, Low bitrate, Fast encoding",
       "draft": "Draft Quality",
+      "draftDescription": "1080p, Medium quality",
       "final": "Final Quality",
+      "finalDescription": "Full quality, project settings",
       "sectionsTitle": "Sections",
       "selectedCount": "{{selected}} of {{total}} sections selected",
       "selectAll": "Select All",
@@ -3436,5 +3795,129 @@
       "invalidFile": "File is not a color scheme",
       "importFailed": "Failed to import scheme"
     }
+  },
+  "transcription": {
+    "modelsDescription": "Download models for local transcription",
+    "downloaded": "Downloaded",
+    "download": "Download",
+    "tip": "Tip",
+    "modelTip": "For most tasks, the 'base' model offers a good balance of speed and quality. Use 'large' models for maximum accuracy.",
+    "fileSelect": {
+      "error": "File selection error"
+    },
+    "error": "Error",
+    "noFile": "Select a file",
+    "transcriptionResultsHeading": "Transcription Results",
+    "save": {
+      "success": "Subtitles saved",
+      "error": "Save failed",
+      "srt": "SRT"
+    },
+    "enhanced": {
+      "title": "AI Subtitle Generation",
+      "description": "Automatic subtitle creation powered by AI",
+      "generate": "AI Generation",
+      "quick": "Quick",
+      "confidence": "Confidence",
+      "ocr": "OCR"
+    },
+    "mode": {
+      "basic": "Basic",
+      "enhanced": "Enhanced AI"
+    },
+    "file": {
+      "title": "File selection",
+      "select": "Select file"
+    },
+    "settings": {
+      "title": "Settings",
+      "main": "General",
+      "ai": "AI features",
+      "advanced": "Advanced"
+    },
+    "language": {
+      "label": "Language"
+    },
+    "task": {
+      "label": "Task",
+      "transcribe": "Transcribe",
+      "translate": "Translate"
+    },
+    "ai": {
+      "sources": "Data sources",
+      "speech": "Speech recognition",
+      "ocr": "On-screen text (OCR)",
+      "scenes": "Scene analysis",
+      "speakers": "Speaker identification",
+      "processing": "Text processing",
+      "grammar": "Grammar correction",
+      "capitalization": "Capitalization",
+      "filler": "Remove filler words",
+      "optimize": "Optimize for readability",
+      "style": "Subtitle style",
+      "provider": "AI provider"
+    },
+    "style": {
+      "standard": "Standard",
+      "broadcast": "Broadcast",
+      "social": "Social media",
+      "accessibility": "Accessibility"
+    },
+    "basic": {
+      "start": "Transcribe"
+    },
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "results": {
+      "title": "Results"
+    },
+    "addToTimeline": "Add to timeline",
+    "selectLanguage": "Select language",
+    "wordTimings": "Word timings",
+    "fullText": "Full text",
+    "title": "Transcription",
+    "description": "Automatic subtitle creation with AI",
+    "selectFile": "Select a media file",
+    "chooseFile": "Choose file",
+    "basicSettings": "General",
+    "advancedSettings": "Advanced",
+    "models": "Models",
+    "model": "Model",
+    "transcribe": "Transcription",
+    "translate": "Translate to English",
+    "provider": {
+      "unified": "Unified AI",
+      "whisper": "Whisper",
+      "azure": "Azure",
+      "google": "Google"
+    },
+    "device": "Device",
+    "wordTimestamps": "Word timestamps",
+    "vadFilter": "Voice activity filter",
+    "processing": "Processing...",
+    "start": "Start transcription"
+  },
+  "about": {
+    "version": "Version",
+    "description": "Professional video editor for creating and editing video",
+    "rights": "All rights reserved",
+    "builtWith": "Built with",
+    "documentation": "Documentation",
+    "license": "License"
+  },
+  "cameraCapture": {
+    "saving": "Saving recording...",
+    "cameraMode": "Camera",
+    "screenMode": "Screen",
+    "screenSettings": "Screen Recording Settings",
+    "screenInfo": "Select a window, tab, or entire screen to record",
+    "microphone": "Microphone",
+    "noAudio": "No Audio",
+    "countdown": "Countdown",
+    "noCountdown": "No countdown",
+    "seconds": "seconds"
+  },
+  "camera": {
+    "permissionError": "Couldn't access the camera and microphone. Check your settings."
   }
 }

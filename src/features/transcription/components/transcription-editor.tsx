@@ -51,7 +51,7 @@ export function TranscriptionEditor({ result, onAddToTimeline }: TranscriptionEd
     <div className="space-y-4" data-oid="d7yaoj3">
       <div className="flex items-center justify-between" data-oid="i2-sj6z">
         <h3 className="text-sm font-medium" data-oid="wm5_gjf">
-          {t("transcription.results", "Результаты транскрипции")}
+          {t("transcription.transcriptionResultsHeading", "Результаты транскрипции")}
         </h3>
         {onAddToTimeline && (
           <Button size="sm" onClick={handleAddAllToTimeline} data-oid="-mivr7e">

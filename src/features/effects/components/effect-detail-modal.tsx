@@ -167,7 +167,7 @@ export function EffectDetailModal() {
               </TabsTrigger>
               <TabsTrigger value="comparison" data-oid="a99tqcp">
                 <SplitSquareHorizontal size={16} className="mr-2" data-oid="db::p2v" />
-                {t("effects.comparison", "Сравнение")}
+                {t("effects.comparisonTab", "Сравнение")}
               </TabsTrigger>
             </TabsList>
 

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@timeline-studio/ui/components/tabs"
 import { AudioLines, Film, ImageIcon, Loader2, Play, Sparkles, Zap } from "lucide-react"
 import { useCallback, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useAIDirectorAnalysisV2 } from "@/features/ai-director/hooks/use-ai-director-analysis-v2"
 import {
   ANALYZER_METADATA,
@@ -42,6 +43,13 @@ const MEDIA_TYPE_NAMES = {
   image: "Изображения",
 }
 
+/** English names for media types */
+const MEDIA_TYPE_NAMES_EN = {
+  video: "Video",
+  audio: "Audio",
+  image: "Images",
+}
+
 /** Иконки и названия уровней анализа */
 const ANALYSIS_LEVEL_CONFIG = {
   quick: { icon: Zap, name: "Быстрый", nameEn: "Quick" },
@@ -69,6 +77,8 @@ interface FileWithMediaType {
 }
 
 export function AnalysisSettingsPanel() {
+  const { i18n } = useTranslation()
+  const isRu = i18n.language === "ru"
   const { mediaFiles } = useMediaFiles()
   const { startBatchAnalysis, isAnalyzing } = useAIDirectorAnalysisV2()
 
@@ -294,28 +304,28 @@ export function AnalysisSettingsPanel() {
         <div className="flex items-center justify-between" data-oid="ifqc9gh">
           <div data-oid="rdld9ty">
             <CardTitle className="text-base" data-oid="i0kw3ku">
-              Настройки анализа
+              {isRu ? "Настройки анализа" : "Analysis settings"}
             </CardTitle>
             <CardDescription className="text-xs" data-oid="825b0ma">
-              Выберите файлы и настройте параметры анализа
+              {isRu ? "Выберите файлы и настройте параметры анализа" : "Select files and configure analysis parameters"}
             </CardDescription>
           </div>
           <div className="flex items-center gap-3" data-oid="pwk9d8i">
             {estimatedTime && (
               <span className="text-xs text-muted-foreground" data-oid="n8k.pxh">
-                Примерно: {estimatedTime}
+                {isRu ? "Примерно" : "About"}: {estimatedTime}
               </span>
             )}
             <Button onClick={handleStartAnalysis} disabled={!canStartAnalysis} className="gap-2" data-oid="tz-7otl">
               {isAnalyzing ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" data-oid="au1hvn5" />
-                  Анализируем...
+                  {isRu ? "Анализируем..." : "Analyzing..."}
                 </>
               ) : (
                 <>
                   <Play className="h-4 w-4" data-oid="fi:510k" />
-                  Начать анализ
+                  {isRu ? "Начать анализ" : "Start analysis"}
                 </>
               )}
             </Button>
@@ -326,24 +336,24 @@ export function AnalysisSettingsPanel() {
         {selectedFiles.size > 0 && (
           <div className="flex items-center gap-2 mt-2" data-oid="y-pagki">
             <span className="text-xs text-muted-foreground" data-oid="yd8hn-.">
-              Выбрано:
+              {isRu ? "Выбрано:" : "Selected:"}
             </span>
             {selectionStats.video > 0 && (
               <Badge variant="secondary" className="gap-1" data-oid="zmiowi6">
                 <Film className="h-3 w-3" data-oid="ii.zju1" />
-                {selectionStats.video} видео
+                {selectionStats.video} {isRu ? "видео" : "video"}
               </Badge>
             )}
             {selectionStats.audio > 0 && (
               <Badge variant="secondary" className="gap-1" data-oid="qzqqcrk">
                 <AudioLines className="h-3 w-3" data-oid="ijqggp1" />
-                {selectionStats.audio} аудио
+                {selectionStats.audio} {isRu ? "аудио" : "audio"}
               </Badge>
             )}
             {selectionStats.image > 0 && (
               <Badge variant="secondary" className="gap-1" data-oid="erg9:44">
                 <ImageIcon className="h-3 w-3" data-oid="tz95qa:" />
-                {selectionStats.image} изображений
+                {selectionStats.image} {isRu ? "изображений" : "images"}
               </Badge>
             )}
           </div>
@@ -354,13 +364,13 @@ export function AnalysisSettingsPanel() {
         <Tabs defaultValue="files" className="w-full" data-oid="b:5b.nj">
           <TabsList className="grid w-full grid-cols-3" data-oid="5:xq5r.">
             <TabsTrigger value="files" data-oid="exg5mon">
-              Файлы ({selectedFiles.size}/{analyzableFiles.length})
+              {isRu ? "Файлы" : "Files"} ({selectedFiles.size}/{analyzableFiles.length})
             </TabsTrigger>
             <TabsTrigger value="analyzers" data-oid="eu:dp5f">
-              Анализаторы ({selectedAnalyzers.size})
+              {isRu ? "Анализаторы" : "Analyzers"} ({selectedAnalyzers.size})
             </TabsTrigger>
             <TabsTrigger value="settings" data-oid="98zkr.j">
-              Настройки
+              {isRu ? "Настройки" : "Settings"}
             </TabsTrigger>
           </TabsList>
 
@@ -368,15 +378,21 @@ export function AnalysisSettingsPanel() {
           <TabsContent value="files" className="space-y-3" data-oid="ppwo9kj">
             <div className="flex items-center justify-between" data-oid="a0bqmb6">
               <p className="text-sm text-muted-foreground" data-oid="oc_x7s6">
-                {analyzableFiles.length === 0 ? "Нет доступных файлов для анализа" : "Выберите файлы для анализа"}
+                {analyzableFiles.length === 0
+                  ? isRu
+                    ? "Нет доступных файлов для анализа"
+                    : "No files available for analysis"
+                  : isRu
+                    ? "Выберите файлы для анализа"
+                    : "Select files to analyze"}
               </p>
               {analyzableFiles.length > 0 && (
                 <div className="flex gap-2" data-oid="x9w6rqg">
                   <Button variant="outline" size="sm" onClick={handleSelectAll} data-oid="7hembgk">
-                    Выбрать все
+                    {isRu ? "Выбрать все" : "Select all"}
                   </Button>
                   <Button variant="outline" size="sm" onClick={handleClearAll} data-oid="wtmoi:v">
-                    Очистить
+                    {isRu ? "Очистить" : "Clear"}
                   </Button>
                 </div>
               )}
@@ -397,7 +413,7 @@ export function AnalysisSettingsPanel() {
                         <div className="flex items-center gap-2" data-oid="xkj8s_g">
                           <Icon className="h-4 w-4 text-muted-foreground" data-oid="f6zwuwa" />
                           <span className="text-sm font-medium" data-oid="q6j3_8p">
-                            {MEDIA_TYPE_NAMES[mediaType]}
+                            {isRu ? MEDIA_TYPE_NAMES[mediaType] : MEDIA_TYPE_NAMES_EN[mediaType]}
                           </span>
                           <span className="text-xs text-muted-foreground" data-oid="pzej058">
                             ({selectedCount}/{files.length})
@@ -411,7 +427,7 @@ export function AnalysisSettingsPanel() {
                             onClick={() => handleSelectAllOfType(mediaType)}
                             data-oid="x1lcd:5"
                           >
-                            Все
+                            {isRu ? "Все" : "All"}
                           </Button>
                           <Button
                             variant="ghost"
@@ -420,7 +436,7 @@ export function AnalysisSettingsPanel() {
                             onClick={() => handleClearType(mediaType)}
                             data-oid="4itlryk"
                           >
-                            Снять
+                            {isRu ? "Снять" : "None"}
                           </Button>
                         </div>
                       </div>
@@ -451,7 +467,7 @@ export function AnalysisSettingsPanel() {
 
                 {analyzableFiles.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-4" data-oid="gm.hzs4">
-                    Добавьте медиафайлы в проект для анализа
+                    {isRu ? "Добавьте медиафайлы в проект для анализа" : "Add media files to the project to analyze"}
                   </p>
                 )}
               </div>
@@ -463,7 +479,7 @@ export function AnalysisSettingsPanel() {
             {/* Уровень анализа */}
             <div className="flex items-center gap-4 pb-2 border-b" data-oid="m3iz8oo">
               <span className="text-sm font-medium" data-oid="v8dd5zd">
-                Уровень:
+                {isRu ? "Уровень:" : "Level:"}
               </span>
               <div className="flex gap-2" data-oid="xo4i_cs">
                 {(["quick", "balanced", "comprehensive"] as AnalysisLevel[]).map((level) => {
@@ -479,13 +495,13 @@ export function AnalysisSettingsPanel() {
                       data-oid="7oav6zs"
                     >
                       {LevelIcon && <LevelIcon className="h-3 w-3" data-oid="yah..r." />}
-                      {config.name}
+                      {isRu ? config.name : config.nameEn}
                     </Button>
                   )
                 })}
                 {analysisLevel === "custom" && (
                   <Badge variant="secondary" data-oid="fq4x31m">
-                    Кастомный
+                    {isRu ? ANALYSIS_LEVEL_CONFIG.custom.name : ANALYSIS_LEVEL_CONFIG.custom.nameEn}
                   </Badge>
                 )}
               </div>
@@ -527,7 +543,7 @@ export function AnalysisSettingsPanel() {
                           className="text-sm font-medium cursor-pointer"
                           data-oid=":q2idz."
                         >
-                          {category.nameRu}
+                          {isRu ? category.nameRu : category.name}
                         </Label>
                         <span className="text-xs text-muted-foreground" data-oid="02knopj">
                           ({categorySelected}/{availableAnalyzers.length})
@@ -557,7 +573,7 @@ export function AnalysisSettingsPanel() {
                                   {metadata.displayName}
                                 </Label>
                                 <p className="text-xs text-muted-foreground" data-oid="t9_fbry">
-                                  {metadata.description}
+                                  {isRu ? metadata.description : metadata.descriptionEn}
                                 </p>
                               </div>
                             </div>
@@ -577,11 +593,11 @@ export function AnalysisSettingsPanel() {
             {selectedAnalyzers.has("vlm_analysis") && (
               <div className="space-y-2" data-oid="e:9cxie">
                 <Label className="text-sm font-medium" data-oid="u7kfbtd">
-                  VLM модель
+                  {isRu ? "VLM модель" : "VLM model"}
                 </Label>
                 <Select value={vlmModel} onValueChange={(v) => setVlmModel(v as VlmModelType)} data-oid="18i-80j">
                   <SelectTrigger className="w-full" data-oid="rec00a:">
-                    <SelectValue placeholder="Выберите модель" data-oid="4z49rff" />
+                    <SelectValue placeholder={isRu ? "Выберите модель" : "Select a model"} data-oid="4z49rff" />
                   </SelectTrigger>
                   <SelectContent data-oid="stnfwgt">
                     {ALL_VLM_MODELS.map((modelId) => {
@@ -591,7 +607,7 @@ export function AnalysisSettingsPanel() {
                           <div className="flex flex-col" data-oid="1pr2a8k">
                             <span data-oid="rj_2-2f">{model.displayName}</span>
                             <span className="text-xs text-muted-foreground" data-oid="uk4wwq9">
-                              {model.description}
+                              {isRu ? model.description : model.descriptionEn}
                             </span>
                           </div>
                         </SelectItem>
@@ -600,7 +616,9 @@ export function AnalysisSettingsPanel() {
                   </SelectContent>
                 </Select>
                 <p className="text-xs text-muted-foreground" data-oid="b:piop.">
-                  Vision Language Model для глубокого анализа контента
+                  {isRu
+                    ? "Vision Language Model для глубокого анализа контента"
+                    : "Vision Language Model for deep content analysis"}
                 </p>
               </div>
             )}
@@ -609,7 +627,7 @@ export function AnalysisSettingsPanel() {
             {selectedMediaTypes.size > 0 && (
               <div className="space-y-2" data-oid="ntboslf">
                 <Label className="text-sm font-medium" data-oid="vft_2ju">
-                  Рекомендуемые пресеты
+                  {isRu ? "Рекомендуемые пресеты" : "Recommended presets"}
                 </Label>
                 <div className="grid gap-2" data-oid="4v00_t_">
                   {[...selectedMediaTypes].slice(0, 1).map((mediaType) => {
@@ -630,10 +648,11 @@ export function AnalysisSettingsPanel() {
                         <div className="flex items-center justify-between" data-oid="24tdtj5">
                           <div data-oid="52v6tv3">
                             <p className="text-sm font-medium" data-oid="c6mib6e">
-                              {ANALYSIS_LEVEL_CONFIG[preset.level].name} ({MEDIA_TYPE_NAMES[mediaType]})
+                              {isRu ? ANALYSIS_LEVEL_CONFIG[preset.level].name : ANALYSIS_LEVEL_CONFIG[preset.level].nameEn}{" "}
+                              ({isRu ? MEDIA_TYPE_NAMES[mediaType] : MEDIA_TYPE_NAMES_EN[mediaType]})
                             </p>
                             <p className="text-xs text-muted-foreground" data-oid="qwrcx4k">
-                              {preset.descriptionRu}
+                              {isRu ? preset.descriptionRu : preset.description}
                             </p>
                           </div>
                           <Badge variant="outline" data-oid="e1ygc.6">
@@ -649,13 +668,17 @@ export function AnalysisSettingsPanel() {
 
             {selectedMediaTypes.size === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4" data-oid="c150a9i">
-                Выберите файлы, чтобы увидеть рекомендуемые пресеты
+                {isRu
+                  ? "Выберите файлы, чтобы увидеть рекомендуемые пресеты"
+                  : "Select files to see recommended presets"}
               </p>
             )}
 
             {!selectedAnalyzers.has("vlm_analysis") && selectedMediaTypes.size === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4" data-oid="lx4prge">
-                Включите VLM Analysis для настройки AI Vision модели
+                {isRu
+                  ? "Включите VLM Analysis для настройки AI Vision модели"
+                  : "Enable VLM Analysis to configure the AI Vision model"}
               </p>
             )}
           </TabsContent>

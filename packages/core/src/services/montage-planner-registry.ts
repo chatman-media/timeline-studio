@@ -21,8 +21,17 @@ function createMissingBinding(name: keyof MontagePlannerBindings): MontagePlanne
     construct() {
       throw new Error(`Montage planner binding "${name}" is not registered`)
     },
+    // Property reads must stay side-effect-free. The montage-planner barrel is
+    // imported eagerly (top-bar → montage-planner), so this proxy is exported and
+    // evaluated BEFORE MontagePlannerBindingsBootstrapProvider registers the real
+    // bindings. React Fast Refresh (and devtools/console introspection) probe every
+    // export at module-eval time — isLikelyComponentType reads `.prototype` /
+    // `.displayName` / `.$$typeof` — and a throwing getter there crashes the whole
+    // feature module and takes down the app in dev/browser-preview. Returning
+    // undefined keeps introspection harmless; genuine misuse still throws on
+    // apply/construct (calling or `new`-ing an unregistered binding).
     get() {
-      throw new Error(`Montage planner binding "${name}" is not registered`)
+      return undefined
     },
   })
 }

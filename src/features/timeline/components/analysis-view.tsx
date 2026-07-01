@@ -131,11 +131,11 @@ export function AnalysisView() {
               <>
                 <div className="border-b px-4 py-3 flex items-center justify-between bg-muted/30" data-oid="yuzja8.">
                   <div className="text-sm font-medium" data-oid="aoexhj7">
-                    Результаты анализа
+                    {t("timeline.analysisPanel.results")}
                   </div>
                   <Button variant="ghost" size="sm" onClick={handleNewAnalysis} data-oid="l:h8qzz">
                     <Plus className="h-4 w-4 mr-2" data-oid="77.s3.n" />
-                    Новый анализ
+                    {t("timeline.analysisPanel.newAnalysis")}
                   </Button>
                 </div>
                 <div className="flex-1 overflow-auto" data-oid="lol12ho">
@@ -147,7 +147,7 @@ export function AnalysisView() {
               <>
                 <div className="border-b px-4 py-3 bg-muted/30" data-oid="hk3v51i">
                   <div className="text-sm font-medium" data-oid="oy-qea_">
-                    Настройка нового анализа
+                    {t("timeline.analysisPanel.newAnalysisSettings")}
                   </div>
                 </div>
                 <div className="flex-1 overflow-auto" data-oid="34pfskl">
