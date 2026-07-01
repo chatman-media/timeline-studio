@@ -1,3 +1,10 @@
+## [3.111.1](https://github.com/chatman-media/timeline-studio/compare/v3.111.0...v3.111.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* complete i18n audit follow-up (missed by [#403](https://github.com/chatman-media/timeline-studio/issues/403) squash-merge) ([#404](https://github.com/chatman-media/timeline-studio/issues/404)) ([8d7922a](https://github.com/chatman-media/timeline-studio/commit/8d7922a8348023816835b0251eccf790a13508ab))
+
 # [3.111.0](https://github.com/chatman-media/timeline-studio/compare/v3.110.0...v3.111.0) (2026-07-01)
 
 
