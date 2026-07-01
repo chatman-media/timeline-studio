@@ -143,7 +143,11 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
               // Persist via localStorage so reloads + use-language fetch loop stay in sync.
               // Falls back to "ru" on first run for parity with backend default.
               const stored = (() => {
-                try { return window.localStorage.getItem("app-language") } catch { return null }
+                try {
+                  return window.localStorage.getItem("app-language")
+                } catch {
+                  return null
+                }
               })()
               const language = stored || "ru"
               return { language, system_language: "ru" }
@@ -151,7 +155,9 @@ export function TauriMockProvider({ children }: { children: React.ReactNode }) {
             case "set_app_language_tauri": {
               const lang = (args as any)?.lang
               if (typeof lang === "string") {
-                try { window.localStorage.setItem("app-language", lang) } catch {}
+                try {
+                  window.localStorage.setItem("app-language", lang)
+                } catch {}
               }
               return { language: lang, system_language: "ru" }
             }
