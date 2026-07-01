@@ -9,6 +9,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@timeline-studio/ui/components/tooltip"
 import { ChevronDown, Gauge, Lock, Plus, RotateCcw, Trash2, Unlock } from "lucide-react"
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
 import { useSpeedRamping } from "../../hooks/speed-ramping/use-speed-ramping"
@@ -41,6 +42,7 @@ export function SpeedCurveEditor({
   className,
   onClose,
 }: SpeedCurveEditorProps) {
+  const { t } = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -288,14 +290,14 @@ export function SpeedCurveEditor({
         <div className="flex items-center gap-2" data-oid="qfxpqx6">
           <Gauge className="h-4 w-4 text-muted-foreground" data-oid="uiv.n2o" />
           <span className="text-sm font-medium" data-oid="wy2ct4y">
-            Speed Ramping
+            {t("timeline.speedRamping.title", "Speed Ramping")}
           </span>
 
           {/* Presets */}
           <DropdownMenu data-oid="zw_gxfc">
             <DropdownMenuTrigger asChild data-oid="z5o0pmp">
               <Button variant="ghost" size="sm" data-oid=".0i7f42">
-                Presets
+                {t("timeline.speedRamping.presets", "Presets")}
                 <ChevronDown className="h-3 w-3 ml-1" data-oid="9v-g19s" />
               </Button>
             </DropdownMenuTrigger>
@@ -367,7 +369,9 @@ export function SpeedCurveEditor({
                       <Trash2 className="h-4 w-4" data-oid="5h.jjtb" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent data-oid="drp4:d6">Delete keyframe</TooltipContent>
+                  <TooltipContent data-oid="drp4:d6">
+                    {t("timeline.speedRamping.deleteKeyframe", "Delete keyframe")}
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </>
@@ -380,7 +384,9 @@ export function SpeedCurveEditor({
                   <RotateCcw className="h-4 w-4" data-oid="26xh3ja" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent data-oid="yh77yw4">Reset to normal speed</TooltipContent>
+              <TooltipContent data-oid="yh77yw4">
+                {t("timeline.speedRamping.resetToNormalSpeed", "Reset to normal speed")}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -425,7 +431,7 @@ export function SpeedCurveEditor({
             <div className="text-center" data-oid="bhnxg16">
               <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" data-oid="x36saxq" />
               <p className="text-sm" data-oid="1qsfwwd">
-                Click to add speed keyframes
+                {t("timeline.speedRamping.clickToAddKeyframes", "Click to add speed keyframes")}
               </p>
             </div>
           </div>
