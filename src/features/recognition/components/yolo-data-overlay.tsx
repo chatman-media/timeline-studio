@@ -69,7 +69,7 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
         data-oid="epyi.rm"
       >
         <div className="text-sm" data-oid="5:.knvc">
-          {t("Обнаружено объектов")}: {detections.length}
+          {t("recognition.yolo.objectsDetected")}: {detections.length}
         </div>
         <div className="text-xs" data-oid="70:y48h">
           {detections
@@ -104,11 +104,11 @@ export function YoloDataOverlay({ video, currentTime }: YoloDataOverlayProps) {
             ),
           )
 
-          showInfo(t("Контекст сцены скопирован"), t("Данные о распознанных объектах скопированы в буфер обмена"))
+          showInfo(t("recognition.yolo.sceneContextCopiedTitle"), t("recognition.yolo.sceneContextCopiedMessage"))
         }}
         data-oid="kveq9.l"
       >
-        {t("Скопировать контекст сцены")}
+        {t("recognition.yolo.copySceneContext")}
       </button>
     </div>
   )

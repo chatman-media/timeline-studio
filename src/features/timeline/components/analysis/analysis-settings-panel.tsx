@@ -648,7 +648,9 @@ export function AnalysisSettingsPanel() {
                         <div className="flex items-center justify-between" data-oid="24tdtj5">
                           <div data-oid="52v6tv3">
                             <p className="text-sm font-medium" data-oid="c6mib6e">
-                              {isRu ? ANALYSIS_LEVEL_CONFIG[preset.level].name : ANALYSIS_LEVEL_CONFIG[preset.level].nameEn}{" "}
+                              {isRu
+                                ? ANALYSIS_LEVEL_CONFIG[preset.level].name
+                                : ANALYSIS_LEVEL_CONFIG[preset.level].nameEn}{" "}
                               ({isRu ? MEDIA_TYPE_NAMES[mediaType] : MEDIA_TYPE_NAMES_EN[mediaType]})
                             </p>
                             <p className="text-xs text-muted-foreground" data-oid="qwrcx4k">

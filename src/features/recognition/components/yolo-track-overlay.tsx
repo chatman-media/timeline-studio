@@ -263,7 +263,10 @@ export function YoloTrackOverlay({
         const className = track[0]?.class || "unknown"
         const trackLength = track.length
 
-        showInfo(`${t("Трек выбран")}: ${className}`, `${t("Точек в треке")}: ${trackLength}`)
+        showInfo(
+          `${t("recognition.yolo.trackSelectedTitle")}: ${className}`,
+          `${t("recognition.yolo.pointsInTrack")}: ${trackLength}`,
+        )
       }
     } else {
       setSelectedTrack(null)
@@ -274,7 +277,7 @@ export function YoloTrackOverlay({
     <div className="space-y-4" data-oid="z-.pyx7">
       <div className="flex items-center justify-between" data-oid="atzd86.">
         <h3 className="text-lg font-semibold" data-oid="-jtzrbv">
-          {t("Треки объектов")}
+          {t("recognition.yolo.objectTracksHeading")}
         </h3>
         <div className="flex items-center gap-2" data-oid="03bs1ll">
           <label className="flex items-center gap-2 text-sm" data-oid="p:42kke">
@@ -286,7 +289,7 @@ export function YoloTrackOverlay({
               data-oid="c_d.g9b"
             />
 
-            {t("Показать траектории")}
+            {t("recognition.yolo.showTrajectories")}
           </label>
         </div>
       </div>
@@ -296,7 +299,7 @@ export function YoloTrackOverlay({
         width={width}
         height={height}
         role="img"
-        aria-label={t("Треки объектов YOLO")}
+        aria-label={t("recognition.yolo.objectTracksAriaLabel")}
         className="cursor-pointer border border-gray-300 rounded bg-white"
         onClick={handleCanvasClick}
         style={{ width, height }}
@@ -307,7 +310,7 @@ export function YoloTrackOverlay({
       <div className="grid grid-cols-2 gap-4 text-sm" data-oid="4p9zojb">
         <div data-oid="3ebsgt_">
           <div className="font-medium" data-oid="m7by5o0">
-            {t("Всего треков")}
+            {t("recognition.yolo.totalTracks")}
           </div>
           <div className="text-gray-600" data-oid="gpi_mwf">
             {trackHistory.size}
@@ -315,10 +318,12 @@ export function YoloTrackOverlay({
         </div>
         <div data-oid="x7bx9bm">
           <div className="font-medium" data-oid="o56msms">
-            {t("Выбранный трек")}
+            {t("recognition.yolo.selectedTrack")}
           </div>
           <div className="text-gray-600" data-oid="hc5g-qj">
-            {selectedTrack ? trackHistory.get(selectedTrack)?.[0]?.class || t("Неизвестно") : t("Не выбран")}
+            {selectedTrack
+              ? trackHistory.get(selectedTrack)?.[0]?.class || t("recognition.yolo.unknownClass")
+              : t("recognition.yolo.noneSelected")}
           </div>
         </div>
       </div>

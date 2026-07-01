@@ -163,7 +163,7 @@ export function EffectDetailModal() {
           <Tabs defaultValue="preview" className="w-full" data-oid="auov4vd">
             <TabsList className="grid w-full grid-cols-2" data-oid="y6yey7p">
               <TabsTrigger value="preview" data-oid="42pbrhm">
-                {t("effects.preview", "Превью")}
+                {t("effects.previewTab", "Превью")}
               </TabsTrigger>
               <TabsTrigger value="comparison" data-oid="a99tqcp">
                 <SplitSquareHorizontal size={16} className="mr-2" data-oid="db::p2v" />
