@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { gateway } from "./gateway"
+import { IdeaComposer } from "./IdeaComposer"
 import { RenderJobs } from "./RenderJobs"
 import { SessionDetail } from "./SessionDetail"
 import { type SessionSummary, SessionRow } from "./SessionRow"
@@ -86,6 +87,11 @@ export function App() {
         <h1>Reels</h1>
         {me && <p className="muted">@{me.username ?? me.userId}</p>}
       </header>
+
+      <section>
+        <h2>New idea</h2>
+        <IdeaComposer onSubmitted={() => void refresh()} />
+      </section>
 
       <section>
         <h2>Your sessions</h2>

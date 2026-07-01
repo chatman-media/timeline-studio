@@ -111,6 +111,40 @@ body {
   cursor: default;
 }
 
+.idea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.idea textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  font: inherit;
+  resize: vertical;
+  background: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.idea button {
+  align-self: flex-start;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--tg-theme-button-color, #2481cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.idea button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .revise {
   display: flex;
   gap: 6px;
