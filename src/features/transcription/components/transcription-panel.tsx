@@ -221,7 +221,7 @@ export function TranscriptionPanel({ onAddToTimeline }: TranscriptionPanelProps 
           <TabsContent value="advanced" className="space-y-4" data-oid="bz9g52y">
             {/* Провайдер */}
             <div className="space-y-2" data-oid="9fri5.9">
-              <Label data-oid="8t6kce-">{t("transcription.provider", "Провайдер")}</Label>
+              <Label data-oid="8t6kce-">{t("transcription.provider.label", "Провайдер")}</Label>
               <Select
                 value={options.provider}
                 onValueChange={(value) =>

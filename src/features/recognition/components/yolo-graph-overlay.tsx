@@ -205,7 +205,7 @@ export function YoloGraphOverlay({
         width={width}
         height={height}
         role="img"
-        aria-label={t("График обнаружений YOLO")}
+        aria-label={t("recognition.yolo.detectionGraphTitle")}
         className="cursor-pointer border border-gray-300 rounded"
         onClick={handleClick}
         onMouseMove={handleMouseMove}
@@ -229,10 +229,10 @@ export function YoloGraphOverlay({
           data-oid="cpm2:59"
         >
           <div data-oid=":mxg-8p">
-            {t("Время")}: {hoverTime.toFixed(1)}s
+            {t("recognition.yolo.time")}: {hoverTime.toFixed(1)}s
           </div>
           <div data-oid="_k4kqyj">
-            {t("Обнаружений")}: {tooltipData.detectionCount}
+            {t("recognition.yolo.detectionsLabel")}: {tooltipData.detectionCount}
           </div>
         </div>
       )}
@@ -241,14 +241,14 @@ export function YoloGraphOverlay({
       <div className="mt-2 flex items-center gap-4 text-xs text-gray-600" data-oid="ou9nmw9">
         <div className="flex items-center gap-1" data-oid="vn:vpzs">
           <div className="w-3 h-0.5 bg-green-500" data-oid="c88htuv" />
-          <span data-oid="is5u12h">{t("Количество обнаружений")}</span>
+          <span data-oid="is5u12h">{t("recognition.yolo.detectionCount")}</span>
         </div>
         <div className="flex items-center gap-1" data-oid="rxb:yz:">
           <div className="w-3 h-0.5 bg-red-500" data-oid="mi.-wsl" />
-          <span data-oid="8mlsasr">{t("Текущее время")}</span>
+          <span data-oid="8mlsasr">{t("recognition.yolo.currentTime")}</span>
         </div>
         <div className="text-gray-500" data-oid="t_vcasa">
-          {t("Кликните для перехода к времени")}
+          {t("recognition.yolo.clickToSeek")}
         </div>
       </div>
     </div>

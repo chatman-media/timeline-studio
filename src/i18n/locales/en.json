@@ -79,7 +79,11 @@
     "momentsDetected": "moments detected",
     "momentTypes": "Moment Types",
     "pause": "Pause",
-    "play": "Play"
+    "play": "Play",
+    "unknownError": "Unknown error",
+    "unknown": "Unknown",
+    "gigabytes": "GB",
+    "megabytes": "MB"
   },
   "app": {
     "connectingToBackend": "Connecting to application...",
@@ -385,7 +389,10 @@
       "permissionCheckError": "Couldn't check permissions. Please try again.",
       "errorGettingDevices": "Couldn't get the list of devices",
       "recordingNotSupported": "Recording isn't supported by this browser",
-      "streamError": "Couldn't initialize the microphone"
+      "streamError": "Couldn't initialize the microphone",
+      "format": "Format",
+      "microphoneWithNumber": "Microphone {{number}}",
+      "initError": "Failed to initialize recording"
     },
     "userSettings": {
       "title": "User Settings",
@@ -835,7 +842,10 @@
         "noProject": "No project loaded",
         "noPath": "Please select a save location",
         "exportFailed": "Export failed. Please try again.",
-        "socialExportFailed": "Social media upload failed. Please try again."
+        "socialExportFailed": "Social media upload failed. Please try again.",
+        "folderSelection": "Failed to select export folder",
+        "loginFailed": "Failed to log in to {{network}}",
+        "uploadFailed": "Failed to upload to {{network}}"
       },
       "uploadSuccess": "Successfully uploaded to {{platform}}",
       "loggedIn": "Logged in",
@@ -913,7 +923,8 @@
         "cancel": "Cancel",
         "startExport": "Start Export"
       },
-      "sectionsExportSuccess": "Sections exported successfully"
+      "sectionsExportSuccess": "Sections exported successfully",
+      "selectFolder": "Select export folder"
     },
     "keyboardShortcuts": {
       "title": "Keyboard Shortcuts",
@@ -1323,6 +1334,37 @@
       "12": "12 screens",
       "16": "16 screens",
       "25": "25 screens"
+    },
+    "customizer": {
+      "title": "Template Customizer",
+      "description": "Customize cell appearance, animations, and layout for this template.",
+      "selectCell": "Select Cell",
+      "cell": "Cell",
+      "appearance": "Appearance",
+      "animation": "Animation",
+      "layout": "Layout",
+      "borderColor": "Border Color",
+      "borderWidth": "Border Width",
+      "borderRadius": "Border Radius",
+      "backgroundColor": "Background Color",
+      "enterAnimation": "Enter Animation",
+      "animations": {
+        "fade": "Fade",
+        "slideLeft": "Slide Left",
+        "slideRight": "Slide Right",
+        "slideUp": "Slide Up",
+        "slideDown": "Slide Down",
+        "zoomIn": "Zoom In",
+        "zoomOut": "Zoom Out",
+        "none": "None"
+      },
+      "duration": "Duration",
+      "exitAnimation": "Exit Animation",
+      "transitionAnimation": "Transition Animation",
+      "layoutDescription": "Layout settings for this template will appear here.",
+      "saveName": "Save As",
+      "saveNamePlaceholder": "Enter template name",
+      "save": "Save Template"
     }
   },
   "language": {
@@ -2191,6 +2233,7 @@
     },
     "import": "Import",
     "apply": "Apply",
+    "previewTab": "Preview",
     "comparisonTab": "Comparison",
     "comparison": {
       "original": "Original",
@@ -2221,7 +2264,14 @@
         "info1": "This will generate preview videos for all effects using the Rust prerender backend.",
         "info2": "Generated videos will be saved to the output directory and used for effect previews.",
         "warning": "Warning: This process may take several minutes depending on the number of effects."
-      }
+      },
+      "generating": "Generating preview...",
+      "generatingMessage": "Generating preview videos for effects",
+      "completedWithErrors": "Completed with errors",
+      "completedMessage": "Preview generation completed",
+      "completed": "Completed",
+      "allCompletedMessage": "All previews generated successfully",
+      "error": "Failed to generate previews"
     },
     "enterPresetName": "Enter a preset name:"
   },
@@ -2295,7 +2345,10 @@
       "emptyHint": "Add videos to media browser or use AI to help with import",
       "music": "music",
       "analysisComplete": "Analysis complete",
-      "detected": "Detected"
+      "detected": "Detected",
+      "scenes": "scenes",
+      "moments": "key moments",
+      "faces": "faces"
     },
     "actionPreview": {
       "riskHigh": "High risk",
@@ -2331,7 +2384,8 @@
       "analyzing": "Analyzing project context...",
       "preparingTools": "Preparing tools...",
       "generating": "Generating response...",
-      "processing": "Processing..."
+      "processing": "Processing...",
+      "usingTools": "Using tools..."
     }
   },
   "source": {
@@ -2991,6 +3045,59 @@
       "renameExisting": "Rename existing files",
       "conflictResolution": "File Conflict Resolution",
       "conflictResolutionDescription": "What to do when a file already exists"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "unknown": "Unknown"
+    },
+    "duration": {
+      "hours": "{{count}}h ago",
+      "minutes": "{{count}}m ago",
+      "justNow": "Just now"
+    },
+    "confirmCancel": "Cancel this render job?",
+    "rendering": "Rendering...",
+    "totalJobs": "Total jobs",
+    "activeJobs": "Active jobs",
+    "completedJobs": "Completed jobs",
+    "transitions": {
+      "statusFound": "Transitions detected in project",
+      "statusNotFound": "No transitions found in project",
+      "totalCount": "Total transitions",
+      "gpuAccelerated": "GPU-accelerated",
+      "estimatedTime": "Estimated time",
+      "complexity": "Complexity",
+      "complexityHigh": "High",
+      "complexityMedium": "Medium",
+      "complexityLow": "Low",
+      "applyRecommended": "Apply Recommended Settings",
+      "includeTransitions": "Include transitions",
+      "quality": "Transition quality",
+      "qualityLow": "Low",
+      "fast": "Fast",
+      "qualityMedium": "Medium",
+      "balanced": "Balanced",
+      "qualityHigh": "High",
+      "slower": "Slower",
+      "qualityMaximum": "Maximum",
+      "slowest": "Slowest",
+      "renderMode": "Render mode",
+      "renderModeSoftware": "Software (CPU)",
+      "renderModeGPU": "GPU Accelerated",
+      "renderModeAuto": "Auto",
+      "optimizeTransitions": "Optimize transitions",
+      "advancedSettings": "Advanced Settings",
+      "cacheSize": "Cache size",
+      "parallelProcessing": "Parallel processing",
+      "maxConcurrent": "Max concurrent transitions",
+      "fallbackToBasic": "Fallback to basic transitions",
+      "exportMetadata": "Export transition metadata",
+      "debugMode": "Debug mode",
+      "logTiming": "Log render timing"
     }
   },
   "fairlightAudio": {
@@ -3430,6 +3537,58 @@
         "matrixDescription": "Visual routing matrix for complex setups",
         "monitorComingSoon": "Route monitor coming soon",
         "monitorDescription": "Real-time visualization of MIDI flow"
+      },
+      "learnDialog": {
+        "parameters": {
+          "channel1Volume": "Channel 1 Volume",
+          "channel1Pan": "Channel 1 Pan",
+          "channel2Volume": "Channel 2 Volume",
+          "channel2Pan": "Channel 2 Pan",
+          "channel3Volume": "Channel 3 Volume",
+          "channel3Pan": "Channel 3 Pan",
+          "channel4Volume": "Channel 4 Volume",
+          "channel4Pan": "Channel 4 Pan",
+          "masterVolume": "Master Volume",
+          "masterLimiterThreshold": "Master Limiter Threshold"
+        },
+        "midiDevice": "MIDI Device",
+        "selectMidiDevice": "Select a MIDI device",
+        "targetParameter": "Target Parameter",
+        "selectParameter": "Select a parameter",
+        "status": {
+          "listening": "Listening for MIDI input...",
+          "listeningHint": "Move a knob or fader on your controller",
+          "received": "MIDI message received",
+          "ready": "Ready to learn",
+          "readyHint": "Select a device and parameter, then click \"Start Listening\""
+        },
+        "info": {
+          "type": "Type:",
+          "controller": "Controller:",
+          "channel": "Channel:"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "listening": "Listening...",
+          "startListening": "Start Listening",
+          "saveMapping": "Save Mapping"
+        },
+        "title": "MIDI Learn",
+        "description": "Map a MIDI controller to a mixer parameter by moving a knob or fader."
+      },
+      "mappingEditor": {
+        "title": "Edit MIDI Mapping",
+        "minimumValue": "Minimum Value",
+        "maximumValue": "Maximum Value",
+        "responseCurve": "Response Curve",
+        "curves": {
+          "linear": "Linear",
+          "exponential": "Exponential",
+          "logarithmic": "Logarithmic"
+        },
+        "responseCurvePreview": "Response curve preview",
+        "cancel": "Cancel",
+        "saveChanges": "Save Changes"
       }
     },
     "automation": {
@@ -3535,7 +3694,7 @@
     },
     "automationView": {
       "noLanesVisible": "No automation lanes visible",
-      "addLaneHint": "Add a lane using the controls above",
+      "addLanePrompt": "Add a lane using the controls above",
       "status": {
         "automation": "Automation:",
         "lanes": "Lanes:",
@@ -3886,6 +4045,7 @@
     "transcribe": "Transcription",
     "translate": "Translate to English",
     "provider": {
+      "label": "Provider",
       "unified": "Unified AI",
       "whisper": "Whisper",
       "azure": "Azure",
@@ -3919,5 +4079,36 @@
   },
   "camera": {
     "permissionError": "Couldn't access the camera and microphone. Check your settings."
+  },
+  "recognition": {
+    "yolo": {
+      "detectionGraphTitle": "YOLO Detection Graph",
+      "time": "Time",
+      "detectionsLabel": "Detections",
+      "detectionCount": "Detection Count",
+      "currentTime": "Current Time",
+      "clickToSeek": "Click to jump to a time",
+      "objectsDetected": "Objects Detected",
+      "sceneContextCopiedTitle": "Scene Context Copied",
+      "sceneContextCopiedMessage": "Detected object data copied to clipboard",
+      "copySceneContext": "Copy Scene Context",
+      "trackSelectedTitle": "Track Selected",
+      "pointsInTrack": "Points in Track",
+      "objectTracksHeading": "Object Tracks",
+      "showTrajectories": "Show Trajectories",
+      "objectTracksAriaLabel": "YOLO Object Tracks",
+      "totalTracks": "Total Tracks",
+      "selectedTrack": "Selected Track",
+      "unknownClass": "Unknown",
+      "noneSelected": "None Selected",
+      "detectionAnalysisTitle": "YOLO Detection Analysis",
+      "totalFrameCount": "Total Frame Count",
+      "allClasses": "All Classes",
+      "timeAxisLabel": "Time (seconds)",
+      "totalFrames": "Total Frames",
+      "uniqueClasses": "Unique Classes",
+      "totalDetections": "Total Detections",
+      "averagePerFrame": "Average per Frame"
+    }
   }
 }

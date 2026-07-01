@@ -79,10 +79,10 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
     <div className="w-full" data-oid="pkdwev_">
       <div className="mb-4" data-oid="u5w-zm8">
         <h3 className="text-lg font-semibold" data-oid="s7-zn77">
-          {t("Анализ обнаружений YOLO")}
+          {t("recognition.yolo.detectionAnalysisTitle")}
         </h3>
         <p className="text-sm text-gray-600" data-oid="15ec-op">
-          {t("Общее количество кадров")}: {yoloData.frames.length}
+          {t("recognition.yolo.totalFrameCount")}: {yoloData.frames.length}
         </p>
       </div>
 
@@ -95,7 +95,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
           onClick={() => setSelectedClass(null)}
           data-oid="mf.wm.1"
         >
-          {t("Все классы")}
+          {t("recognition.yolo.allClasses")}
         </button>
         {uniqueClasses.map((className) => (
           <button
@@ -209,7 +209,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
             fill="#6c757d"
             data-oid=":740sf0"
           >
-            {t("Время (секунды)")}
+            {t("recognition.yolo.timeAxisLabel")}
           </text>
           <text
             x={-40}
@@ -220,7 +220,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
             transform={`rotate(-90, -40, ${chartHeight / 2})`}
             data-oid="gcatd88"
           >
-            {t("Количество обнаружений")}
+            {t("recognition.yolo.detectionCount")}
           </text>
         </g>
       </svg>
@@ -229,7 +229,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4" data-oid="6qea3yl">
         <div className="rounded bg-gray-100 p-3" data-oid="n8uql:2">
           <div className="text-sm text-gray-600" data-oid="9k_u:a-">
-            {t("Всего кадров")}
+            {t("recognition.yolo.totalFrames")}
           </div>
           <div className="text-xl font-semibold" data-oid="5yzs4xi">
             {yoloData.frames.length}
@@ -237,7 +237,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
         </div>
         <div className="rounded bg-gray-100 p-3" data-oid="uc5a5ln">
           <div className="text-sm text-gray-600" data-oid="zyowo7p">
-            {t("Уникальных классов")}
+            {t("recognition.yolo.uniqueClasses")}
           </div>
           <div className="text-xl font-semibold" data-oid="khe9qfu">
             {uniqueClasses.length}
@@ -245,7 +245,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
         </div>
         <div className="rounded bg-gray-100 p-3" data-oid="o7-b9q7">
           <div className="text-sm text-gray-600" data-oid="c_w0tmy">
-            {t("Всего обнаружений")}
+            {t("recognition.yolo.totalDetections")}
           </div>
           <div className="text-xl font-semibold" data-oid="2hgg2gi">
             {chartData.reduce((sum, data) => sum + data.totalDetections, 0)}
@@ -253,7 +253,7 @@ export function YoloDataVisualization({ yoloData, width = 800, height = 400 }: Y
         </div>
         <div className="rounded bg-gray-100 p-3" data-oid="lfj_-nv">
           <div className="text-sm text-gray-600" data-oid="eizb9fm">
-            {t("Среднее за кадр")}
+            {t("recognition.yolo.averagePerFrame")}
           </div>
           <div className="text-xl font-semibold" data-oid="1.r-1cd">
             {(chartData.reduce((sum, data) => sum + data.totalDetections, 0) / chartData.length).toFixed(1)}
