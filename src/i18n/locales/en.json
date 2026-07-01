@@ -1706,6 +1706,13 @@
   "timeline": {
     "hide": "Hide timeline",
     "show": "Show timeline",
+    "speedRamping": {
+      "title": "Speed Ramping",
+      "presets": "Presets",
+      "deleteKeyframe": "Delete keyframe",
+      "resetToNormalSpeed": "Reset to normal speed",
+      "clickToAddKeyframes": "Click to add speed keyframes"
+    },
     "workspace": {
       "timeline": "Timeline",
       "audioMixer": "Audio Mixer",
@@ -2650,7 +2657,9 @@
       "saturationVsSaturation": "Saturation vs Saturation",
       "reset": "Reset",
       "auto": "Auto",
-      "hint": "Click to add points, drag to adjust"
+      "hint": "Click to add points, drag to adjust",
+      "dragToMove": "Drag to move",
+      "clickToAddRemove": "Click to add • Double-click to remove"
     },
     "hsl": {
       "description": "Advanced HSL adjustments and secondary color correction",

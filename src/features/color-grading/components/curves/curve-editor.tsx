@@ -1,4 +1,5 @@
 import { type MouseEvent, useCallback, useId, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
 
@@ -43,6 +44,7 @@ function generateBezierPath(points: CurvePoint[]): string {
 }
 
 export function CurveEditor({ points = [], onPointsChange, color = "white", className }: CurveEditorProps) {
+  const { t } = useTranslation()
   const svgRef = useRef<SVGSVGElement>(null)
   const [isDragging, setIsDragging] = useState<string | null>(null)
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null)
@@ -196,7 +198,9 @@ export function CurveEditor({ points = [], onPointsChange, color = "white", clas
 
       {/* Подсказка */}
       <div className="absolute bottom-2 right-2 text-xs text-gray-400 pointer-events-none" data-oid="86ojl3z">
-        {isDragging ? "Drag to move" : "Click to add • Double-click to remove"}
+        {isDragging
+          ? t("colorGrading.curves.dragToMove", "Drag to move")
+          : t("colorGrading.curves.clickToAddRemove", "Click to add • Double-click to remove")}
       </div>
     </div>
   )
