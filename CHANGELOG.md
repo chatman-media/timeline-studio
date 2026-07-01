@@ -1,3 +1,16 @@
+# [3.111.0](https://github.com/chatman-media/timeline-studio/compare/v3.110.0...v3.111.0) (2026-07-01)
+
+
+### Bug Fixes
+
+* resolve browser-preview crashes and extensive i18n gaps ([#403](https://github.com/chatman-media/timeline-studio/issues/403)) ([bd5b76e](https://github.com/chatman-media/timeline-studio/commit/bd5b76e425c5e39b5ed4f9c5837797506fdc2b14))
+
+
+### Features
+
+* **bot:** concierge approval policy (always/never/auto) ([#334](https://github.com/chatman-media/timeline-studio/issues/334)) ([#401](https://github.com/chatman-media/timeline-studio/issues/401)) ([a86ea53](https://github.com/chatman-media/timeline-studio/commit/a86ea53861e47d90a75acca2c5efe714f186dabc)), closes [#325](https://github.com/chatman-media/timeline-studio/issues/325)
+* **mini-app:** idea composer on the home screen ([#330](https://github.com/chatman-media/timeline-studio/issues/330)) ([#402](https://github.com/chatman-media/timeline-studio/issues/402)) ([18e6c8c](https://github.com/chatman-media/timeline-studio/commit/18e6c8c1c25eba0aafea24afb30c5f4c54d8cfba)), closes [#400](https://github.com/chatman-media/timeline-studio/issues/400)
+
 # [3.110.0](https://github.com/chatman-media/timeline-studio/compare/v3.109.0...v3.110.0) (2026-06-28)
 
 
