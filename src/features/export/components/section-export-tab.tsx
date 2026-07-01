@@ -304,7 +304,7 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
                     {t("export.sections.preview")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="hr-hkhm">
-                    720p, Low bitrate, Fast encoding
+                    {t("export.sections.previewDescription")}
                   </div>
                 </div>
               </SelectItem>
@@ -314,7 +314,7 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
                     {t("export.sections.draft")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="xolilsz">
-                    1080p, Medium quality
+                    {t("export.sections.draftDescription")}
                   </div>
                 </div>
               </SelectItem>
@@ -324,7 +324,7 @@ export function SectionExportTab({ defaultSettings, onExport, onPreviewSection }
                     {t("export.sections.final")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="vslg4qy">
-                    Full quality, project settings
+                    {t("export.sections.finalDescription")}
                   </div>
                 </div>
               </SelectItem>

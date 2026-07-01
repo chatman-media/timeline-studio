@@ -46,6 +46,7 @@ const logger = createLogger("VirtualizedTimelineContent")
 
 export function VirtualizedTimelineContent() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const projectCreateRequestedRef = useRef(false)
   const [scrollOffset, setScrollOffset] = useState(0)
   const [containerWidth, setContainerWidth] = useState(0)
 
@@ -89,11 +90,16 @@ export function VirtualizedTimelineContent() {
     overscan: 5, // Рендерим 5 дополнительных треков сверху и снизу
   })
 
-  // Создаем проект при первой загрузке
+  // Создаем проект при первой загрузке.
+  // `currentProject` приходит из backend project-state; в browser-режиме мок отдаёт null,
+  // и без него Timeline бесконечно висел на лоадере. Не блокируем инициализацию его наличием.
+  // ref-флаг критичен: orchestrator.createProject выставляет SET_LOADING/CLEAR_LOADING, но
+  // НЕ кладёт `project` в context — без guard эффект ушёл бы в бесконечный цикл вызовов.
   useEffect(() => {
-    if (!project && currentProject && projectSettings) {
-      void createProject(currentProject.metadata.name)
-    }
+    if (project || projectCreateRequestedRef.current || !projectSettings) return
+    projectCreateRequestedRef.current = true
+    const name = currentProject?.metadata?.name || "Untitled Project"
+    void createProject(name)
   }, [project, currentProject, projectSettings, createProject])
 
   // Добавляем демо секцию
@@ -155,7 +161,11 @@ export function VirtualizedTimelineContent() {
     )
   }
 
-  if (!project) {
+  // Лоадер показываем ТОЛЬКО до момента, когда мы запросили создание проекта.
+  // В browser-режиме mock-backend возвращает success, но не шлёт PROJECT_UPDATED-эвент,
+  // поэтому context.project остаётся null навсегда. Дальше рендер опирается на project?.
+  // и спокойно отрисовывает пустой таймлайн.
+  if (!project && !projectCreateRequestedRef.current) {
     return (
       <div className="flex h-full items-center justify-center" data-oid="go-p6we">
         <Card className="w-96" data-oid="jg6rgnm">
@@ -188,12 +198,14 @@ export function VirtualizedTimelineContent() {
             <div className="flex items-center gap-6" data-oid="ac_1tn2">
               <div data-oid="0xpt59r">
                 <h3 className="font-semibold text-foreground" data-oid="tnf7ciz">
-                  {currentProject?.metadata?.name || project.name}
+                  {currentProject?.metadata?.name || project?.name || "Untitled Project"}
                 </h3>
                 <p className="text-sm text-muted-foreground" data-oid="q5:6ba3">
                   {projectSettings
                     ? `${projectSettings.aspectRatio.value.width}x${projectSettings.aspectRatio.value.height} @ ${projectSettings.frameRate}fps`
-                    : `${project.settings.resolution.width}x${project.settings.resolution.height} @ ${project.settings.fps}fps`}
+                    : project?.settings
+                      ? `${project.settings.resolution.width}x${project.settings.resolution.height} @ ${project.settings.fps}fps`
+                      : ""}
                 </p>
               </div>
               {/* Edit mode selector */}
@@ -203,7 +215,7 @@ export function VirtualizedTimelineContent() {
             </div>
             <div className="flex gap-2" data-oid="c4b002.">
               <Badge variant="outline" data-oid="2hspsrl">
-                {project.sections?.length || 0} секций
+                {project?.sections?.length || 0} секций
               </Badge>
               <Badge variant="outline" data-oid="1mi0f:9">
                 {tracks.length} треков

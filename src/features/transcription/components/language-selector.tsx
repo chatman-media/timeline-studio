@@ -38,7 +38,7 @@ export function LanguageSelector({ value, onChange, includeAutoDetect = true }: 
 
   return (
     <div className="space-y-2" data-oid="njnimz2">
-      <Label data-oid="x2_fbz:">{t("transcription.language", "Язык")}</Label>
+      <Label data-oid="x2_fbz:">{t("transcription.language.label")}</Label>
       <Select
         value={value || (includeAutoDetect ? "auto" : undefined)}
         onValueChange={(val) => onChange(val === "auto" ? undefined : val)}

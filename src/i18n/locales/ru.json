@@ -77,7 +77,9 @@
     "averageScore": "Средняя оценка",
     "detectionRate": "Частота обнаружения",
     "momentsDetected": "моментов обнаружено",
-    "momentTypes": "Типы моментов"
+    "momentTypes": "Типы моментов",
+    "pause": "Пауза",
+    "play": "Воспроизвести"
   },
   "app": {
     "connectingToBackend": "Подключение к приложению...",
@@ -460,7 +462,8 @@
     "description": "Расширенные инструменты для разработчиков и создателей контента",
     "tabs": {
       "effectPreviews": "Предпросмотр эффектов"
-    }
+    },
+    "openButton": "Открыть инструменты разработчика"
   },
   "templates": {
     "verticalSplit": "Вертикальное разделение",
@@ -690,6 +693,83 @@
       "supportedVideoFormats": "Поддерживаемые форматы видео: MP4, MOV, AVI, MKV, WEBM, INSV (360°)",
       "supportedAudioFormats": "Поддерживаемые форматы аудио: MP3, WAV, AAC, ALAC, OGG, FLAC"
     },
+    "emptyState": {
+      "formatsLabel": "Поддерживаемые форматы:",
+      "media": {
+        "title": "Медиафайлы не найдены",
+        "description": "Добавьте видео, аудио или фото файлы для работы с проектом",
+        "importText": "Импортировать медиафайлы",
+        "folderText": "Или поместите файлы в папку",
+        "formats": [
+          "Видео: MP4, MOV, AVI, MKV, WEBM, INSV (360°)",
+          "Аудио: MP3, WAV, AAC, ALAC, OGG, FLAC",
+          "Фото: JPG, PNG, GIF, WEBP, TIFF, BMP"
+        ]
+      },
+      "music": {
+        "title": "Музыкальные файлы не найдены",
+        "description": "Добавьте музыку и звуковые эффекты для озвучивания проекта",
+        "importText": "Импортировать музыку",
+        "folderText": "Или поместите музыку в папку",
+        "formats": [
+          "MP3, WAV, AAC, ALAC, OGG, FLAC"
+        ]
+      },
+      "effects": {
+        "title": "Эффекты не найдены",
+        "description": "Добавьте видеоэффекты для улучшения ваших клипов",
+        "importText": "Импортировать эффекты",
+        "folderText": "Или поместите эффекты в папку",
+        "formats": [
+          "JSON файлы с описанием эффектов"
+        ]
+      },
+      "filters": {
+        "title": "Фильтры не найдены",
+        "description": "Добавьте цветовые фильтры и коррекцию для видео",
+        "importText": "Импортировать фильтры",
+        "folderText": "Или поместите фильтры в папку",
+        "formats": [
+          "JSON файлы с настройками фильтров"
+        ]
+      },
+      "transitions": {
+        "title": "Переходы не найдены",
+        "description": "Добавьте переходы между клипами для плавного монтажа",
+        "importText": "Импортировать переходы",
+        "folderText": "Или поместите переходы в папку",
+        "formats": [
+          "JSON файлы с анимациями переходов"
+        ]
+      },
+      "templates": {
+        "title": "Шаблоны не найдены",
+        "description": "Добавьте готовые шаблоны для быстрого создания проектов",
+        "importText": "Импортировать шаблоны",
+        "folderText": "Или поместите шаблоны в папку",
+        "formats": [
+          "JSON файлы с настройками шаблонов"
+        ]
+      },
+      "style_templates": {
+        "title": "Стилистические шаблоны не найдены",
+        "description": "Добавьте стилизованные шаблоны с готовым дизайном",
+        "importText": "Импортировать стилистические шаблоны",
+        "folderText": "Или поместите шаблоны в папку",
+        "formats": [
+          "JSON файлы со стилями и настройками"
+        ]
+      },
+      "subtitles": {
+        "title": "Субтитры не найдены",
+        "description": "Добавьте файлы субтитров или создайте новые",
+        "importText": "Импортировать субтитры",
+        "folderText": "Или поместите субтитры в папку",
+        "formats": [
+          "SRT, VTT, ASS, SSA файлы субтитров"
+        ]
+      }
+    },
     "subtitles": {
       "search": "Поиск...",
       "dragHint": "Перетащите субтитры на таймлайн, чтобы добавить их к проекту",
@@ -877,10 +957,18 @@
     }
   },
   "timeline": {
+    "hide": "Скрыть таймлайн",
+    "show": "Показать таймлайн",
     "workspace": {
       "timeline": "Таймлайн",
       "audioMixer": "Аудио микшер",
-      "analysis": "Анализ"
+      "analysis": "Анализ",
+      "script": "Сценарий"
+    },
+    "analysisPanel": {
+      "results": "Результаты анализа",
+      "newAnalysis": "Новый анализ",
+      "newAnalysisSettings": "Настройка нового анализа"
     },
     "audioMixer": {
       "title": "Аудио микшер",
@@ -953,7 +1041,24 @@
       "next": "Следующий"
     },
     "controls": {
-      "playbackSpeed": "Скорость воспроизведения"
+      "firstFrame": "Первый кадр",
+      "previousFrame": "Предыдущий кадр",
+      "play": "Воспроизвести",
+      "pause": "Пауза",
+      "nextFrame": "Следующий кадр",
+      "lastFrame": "Последний кадр",
+      "record": "Начать запись",
+      "stopRecord": "Остановить запись",
+      "entryPoint": "Точка входа",
+      "exitPoint": "Точка выхода",
+      "settings": "Настройки",
+      "takeSnapshot": "Сделать снимок",
+      "switchCamera": "Переключить камеру",
+      "resetTemplate": "Сбросить шаблон",
+      "muteAudio": "Выключить звук",
+      "unmuteAudio": "Включить звук",
+      "fullscreen": "Полноэкранный режим",
+      "exitFullscreen": "Выйти из полноэкранного режима"
     },
     "speed": {
       "normal": "Нормальная",
@@ -985,26 +1090,6 @@
       "editTrackName": "Нажмите для редактирования",
       "sectorName": "Сектор {{date}}",
       "deleteConfirmation": "Вы уверены, что хотите удалить секцию {{section}}? Это действие нельзя отменить."
-    },
-    "controls": {
-      "firstFrame": "Первый кадр",
-      "previousFrame": "Предыдущий кадр",
-      "play": "Воспроизвести",
-      "pause": "Пауза",
-      "nextFrame": "Следующий кадр",
-      "lastFrame": "Последний кадр",
-      "record": "Начать запись",
-      "stopRecord": "Остановить запись",
-      "entryPoint": "Точка входа",
-      "exitPoint": "Точка выхода",
-      "settings": "Настройки",
-      "takeSnapshot": "Сделать снимок",
-      "switchCamera": "Переключить камеру",
-      "resetTemplate": "Сбросить шаблон",
-      "muteAudio": "Выключить звук",
-      "unmuteAudio": "Включить звук",
-      "fullscreen": "Полноэкранный режим",
-      "exitFullscreen": "Выйти из полноэкранного режима"
     },
     "title": "Таймлайн",
     "noTracks": "Нет дорожек",
@@ -1054,7 +1139,28 @@
       "ask_ai_import": "Спросить AI",
       "copy": "Копировать",
       "no_models": "Нет доступных моделей",
-      "no_tool_models": "Нет моделей с поддержкой инструментов"
+      "no_tool_models": "Нет моделей с поддержкой инструментов",
+      "error": "Произошла ошибка при отправке сообщения. Пожалуйста, проверьте настройки API ключа."
+    },
+    "clip": {
+      "copy": "Копировать",
+      "cut": "Вырезать",
+      "split": "Разделить",
+      "properties": "Свойства",
+      "effects": "Эффекты",
+      "transitions": "Переходы",
+      "filters": "Фильтры",
+      "volume": "Громкость",
+      "delete": "Удалить"
+    },
+    "effects": {
+      "title": "Эффекты клипа",
+      "noClipSelected": "Выберите клип для управления эффектами",
+      "add": "Добавить",
+      "selectEffect": "Выберите эффект",
+      "selectEffectDescription": "Выберите эффект для добавления к клипу",
+      "noEffects": "Нет эффектов",
+      "selectEffectToEdit": "Выберите эффект для редактирования"
     }
   },
   "titles": {
@@ -1177,7 +1283,9 @@
       "parameters": "Параметры",
       "tags": "Теги",
       "applyFilter": "Применить фильтр"
-    }
+    },
+    "resetParams": "Сбросить по умолчанию",
+    "previewNote": "Изменения применяются в реальном времени в превью"
   },
   "transitions": {
     "add": "Добавить переход",
@@ -1360,8 +1468,56 @@
       "parameters": "Параметры",
       "presets": "Пресеты",
       "ffmpegCommand": "FFmpeg команда",
-      "applyEffect": "Применить эффект"
-    }
+      "applyEffect": "Применить эффект",
+      "resetToDefault": "Сбросить к значениям по умолчанию",
+      "exportEffect": "Экспортировать эффект",
+      "savePreset": "Сохранить как пресет",
+      "currentValues": "Текущие значения"
+    },
+    "loading": "Загрузка эффектов...",
+    "error": "Ошибка загрузки эффектов",
+    "search": "Поиск эффектов...",
+    "scope": {
+      "all": "Все",
+      "clip": "Клип",
+      "track": "Трек",
+      "global": "Глобальные"
+    },
+    "import": "Импорт",
+    "apply": "Применить",
+    "comparisonTab": "Сравнение",
+    "comparison": {
+      "original": "Оригинал",
+      "withEffect": "С эффектом",
+      "position": "Позиция"
+    },
+    "customPreset": "Пользовательский",
+    "deletePreset": "Удалить пресет",
+    "noParameters": "Нет параметров",
+    "createdAt": "Создано",
+    "enterExportName": "Введите название файла для экспорта:",
+    "preview": {
+      "generator": {
+        "title": "Генератор превью эффектов",
+        "description": "Создание превью-видео для всех эффектов с помощью системы предрендеринга",
+        "totalEffects": "Всего эффектов",
+        "completed": "Завершено",
+        "failed": "Ошибка",
+        "progress": "Прогресс",
+        "current": "Текущий",
+        "sourceVideo": "Исходное видео",
+        "sourceVideoHelp": "Путь к видеофайлу для применения эффектов",
+        "duration": "Длительность (секунды)",
+        "quality": "Качество (0-100)",
+        "outputDir": "Папка вывода",
+        "generate": "Создать превью",
+        "cancel": "Отменить генерацию",
+        "info1": "Это создаст превью-видео для всех эффектов с помощью Rust-бэкенда предрендеринга.",
+        "info2": "Созданные видео будут сохранены в папку вывода и использованы для превью эффектов.",
+        "warning": "Внимание: этот процесс может занять несколько минут в зависимости от количества эффектов."
+      }
+    },
+    "enterPresetName": "Введите название пресета:"
   },
   "project": {
     "untitledProject": "Без названия #{{number}}",
@@ -1508,6 +1664,40 @@
       "selectFile": "Выберите файл",
       "selectFileDesc": "Выберите аудио или видео файл для транскрипции",
       "noMedia": "Добавьте видео или аудио файлы в проект для транскрипции"
+    },
+    "enhanced": {
+      "success": "Субтитры созданы",
+      "successDesc": "Обработано {{count}} субтитров с уверенностью {{confidence}}%",
+      "error": "Ошибка создания субтитров",
+      "cancelled": "Операция отменена"
+    },
+    "trackName": "Субтитры",
+    "autoSync": {
+      "selectAudio": "Выберите аудио трек",
+      "noSubtitles": "Нет субтитров для синхронизации",
+      "analyzing": "Анализ аудио...",
+      "detectingSpeech": "Определение моментов речи...",
+      "noSpeechDetected": "Речь не обнаружена",
+      "matching": "Сопоставление субтитров...",
+      "success": "Синхронизация завершена",
+      "successDesc": "Синхронизировано {{synced}} из {{total}} субтитров ({{confident}} с высокой точностью)",
+      "error": "Ошибка синхронизации",
+      "errorDesc": "Не удалось выполнить автоматическую синхронизацию",
+      "title": "Автоматическая синхронизация",
+      "description": "Синхронизация субтитров с аудио на основе анализа речи",
+      "audioSource": "Источник аудио",
+      "selectAudioPlaceholder": "Выберите аудио трек или файл",
+      "tracksSection": "Треки на таймлайне",
+      "filesSection": "Медиафайлы",
+      "mode": "Режим синхронизации",
+      "voiceDetection": "Определение голоса",
+      "silenceDetection": "Определение пауз",
+      "beatDetection": "Синхронизация с ритмом",
+      "sensitivity": "Чувствительность",
+      "progress": "Прогресс",
+      "syncing": "Синхронизация...",
+      "start": "Начать синхронизацию",
+      "hint": "Алгоритм анализирует аудио волну для определения моментов начала речи и автоматически выравнивает субтитры"
     }
   },
   "styleTemplates": {
@@ -1677,7 +1867,10 @@
       "maintainDuration": "Сохранить длительность",
       "frameInterpolation": "Интерполяция кадров",
       "interpolationMethod": "Метод интерполяции",
-      "smoothnessLevel": "Уровень плавности"
+      "smoothnessLevel": "Уровень плавности",
+      "smoothPlayback": "Плавное воспроизведение",
+      "performance": "Производительность",
+      "quality": "Качество"
     },
     "info": {
       "title": "Информация о медиафайле",
@@ -1864,7 +2057,46 @@
   "ai": {
     "suggestions": {
       "whatCanDo": "Что можно сделать",
-      "emptyHint": "Добавьте видео в браузер медиа или используйте AI для помощи с импортом"
+      "emptyHint": "Добавьте видео в браузер медиа или используйте AI для помощи с импортом",
+      "music": "музыка",
+      "analysisComplete": "Анализ завершён",
+      "detected": "Обнаружено"
+    },
+    "actionPreview": {
+      "riskHigh": "Высокий риск",
+      "riskMedium": "Средний риск",
+      "riskLow": "Низкий риск",
+      "riskUnknown": "Неизвестно",
+      "title": "AI планирует выполнить следующие действия",
+      "parameters": "Параметры",
+      "cancel": "Отменить",
+      "confirm": "Выполнить"
+    },
+    "cache": {
+      "entries": "Кэш",
+      "hits": "Попадания",
+      "expired": "Устарело",
+      "refresh": "Обновить статистику",
+      "title": "Кэш AI запросов",
+      "description": "Автоматическое кэширование ответов от AI",
+      "disabled": "Кэширование отключено",
+      "totalEntries": "Всего записей",
+      "totalHits": "Попадания",
+      "maxEntries": "Макс. записей",
+      "expiredWarning": "Устаревших записей: {{count}}",
+      "refreshTooltip": "Обновить статистику кэша",
+      "cleanup": "Очистить устаревшие",
+      "cleanupTooltip": "Удалить устаревшие записи из кэша",
+      "clear": "Очистить весь кэш",
+      "clearTooltip": "Удалить все записи из кэша",
+      "info": "Кэш хранится локально в SQLite базе данных. Записи автоматически удаляются через 24 часа.",
+      "hitRate": "Процент попаданий"
+    },
+    "processing": {
+      "analyzing": "Анализирую контекст проекта...",
+      "preparingTools": "Подготавливаю инструменты...",
+      "generating": "Генерирую ответ...",
+      "processing": "Обработка..."
     }
   },
   "source": {
@@ -1937,7 +2169,8 @@
         "videotoolboxCodec": "Используйте H.265/HEVC для лучшего сжатия",
         "lowMemory": "Мало видеопамяти, избегайте рендеринга в 4K",
         "highMemory": "Достаточно памяти для рендеринга в 4K"
-      }
+      },
+      "appleMetalError": "Ошибка инициализации Apple Metal/VideoToolbox. Обычно это временная проблема."
     },
     "cache": {
       "statistics": "Статистика кэша",
@@ -1994,7 +2227,191 @@
     }
   },
   "dialogs": {
-    "export": {},
+    "export": {
+      "title": "Экспорт",
+      "local": "Локально",
+      "device": "Устройство",
+      "socialNetworks": "Социальные сети",
+      "dvd": "DVD",
+      "youtube": "YouTube",
+      "tiktok": "TikTok",
+      "telegram": "Telegram",
+      "notLoggedIn": "Не выполнен вход",
+      "loginPrompt": {
+        "youtube": "Войдите в свой аккаунт YouTube для получения дополнительной информации.",
+        "tiktok": "Войдите в свой аккаунт TikTok, чтобы публиковать видео.",
+        "telegram": "Войдите в свой аккаунт Telegram, чтобы отправлять видео в каналы и группы."
+      },
+      "login": "Войти",
+      "cover": "Обложка",
+      "edit": "Редактировать",
+      "outputSettings": "Настройки вывода",
+      "name": "Название",
+      "saveTo": "Сохранить в",
+      "preset": "Пресет",
+      "defaultPreset": "По умолчанию",
+      "custom": "Особый",
+      "format": "Формат",
+      "quality": "Качество",
+      "normal": "Обычное",
+      "good": "Хорошее",
+      "best": "Лучшее",
+      "resolution": "Разрешение",
+      "frameRate": "Частота кадров",
+      "advancedCompression": "Расширенное сжатие",
+      "cloudBackup": "Облачное резервное копирование",
+      "enableGPUEncoding": "Включить аппаратное ускорение кодирования видео",
+      "useLastSettings": "Использовать последние настройки экспорта для локального файла",
+      "length": "Длительность",
+      "size": "Размер",
+      "approximate": "Приблизительно",
+      "titles": "Титры",
+      "device_types": {
+        "iphone": "iPhone",
+        "ipad": "iPad",
+        "android": "Android"
+      },
+      "codec": "Кодек",
+      "additional": "Дополнительно",
+      "fps": "к/с",
+      "kbps": "кбит/с",
+      "sdr": "SDR - Rec.709",
+      "otherNetworks": "Другие социальные сети",
+      "fileName": "Имя файла",
+      "selectPath": "Выбрать папку...",
+      "renderMode": "Режим рендеринга",
+      "singleClip": "Один клип",
+      "individualClips": "Отдельные клипы",
+      "video": "Видео",
+      "audio": "Аудио",
+      "file": "Файл",
+      "transitions": "Переходы",
+      "exportVideo": "Экспортировать видео",
+      "exportAudio": "Экспортировать аудио",
+      "codecType": "Тип кодека",
+      "interlacedRendering": "Чересстрочный рендеринг",
+      "optimizeForNetwork": "Оптимизировать для сетевого стриминга",
+      "useVerticalResolution": "Использовать вертикальное разрешение",
+      "chaptersByMarkers": "Главы по маркерам",
+      "constantBitrate": "Использовать постоянный битрейт",
+      "auto": "Авто",
+      "limitTo": "Ограничить до",
+      "limitSpeed": "Ограничить скорость до",
+      "seconds": "секунд",
+      "optimizeForSpeed": "Оптимизировать для скорости",
+      "encodingProfile": "Профиль кодирования",
+      "entropyMode": "Режим энтропии",
+      "multipassEncoding": "Многопроходное кодирование",
+      "keyframes": "Ключевые кадры",
+      "every": "Каждые",
+      "frames": "кадров",
+      "frameReordering": "Переупорядочивание кадров",
+      "audioCodec": "Аудиокодек",
+      "audioChannels": "Аудиоканалы",
+      "normalizeAudio": "Нормализовать аудио",
+      "normalizeToStandard": "Нормализовать по стандарту",
+      "optimizeToStandard": "Оптимизировать по стандарту",
+      "standard": "Стандарт",
+      "targetLevel": "Целевой уровень",
+      "targetLoudness": "Целевая громкость",
+      "embedInfo": "Встроить информацию",
+      "none": "Нет",
+      "asProject": "Как в проекте",
+      "useProxyMedia": "Использовать прокси-медиа",
+      "renderWithoutTimecode": "Рендерить без таймкода",
+      "advancedSettings": "Расширенные настройки",
+      "advancedDescription": "Дополнительные параметры кодирования для опытных пользователей",
+      "subtitlesSettings": "Настройки субтитров",
+      "subtitlesDescription": "Настройте параметры экспорта дорожки субтитров",
+      "progress": "Прогресс",
+      "rendering": "Рендеринг",
+      "cancel": "Отмена",
+      "close": "Закрыть",
+      "export": "Экспорт",
+      "errors": {
+        "noProject": "Проект не загружен",
+        "noPath": "Пожалуйста, выберите место сохранения",
+        "exportFailed": "Экспорт не удался. Попробуйте снова.",
+        "socialExportFailed": "Не удалось загрузить в соцсеть. Попробуйте снова."
+      },
+      "uploadSuccess": "Успешно загружено в {{platform}}",
+      "loggedIn": "Вход выполнен",
+      "logout": "Выйти",
+      "uploadSettings": "Настройки загрузки для {{platform}}",
+      "videoTitle": "Название видео",
+      "enterTitle": "Введите название видео...",
+      "enterDescription": "Введите описание видео...",
+      "description": "Описание",
+      "privacy": "Конфиденциальность",
+      "public": "Публичное",
+      "unlisted": "Доступно по ссылке",
+      "private": "Приватное",
+      "tags": "Теги",
+      "enterTags": "Введите теги через запятую",
+      "category": "Категория",
+      "channel": "Канал",
+      "enterChannelId": "Введите ID канала или имя пользователя",
+      "uploadProgress": "Прогресс загрузки",
+      "uploading": "Загрузка",
+      "uploadTo": "Загрузить в {{platform}}",
+      "social": {
+        "max": "Макс.",
+        "limitsAndValidation": "Лимиты и проверка",
+        "valid": "Корректно",
+        "invalid": "Некорректно",
+        "maxFileSize": "Макс. размер файла",
+        "maxDuration": "Макс. длительность",
+        "maxResolution": "Макс. разрешение",
+        "titleLimit": "Лимит названия",
+        "optimizationSuggestions": "Рекомендации по оптимизации:",
+        "categories": {
+          "peopleAndBlogs": "Люди и блоги",
+          "entertainment": "Развлечения",
+          "newsAndPolitics": "Новости и политика",
+          "howtoAndStyle": "Полезные советы и стиль",
+          "education": "Образование",
+          "scienceAndTechnology": "Наука и техника"
+        }
+      },
+      "batchTab": "Пакет",
+      "sectionsTab": "Секции",
+      "batchSettings": "Настройки пакетного экспорта",
+      "batchSettingsDescription": "Настройте параметры экспорта для нескольких проектов",
+      "outputFolder": "Папка вывода",
+      "noFolderSelected": "Папка не выбрана",
+      "selectOutputFolder": "Выбрать папку вывода",
+      "pendingProjects": "Ожидающие проекты",
+      "pendingProjectsCount": "Готово к экспорту проектов: {{count}}",
+      "noOutputPath": "Нет пути вывода",
+      "renderQueue": "Очередь рендеринга",
+      "activeJobs": "Активных задач: {{count}}",
+      "noActiveJobs": "Нет активных задач",
+      "addProjects": "Добавить проекты",
+      "clearCompleted": "Очистить завершённые",
+      "emptyQueue": "Очередь рендеринга пуста",
+      "queueStats": "Всего: {{total}} | Завершено: {{completed}} | Ошибок: {{failed}}",
+      "cancelAll": "Отменить всё",
+      "processing": "Обработка задач: {{count}}",
+      "startBatchExport": "Начать экспорт ({{count}} проектов)",
+      "batch": {
+        "selectProjects": "Выбор проектов",
+        "selectProjectsDescription": "Выберите проекты для включения в пакетный экспорт",
+        "selectAll": "Выбрать все",
+        "deselectAll": "Снять выделение",
+        "selectedCount": "Выбрано: {{count}}",
+        "tracks": "дорожек",
+        "exportQueue": "Очередь экспорта",
+        "exportProgress": "Завершено {{completed}} из {{total}}",
+        "waiting": "Ожидание",
+        "completed": "Завершено",
+        "error": "Ошибка",
+        "resume": "Продолжить",
+        "pause": "Пауза",
+        "cancel": "Отмена",
+        "startExport": "Начать экспорт"
+      },
+      "sectionsExportSuccess": "Секции успешно экспортированы"
+    },
     "userSettings": {
       "title": "Настройки пользователя",
       "interfaceLanguage": "Язык интерфейса:",
@@ -2270,7 +2687,81 @@
         "exportLogs": "Экспортировать логи",
         "debugPanel": "Панель отладки",
         "showDebugInfo": "Показывать отладочную информацию"
+      },
+      "socialNetworksDescription": "Настройте OAuth подключения для автоматической публикации видео в социальных сетях.",
+      "comingSoon": "Скоро",
+      "socialNetworksComingSoon": "OAuth интеграция с социальными сетями будет доступна в следующих обновлениях. Пока API ключи сохраняются в зашифрованном виде.",
+      "currentImplementation": "Текущая реализация",
+      "currentImplementationText": "Система безопасного хранения API ключей готова. OAuth интеграция и UI для социальных сетей находятся в разработке.",
+      "aiServicesDescription": "Настройте API ключи для интеграции с AI ассистентами. Ключи безопасно хранятся локально.",
+      "openAiDescription": "Используется для ChatGPT интеграции и генерации контента. Получите ключ на platform.openai.com",
+      "getApiKey": "Получить API ключ",
+      "claudeDescription": "Используется для Claude AI ассистента и продвинутого анализа контента. Получите ключ в консоли Anthropic",
+      "grokApiKey": "Grok API ключ",
+      "grokDescription": "Используется для моделей Grok от xAI. Получите ключ на console.x.ai",
+      "deepSeekApiKey": "DeepSeek API ключ",
+      "deepSeekDescription": "Используется для моделей DeepSeek. Получите ключ на platform.deepseek.com",
+      "mcpClaudeApiKey": "Claude API ключ для MCP",
+      "mcpDescription": "Model Context Protocol (MCP) - расширенная интеграция с Claude для доступа к инструментам видеомонтажа. Позволяет использовать Claude Code подписку прямо в редакторе.",
+      "learnAboutMcp": "Узнать больше о MCP",
+      "mcpFeatures": "Возможности MCP:",
+      "mcpFeature1": "Анализ видео и аудио контента",
+      "mcpFeature2": "Управление таймлайном и клипами",
+      "mcpFeature3": "Применение эффектов и переходов",
+      "mcpFeature4": "Экспорт и создание превью",
+      "mcpFeature5": "18 специализированных инструментов",
+      "securityNote": "Примечание о безопасности",
+      "securityNoteText": "Все API ключи шифруются и хранятся локально на вашем устройстве. Они никогда не передаются третьим лицам.",
+      "developmentDescription": "Настройки для инструментов разработки и аналитики. Доступно только в режиме разработки.",
+      "codecovDescription": "Токен для отправки отчетов покрытия тестами в Codecov. Используется в CI/CD pipeline.",
+      "getToken": "Получить токен",
+      "tauriAnalyticsDescription": "Ключ для аналитики Tauri приложения. Используется для сбора метрик производительности.",
+      "tauriDocs": "Документация Tauri",
+      "devModeNote": "Режим разработки",
+      "devModeNoteText": "Эта вкладка видна только в режиме разработки. В production сборке настройки разработки недоступны.",
+      "hideKey": "Скрыть ключ",
+      "showKey": "Показать ключ",
+      "invalidKey": "Неверный API ключ или проблемы с подключением",
+      "validKey": "API ключ работает корректно",
+      "lastValidated": "Проверено",
+      "created": "Создано",
+      "codecovToken": "Токен Codecov",
+      "tauriAnalyticsKey": "Ключ аналитики Tauri"
+    },
+    "keyboardShortcuts": {
+      "cheatSheet": "Шпаргалка по горячим клавишам",
+      "cheatSheetDescription": "Все доступные клавиатурные сочетания",
+      "print": "Печать",
+      "conflictDetected": "Обнаружен конфликт",
+      "criticalConflict": "Критический конфликт",
+      "potentialConflict": "Потенциальный конфликт",
+      "export": "Экспортировать",
+      "import": "Импортировать",
+      "shortcuts": {
+        "adjust-bezier": "Настройте кривую Безье"
+      },
+      "categories": {
+        "marker": "Маркер",
+        "multicam": "Мультикамерный монтаж"
       }
+    },
+    "cameraCapture": {
+      "requestingPermissions": "Запрашиваем разрешения...",
+      "recordingSuccess": "Запись успешно сохранена",
+      "recordingError": "Ошибка при сохранении записи",
+      "notSupported": "Запись с камеры недоступна",
+      "notSupportedDescription": "Запись с камеры не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере."
+    },
+    "voiceRecord": {
+      "saveError": "Ошибка при сохранении аудиозаписи",
+      "notSupported": "Запись звука недоступна",
+      "notSupportedDescription": "Запись звука не поддерживается в десктопном приложении. Эта функция доступна только при использовании Timeline Studio в веб-браузере.",
+      "unsupportedBrowser": "Ваш браузер не поддерживает запись аудио. Используйте современный браузер.",
+      "permissionsDenied": "Доступ к микрофону запрещен. Проверьте настройки браузера.",
+      "permissionCheckError": "Не удалось проверить разрешения. Попробуйте еще раз.",
+      "errorGettingDevices": "Не удалось получить список устройств",
+      "recordingNotSupported": "Запись не поддерживается браузером",
+      "streamError": "Не удалось инициализировать микрофон"
     }
   },
   "export": {
@@ -2288,8 +2779,11 @@
       "qualityPreset": "Предустановка качества",
       "qualityPresetDescription": "Выберите качество экспорта для секций",
       "preview": "Качество предпросмотра",
+      "previewDescription": "720p, низкий битрейт, быстрое кодирование",
       "draft": "Черновое качество",
+      "draftDescription": "1080p, среднее качество",
       "final": "Финальное качество",
+      "finalDescription": "Полное качество, настройки проекта",
       "sectionsTitle": "Секции",
       "selectedCount": "Выбрано {{selected}} из {{total}} секций",
       "selectAll": "Выбрать все",
@@ -3128,5 +3622,169 @@
       "invalidFile": "Файл не является цветовой схемой",
       "importFailed": "Не удалось импортировать схему"
     }
+  },
+  "transcription": {
+    "modelsDescription": "Скачайте модели для локальной транскрипции",
+    "downloaded": "Скачано",
+    "download": "Скачать",
+    "tip": "Совет",
+    "modelTip": "Для большинства задач модель 'base' обеспечивает хороший баланс между скоростью и качеством. Используйте 'large' модели для максимальной точности.",
+    "fileSelect": {
+      "error": "Ошибка выбора файла"
+    },
+    "error": "Ошибка",
+    "noFile": "Выберите файл",
+    "transcriptionResultsHeading": "Результаты транскрипции",
+    "save": {
+      "success": "Субтитры сохранены",
+      "error": "Ошибка сохранения",
+      "srt": "SRT"
+    },
+    "enhanced": {
+      "title": "AI Генерация субтитров",
+      "description": "Автоматическое создание субтитров с использованием AI",
+      "generate": "AI Генерация",
+      "quick": "Быстрая",
+      "confidence": "Уверенность",
+      "ocr": "OCR"
+    },
+    "mode": {
+      "basic": "Базовая",
+      "enhanced": "Расширенный ИИ"
+    },
+    "file": {
+      "title": "Выбор файла",
+      "select": "Выбрать файл"
+    },
+    "settings": {
+      "title": "Настройки",
+      "main": "Основные",
+      "ai": "AI функции",
+      "advanced": "Дополнительно"
+    },
+    "language": {
+      "label": "Язык"
+    },
+    "task": {
+      "label": "Задача",
+      "transcribe": "Транскрибировать",
+      "translate": "Переводить"
+    },
+    "ai": {
+      "sources": "Источники данных",
+      "speech": "Распознавание речи",
+      "ocr": "Текст на экране (OCR)",
+      "scenes": "Анализ сцен",
+      "speakers": "Идентификация говорящих",
+      "processing": "Обработка текста",
+      "grammar": "Исправление грамматики",
+      "capitalization": "Заглавные буквы",
+      "filler": "Убрать слова-паразиты",
+      "optimize": "Оптимизация для чтения",
+      "style": "Стиль субтитров",
+      "provider": "AI провайдер"
+    },
+    "style": {
+      "standard": "Стандартный",
+      "broadcast": "Телевизионный",
+      "social": "Соцсети",
+      "accessibility": "Доступность"
+    },
+    "basic": {
+      "start": "Транскрибировать"
+    },
+    "cancel": "Отменить",
+    "reset": "Сбросить",
+    "results": {
+      "title": "Результаты"
+    },
+    "addToTimeline": "Добавить в таймлайн",
+    "selectLanguage": "Выберите язык",
+    "wordTimings": "Временные метки слов",
+    "fullText": "Полный текст",
+    "title": "Транскрипция",
+    "description": "Автоматическое создание субтитров с помощью AI",
+    "selectFile": "Выберите медиафайл",
+    "chooseFile": "Выбрать файл",
+    "basicSettings": "Основные",
+    "advancedSettings": "Расширенные",
+    "models": "Модели",
+    "model": "Модель",
+    "transcribe": "Транскрипция",
+    "translate": "Перевод на английский",
+    "provider": {
+      "unified": "Единый ИИ",
+      "whisper": "Whisper",
+      "azure": "Azure",
+      "google": "Google"
+    },
+    "device": "Устройство",
+    "wordTimestamps": "Временные метки слов",
+    "vadFilter": "Фильтр активности голоса",
+    "processing": "Обработка...",
+    "start": "Начать транскрипцию"
+  },
+  "about": {
+    "version": "Версия",
+    "description": "Профессиональный видеоредактор для создания и монтажа видео",
+    "rights": "Все права защищены",
+    "builtWith": "Создано с использованием",
+    "documentation": "Документация",
+    "license": "Лицензия"
+  },
+  "modals": {
+    "about": {
+      "title": "О программе"
+    },
+    "subtitleEditor": {
+      "titleEdit": "Редактировать субтитр",
+      "titleAdd": "Добавить субтитр"
+    },
+    "personForm": {
+      "titleEdit": "Редактировать персону",
+      "titleAdd": "Создать персону"
+    },
+    "missingFiles": {
+      "title": "Отсутствующие медиафайлы"
+    },
+    "aiMarkerSettings": {
+      "title": "Настройки AI маркеров"
+    },
+    "subtitleAITools": {
+      "title": "Автоматическая транскрипция"
+    },
+    "audioEffects": {
+      "title": "Аудио эффекты"
+    },
+    "midiLearn": {
+      "title": "Обучение MIDI"
+    },
+    "midiMapping": {
+      "title": "Редактор MIDI маппинга"
+    },
+    "midiConfiguration": {
+      "title": "Настройки MIDI"
+    },
+    "effectDetail": {
+      "title": "Детали эффекта"
+    },
+    "colorGrading": {
+      "title": "Сохранить пресет цветокоррекции"
+    }
+  },
+  "cameraCapture": {
+    "saving": "Сохранение записи...",
+    "cameraMode": "Камера",
+    "screenMode": "Экран",
+    "screenSettings": "Настройки записи экрана",
+    "screenInfo": "Выберите окно, вкладку или весь экран для записи",
+    "microphone": "Микрофон",
+    "noAudio": "Без звука",
+    "countdown": "Обратный отсчёт",
+    "noCountdown": "Без отсчёта",
+    "seconds": "секунд"
+  },
+  "camera": {
+    "permissionError": "Не удалось получить доступ к камере и микрофону. Проверьте настройки."
   }
 }

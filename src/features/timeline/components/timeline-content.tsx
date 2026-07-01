@@ -54,6 +54,7 @@ export function TimelineContent() {
 
 function TimelineContentInner() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const projectCreateRequestedRef = useRef(false)
   const [scrollOffset, setScrollOffset] = useState(0)
   const [containerWidth, setContainerWidth] = useState(0)
 
@@ -123,16 +124,18 @@ function TimelineContentInner() {
   // Инициализируем синхронизацию с плеером
   useTimelinePlayerSync()
 
-  // Создаем проект немедленно при наличии currentProject
+  // Создаем проект при первой загрузке.
+  // `currentProject` приходит из backend project-state; в browser-режиме мок отдаёт null,
+  // и без него Timeline бесконечно висел на лоадере. Не блокируем инициализацию его наличием.
+  // ref-флаг критичен: orchestrator.createProject выставляет SET_LOADING/CLEAR_LOADING, но
+  // НЕ кладёт `project` в context — без guard эффект ушёл бы в бесконечный цикл вызовов.
   useEffect(() => {
-    if (!project && currentProject && projectSettings) {
-      // Создаем проект синхронно
-      createProject(currentProject.metadata.name).then(() => {
-        logger.info("[TimelineContent] Timeline project created", {
-          projectName: currentProject.metadata.name,
-        })
-      })
-    }
+    if (project || projectCreateRequestedRef.current || !projectSettings) return
+    projectCreateRequestedRef.current = true
+    const name = currentProject?.metadata?.name || "Untitled Project"
+    createProject(name).then(() => {
+      logger.info("[TimelineContent] Timeline project created", { projectName: name })
+    })
   }, [project, currentProject, projectSettings, createProject])
 
   // Добавляем демо секцию после создания проекта

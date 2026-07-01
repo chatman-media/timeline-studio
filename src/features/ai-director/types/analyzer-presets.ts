@@ -70,7 +70,10 @@ export interface AnalyzerCategory {
   id: string
   name: string
   nameRu: string
+  /** Russian description */
   description: string
+  /** English description */
+  descriptionEn: string
   analyzers: AnalyzerType[]
   availableFor: MediaAnalysisType[]
   icon?: string
@@ -82,6 +85,7 @@ export const ANALYZER_CATEGORIES: AnalyzerCategory[] = [
     name: "Object Detection",
     nameRu: "Детекция объектов",
     description: "Распознавание лиц, объектов, людей",
+    descriptionEn: "Face, object, and person recognition",
     analyzers: ["face_detection", "object_detection", "person_recognition"],
     availableFor: ["video", "image"],
     icon: "scan",
@@ -91,6 +95,7 @@ export const ANALYZER_CATEGORIES: AnalyzerCategory[] = [
     name: "Scene Analysis",
     nameRu: "Анализ сцен",
     description: "Детекция сцен, переходов, движения",
+    descriptionEn: "Scene, transition, and motion detection",
     analyzers: ["scene_detection", "motion_analysis"],
     availableFor: ["video"],
     icon: "film",
@@ -100,6 +105,7 @@ export const ANALYZER_CATEGORIES: AnalyzerCategory[] = [
     name: "Audio Analysis",
     nameRu: "Аудио анализ",
     description: "Речь, музыка, качество звука",
+    descriptionEn: "Speech, music, audio quality",
     analyzers: [
       "audio_quality",
       "speech_recognition",
@@ -116,6 +122,7 @@ export const ANALYZER_CATEGORIES: AnalyzerCategory[] = [
     name: "Quality Assessment",
     nameRu: "Оценка качества",
     description: "Качество изображения, композиция",
+    descriptionEn: "Image quality, composition",
     analyzers: ["quality_assessment", "visual_quality", "composition_analysis"],
     availableFor: ["video", "audio", "image"],
     icon: "sparkles",
@@ -125,6 +132,7 @@ export const ANALYZER_CATEGORIES: AnalyzerCategory[] = [
     name: "AI Content Analysis",
     nameRu: "AI анализ контента",
     description: "Настроение, классификация, VLM",
+    descriptionEn: "Mood, classification, VLM",
     analyzers: ["mood_analysis", "content_classification", "moment_detection", "vlm_analysis"],
     availableFor: ["video", "audio", "image"],
     icon: "brain",

@@ -230,7 +230,7 @@ export function SocialExportTab({
               </CardHeader>
               <CardContent className="space-y-3" data-oid="z83pv_t">
                 <CardDescription data-oid="d_u8lps">
-                  Max: {network.maxResolution} • {network.maxFps}fps
+                  {t("dialogs.export.social.max")}: {network.maxResolution} • {network.maxFps}fps
                 </CardDescription>
 
                 {isSelected && (
@@ -283,7 +283,7 @@ export function SocialExportTab({
             <CardTitle className="flex items-center justify-between" data-oid="q6o6jg4">
               <div className="flex items-center gap-3" data-oid="736ujcr">
                 {getSocialIcon(selectedNetwork)}
-                {selectedNetworkData.name} Limits & Validation
+                {selectedNetworkData.name} {t("dialogs.export.social.limitsAndValidation")}
               </div>
               <div className="flex items-center gap-2" data-oid="-7-sycr">
                 {validation.valid ? (
@@ -292,7 +292,7 @@ export function SocialExportTab({
                   <AlertCircle className="h-5 w-5 text-red-500" data-oid="-ld3:we" />
                 )}
                 <Badge variant={validation.valid ? "default" : "destructive"} data-oid="k8c190b">
-                  {validation.valid ? "Valid" : "Invalid"}
+                  {validation.valid ? t("dialogs.export.social.valid") : t("dialogs.export.social.invalid")}
                 </Badge>
               </div>
             </CardTitle>
@@ -303,7 +303,7 @@ export function SocialExportTab({
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted/50 rounded-lg" data-oid="ni.in41">
                 <div className="text-center" data-oid="j4o1qtn">
                   <div className="text-sm font-medium" data-oid="drujmjy">
-                    Max File Size
+                    {t("dialogs.export.social.maxFileSize")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="3.u5rb3">
                     {(networkLimits.maxFileSize / (1024 * 1024 * 1024)).toFixed(1)}
@@ -312,7 +312,7 @@ export function SocialExportTab({
                 </div>
                 <div className="text-center" data-oid="01n4bmu">
                   <div className="text-sm font-medium" data-oid="9hv_ro6">
-                    Max Duration
+                    {t("dialogs.export.social.maxDuration")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="q3m-1pk">
                     {Math.round(networkLimits.maxDuration / 3600)}h
@@ -320,7 +320,7 @@ export function SocialExportTab({
                 </div>
                 <div className="text-center" data-oid="8g6l0f1">
                   <div className="text-sm font-medium" data-oid="-..yea7">
-                    Max Resolution
+                    {t("dialogs.export.social.maxResolution")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="d11hl3a">
                     {networkLimits.maxResolution}
@@ -328,7 +328,7 @@ export function SocialExportTab({
                 </div>
                 <div className="text-center" data-oid="sfiiieg">
                   <div className="text-sm font-medium" data-oid="79i9agf">
-                    Title Limit
+                    {t("dialogs.export.social.titleLimit")}
                   </div>
                   <div className="text-xs text-muted-foreground" data-oid="kgt.c6u">
                     {networkLimits.titleMaxLength} chars
@@ -376,7 +376,7 @@ export function SocialExportTab({
                 <AlertDescription data-oid="90r3oc4">
                   <div className="space-y-1" data-oid="w700zmc">
                     <div className="font-medium" data-oid="5d2_u2d">
-                      Optimization suggestions:
+                      {t("dialogs.export.social.optimizationSuggestions")}
                     </div>
                     {validation.suggestions.map((suggestion, index) => (
                       <div key={index} className="text-sm" data-oid="vx.r7-_">
@@ -547,22 +547,22 @@ export function SocialExportTab({
                   </SelectTrigger>
                   <SelectContent data-oid="cpm:5at">
                     <SelectItem value="22" data-oid="qc4w0:x">
-                      People & Blogs
+                      {t("dialogs.export.social.categories.peopleAndBlogs")}
                     </SelectItem>
                     <SelectItem value="24" data-oid="r40lhup">
-                      Entertainment
+                      {t("dialogs.export.social.categories.entertainment")}
                     </SelectItem>
                     <SelectItem value="25" data-oid="hoo55q3">
-                      News & Politics
+                      {t("dialogs.export.social.categories.newsAndPolitics")}
                     </SelectItem>
                     <SelectItem value="26" data-oid=".-gy2:n">
-                      Howto & Style
+                      {t("dialogs.export.social.categories.howtoAndStyle")}
                     </SelectItem>
                     <SelectItem value="27" data-oid="jccck5a">
-                      Education
+                      {t("dialogs.export.social.categories.education")}
                     </SelectItem>
                     <SelectItem value="28" data-oid="k58zpws">
-                      Science & Technology
+                      {t("dialogs.export.social.categories.scienceAndTechnology")}
                     </SelectItem>
                   </SelectContent>
                 </Select>

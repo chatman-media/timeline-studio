@@ -27,8 +27,29 @@ function ResizablePanelGroup({ className, direction, orientation, autoSaveId, ..
   )
 }
 
-function ResizablePanel({ ...props }: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
-  return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />
+// v4 breaking change: number size props are pixels, not percentages (string "35%" is %).
+// Our layouts pass numbers expecting percentage semantics, so coerce here to keep callsites unchanged.
+function asPercent(v: unknown): unknown {
+  return typeof v === "number" ? `${v}%` : v
+}
+
+function ResizablePanel({
+  defaultSize,
+  minSize,
+  maxSize,
+  collapsedSize,
+  ...props
+}: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
+  return (
+    <ResizablePrimitive.Panel
+      data-slot="resizable-panel"
+      defaultSize={asPercent(defaultSize) as any}
+      minSize={asPercent(minSize) as any}
+      maxSize={asPercent(maxSize) as any}
+      collapsedSize={asPercent(collapsedSize) as any}
+      {...props}
+    />
+  )
 }
 
 function ResizableHandle({
