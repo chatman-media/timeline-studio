@@ -219,6 +219,32 @@ export interface BotWorkflowApprovalGateOptions {
   previewDestination?: BotRenderJobDestination
 }
 
+/**
+ * Concierge approval policy (#334) — how a first cut is gated before delivery:
+ * - `"always"`: gate every result behind a manual `/approve` (human in the loop).
+ * - `"never"`: bypass the gate and auto-deliver (self-serve).
+ * - `"auto"`: gate, render the preview, then auto-approve when the run is clean
+ *   (no validation warnings); otherwise fall back to manual approval.
+ */
+export type BotApprovalPolicy = "always" | "never" | "auto"
+
+export interface BotApprovalDecision {
+  /** Whether to enable the approval gate (render to a preview destination). */
+  gateEnabled: boolean
+  /** Whether to auto-approve the preview once rendered (only in `"auto"`). */
+  autoApprove: boolean
+}
+
+/**
+ * Pure decision for a {@link BotApprovalPolicy} given the run's validation
+ * warning count. `"auto"` auto-approves only when the render is warning-free.
+ */
+export function resolveBotApprovalDecision(policy: BotApprovalPolicy, warningCount: number): BotApprovalDecision {
+  if (policy === "never") return { gateEnabled: false, autoApprove: false }
+  if (policy === "auto") return { gateEnabled: true, autoApprove: warningCount === 0 }
+  return { gateEnabled: true, autoApprove: false }
+}
+
 export interface BotWorkflowApprovalGateResult {
   enabled: boolean
   previewDestination: BotRenderJobDestination

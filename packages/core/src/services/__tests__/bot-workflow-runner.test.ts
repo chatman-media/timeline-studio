@@ -8,6 +8,7 @@ import type {
   BotRenderJobResult,
   BotRenderJobRunOptions,
 } from "../../types"
+import { resolveBotApprovalDecision } from "../../types/bot-workflow"
 import { createBotProjectSchemaFromRenderJob } from "../bot-project-assembler"
 import { runBotWorkflow, runTelegramLikeBotWorkflow } from "../bot-workflow-runner"
 import { InMemoryBotRenderJobEventStream } from "../render-job-events"
@@ -387,5 +388,22 @@ describe("bot workflow runner", () => {
     expect(renderJob.lastOptions?.eventSinks).toHaveLength(2)
     expect(callerSink.publish).toHaveBeenCalledTimes(1)
     expect(eventStream.getSnapshot("job-1")).toMatchObject({ status: "done" })
+  })
+})
+
+describe("resolveBotApprovalDecision (#334)", () => {
+  it("'never' bypasses the gate (self-serve, no auto-approve)", () => {
+    expect(resolveBotApprovalDecision("never", 0)).toEqual({ gateEnabled: false, autoApprove: false })
+    expect(resolveBotApprovalDecision("never", 3)).toEqual({ gateEnabled: false, autoApprove: false })
+  })
+
+  it("'always' gates and never auto-approves", () => {
+    expect(resolveBotApprovalDecision("always", 0)).toEqual({ gateEnabled: true, autoApprove: false })
+    expect(resolveBotApprovalDecision("always", 5)).toEqual({ gateEnabled: true, autoApprove: false })
+  })
+
+  it("'auto' gates and auto-approves only when the run is warning-free", () => {
+    expect(resolveBotApprovalDecision("auto", 0)).toEqual({ gateEnabled: true, autoApprove: true })
+    expect(resolveBotApprovalDecision("auto", 1)).toEqual({ gateEnabled: true, autoApprove: false })
   })
 })
